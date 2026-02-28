@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Governance: The Simulation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Color Palette & Variables --- */
+        :root {
+            --dark-brown: #4c1d09;
+            --cream: #fce2bf;
+            --cream-glass: rgba(252, 226, 191, 0.95); 
+            --red-orange: #B92a18;
+            --yellow: #e18e04;
+            --green: #5A7153; 
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Lora', serif;
+        }
+
+        body { margin: 0; padding: 0; background-color: var(--dark-brown); color: var(--dark-brown); font-family: var(--font-body); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; overflow-y: auto; }
+
+        /* --- Dynamic Global Background --- */
+        #bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; z-index: 1; pointer-events: none; transition: opacity 1s ease; }
+        .bg-office { background-image: url('image1.jpeg'); opacity: 0.4 !important; } 
+
+        /* --- Intro Progress Bar --- */
+        #progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background-color: rgba(76, 29, 9, 0.1); z-index: 400; transition: opacity 0.5s ease;}
+        #progress-fill { height: 100%; width: 0%; background-color: var(--dark-brown); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* --- Gamified HUD --- */
+        #hud-container { position: fixed; top: 0; left: 0; width: 100%; background: var(--dark-brown); padding: 0.8rem 2rem; box-sizing: border-box; z-index: 300; display: flex; justify-content: space-around; box-shadow: 0 4px 15px rgba(0,0,0,0.6); opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+        #hud-container.active { opacity: 1; pointer-events: auto; }
+        
+        .stat-group { display: flex; flex-direction: column; align-items: center; width: 30%; max-width: 250px; padding: 2px 5px; transition: transform 0.2s ease; }
+        .stat-label { color: var(--cream); font-family: var(--font-heading); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; font-weight: 800; width: 100%; display: flex; justify-content: space-between; align-items: center;}
+        .stat-number { font-weight: 800; font-size: 1rem; }
+        .hud-icon { width: 14px; height: 14px; fill: var(--cream); margin-right: 6px; vertical-align: middle; }
+        
+        .meter-bg { width: 100%; height: 8px; background: rgba(252, 226, 191, 0.2); border-radius: 4px; overflow: hidden; position: relative; }
+        .meter-fill { height: 100%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; }
+        
+        #meter-risk { width: 0%; background-color: var(--green); } 
+        #meter-time { width: 100%; background-color: var(--yellow); } 
+        #meter-credibility { width: 100%; background-color: var(--cream); }
+        #clock-display { color: var(--yellow); font-weight: 800; letter-spacing: 1px; }
+
+        /* --- HUD Pulse Animations --- */
+        @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(185, 42, 24, 0.8); background-color: rgba(185, 42, 24, 0.2); } 30% { transform: scale(1.05); } 100% { transform: scale(1); box-shadow: 0 0 15px 10px rgba(185, 42, 24, 0); background-color: transparent; } }
+        @keyframes pulse-green { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(90, 113, 83, 0.8); background-color: rgba(90, 113, 83, 0.2); } 30% { transform: scale(1.05); } 100% { transform: scale(1); box-shadow: 0 0 15px 10px rgba(90, 113, 83, 0); background-color: transparent; } }
+        .pulse-negative { animation: pulse-red 0.8s ease-out; border-radius: 6px; }
+        .pulse-positive { animation: pulse-green 0.8s ease-out; border-radius: 6px; }
+
+        /* --- View Containers --- */
+        .view-screen { display: none; width: 100%; min-height: 100vh; justify-content: center; align-items: center; box-sizing: border-box; opacity: 0; transition: opacity 0.6s ease; position: relative; z-index: 10; }
+        .view-screen.active { display: flex; opacity: 1; }
+        
+        /* --- Act 1: Split Screen Layout --- */
+        .split-screen { padding: 0; flex-direction: row; align-items: stretch; }
+        @keyframes fluidGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .split-left { flex: 1; position: relative; background: linear-gradient(-45deg, var(--dark-brown), #3a1103, #7a1c0d, var(--dark-brown)); background-size: 400% 400%; animation: fluidGradient 15s ease infinite; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .editorial-number { font-family: var(--font-heading); font-weight: 900; font-size: 15vw; line-height: 1; color: rgba(252, 226, 191, 0.1); position: absolute; z-index: 2; letter-spacing: -1vw; mix-blend-mode: overlay; }
+        .split-right { flex: 2; background: var(--cream); padding: 3rem 4rem; display: flex; flex-direction: column; justify-content: center; z-index: 2; overflow-y: auto; }
+
+        /* --- Act 2 & 3: Glass Panel --- */
+        #app-container { display: none; position: relative; z-index: 10; width: 100%; justify-content: center; padding: 5.5rem 2rem 2rem 2rem; opacity: 0; transition: opacity 0.6s ease; }
+        #app-container.active { display: flex; opacity: 1; }
+        .glass-panel { background: var(--cream-glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(252, 226, 191, 0.6); padding: 3rem 4rem; max-width: 850px; width: 100%; box-shadow: 0 20px 40px -10px rgba(76, 29, 9, 0.5); margin: auto; animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; text-align: center; }
+
+        .glass-panel.success-panel h1 { color: var(--green); border-bottom-color: var(--green); }
+        .success-seal { width: 80px; height: 80px; fill: var(--green); margin: 0 auto 1.5rem auto; display: block; filter: drop-shadow(0 5px 15px rgba(90, 113, 83, 0.3)); }
+
+        /* --- Typography Elements --- */
+        h1 { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: -1px; border-bottom: 3px solid var(--dark-brown); padding-bottom: 0.8rem; margin-top: 0; margin-bottom: 1.2rem; line-height: 1.1; text-align: left;}
+        .glass-panel h1 { text-align: center; } 
+        .hero-title { border-bottom: none; padding-bottom: 0; font-size: 2.8rem; margin-bottom: 0.5rem; text-align: left;}
+        .hero-subtitle { font-family: var(--font-heading); font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; color: var(--red-orange); margin-bottom: 1.5rem; font-weight: 800; text-align: left;}
+        .lesson-text, .scenario-context { font-size: 1.15rem; line-height: 1.6; margin-bottom: 1.2rem; color: var(--dark-brown); font-weight: 400; text-align: left; }
+        
+        /* FIX: Left-aligned scenario context text */
+        .glass-panel .scenario-context { text-align: left; margin-bottom: 2rem; }
+        
+        .golden-rule-box { background-color: rgba(76, 29, 9, 0.04); border-left: 6px solid var(--dark-brown); padding: 1.5rem; margin: 1.5rem 0; font-weight: 700; font-size: 1.2rem; font-family: var(--font-heading); line-height: 1.5; text-align: left;}
+        ul { font-size: 1.15rem; line-height: 1.6; margin-bottom: 2rem; padding-left: 1.5rem; text-align: left; margin-top: 0.5rem;}
+        ul li { margin-bottom: 0.8rem; }
+
+        .icon-hero { display: block; margin: 0 0 1rem 0; width: 50px; height: 50px; fill: var(--dark-brown); }
+        .icon-sm { width: 26px; height: 26px; fill: var(--dark-brown); flex-shrink: 0; }
+
+        /* --- Checkpoint Styles --- */
+        .checkpoint { margin-bottom: 1.5rem; border-left: 4px solid transparent; padding-left: 1rem; transition: border-color 0.3s ease; text-align: left; }
+        .checkpoint:hover { border-left-color: var(--dark-brown); }
+        .checkpoint-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; }
+        .checkpoint h3 { font-family: var(--font-heading); font-size: 1.2rem; text-transform: uppercase; margin: 0; color: var(--dark-brown); letter-spacing: -0.5px; font-weight: 800;}
+        .checkpoint-number { background-color: var(--dark-brown); color: var(--cream); width: 30px; height: 30px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: 800; flex-shrink: 0; font-family: var(--font-heading); font-size: 1rem; }
+
+        /* --- Interactive Choices --- */
+        .choices-grid { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;}
+        .choice-card { background-color: transparent; color: var(--dark-brown); border: 2px solid rgba(76, 29, 9, 0.25); padding: 1.2rem 1.8rem; text-align: left; cursor: pointer; position: relative; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); font-family: var(--font-body); font-size: 1.05rem; line-height: 1.5; overflow: hidden; border-radius: 4px;}
+        .choice-card:hover { border-color: var(--dark-brown); transform: translateX(8px); background: rgba(76, 29, 9, 0.03); }
+        .choice-card strong { font-family: var(--font-heading); display: block; margin-bottom: 0.4rem; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; font-weight: 800; opacity: 0.9; }
+
+        /* --- Feedback Modal Overlay --- */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(76, 29, 9, 0.85); backdrop-filter: blur(8px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 2rem; box-sizing: border-box; }
+        #modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--cream); padding: 3rem 4rem; max-width: 650px; width: 100%; border-top: 8px solid var(--dark-brown); transform: translateY(30px); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); text-align: center; position: relative;}
+        #modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-header-icon { width: 40px; height: 40px; margin-bottom: 1rem; }
+        .modal-title { font-family: var(--font-heading); color: var(--dark-brown); font-size: 1.8rem; text-transform: uppercase; letter-spacing: -1px; font-weight: 800; margin-top: 0; margin-bottom: 1rem; line-height: 1.2;}
+        .modal-text { font-size: 1.15rem; line-height: 1.6; margin-bottom: 2rem; font-family: var(--font-body); text-align: left;}
+
+        /* --- Buttons --- */
+        .btn-primary { background-color: var(--dark-brown); color: var(--cream); border: 2px solid var(--dark-brown); padding: 1rem 2.5rem; font-family: var(--font-heading); font-size: 1rem; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; letter-spacing: 2px; display: inline-block; border-radius: 4px;}
+        .btn-primary:hover { background-color: transparent; color: var(--dark-brown); transform: translateY(-3px); }
+        .btn-center { display: flex; justify-content: flex-start; width: 100%; margin-top: 1rem; } 
+        .glass-panel .btn-center, .modal-content .btn-center { justify-content: center; }
+
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 1100px) {
+            .split-screen { flex-direction: column; }
+            .split-left { min-height: 20vh; }
+            .split-right { padding: 3rem 2rem; }
+            .btn-center { justify-content: center; }
+            h1 { font-size: 2rem; }
+            .hero-title { font-size: 2.2rem; }
+            .editorial-number { font-size: 25vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-container"><div id="progress-fill"></div></div>
+
+    <div id="hud-container">
+        <div class="stat-group">
+            <div class="stat-label">
+                <span>
+                    <svg class="hud-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                    Risk Level
+                </span> 
+                <span class="stat-number" id="num-risk" style="color: var(--green);">0%</span>
+            </div>
+            <div class="meter-bg"><div class="meter-fill" id="meter-risk"></div></div>
+        </div>
+        <div class="stat-group">
+            <div class="stat-label" style="justify-content: center;">
+                <svg class="hud-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                <span id="clock-display">Thursday 4:00 PM</span>
+            </div>
+            <div class="meter-bg"><div class="meter-fill" id="meter-time"></div></div>
+        </div>
+        <div class="stat-group">
+            <div class="stat-label">
+                <span>
+                    <svg class="hud-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    Reputation
+                </span> 
+                <span class="stat-number" id="num-credibility" style="color: var(--cream);">100%</span>
+            </div>
+            <div class="meter-bg"><div class="meter-fill" id="meter-credibility"></div></div>
+        </div>
+    </div>
+
+    <div id="bg-layer"></div>
+
+    <div id="lesson-1" class="view-screen split-screen active">
+        <div class="split-left"><div class="editorial-number">01</div></div>
+        <div class="split-right">
+            <svg class="icon-hero" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/>
+            </svg>
+            <h1 class="hero-title">It's a Sponge,<br>Not a Vault</h1>
+            <div class="hero-subtitle">The Golden Rule of Generative AI</div>
+            <p class="lesson-text">Generative AI tools are incredibly powerful, but they have a photographic memory. When you type a prompt or upload a spreadsheet, that data doesn't just disappear. It becomes part of the machine's ongoing learning process.</p>
+            <div class="golden-rule-box">Never feed the AI what you wouldn't publish on the public internet.</div>
+            <p class="lesson-text" style="font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px;">What this means for you:</p>
+            <ul>
+                <li>Company secrets are strictly off-limits.</li>
+                <li>Client data must never enter a public chat window.</li>
+                <li>If you input our unreleased financials today, the AI might serve them to a competitor tomorrow.</li>
+            </ul>
+            <div class="btn-center"><button class="btn-primary" onclick="goToIntroScreen('lesson-2', 50)">Next: The 3 Checkpoints</button></div>
+        </div>
+    </div>
+
+    <div id="lesson-2" class="view-screen split-screen">
+        <div class="split-left"><div class="editorial-number">02</div></div>
+        <div class="split-right">
+            <h1>Safe AI Co-Piloting</h1>
+            <p class="lesson-text">Before you hit "generate" to speed up your workflow, run your task through this quick mental filter. Remember: the AI is your enthusiastic intern, not your replacement.</p>
+            <div class="checkpoint">
+                <div class="checkpoint-header"><span class="checkpoint-number">1</span><svg class="icon-sm" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.8 1.4 2.8 2.8S13.4 12.6 12 12.6s-2.8-1.4-2.8-2.8S10.6 7 12 7zm0 11.4c-2.03 0-3.93-1.08-4.75-2.78.02-1.57 3.16-2.42 4.75-2.42s4.73.85 4.75 2.42c-.82 1.7-2.72 2.78-4.75 2.78z"/></svg><h3>Anonymize Your Inputs</h3></div>
+                <p class="lesson-text" style="margin-bottom: 0;">Strip out all client names, exact financial figures, employee details, and internal project codes. Give the AI the general structure and context, but keep the proprietary secrets to yourself.</p>
+            </div>
+            <div class="checkpoint">
+                <div class="checkpoint-header"><span class="checkpoint-number">2</span><svg class="icon-sm" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg><h3>Verify The Facts</h3></div>
+                <p class="lesson-text" style="margin-bottom: 0;">Generative AI is a notoriously confident liar. It will "hallucinate" data, invent statistics, and create fake citations. You must cross-check every claim against official documentation.</p>
+            </div>
+            <div class="checkpoint">
+                <div class="checkpoint-header"><span class="checkpoint-number">3</span><svg class="icon-sm" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><h3>Review and Own Output</h3></div>
+                <p class="lesson-text" style="margin-bottom: 0;">You are the final author, and your name goes on the deliverable. Read the output carefully for tone, accuracy, and brand alignment. Never blindly copy and paste AI-generated text.</p>
+            </div>
+            <div class="btn-center"><button class="btn-primary" onclick="goToIntroScreen('scenario-intro', 100)">Simulation</button></div>
+        </div>
+    </div>
+    <div id="scenario-intro" class="view-screen split-screen">
+        <div class="split-left"><div class="editorial-number">03</div></div>
+        <div class="split-right">
+            <h2 style="font-family: var(--font-heading); color: var(--red-orange); font-size: 1.4rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">Simulation</h2>
+            <h1 style="border: none; padding-bottom: 0;">The Q3 Strategy Report</h1>
+            <p class="scenario-context" style="text-align: left; font-size: 1.3rem; font-weight: 700; color: var(--red-orange);">You know the rules. Now, let's see how you handle the pressure.</p>
+            <p class="scenario-context" style="text-align: left;">It is 4:00 PM on a Thursday. The executive team needs the Q3 Strategic Risk Assessment by 9:00 AM tomorrow. You have raw data, client financials, and turning it into a cohesive 15-page report will take all night.</p>
+            <div class="btn-center"><button class="btn-primary" onclick="startSimulation()">Open OmniChat AI</button></div>
+        </div>
+    </div>
+
+    <div id="app-container"></div>
+
+    <div id="modal-overlay">
+        <div class="modal-content" id="modal-content-panel">
+            <svg id="modal-icon" class="modal-header-icon" viewBox="0 0 24 24"></svg>
+            <h2 class="modal-title" id="modal-title">Learning Moment</h2>
+            <div class="modal-text" id="modal-text"></div>
+            <div class="btn-center"><button class="btn-primary" onclick="nextScene()">Continue Simulation</button></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Act 1 Intro Logic ---
+        window.onload = function() { document.getElementById('progress-fill').style.width = '15%'; };
+
+        function goToIntroScreen(targetId, progressPercent) {
+            document.querySelectorAll('.view-screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+            setTimeout(() => { document.getElementById(targetId).classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, 300);
+        }
+
+        function startSimulation() {
+            document.querySelectorAll('.view-screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('progress-container').style.opacity = '0';
+            const bgLayer = document.getElementById('bg-layer'); bgLayer.className = 'bg-office'; bgLayer.style.opacity = '1';
+            setTimeout(() => { document.getElementById('app-container').classList.add('active'); initApp(); window.scrollTo({ top: 0, behavior: 'smooth' }); }, 600); 
+        }
+
+        // --- Core Simulation Logic ---
+        let currentSceneIndex = 0; const TOTAL_MINUTES_ALLOWED = 540; 
+        let stats = { risk: 0, elapsedMinutes: 0, credibility: 100 };
+
+        const scenarios = [
+            {
+                id: 1,
+                title: "Scenario 1: The Raw Data",
+                context: "The Q3 Strategy Report is due at 9:00 AM Friday. You have a massive spreadsheet of raw, unreleased client financials. You are staring down a heavy data-entry nightmare, and you need the AI to identify the key risk trends.",
+                choices: [
+                    {
+                        label: "Option A",
+                        text: "Spend the evening manually going through all 500 rows, redacting client names, obscuring exact revenue numbers, and changing dates before uploading.",
+                        impact: { risk: +0, timeCost: 240, credibility: +0 }, 
+                        feedbackType: "inefficient",
+                        feedbackTitle: "Safe, But Painfully Slow",
+                        feedback: "Low Risk. High Time penalty. You kept the data safe, but manual redaction is incredibly inefficient. You just spent 4 hours doing data prep, watching the clock tick down."
+                    },
+                    {
+                        label: "Option B",
+                        text: "Run a quick Pivot Table in Excel to aggregate the data into general industry trends. Strip the names, and only paste the summary table into the AI.",
+                        impact: { risk: +0, timeCost: 45, credibility: +5 }, 
+                        feedbackType: "good",
+                        feedbackTitle: "Smart Anonymization",
+                        feedback: "Moderate Time penalty. Zero Risk. By using Excel to abstract the data into high-level trends before opening the AI, you protected client confidentiality while still letting the machine do the heavy drafting."
+                    },
+                    {
+                        label: "Option C",
+                        text: "Upload the raw spreadsheet, but start your prompt with: 'CONFIDENTIAL: Do not save, store, or train on this data. Summarize the risks.'",
+                        impact: { risk: +60, timeCost: 15, credibility: -25 }, 
+                        feedbackType: "bad",
+                        feedbackTitle: "The Prompt Placebo",
+                        feedback: "Critical Risk spike! Typing 'do not train' into a public AI tool does not override its backend data collection policies. The AI ignores your command, and you just fed unreleased client financials directly into a public learning model."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Scenario 2: The Perfect Stat",
+                context: "The AI gave you a fantastic draft. In the 'Market Threats' section, it confidently claims: 'Competitor X lost 12% market share last quarter due to the new SEC ruling.' It fits your narrative perfectly.",
+                choices: [
+                    {
+                        label: "Option A",
+                        text: "Do a targeted 10-minute keyword search on SEC.gov and your internal legal Wiki. When nothing comes up, you instantly recognize the hallucination and delete the 12% claim.",
+                        impact: { risk: +0, timeCost: 15, credibility: +5 }, 
+                        feedbackType: "good",
+                        feedbackTitle: "Trust But Verify",
+                        feedback: "A perfect balanced response. You broke out of the chat window to cross-reference primary sources. By time-boxing your search, you efficiently identified the hallucination and scrubbed the fake data without derailing your entire evening."
+                    },
+                    {
+                        label: "Option B",
+                        text: "Close the AI. Spend the next two hours manually digging through the SEC's massive online archives and reading raw regulatory filings to see if the framework is hidden somewhere.",
+                        impact: { risk: +0, timeCost: 120, credibility: +0 }, 
+                        feedbackType: "inefficient",
+                        feedbackTitle: "The Rabbit Hole",
+                        feedback: "Low Risk, but a massive Time penalty. Generative AI hallucinations are designed to sound perfectly plausible. You wasted two hours looking for a needle in a haystack, only to realize the haystack itself is fake."
+                    },
+                    {
+                        label: "Option C",
+                        text: "Prompt the AI: 'Are you sure this 12% stat is accurate? Please provide the URL to the official source.'",
+                        impact: { risk: +20, timeCost: 30, credibility: -25 }, 
+                        feedbackType: "bad",
+                        feedbackTitle: "The Hallucination Loop",
+                        feedback: "You just experienced an AI confidence trap. The AI apologizes and provides a link—but you click it, and it's a dead URL. When an LLM fabricates a citation, asking it to verify its own work usually results in it inventing a fake source to appease you."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Scenario 3: The Robotic Voice",
+                context: "The data is secure and verified. But as you read the final draft, the tone is stiff and littered with classic AI giveaways like 'delve,' 'robust tapestry,' and 'dynamic synergy.'",
+                choices: [
+                    {
+                        label: "Option A",
+                        text: "Find a highly confidential internal strategy memo written by your CEO. Upload it and say, 'Rewrite my report in this exact tone.'",
+                        impact: { risk: +50, timeCost: 10, credibility: -25 }, 
+                        feedbackType: "bad",
+                        feedbackTitle: "The IP Leak",
+                        feedback: "Critical Risk spike. Tone-matching is great, but feeding proprietary executive memos into a public tool creates a massive Intellectual Property leak. To train an AI on brand voice, you can only use sanitized, publicly available marketing materials."
+                    },
+                    {
+                        label: "Option B",
+                        text: "Prompt the AI: 'Rewrite in a direct corporate voice, removing filler words.' Then, do a final 30-minute manual polish yourself.",
+                        impact: { risk: +0, timeCost: 40, credibility: +5 }, 
+                        feedbackType: "good",
+                        feedbackTitle: "Human-in-the-Loop Ownership",
+                        feedback: "A perfect balance. You used the AI to do the structural heavy lifting of the rewrite, but you maintained final ownership by doing the last polish yourself, ensuring the document sounds authentically yours."
+                    },
+                    {
+                        label: "Option C",
+                        text: "Close the AI completely. Brew a pot of coffee and spend the next three hours manually rewriting every paragraph to sound human.",
+                        impact: { risk: +0, timeCost: 180, credibility: +0 }, 
+                        feedbackType: "inefficient",
+                        feedbackTitle: "The Exhausted Editor",
+                        feedback: "Massive Time penalty. You spent three hours manually smoothing out the tone. You will be completely exhausted for tomorrow's presentation, but the document is flawless and your data is secure."
+                    }
+                ]
+            }
+        ];
+
+        function getFormattedTime(minutesAdded) {
+            let startHour = 16; let totalMinutes = (startHour * 60) + minutesAdded;
+            let currentHour = Math.floor(totalMinutes / 60) % 24; let currentMinute = totalMinutes % 60;
+            let ampm = currentHour >= 12 ? 'PM' : 'AM'; let displayHour = currentHour % 12; displayHour = displayHour ? displayHour : 12; 
+            let displayMinute = currentMinute < 10 ? '0' + currentMinute : currentMinute;
+            let day = Math.floor(totalMinutes / 60) >= 24 ? "Friday" : "Thursday";
+            return `${day} ${displayHour}:${displayMinute} ${ampm}`;
+        }
+
+        function initApp() { document.getElementById('hud-container').classList.add('active'); updateMeters(); renderScene(); }
+
+        function updateMeters(oldStats) {
+            stats.risk = Math.max(0, Math.min(100, stats.risk)); stats.credibility = Math.max(0, Math.min(100, stats.credibility));
+            let timeRemainingPercentage = 100 - ((stats.elapsedMinutes / TOTAL_MINUTES_ALLOWED) * 100);
+            timeRemainingPercentage = Math.max(0, timeRemainingPercentage);
+            const riskMeter = document.getElementById('meter-risk'); const timeMeter = document.getElementById('meter-time'); const credMeter = document.getElementById('meter-credibility'); 
+            const clockDisplay = document.getElementById('clock-display'); const numRisk = document.getElementById('num-risk'); const numCredibility = document.getElementById('num-credibility');
+            
+            if (oldStats) {
+                const groupRisk = riskMeter.closest('.stat-group'); const groupTime = timeMeter.closest('.stat-group'); const groupCred = credMeter.closest('.stat-group');
+                groupRisk.classList.remove('pulse-negative', 'pulse-positive'); groupTime.classList.remove('pulse-negative', 'pulse-positive'); groupCred.classList.remove('pulse-negative', 'pulse-positive');
+                void groupRisk.offsetWidth; 
+                if (stats.risk > oldStats.risk) groupRisk.classList.add('pulse-negative');
+                if (stats.elapsedMinutes > oldStats.elapsedMinutes) groupTime.classList.add('pulse-negative');
+                if (stats.credibility < oldStats.credibility) groupCred.classList.add('pulse-negative');
+                else if (stats.credibility > oldStats.credibility) groupCred.classList.add('pulse-positive');
+            }
+
+            riskMeter.style.width = stats.risk + '%'; timeMeter.style.width = timeRemainingPercentage + '%'; credMeter.style.width = stats.credibility + '%';
+            clockDisplay.innerText = getFormattedTime(stats.elapsedMinutes); numRisk.innerText = stats.risk + '%'; numCredibility.innerText = stats.credibility + '%';
+            const colorRisk = stats.risk > 49 ? 'var(--red-orange)' : (stats.risk > 0 ? 'var(--yellow)' : 'var(--green)');
+            const colorTime = timeRemainingPercentage < 25 ? 'var(--red-orange)' : 'var(--yellow)';
+            const colorCred = stats.credibility < 40 ? 'var(--red-orange)' : 'var(--cream)';
+            riskMeter.style.backgroundColor = colorRisk; numRisk.style.color = colorRisk;
+            timeMeter.style.backgroundColor = colorTime; clockDisplay.style.color = colorTime;
+            credMeter.style.backgroundColor = colorCred; numCredibility.style.color = colorCred;
+        }
+
+        function makeChoice(choiceIndex) {
+            const scene = scenarios[currentSceneIndex]; const choice = scene.choices[choiceIndex];
+            const oldStats = { risk: stats.risk, elapsedMinutes: stats.elapsedMinutes, credibility: stats.credibility };
+            stats.risk += choice.impact.risk; stats.elapsedMinutes += choice.impact.timeCost; stats.credibility += choice.impact.credibility;
+            updateMeters(oldStats);
+
+            const modalPanel = document.getElementById('modal-content-panel');
+            const modalIcon = document.getElementById('modal-icon');
+            
+            if (choice.feedbackType === "good") {
+                modalPanel.style.borderTopColor = "var(--green)";
+                modalIcon.innerHTML = '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="var(--green)"/>';
+            } else if (choice.feedbackType === "bad") {
+                modalPanel.style.borderTopColor = "var(--red-orange)";
+                modalIcon.innerHTML = '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="var(--red-orange)"/>';
+            } else {
+                modalPanel.style.borderTopColor = "var(--yellow)";
+                modalIcon.innerHTML = '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="var(--yellow)"/>';
+            }
+
+            document.getElementById('modal-title').innerText = choice.feedbackTitle; document.getElementById('modal-text').innerText = choice.feedback;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function renderScene() {
+            const container = document.getElementById('app-container'); if (currentSceneIndex >= scenarios.length) { renderEnding(); return; }
+            const scene = scenarios[currentSceneIndex]; let choicesHTML = '';
+            scene.choices.forEach((choice, index) => { choicesHTML += `<button class="choice-card" onclick="makeChoice(${index})"><strong>${choice.label}</strong>${choice.text}</button>`; });
+            container.innerHTML = `<div class="glass-panel"><h1>${scene.title}</h1><p class="scenario-context">${scene.context}</p><div class="choices-grid">${choicesHTML}</div></div>`;
+        }
+
+        function nextScene() { document.getElementById('modal-overlay').classList.remove('active'); currentSceneIndex++; setTimeout(() => { renderScene(); window.scrollTo({ top: 0, behavior: 'smooth' }); }, 300); }
+
+        function renderEnding() {
+            const container = document.getElementById('app-container');
+            let endingTitle, endingText, htmlLayout; 
+            document.getElementById('bg-layer').className = 'bg-office'; document.getElementById('bg-layer').style.opacity = '1';
+            
+            if (stats.elapsedMinutes >= 480) {
+                endingTitle = "The Burnout Reality";
+                endingText = `It is ${getFormattedTime(stats.elapsedMinutes)}. You finally finished the report, closed your laptop, and rested your eyes "just for a minute." You woke up at 9:45 AM Friday. You slept through your alarm and completely missed the executive presentation. By refusing to use AI efficiently and grinding through every task manually, you prioritized absolute safety over actual execution. The data is secure, but the boardroom is empty.`;
+                htmlLayout = `<div class="glass-panel"><h1 style="color: var(--red-orange);">${endingTitle}</h1><p class="scenario-context" style="text-align: center;">${endingText}</p><div class="btn-center"><button class="btn-primary" onclick="location.reload()">Return to Start</button></div></div>`;
+            } else if (stats.risk >= 50) {
+                endingTitle = "Critical Compliance Failure";
+                endingText = "The COO stops you on page 4. 'Did we run this through our standard internal audit model?' Because you relied heavily on Shadow IT and unapproved public AI tools, you have to admit you aren't sure of the methodology. Worse, IT flagged a major data leak originating from your IP address. The report's authority crumbles, and you face a severe compliance review.";
+                htmlLayout = `<div class="glass-panel"><h1 style="color: var(--red-orange);">${endingTitle}</h1><p class="scenario-context" style="text-align: center;">${endingText}</p><div class="btn-center"><button class="btn-primary" onclick="location.reload()">Return to Start</button></div></div>`;
+            } else if (stats.credibility < 40) {
+                endingTitle = "Loss of Executive Trust";
+                endingText = "You explain the methodology, but the COO interrupts: 'I'm going to be honest, this whole report reads like ChatGPT wrote it. Are these even our insights?' Because you left robotic hallucinations or poorly edited text in the document, you spend the rest of the meeting defending your competence rather than discussing the strategy.";
+                htmlLayout = `<div class="glass-panel"><h1>${endingTitle}</h1><p class="scenario-context" style="text-align: center;">${endingText}</p><div class="btn-center"><button class="btn-primary" onclick="location.reload()">Return to Start</button></div></div>`;
+            } else {
+                endingTitle = "Successful Execution";
+                endingText = "The COO asks about your methodology. Because you took the time to manually sanitize data, verify hallucinations, and rewrite the tone, you know the document inside and out. You confidently explain how you mapped the strategy to internal metrics. A complete success. You utilized AI to save hours of drafting while maintaining total human ownership.";
+                htmlLayout = `
+                    <div class="glass-panel success-panel">
+                        <svg class="success-seal" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.1 14.55l-3.45-3.45 1.06-1.06 2.39 2.39 5.89-5.89 1.06 1.06-6.95 6.95z"/>
+                        </svg>
+                        <h1>${endingTitle}</h1>
+                        <p class="scenario-context" style="text-align: center;">${endingText}</p>
+                        <div class="btn-center"><button class="btn-primary" onclick="location.reload()">Restart Module</button></div>
+                    </div>`;
+            }
+            container.innerHTML = htmlLayout;
+            document.getElementById('hud-container').classList.remove('active'); 
+        }
+    </script>
+</body>
+</html>

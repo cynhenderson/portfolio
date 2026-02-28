@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cynthia | Learning Experience Designer</title>
+    <style>
+ 
+        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+        :root {
+            --bg-cream: #FDFBF7;
+            --text-burgundy: #4A0E17;
+            --accent-terracotta: #C25934;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-cream);
+            color: var(--text-burgundy);
+            font-family: 'Lora', serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .logo {
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: sticky;
+            top: 0;
+            background-color: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-burgundy);
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-terracotta);
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 85vh;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            flex: 1.2;
+            max-width: 650px;
+            z-index: 10;
+        }
+
+        .hero-content h1 {
+            font-size: 3.8rem;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            color: var(--text-burgundy);
+            opacity: 0.9;
+            max-width: 90%;
+        }
+
+        .highlight {
+            color: var(--accent-terracotta);
+        }
+
+        .hero-graphic {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+        }
+
+        .hero-graphic svg {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+        }
+
+        /* bouncing animations */
+        .g-floating {
+            will-change: transform;
+        }
+
+        .float-1 { animation: gentleBounce 6s ease-in-out infinite; }
+        .float-2 { animation: gentleBounce 8s ease-in-out infinite 1s; } 
+        .float-3 { animation: gentleBounce 7s ease-in-out infinite 2s; } 
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        #works {
+            height: 100vh;
+            padding: 5rem 5%;
+            border-top: 1px solid rgba(74, 14, 23, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+        
+        #works h2 {
+            font-size: 2.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding-top: 2rem;
+            }
+            .hero-content p { margin: 0 auto; }
+            .hero-graphic { width: 100%; margin-top: 1rem; height: 350px; }
+        }
+
+        #works {
+            min-height: 100vh;
+            padding: 5rem 5%;
+            border-top: 1px solid rgba(74, 14, 23, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        #works h2 {
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .work-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(74, 14, 23, 0.08);
+        }
+
+        .work-image-container {
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            background-color: rgba(194, 89, 52, 0.1); /* Placeholder background */
+            position: relative;
+        }
+
+        .work-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .work-card:hover .work-image-container img {
+            transform: scale(1.05);
+        }
+
+        .work-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .work-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            font-family: 'Domine', serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-terracotta);
+            background: rgba(194, 89, 52, 0.08);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .work-title {
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .work-desc {
+            font-size: 1.05rem;
+            opacity: 0.85;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .work-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            align-self: flex-start;
+        }
+
+        .work-link:hover {
+            color: var(--accent-terracotta);
+        }
+
+        .work-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .work-link:hover svg {
+            transform: translateX(4px);
+        }
+      /* Mockup Container Styles */
+        .work-image-container {
+            width: 100%;
+            height: 250px; 
+            background-color: rgba(194, 89, 52, 0.04); /* Very soft terracotta tint */
+            padding: 2rem 2rem 0 2rem; /* Adds padding around the mockup */
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-end; /* Anchors the mockup to the bottom */
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.05);
+        }
+
+        /* The Browser Frame */
+        .browser-mockup {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 8px 8px 0 0; /* Rounded top corners */
+            border: 1px solid rgba(74, 14, 23, 0.12);
+            border-bottom: none;
+            box-shadow: 0 12px 24px rgba(74, 14, 23, 0.08);
+            transition: transform 0.4s ease;
+        }
+
+        /* Hover animation lifts the browser out of the card */
+        .work-card:hover .browser-mockup {
+            transform: translateY(-8px);
+        }
+
+        /* Mockup Top Bar */
+        .mockup-header {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background-color: var(--bg-cream);
+            border-bottom: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .mockup-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        /* Themed buttons */
+        .dot-1 { background-color: var(--text-burgundy); opacity: 0.15; }
+        .dot-2 { background-color: var(--text-burgundy); opacity: 0.3; }
+        .dot-3 { background-color: var(--accent-terracotta); opacity: 0.8; }
+
+        .mockup-content {
+            width: 100%;
+            height: 180px; 
+            overflow: hidden;
+        }
+
+        .mockup-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top; /* Ensures the top of your UI (the HUD) stays visible */
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo-container">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+                <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+            </svg>
+            <span class="logo">Cynthia</span>
+        </a>
+        <div class="nav-links">
+            <a href="#works">Works</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Hello, I'm <span class="highlight">Cynthia</span>.</h1>
+            <p>A learning experience designer blending behavioral science with immersive digital experiences.</p>
+        </div>
+        
+        <div class="hero-graphic">
+            <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                
+                <g id="talavera-core" transform="translate(190, 100) scale(1.2)">
+                    <path d="
+                        M90 10 L65 44 L50 50 L56 35 Z 
+                        M90 90 L56 65 L50 50 L65 56 Z 
+                        M10 90 L35 56 L50 50 L44 65 Z 
+                        M10 10 L44 35 L50 50 L35 44 Z" 
+                        fill="var(--accent-terracotta)"/>
+                    
+                    <path d="
+                        M50 0 L56 35 L50 50 L44 35 Z 
+                        M100 50 L65 56 L50 50 L65 44 Z 
+                        M50 100 L44 65 L50 50 L56 65 Z 
+                        M0 50 L35 44 L50 50 L35 56 Z" 
+                        fill="var(--text-burgundy)"/>
+
+                    <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                    <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+                </g>
+              
+                <g id="g-depth-close">
+                    <g class="g-floating float-1">
+                        <path d="M250 40 L 262 65 L 250 85 L 238 65 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                        <line x1="250" y1="65" x2="250" y2="85" stroke="var(--text-burgundy)" stroke-width="2"/>
+                        <circle cx="250" cy="55" r="2.5" fill="var(--accent-terracotta)"/>
+
+                        <path d="M330 220 C 330 220, 315 240, 315 255 C 315 265, 322 270, 330 270 C 338 270, 345 265, 345 255 C 345 240, 330 220, 330 220 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M330 240 C 330 240, 322 250, 322 258 C 322 262, 325 265, 330 265 C 335 265, 338 262, 338 258 C 338 250, 330 240, 330 240 Z" fill="var(--accent-terracotta)"/>
+
+                        <path d="M160 220 L 160 250 L 170 240 L 180 255 L 185 250 L 175 235 L 190 230 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    </g>
+                </g>
+
+                <g id="g-depth-mid">
+                    <g class="g-floating float-2">
+                        
+                        <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M360 160 L 360 135 C 355 131, 350 132, 345 135 L 345 160 C 350 157, 355 155, 360 160 Z" />
+                            <path d="M360 160 L 360 135 C 365 131, 370 132, 375 135 L 375 160 C 370 157, 365 155, 360 160 Z" />
+                        </g>
+                        
+                        <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                            <rect x="243" y="243" width="14" height="14" transform="rotate(45 250 250)" stroke="var(--text-burgundy)" stroke-width="2"/>
+                            <line x1="250" y1="260" x2="250" y2="285" />
+                            <path d="M250 275 H 260 V 280" />
+                            <path d="M250 280 H 260 V 285" />
+                        </g>
+
+                        <path d="M125 165 L 145 165 L 140 180 L 130 180 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M135 165 Q 125 135 120 140 Q 130 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                        <path d="M135 165 Q 135 130 135 135 Q 140 150 135 165 Z" fill="var(--text-burgundy)"/>
+                        <path d="M135 165 Q 145 135 150 140 Q 140 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                    </g>
+                </g>
+
+                <g id="g-depth-far">
+                    <g class="g-floating float-3">
+                        <g stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                            <path d="M310 110 L 330 70 L 350 110 Z" />
+                            <circle cx="350" cy="75" r="5" stroke="var(--accent-terracotta)" stroke-width="2"/>
+                        </g>
+                        
+
+                        <rect x="155" y="85" width="12" height="12" transform="rotate(45 161 91)" stroke="var(--accent-terracotta)" stroke-width="2"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+  <section id="works">
+        <h2>Selected Works</h2>
+        
+        <div class="works-grid">
+<article class="work-card">
+                <div class="work-image-container">
+                    
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <img src="HUDscreenshot.png" alt="Gamified AI Governance interface">
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Gamification</span>
+                        <span class="tag">Scenario-Based Learning</span>
+                        <span class="tag">Micro-Interaction</span>
+                    </div>
+                    <h3 class="work-title">Gamified HUD: AI Governance</h3>
+                    <p class="work-desc">A proof-of-concept demonstrating how complex gamification—like a live branching HUD—can be deployed as a standalone micro-interaction. This project proves that high-impact, scenario-based learning doesn't require the footprint of a traditional, long-form course.</p>
+                    <a href="ai-scenario.html" class="work-link" target="_blank">
+                        View Prototype 
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="work-card">
+                <div class="work-image-container">
+                    <img src="api/placeholder/400/320" alt="Project 2 Thumbnail">
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Instructional Design</span>
+                        <span class="tag">E-Learning</span>
+                    </div>
+                    <h3 class="work-title">Leadership Onboarding Journey</h3>
+                    <p class="work-desc">A blended learning curriculum designed to accelerate time-to-competency for newly promoted mid-level managers.</p>
+                    <a href="#" class="work-link">
+                        Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const scroll = window.scrollY;
+            
+            const depthClose = document.getElementById('g-depth-close');
+            const depthMid = document.getElementById('g-depth-mid');
+            const depthFar = document.getElementById('g-depth-far');
+
+            if(depthClose) depthClose.style.transform = `translateY(${scroll * -0.15}px)`; 
+            if(depthMid) depthMid.style.transform = `translateY(${scroll * -0.08}px)`; 
+            if(depthFar) depthFar.style.transform = `translateY(${scroll * -0.03}px)`; 
+        });
+    </script>
+</body>
+</html>
