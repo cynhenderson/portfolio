@@ -113,7 +113,7 @@
 
         .works-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(2, 1fr); 
             gap: 2.5rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -381,89 +381,160 @@
     <section id="works">
         <h2>Selected Works</h2>
         
-        <div class="works-grid">
-            <article class="work-card">
-                <div class="work-image-container">
-                    <div class="browser-mockup">
-                        <div class="mockup-header">
-                            <div class="mockup-dot dot-1"></div>
-                            <div class="mockup-dot dot-2"></div>
-                            <div class="mockup-dot dot-3"></div>
-                        </div>
-                        <div class="mockup-content">
-                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="400" height="320" fill="#FDFBF7"/>
-                                <path d="M 80 240 A 120 120 0 0 1 320 240" fill="none" stroke="#4A0E17" stroke-width="14" stroke-linecap="round" opacity="0.15"/>
-                                <path d="M 80 240 A 120 120 0 0 1 250 135" fill="none" stroke="#C25934" stroke-width="14" stroke-linecap="round"/>
-                                <circle cx="200" cy="210" r="35" fill="none" stroke="#4A0E17" stroke-width="4"/>
-                                <circle cx="200" cy="210" r="12" fill="#C25934"/>
-                                <line x1="200" y1="210" x2="235" y2="155" stroke="#4A0E17" stroke-width="5" stroke-linecap="round"/>
-                                <rect x="60" y="80" width="60" height="8" rx="4" fill="#4A0E17" opacity="0.3"/>
-                                <rect x="60" y="100" width="40" height="8" rx="4" fill="#C25934"/>
-                                <rect x="280" y="80" width="50" height="8" rx="4" fill="#4A0E17" opacity="0.3"/>
-                                <rect x="280" y="100" width="70" height="8" rx="4" fill="#C25934"/>
-                            </svg>
-                        </div>
-                    </div>
+<div class="works-grid">
+    <article class="work-card">
+        <div class="work-image-container">
+            <div class="browser-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-dot dot-1"></div>
+                    <div class="mockup-dot dot-2"></div>
+                    <div class="mockup-dot dot-3"></div>
                 </div>
-                <div class="work-content">
-                    <div class="work-tags">
-                        <span class="tag">Gamification</span>
-                        <span class="tag">Scenario-Based Learning</span>
-                        <span class="tag">Micro-Interaction</span>
-                    </div>
-                    <h3 class="work-title">Gamified HUD: AI Governance</h3>
-                    <p class="work-desc">A proof-of-concept demonstrating how complex gamification—like a live branching HUD—can be deployed as a standalone micro-interaction. This project proves that high-impact, scenario-based learning doesn't require the footprint of a traditional, long-form course.</p>
-                    <a href="ai-scenario.html" class="work-link" target="_blank">
-                        View Prototype 
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </article>
+                <div class="mockup-content">
+                    <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Standardized background rect -->
+                        <rect width="400" height="320" fill="#FDFBF7"/>
 
-            <article class="work-card">
-                <div class="work-image-container" style="background-color: rgba(74, 14, 23, 0.03);">
-                    <div class="browser-mockup">
-                        <div class="mockup-header">
-                            <div class="mockup-dot dot-1"></div>
-                            <div class="mockup-dot dot-2"></div>
-                            <div class="mockup-dot dot-3"></div>
-                        </div>
-                        <div class="mockup-content">
-                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="400" height="320" fill="#FDFBF7"/>
-                                <circle cx="200" cy="160" r="100" fill="none" stroke="#C25934" stroke-width="2" opacity="0.2"/>
-                                <circle cx="200" cy="160" r="140" fill="none" stroke="#4A0E17" stroke-width="1" opacity="0.1"/>
-                                <path d="M 100 220 L 200 120 L 300 180" fill="none" stroke="#4A0E17" stroke-width="4" stroke-dasharray="8 8" opacity="0.5"/>
-                                <g transform="translate(100, 220)"><path d="M 0 -25 L 25 0 L 0 25 L -25 0 Z" fill="#4A0E17" opacity="0.9"/></g>
-                                <g transform="translate(200, 120)"><path d="M 0 -35 L 35 0 L 0 35 L -35 0 Z" fill="#C25934"/><circle cx="0" cy="0" r="10" fill="#FDFBF7"/></g>
-                                <g transform="translate(300, 180)"><path d="M 0 -25 L 25 0 L 0 25 L -25 0 Z" fill="#4A0E17" opacity="0.9"/></g>
-                            </svg>
-                        </div>
-                    </div>
+                        <!-- Lines scaled up and drawn first -->
+                        <line x1="200" y1="260" x2="200" y2="160" stroke="#4A0E17" stroke-width="8" stroke-dasharray="12 8"/>
+                        <line x1="200" y1="160" x2="120" y2="60" stroke="#4A0E17" stroke-width="8" stroke-dasharray="12 8"/>
+                        <line x1="200" y1="160" x2="280" y2="60" stroke="#4A0E17" stroke-width="8" stroke-dasharray="12 8"/>
+              
+                        <!-- Circles scaled up and drawn last -->
+                        <circle cx="200" cy="260" r="20" fill="#C25934" />
+                        <circle cx="200" cy="160" r="16" fill="#C25934" />
+                        <circle cx="120" cy="60" r="12" fill="#4A0E17"/>
+                        <circle cx="280" cy="60" r="12" fill="#4A0E17"/>
+                    </svg>
                 </div>
-                <div class="work-content">
-                    <div class="work-tags">
-                        <span class="tag">Curriculum Strategy</span>
-                        <span class="tag">Blended Learning</span>
-                        <span class="tag">Competency Modeling</span>
-                    </div>
-                    <h3 class="work-title">Leadership Elevated: Curriculum Overhaul</h3>
-                    <p class="work-desc">A comprehensive, multi-tiered leadership development program designed for over 250 managers. This initiative transformed a fragmented organizational approach into a cohesive, blended learning journey.</p>
-                    <a href="leadership-case-study.html" class="work-link">
-                        Read Case Study
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </article>
-            
+            </div>
         </div>
+      <div class="work-content">
+            <div class="work-tags">
+                <span class="tag">Gamification</span>
+                <span class="tag">Custom JavaScript</span>
+                <span class="tag">Narrative Design</span>
+            </div>
+            <h3 class="work-title">The Null Cipher: A Rogue-lite Learning Prototype</h3>
+            <p class="work-desc">An immersive challenge that treats failure as a data-recovery mechanic. Built with custom CSS animations and JavaScript logic to demonstrate high-tension, interactive storytelling in a terminal-style interface.</p>
+            <a href="rogue-lite.html" class="work-link" target="_blank">
+                Play Prototype 
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </article>
+
+    <article class="work-card">
+        <div class="work-image-container" style="background-color: rgba(74, 14, 23, 0.03);">
+            <div class="browser-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-dot dot-1"></div>
+                    <div class="mockup-dot dot-2"></div>
+                    <div class="mockup-dot dot-3"></div>
+                </div>
+                <div class="mockup-content">
+                    <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="320" fill="#FDFBF7"/>
+                        
+                     
+                        <line x1="50" y1="240" x2="350" y2="240" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                        <line x1="50" y1="160" x2="350" y2="160" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                        <line x1="50" y1="80" x2="350" y2="80" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                        
+            
+                        <path d="M 60 240 C 160 240, 200 100, 340 80" fill="none" stroke="#C25934" stroke-width="6" stroke-linecap="round"/>
+                        
+                 
+                        <circle cx="60" cy="240" r="6" fill="#FDFBF7" stroke="#C25934" stroke-width="3"/>
+                        <circle cx="210" cy="145" r="8" fill="#FDFBF7" stroke="#4A0E17" stroke-width="4"/>
+                        <circle cx="340" cy="80" r="12" fill="#C25934"/>
+                
+                        <path d="M 335 80 L 339 85 L 346 74" fill="none" stroke="#FDFBF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="work-content">
+            <div class="work-tags">
+                <span class="tag">SaaS Enablement</span>
+                <span class="tag">Product Adoption</span>
+                <span class="tag">Go-to-Market Strategy</span>
+            </div>
+            <h3 class="work-title">Accelerating Adoption: Practice-Specific Onboarding</h3>
+            <p class="work-desc">Evolving generic tutorials into a narrative-driven onboarding ecosystem for Thomson Reuters. This cross-functional project utilized in-app messaging and bite-sized modules to drive measurable product utilization.</p>
+            <a href="customer-success.html" class="work-link">
+                Read Case Study
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </article>
+
+    <article class="work-card">
+        <div class="work-image-container">
+            <div class="browser-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-dot dot-1"></div>
+                    <div class="mockup-dot dot-2"></div>
+                    <div class="mockup-dot dot-3"></div>
+                </div>
+                <div class="mockup-content">
+                    <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="320" fill="#FDFBF7"/>
+                        <path d="M 80 240 A 120 120 0 0 1 320 240" fill="none" stroke="#4A0E17" stroke-width="14" stroke-linecap="round" opacity="0.15"/>
+                        <path d="M 80 240 A 120 120 0 0 1 250 135" fill="none" stroke="#C25934" stroke-width="14" stroke-linecap="round"/>
+                        <circle cx="200" cy="210" r="35" fill="none" stroke="#4A0E17" stroke-width="4"/>
+                        <circle cx="200" cy="210" r="12" fill="#C25934"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="work-content">
+            <div class="work-tags">
+                <span class="tag">AI Ethics & Compliance</span>
+                <span class="tag">Scenrio-Based Learning</span>
+                <span class="tag">Rapid Prototyping</span>
+            </div>
+            <h3 class="work-title">Gamified HUD: AI Compliance Simulation</h3>
+            <p class="work-desc">A micro-learning proof-of-concept demonstrating how a live-branching HUD can transform traditional compliance training into a high-stakes, decision-based simulation.</p>
+            <a href="ai-scenario.html" class="work-link" target="_blank">
+                View Prototype 
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </article>
+
+    <article class="work-card">
+        <div class="work-image-container" style="background-color: rgba(194, 89, 52, 0.04);">
+            <div class="browser-mockup">
+                <div class="mockup-header">
+                    <div class="mockup-dot dot-1"></div>
+                    <div class="mockup-dot dot-2"></div>
+                    <div class="mockup-dot dot-3"></div>
+                </div>
+                <div class="mockup-content">
+                    <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="320" fill="#FDFBF7"/>
+                        <path d="M 100 220 L 200 120 L 300 180" fill="none" stroke="#4A0E17" stroke-width="4" stroke-dasharray="8 8" opacity="0.5"/>
+                        <g transform="translate(200, 120)"><path d="M 0 -35 L 35 0 L 0 35 L -35 0 Z" fill="#C25934"/><circle cx="0" cy="0" r="10" fill="#FDFBF7"/></g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="work-content">
+            <div class="work-tags">
+                <span class="tag">Leadership Development</span>
+                <span class="tag">End-to End Strategy</span>
+                <span class="tag">Change Management</span>
+            </div>
+            <h3 class="work-title">Leadership Elevated: Curriculum Overhaul</h3>
+            <p class="work-desc">A tiered leadership development program for Dallas College. This overhaul replaced fragmented training with a cohesive competency model and a gamified onboarding experience for over 250 managers.</p>
+            <a href="leadership-case-study.html" class="work-link">
+                Read Case Study
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </article>
+</div>
     </section>
 
     <section id="about">

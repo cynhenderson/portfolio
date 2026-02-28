@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Null Cipher - LXD Prototype</title>
+<style>
+    :root {
+        --bg-color: #0d0d12;
+        --panel-bg: #16161e;
+        --neon-blue: #00f0ff;
+        --neon-amber: #ffaa00;
+        --neon-pink: #ff007f;
+        
+        --neon-red-glow: #ff003c; 
+        --fail-text: #ff003c;     
+        
+        --text-main: #c0caf5;
+        --text-muted: #565f89;
+        --font-mono: 'Courier New', Courier, monospace;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        font-family: var(--font-mono);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* --- THE INTRO SCREEN --- */
+    #intro-screen {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: var(--bg-color);
+        z-index: 500; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        align-items: center;
+        overflow: hidden;
+        transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    #intro-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    /* LAYER 1: THE SUN (Lowered to match new horizon) */
+    .synth-sun {
+        position: absolute;
+        bottom: 5%; /* Lowered so it stays chopped off by the 25% horizon */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 380px;
+        height: 380px;
+        background: linear-gradient(to bottom, var(--neon-pink), var(--neon-amber));
+        border-radius: 50%;
+        box-shadow: 0 0 80px rgba(255, 0, 127, 0.7); 
+        -webkit-mask-image: repeating-linear-gradient(to bottom, black 0%, black 5%, transparent 5%, transparent 7%);
+        mask-image: repeating-linear-gradient(to bottom, black 0%, black 5%, transparent 5%, transparent 7%);
+        z-index: 1; 
+    }
+
+    /* LAYER 2: THE LOWER HORIZON BLOCKER */
+    .synth-horizon {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 25%; /* Lowered from 45% to 25% */
+        background-color: var(--bg-color);
+        
+        border-top: 2px solid rgba(0, 240, 255, 0.2); 
+        box-shadow: 
+            0 -30px 80px 10px rgba(255, 0, 127, 0.3),  
+            0 -10px 40px 5px rgba(255, 170, 0, 0.15);  
+        z-index: 2; 
+    }
+
+    /* LAYER 3: V14 GRID (Shifted down to align with 25% horizon) */
+    .synth-grid {
+        position: absolute;
+        bottom: -25%; /* Shifted down to maintain perspective ratio */
+        left: -50%;
+        width: 200%;
+        height: 85%; /* Adjusted so it only covers the 25% floor */
+        background:
+            linear-gradient(rgba(0, 240, 255, 0.6) 4px, transparent 4px),
+            linear-gradient(90deg, rgba(0, 240, 255, 0.6) 4px, transparent 4px);
+        background-size: 80px 80px; 
+        transform: perspective(500px) rotateX(75deg); 
+        animation: gridMove 2s linear infinite; 
+        z-index: 3; 
+        
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 75%);
+        mask-image: linear-gradient(to bottom, transparent 0%, black 75%);
+    }
+
+    @keyframes gridMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 80px; } 
+    }
+
+    /* LAYER 4: DIALOG BOX */
+    .intro-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        width: 80%;
+        max-width: 650px;
+        background: rgba(13, 13, 18, 0.7); 
+        backdrop-filter: blur(3px); 
+        padding: 40px;
+        border: 1px solid var(--neon-blue);
+        border-radius: 8px;
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+    }
+
+    .intro-title {
+        font-size: 2.5rem;
+        color: var(--neon-pink);
+        text-shadow: 0 0 10px var(--neon-pink);
+        margin: 0 0 10px 0;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+    }
+
+    .intro-subtitle {
+        color: var(--neon-amber);
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+        animation: pulseAmber 2s infinite;
+    }
+
+    .intro-brief {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        text-align: left;
+        margin-bottom: 30px;
+        border-left: 3px solid var(--neon-blue);
+        padding-left: 15px;
+    }
+
+    .start-btn {
+        background: transparent;
+        color: var(--neon-blue);
+        border: 2px solid var(--neon-blue);
+        padding: 15px 30px;
+        font-family: var(--font-mono);
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+        background: rgba(0, 240, 255, 0.2);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+
+
+    /* --- MAIN GAME STYLES --- */
+    #game-container {
+        display: grid; grid-template-rows: auto 1fr; grid-template-columns: 1fr 1fr; gap: 20px; width: 900px; height: 600px; background: var(--panel-bg); border: 1px solid var(--text-muted); box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); padding: 20px; border-radius: 8px; position: relative;
+    }
+    #game-container::before {
+        content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%); background-size: 100% 3px; z-index: 100; pointer-events: none; border-radius: 8px;
+    }
+    #game-container::after {
+        content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.6) 100%); box-shadow: inset 0 0 30px rgba(0,0,0,0.8); z-index: 101; pointer-events: none; border-radius: 8px;
+    }
+    #game-header {
+        grid-column: 1 / -1; border-bottom: 1px dashed var(--text-muted); padding-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .header-title {
+        font-size: 1.8rem; font-weight: bold; color: var(--neon-blue); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); margin: 0;
+    }
+    .header-subtitle {
+        font-size: 0.85rem; color: var(--neon-amber); margin: 0; animation: pulseAmber 2s infinite;
+    }
+    #map-panel {
+        border-right: 1px dashed var(--text-muted); display: flex; justify-content: center; align-items: center; position: relative;
+    }
+    #map-panel svg {
+        width: 100%; height: 100%;
+    }
+    .path {
+        fill: none; stroke: var(--text-muted); stroke-width: 4; stroke-dasharray: 10 5; opacity: 0.3; transition: all 0.5s ease;
+    }
+    .path.active {
+        stroke: var(--neon-blue); opacity: 1; stroke-dasharray: 0; filter: drop-shadow(0 0 5px var(--neon-blue));
+    }
+    .node {
+        fill: var(--bg-color); stroke: var(--text-muted); stroke-width: 4; transition: all 0.3s ease;
+    }
+    .node.home { stroke: var(--neon-blue); fill: rgba(0, 240, 255, 0.2); animation: pulseBlue 2s infinite; }
+    .node.current { stroke: var(--neon-amber); fill: rgba(255, 170, 0, 0.2); animation: pulseAmber 1.5s infinite; }
+    .node.cleared { stroke: var(--neon-blue); fill: var(--neon-blue); }
+    .node.failed { stroke: var(--neon-red-glow); fill: var(--neon-red-glow); filter: drop-shadow(0 0 10px var(--neon-red-glow)); }
+    #ui-panel {
+        display: flex; flex-direction: column; height: 100%; overflow: hidden; 
+    }
+    #top-ui {
+        flex-shrink: 0; 
+    }
+    #scenario-graphic {
+        margin-bottom: 15px; display: flex; justify-content: center; align-items: center;
+    }
+    .scenario-icon {
+        width: 50px; height: 50px; filter: drop-shadow(0 0 5px var(--neon-blue));
+    }
+    .scenario-icon.alert {
+        filter: drop-shadow(0 0 5px var(--neon-amber));
+    }
+    #narrative-box {
+        font-size: 1.05rem; line-height: 1.4; margin-bottom: 20px; min-height: 120px; transition: color 0.3s ease; position: relative;
+    }
+    #narrative-box.is-typing::after {
+        content: '█'; color: var(--neon-blue); animation: blinkCursor 0.8s step-end infinite; margin-left: 5px;
+    }
+    @keyframes blinkCursor {
+        0%, 100% { opacity: 1; } 50% { opacity: 0; }
+    }
+    #choices-container {
+        opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+    }
+    #choices-container.visible {
+        opacity: 1; pointer-events: auto;
+    }
+    .choice-btn {
+        background: transparent; color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 10px; margin-bottom: 10px; width: 100%; text-align: left; font-family: var(--font-mono); font-size: 0.95rem; cursor: pointer; transition: all 0.2s; display: block; 
+    }
+    .choice-btn:hover {
+        background: rgba(0, 240, 255, 0.1); box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .reboot-btn {
+        color: var(--fail-text); border-color: var(--fail-text); margin-top: 15px; font-weight: bold; text-align: center; animation: pulseFail 1.5s infinite;
+    }
+    .reboot-btn:hover {
+        background: rgba(255, 0, 60, 0.1); box-shadow: 0 0 10px rgba(255, 0, 60, 0.3);
+    }
+    #inventory {
+        margin-top: 10px; border-top: 1px solid var(--text-muted); padding-top: 10px; font-size: 0.9rem; color: var(--neon-amber); flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .echo-entry {
+        margin-bottom: 15px; line-height: 1.3;
+    }
+    #inventory::-webkit-scrollbar { width: 6px; }
+    #inventory::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    #inventory::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+    @keyframes pulseBlue {
+        0% { filter: drop-shadow(0 0 0px var(--neon-blue)); } 70% { filter: drop-shadow(0 0 8px var(--neon-blue)); } 100% { filter: drop-shadow(0 0 0px var(--neon-blue)); }
+    }
+    @keyframes pulseAmber {
+        0% { filter: drop-shadow(0 0 2px var(--neon-amber)); } 50% { filter: drop-shadow(0 0 8px var(--neon-amber)); } 100% { filter: drop-shadow(0 0 2px var(--neon-amber)); }
+    }
+    @keyframes pulseFail {
+        0% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 0, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0); }
+    }
+    .glitch-active {
+        animation: glitchAnim 0.4s ease-out; animation-iteration-count: 1; 
+    }
+    .text-failure {
+        color: var(--fail-text) !important; text-shadow: 0 0 5px rgba(255, 0, 60, 0.5);
+    }
+    @keyframes glitchAnim {
+        0% { transform: translate(0) } 10% { transform: translate(-4px, 2px) } 20% { transform: translate(-4px, -2px) } 30% { transform: translate(4px, 2px) } 40% { transform: translate(4px, -2px) } 50% { transform: translate(-2px, 2px) } 60% { transform: translate(-2px, -2px) } 70% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) }
+    }
+</style>
+</head>
+<body>
+
+<div id="intro-screen">
+    
+    <div class="synth-sun"></div>
+    <div class="synth-horizon"></div>
+    <div class="synth-grid"></div>
+    
+    <div class="intro-content">
+        <h1 class="intro-title">The Null Cipher</h1>
+        <div class="intro-subtitle">SYS_STATUS: CRITICAL</div>
+        
+        <div class="intro-brief">
+            SYNDICATE WORM DETECTED IN CENTRAL MAINFRAME.<br><br>
+            <strong>YOUR CONTRACT:</strong> Infiltrate the breached sectors. Isolate the malware.<br><br>
+            <strong>WARNING:</strong> The system's dead-man switch will violently eject unauthorized signatures. You will be disconnected. Recover the encrypted data echoes on your way out to learn the system's rules.
+        </div>
+        
+        <button class="start-btn" onclick="startGame()">[ Establish Neural Link ]</button>
+    </div>
+</div>
+
+<div id="game-container">
+    <div id="game-header">
+        <h1 class="header-title">The Null Cipher</h1>
+        <p class="header-subtitle">SYS_STATUS: COMPROMISED</p>
+    </div>
+
+    <div id="map-panel">
+        <svg viewBox="0 0 100 100">
+            <path id="path-1" class="path" d="M 50 80 L 50 50" />
+            <path id="path-2a" class="path" d="M 50 50 L 25 20" />
+            <path id="path-2b" class="path" d="M 50 50 L 75 20" />
+            
+            <circle id="node-home" class="node home" cx="50" cy="80" r="6" />
+            <circle id="node-1" class="node" cx="50" cy="50" r="5" />
+            <circle id="node-2a" class="node" cx="25" cy="20" r="4" />
+            <circle id="node-2b" class="node" cx="75" cy="20" r="4" />
+        </svg>
+    </div>
+
+    <div id="ui-panel">
+        <div id="top-ui">
+            <div id="scenario-graphic"></div>
+            <div id="narrative-box"></div>
+            <div id="choices-container"></div>
+        </div>
+        
+        <div id="inventory">
+            <strong>[ DECRYPTED ECHOES ]</strong><br>
+            <div id="insight-container">
+                <span id="insight-empty" style="color: var(--text-muted);">No data recovered yet.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- WEB AUDIO API SOUND ENGINE ---
+    let audioCtx;
+    
+        const sfx = {
+        init: () => {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        },
+        playTone: (freq, type, duration, vol, freqDrop = false) => {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            if (freqDrop) {
+                osc.frequency.exponentialRampToValueAtTime(freq / 2, audioCtx.currentTime + duration);
+            }
+            
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        },
+        hover: () => sfx.playTone(250, 'sine', 0.1, 0.03),
+        click: () => sfx.playTone(600, 'square', 0.1, 0.05),
+        
+        // LOWERED PITCH: Now sounds like a low, mechanical clack instead of a high alien beep
+        type: () => sfx.playTone(150 + Math.random() * 50, 'square', 0.015, 0.02), 
+        
+        // LOWERED PITCH: The deciphering flutter is now a grittier, heavier rolling sound
+        decipher: () => sfx.playTone(300 + Math.random() * 200, 'square', 0.02, 0.015), 
+        
+        success: () => {
+            sfx.playTone(440, 'sine', 0.2, 0.1);
+            setTimeout(() => sfx.playTone(660, 'sine', 0.4, 0.1), 150);
+        },
+        failure: () => {
+            sfx.playTone(150, 'sawtooth', 0.8, 0.15, true); 
+            setTimeout(() => sfx.playTone(100, 'sawtooth', 0.8, 0.15, true), 200);
+        }
+    };
+
+    // --- GAME DATA ---
+    const gameData = {
+        home: {
+            graphic: `<svg class="scenario-icon" viewBox="0 0 100 100">
+                        <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="var(--neon-blue)" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="20" fill="none" stroke="var(--neon-blue)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="8" fill="var(--neon-amber)"/>
+                        <line x1="50" y1="15" x2="50" y2="30" stroke="var(--neon-blue)" stroke-width="3"/>
+                        <line x1="50" y1="70" x2="50" y2="85" stroke="var(--neon-blue)" stroke-width="3"/>
+                        <line x1="15" y1="50" x2="30" y2="50" stroke="var(--neon-blue)" stroke-width="3"/>
+                        <line x1="70" y1="50" x2="85" y2="50" stroke="var(--neon-blue)" stroke-width="3"/>
+                      </svg>`,
+            text: "Terminal active. The Syndicate worm is eating the city's grid. You are in the safe zone.",
+            choices: [{ text: "[ INITIATE BREACH ]", action: () => loadNode('node1') }]
+        },
+        node1: {
+            nodeId: 'node-1',
+            graphic: `<svg class="scenario-icon alert" viewBox="0 0 100 100">
+                        <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="var(--neon-amber)" stroke-width="5"/>
+                        <line x1="50" y1="30" x2="50" y2="60" stroke="var(--neon-amber)" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="50" cy="75" r="4" fill="var(--neon-amber)"/>
+                      </svg>`,
+            text: "OUTER FIREWALL BREACHED. Intercepted a disguised payload heading for the transit grid: URGENT_Payroll_Update.zip. The worm is listening.",
+            choices: [
+                { text: "A) Block the sender's IP address immediately.", correct: false },
+                { text: "B) Quarantine the .zip in a sandbox and analyze headers.", correct: true },
+                { text: "C) Reply with a spoofed admin account to gather intel.", correct: false }
+            ],
+            insight: "ECHO RECOVERED: Syndicate worms spoof internal IPs. Blocking them causes cascading system failures. Always quarantine first."
+        },
+        branch_choice: {
+            graphic: `<svg class="scenario-icon" viewBox="0 0 100 100">
+                        <line x1="50" y1="10" x2="50" y2="40" stroke="var(--neon-blue)" stroke-width="5"/>
+                        <path d="M 50 40 L 20 70 M 50 40 L 80 70" fill="none" stroke="var(--neon-blue)" stroke-width="5" stroke-linecap="square"/>
+                        <circle cx="20" cy="70" r="8" fill="var(--neon-blue)"/>
+                        <circle cx="80" cy="70" r="8" fill="var(--neon-blue)"/>
+                      </svg>`,
+            text: "Gateway secured. System fracturing.<br><br><span style='color: var(--neon-blue)'>Sector 2A:</span> Central Backups under direct assault.<br><br><span style='color: var(--neon-blue)'>Sector 2B:</span> Mayor's comms locked. Hospital grid held for ransom.<br><br>Processing limits exceeded. You can only save one vector. The other burns.",
+            choices: [
+                { text: "[ SECTOR 2A: Save Backups ]", action: () => loadNode('node2a') },
+                { text: "[ SECTOR 2B: Secure Comms ]", action: () => loadNode('node2b') }
+            ]
+        },
+        node2a: {
+            nodeId: 'node-2a',
+            text: "SECTOR 2A ACTIVE. You let the comms burn. Traffic spike detected. The worm is moving laterally toward the central City Backups. You have seconds.",
+            choices: [
+                { text: "A) Sever the infected subnet, accepting the transit grid will go dark.", correct: true },
+                { text: "B) Deploy an experimental decryption script to kill it in transit.", correct: false },
+                { text: "C) Shadow the data packet to locate the command server.", correct: false }
+            ],
+            insight: "ECHO RECOVERED: Containment supersedes all. Never trust unverified tools during an active breach. Isolate first, investigate later."
+        },
+        node2b: {
+            nodeId: 'node-2b',
+            text: "SECTOR 2B ACTIVE. You let the backups burn. Mayor's comms locked. Ransom demand on screen: '500 BTC or hospital life-support grids drop in 10 minutes.'",
+            choices: [
+                { text: "A) Pay 10% of the ransom to buy time.", correct: false },
+                { text: "B) Initiate federal Incident Response and refuse contact.", correct: true },
+                { text: "C) Send a counter-threat to call their bluff.", correct: false }
+            ],
+            insight: "ECHO RECOVERED: Never negotiate. Partial payment flags the target as compliant. Immediate adherence to the formalized IR Plan is the only survival metric."
+        },
+        success_final: {
+            graphic: `<svg class="scenario-icon" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="var(--neon-blue)" stroke-width="5"/>
+                        <path d="M 30 50 L 45 65 L 75 35" fill="none" stroke="var(--neon-blue)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>`,
+            text: "SYSTEM SECURED. You successfully locked down the node and stopped the spread. The city owes you. <br><br><strong>PROTOTYPE COMPLETE.</strong>",
+            choices: [{ text: "[ RETURN TO SAFE ZONE ]", action: () => resetRun() }]
+        }
+    };
+
+    let inventoryInsights = [];
+    let currentTypingTimeout; 
+
+    const narrativeBox = document.getElementById('narrative-box');
+    const choicesContainer = document.getElementById('choices-container');
+    const insightContainer = document.getElementById('insight-container');
+    const mapPanel = document.getElementById('map-panel'); 
+    const graphicContainer = document.getElementById('scenario-graphic'); 
+    const introScreen = document.getElementById('intro-screen');
+
+    function startGame() {
+        sfx.init(); // Must initialize audio on user's first click
+        sfx.click();
+        introScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadNode('home');
+        }, 1000); 
+    }
+
+    function decipherText(element, text) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}";
+        let frame = 0;
+        const maxFrames = 12; 
+        
+        const interval = setInterval(() => {
+            if (frame >= maxFrames) {
+                clearInterval(interval);
+                element.innerText = text;
+            } else {
+                sfx.decipher(); // Play mechanic sound while deciphering
+                element.innerText = text.split("").map((char) => {
+                    if(char === " " || char === ">") return char;
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
+                frame++;
+            }
+        }, 40);
+    }
+
+    function typeText(htmlString, callback) {
+        clearTimeout(currentTypingTimeout);
+        narrativeBox.innerHTML = '';
+        narrativeBox.classList.add('is-typing');
+        
+        const tokens = htmlString.match(/<[^>]+>|[^<]/g) || [];
+        let index = 0;
+
+        function typeNextToken() {
+            if (index < tokens.length) {
+                const token = tokens[index];
+                narrativeBox.innerHTML += token;
+                
+                let delay = 15;
+                if (token.startsWith('<')) {
+                    delay = 0; // Don't delay for HTML tags
+                } else if (token.trim() !== "") {
+                    // Play subtle typing sound for actual text characters
+                    if(index % 2 === 0) sfx.type(); 
+                }
+
+                index++;
+                currentTypingTimeout = setTimeout(typeNextToken, delay);
+            } else {
+                narrativeBox.classList.remove('is-typing');
+                if (callback) callback();
+            }
+        }
+        typeNextToken();
+    }
+
+    function updateSVG(activeStateId) {
+        document.querySelectorAll('.node').forEach(n => n.className.baseVal = 'node');
+        document.querySelectorAll('.path').forEach(p => p.classList.remove('active'));
+        
+        if (activeStateId === 'home') {
+            document.getElementById('node-home').className.baseVal = 'node home';
+        } 
+        else if (activeStateId === 'node1') {
+            document.getElementById('node-home').className.baseVal = 'node cleared';
+            document.getElementById('path-1').classList.add('active');
+            document.getElementById('node-1').className.baseVal = 'node current';
+        }
+        else if (activeStateId === 'branch_choice') {
+            document.getElementById('node-home').className.baseVal = 'node cleared';
+            document.getElementById('node-1').className.baseVal = 'node cleared';
+            document.getElementById('path-1').classList.add('active');
+            document.getElementById('node-2a').className.baseVal = 'node home'; 
+            document.getElementById('node-2b').className.baseVal = 'node home';
+        }
+        else if (activeStateId === 'node2a') {
+            document.getElementById('node-home').className.baseVal = 'node cleared';
+            document.getElementById('node-1').className.baseVal = 'node cleared';
+            document.getElementById('path-1').classList.add('active');
+            document.getElementById('path-2a').classList.add('active');
+            document.getElementById('node-2a').className.baseVal = 'node current';
+            document.getElementById('node-2b').className.baseVal = 'node failed';
+        }
+        else if (activeStateId === 'node2b') {
+            document.getElementById('node-home').className.baseVal = 'node cleared';
+            document.getElementById('node-1').className.baseVal = 'node cleared';
+            document.getElementById('path-1').classList.add('active');
+            document.getElementById('path-2b').classList.add('active');
+            document.getElementById('node-2b').className.baseVal = 'node current';
+            document.getElementById('node-2a').className.baseVal = 'node failed';
+        }
+    }
+
+    function renderChoices(nodeData, stateId) {
+        choicesContainer.innerHTML = ''; 
+        
+        nodeData.choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.innerText = choice.text;
+            
+            // Add hover sound effect
+            btn.onmouseenter = () => sfx.hover();
+
+            btn.onclick = () => {
+                sfx.click(); // Add click sound effect
+                if (nodeData.insight !== undefined) {
+                    handleAnswer(choice.correct, nodeData.insight, nodeData.nodeId, stateId);
+                } else {
+                    choice.action();
+                }
+            };
+            choicesContainer.appendChild(btn);
+        });
+        
+        choicesContainer.classList.add('visible');
+    }
+
+    function loadNode(stateId) {
+        const nodeData = gameData[stateId];
+        
+        narrativeBox.classList.remove('text-failure');
+        mapPanel.classList.remove('glitch-active');
+        choicesContainer.classList.remove('visible'); 
+        
+        graphicContainer.innerHTML = nodeData.graphic ? nodeData.graphic : '';
+        
+        updateSVG(stateId);
+
+        typeText(nodeData.text, () => {
+            renderChoices(nodeData, stateId);
+        });
+    }
+
+    function handleAnswer(isCorrect, insight, svgNodeId, stateId) {
+        if (isCorrect) {
+            sfx.success(); // Play success tone
+            document.getElementById(svgNodeId).className.baseVal = 'node cleared';
+            if (stateId === 'node1') {
+                loadNode('branch_choice');
+            } else {
+                loadNode('success_final');
+            }
+        } else {
+            triggerDeathSequence(insight, svgNodeId);
+        }
+    }
+
+    function triggerDeathSequence(insight, failedSvgNodeId) {
+        sfx.failure(); // Play dead-man switch failure alarm
+        
+        clearTimeout(currentTypingTimeout);
+        narrativeBox.classList.remove('is-typing');
+        
+        document.getElementById(failedSvgNodeId).className.baseVal = 'node failed';
+        mapPanel.classList.add('glitch-active'); 
+        choicesContainer.innerHTML = ''; 
+        choicesContainer.classList.remove('visible');
+        
+        graphicContainer.innerHTML = '';
+        
+        narrativeBox.classList.add('text-failure');
+        narrativeBox.innerHTML = "CRITICAL ERROR.<br>Dead-man's switch triggered.<br>The worm recognizes your signature.<br>FORCIBLE NEURAL DISCONNECT ACTIVE.";
+
+        if (!inventoryInsights.includes(insight)) {
+            inventoryInsights.push(insight);
+            updateInventory(insight); 
+        }
+
+        setTimeout(() => {
+            const rebootBtn = document.createElement('button');
+            rebootBtn.className = 'choice-btn reboot-btn';
+            rebootBtn.innerText = "[ INITIATE SYSTEM REBOOT ]";
+            rebootBtn.onmouseenter = () => sfx.hover();
+            rebootBtn.onclick = () => {
+                sfx.click();
+                resetRun();
+            };
+            choicesContainer.appendChild(rebootBtn);
+            choicesContainer.classList.add('visible');
+        }, 1500); 
+    }
+
+    function resetRun() {
+        loadNode('home');
+    }
+
+    function updateInventory(newInsight) {
+        if (inventoryInsights.length === 1) {
+            insightContainer.innerHTML = '';
+        }
+
+        const newEchoDiv = document.createElement('div');
+        newEchoDiv.className = 'echo-entry';
+        insightContainer.appendChild(newEchoDiv);
+
+        const formattedText = `> ${newInsight}`;
+        decipherText(newEchoDiv, formattedText);
+        
+        const invDiv = document.getElementById('inventory');
+        setTimeout(() => {
+            invDiv.scrollTop = invDiv.scrollHeight;
+        }, 50);
+    }
+</script>
+</body>
+</html>
