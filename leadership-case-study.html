@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Elevated | Cynthia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+        :root {
+            --bg-cream: #FDFBF7;
+            --text-burgundy: #4A0E17;
+            --accent-terracotta: #C25934;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-cream);
+            color: var(--text-burgundy);
+            font-family: 'Lora', serif;
+            line-height: 1.8;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Domine', serif;
+            margin: 0;
+        }
+
+        /* Minimal Nav */
+        nav {
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-burgundy);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: var(--accent-terracotta); }
+
+        /* Case Study Layout */
+        .cs-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 5% 5rem 5%;
+        }
+
+        .cs-hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .cs-hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .cs-hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-terracotta);
+            font-family: 'Domine', serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cs-hero-image {
+            width: 100%;
+            height: 400px;
+            background-color: rgba(194, 89, 52, 0.1);
+            border-radius: 12px;
+            margin-bottom: 4rem;
+            object-fit: cover;
+        }
+
+        .cs-section { margin-bottom: 4rem; }
+        
+        .cs-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(74, 14, 23, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Two-column grid for Role & Challenge */
+        .cs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .cs-box {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            box-shadow: 0 10px 30px rgba(74, 14, 23, 0.03);
+        }
+
+        .cs-box h3 {
+            color: var(--accent-terracotta);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Process Steps */
+        .process-step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step-number {
+            font-family: 'Domine', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-terracotta);
+            opacity: 0.4;
+            line-height: 1;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .cs-grid { grid-template-columns: 1fr; }
+            .cs-hero h1 { font-size: 2.5rem; }
+            .process-step { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Portfolio
+        </a>
+    </nav>
+
+    <main class="cs-container">
+        <header class="cs-hero">
+            <div class="subtitle">Dallas College</div>
+            <h1>Leadership Elevated</h1>
+            <p style="font-size: 1.3rem; opacity: 0.9; max-width: 700px; margin: 1rem auto;">A Strategic Curriculum Overhaul for over 250 emerging and mid-level managers.</p>
+        </header>
+
+<svg class="cs-hero-image" viewBox="0 0 900 400" width="100%" height="400" xmlns="http://www.w3.org/2000/svg" style="background-color: #FDFBF7; border: 1px solid rgba(74, 14, 23, 0.08);">
+            <g transform="translate(450, 200)">
+                <path d="M -400 0 L 400 0 M 0 -180 L 0 180" stroke="#4A0E17" stroke-width="1" opacity="0.1"/>
+                <circle cx="0" cy="0" r="120" fill="none" stroke="#C25934" stroke-width="2" opacity="0.2"/>
+                <circle cx="0" cy="0" r="220" fill="none" stroke="#4A0E17" stroke-width="1" opacity="0.1"/>
+                <circle cx="0" cy="0" r="320" fill="none" stroke="#C25934" stroke-width="1" stroke-dasharray="10 10" opacity="0.15"/>
+                
+                <path d="M 0 -80 L 80 0 L 0 80 L -80 0 Z" fill="#C25934" opacity="0.95"/>
+                <path d="M 0 -130 L 40 -40 L 130 0 L 40 40 L 0 130 L -40 40 L -130 0 L -40 -40 Z" fill="#4A0E17" opacity="0.85"/>
+                <path d="M 0 -55 L 55 0 L 0 55 L -55 0 Z" fill="#FDFBF7"/>
+                <circle cx="0" cy="0" r="18" fill="#C25934"/>
+
+                <g transform="translate(-220, 0)">
+                    <path d="M 0 -40 L 40 0 L 0 40 L -40 0 Z" fill="none" stroke="#4A0E17" stroke-width="5"/>
+                    <circle cx="0" cy="0" r="12" fill="#C25934"/>
+                </g>
+                
+                <g transform="translate(220, 0)">
+                    <path d="M 0 -40 L 40 0 L 0 40 L -40 0 Z" fill="none" stroke="#4A0E17" stroke-width="5"/>
+                    <circle cx="0" cy="0" r="12" fill="#C25934"/>
+                </g>
+            </g>
+        </svg>
+
+        <section class="cs-section">
+            <h2>Project Overview</h2>
+            <p>To address a critical need for leadership development, I was part of a team that designed and launched "Leaders at all Levels," a comprehensive, tiered program for all leaders at Dallas College. The program created distinct learning paths for four key segments: Leading Self (aspiring leaders), Leading Others (new and mid-level managers), Leading Across (cross-functional leaders), and Leading Organization (senior leaders).</p>
+
+
+            <p>The curriculum was built on a foundation of Situational Leadership, bespoke workshops, and values-based training to create a consistent leadership culture across the institution.</p>
+        </section>
+
+        <div class="cs-grid">
+            <div class="cs-box">
+                <h3>The Challenge</h3>
+                <p>Prior to this initiative, the organization faced significant challenges stemming from a lack of formal leadership development. Key issues included high manager turnover, inconsistent leadership practices across departments, and the absence of a clear development path for newly promoted leaders. The primary business goal was to build a sustainable program that would equip managers with the skills needed to lead effectively, improving team performance, engagement, and retention.</p>
+            </div>
+            <div class="cs-box">
+                <h3>My Role</h3>
+                <p>As the Lead Learning Experience Designer for the "Leading Others" track, I drove the end-to-end curriculum strategy, competency modeling, and content development for a cohort of over 250 individuals.</p>
+                <p>Following a highly successful launch, my responsibilities expanded to designing specialized sessions for senior leadership tiers, ultimately culminating in spearheading a college-wide initiative to create workshops centered on institutional values for all employees.</p>
+            </div>
+        </div>
+
+        <section class="cs-section">
+            <h2>The Approach & Process</h2>
+            <p style="margin-bottom: 3rem;">My approach was a multi-step, human-centered process designed to ensure the solution was deeply rooted in the actual needs of the learners and the organization.</p>
+
+            <div class="process-step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Needs Analysis & Discovery</h3>
+                    <p>To build a truly effective program, I first needed to understand the core challenges. My discovery process included conducting intimate focus groups with leaders across the college, one-on-one interviews with managers at all levels and key HR partners, and analyzing existing performance data to identify specific skill gaps and recurring pain points.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>Competency Model Development</h3>
+                    <p>Insights from our needs analysis revealed that a "one-size-fits-all" approach would fail. To provide a clear framework for development, my team and I created a comprehensive competency model tailored specifically for the "Leading Others" audience.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Blended & Learner-Centric Design</h3>
+                    <p>To accommodate the busy schedules of leaders, I designed a blended learning journey. This included self-paced eLearning pre-work, highly interactive in-person workshops designed for peer-to-peer learning, and virtual follow-up sessions on Microsoft Teams for ongoing support. All bespoke workbooks and slides were designed to be immediately applicable to the leaders' day-to-day work.</p>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">04</div>
+                <div class="step-content">
+                    <h3>Gamified & Mission-Driven Onboarding</h3>
+                    <p>To replace a standard, passive PowerPoint presentation for new leader onboarding, I designed and developed a custom board game. Covering the college's history, student services, and divisional roles, this gamified experience was highly engaging and sparked critical discussions on how each leader's new role directly tied to the school's mission: transforming lives and communities through higher education.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>
