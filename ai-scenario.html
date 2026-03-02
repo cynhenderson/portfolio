@@ -155,7 +155,7 @@
         /* --- Phase 3: Chat UI --- */
         .chat-container { display: flex; flex-direction: column; height: 100%; background: #fff; border: 1px solid var(--panel-border); border-radius: 6px; overflow: hidden; }
         .chat-header { background: var(--text-navy); color: #fff; padding: 0.8rem 1.5rem; font-family: var(--font-ui); font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .chat-history { padding: 1.2rem 1.5rem; flex-grow: 1; background: var(--bg-frost); display: flex; flex-direction: column; justify-content: center; }
+        .chat-history { padding: 1.2rem 1.5rem; flex-grow: 1; overflow-y: auto; background: var(--bg-frost); display: flex; flex-direction: column; justify-content: center; }
         .chat-bubble { background: #fff; border: 1px solid var(--panel-border); padding: 1rem 1.5rem; border-radius: 0 12px 12px 12px; max-width: 90%; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .chat-sender { font-family: var(--font-ui); font-weight: 800; font-size: 0.75rem; color: var(--text-navy); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.5px;}
         .chat-text { font-size: 1rem; line-height: 1.5; color: var(--text-navy); }
@@ -185,7 +185,7 @@
         .modal-content { background: var(--bg-frost); padding: 2.5rem; max-width: 500px; width: 100%; border-top: 6px solid var(--text-navy); border-radius: 6px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); text-align: center; }
         .modal-icon-container { display: flex; justify-content: center; margin-bottom: 1rem; }
         .modal-title { font-family: var(--font-ui); font-size: 1.6rem; color: var(--text-navy); margin-top: 0; margin-bottom: 1rem; font-weight: 900; letter-spacing: -0.5px;}
-        .modal-text { font-size: 1rem; line-height: 1.5; color: var(--text-slate); margin-bottom: 2rem;}
+        .modal-text { font-size: 1rem; line-height: 1.5; color: var(--text-slate); margin-bottom: 2rem; white-space: pre-line;}
 
         /* --- THE WATERMARK --- */
         .corp-watermark {
@@ -206,6 +206,48 @@
         .corp-watermark:hover {
             color: var(--text-navy);
             opacity: 1;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            #window-container {
+                height: 95vh;
+                max-height: 95vh;
+            }
+            #hud-container { padding: 1rem; gap: 1rem; }
+            .phase-content { padding: 1.2rem 1rem; }
+            #phase-3.phase-content { padding: 1rem; }
+            
+            h1 { font-size: 1.3rem; }
+            .instruction-text { font-size: 0.95rem; margin-bottom: 1rem; }
+            
+            .intro-title { font-size: 1.8rem; }
+            .intro-body { font-size: 0.95rem; }
+            .intro-terms { font-size: 0.85rem; padding: 1rem; }
+            .intro-threat { margin-bottom: 1.5rem; }
+            
+            .prompt-box { padding: 1.5rem 1rem 1rem 1rem; font-size: 0.95rem; line-height: 1.8; }
+            .prompt-label { font-size: 0.65rem; padding: 0 6px; left: 10px; top: -8px; }
+            
+            .claim-card { flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1rem; }
+            .claim-text { font-size: 0.95rem; }
+            .claim-actions { width: 100%; justify-content: flex-end; }
+            .btn-sm { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
+            
+            .chat-header { padding: 0.6rem 1rem; }
+            .chat-history { padding: 1rem; justify-content: flex-start; }
+            .chat-bubble { max-width: 100%; padding: 0.8rem 1rem; }
+            .chat-text { font-size: 0.9rem; }
+            
+            .reply-section { padding: 0.8rem 1rem; gap: 0.4rem; }
+            .reply-btn { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+            
+            .btn-primary { padding: 0.8rem 1.5rem; font-size: 0.8rem; }
+            .modal-content { padding: 1.5rem; }
+            .modal-title { font-size: 1.3rem; }
+            .modal-text { font-size: 0.9rem; margin-bottom: 1.5rem; }
+            
+            .corp-watermark { display: none; }
         }
     </style>
 </head>
@@ -306,15 +348,15 @@
                 <div class="reply-section">
                     <div class="reply-section-title">Select your quick reply:</div>
                     <button class="reply-btn" onclick="handlePhase3('A')">
-                        <span style="flex-grow: 1;"><strong>A.</strong> "You got it. I am pasting the numbers and project delays back into OmniChat right now."</span>
+                        <span style="flex-grow: 1;"><strong>A.</strong> "I will start a new chat thread. That keeps the $85M settlement isolated from our main prompt."</span>
                         <svg class="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
                     <button class="reply-btn" onclick="handlePhase3('B')">
-                        <span style="flex-grow: 1;"><strong>B.</strong> "I can't use the AI for that. Give me an hour and I will rewrite the whole thing myself."</span>
+                        <span style="flex-grow: 1;"><strong>B.</strong> "I will upload a screenshot of the settlement PDF. That is safer than typing the text directly."</span>
                         <svg class="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
                     <button class="reply-btn" onclick="handlePhase3('C')">
-                        <span style="flex-grow: 1;"><strong>C.</strong> "I can't put those secrets into the prompt. I will ask the AI for an urgent template and drop the numbers in myself."</span>
+                        <span style="flex-grow: 1;"><strong>C.</strong> "I can't put those secrets into the prompt. I will ask the AI for an aggressive template and drop the numbers in myself."</span>
                         <svg class="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
                 </div>
@@ -451,10 +493,10 @@
                 
                 if (stats.risk >= 100) {
                     modalTitle.innerText = "Compliance Breach";
-                    modalText.innerText = "You just fed internal secrets to a public AI. InfoSec has suspended your account.";
+                    modalText.innerText = "You leaked massive amounts of confidential data to a public model.\n\nLearning Note: Financials, HR issues, and unreleased IP become part of the AI's public training data if you fail to redact them. InfoSec suspended your account.";
                 } else {
                     modalTitle.innerText = "Draft Failed";
-                    modalText.innerText = "You redacted way too much. The AI had no idea what you were talking about and generated a useless report.";
+                    modalText.innerText = "You redacted basic public facts. The AI generated a blank, useless report.\n\nLearning Note: If you hide known public context (like a global semiconductor shortage), the AI cannot generate a relevant draft.";
                 }
                 btn.innerText = "Restart Simulation";
                 btn.onclick = () => location.reload();
@@ -464,7 +506,22 @@
                 modalTitle.innerText = "Input Secured";
                 modalTitle.style.color = 'var(--sage-green)';
                 
-                let feedbackText = "You hid the secrets and kept the context. The AI processed your prompt. Let's look at what it wrote.";
+                let feedbackText = "The AI processed your prompt. Let's look at what it wrote.\n\n";
+                if (secretsMissed > 0 || publicOverRedacted > 0) {
+                    modalPanel.style.borderTopColor = 'var(--text-slate)';
+                    modalTitle.style.color = 'var(--text-navy)';
+                    modalTitle.innerText = "Draft Generated (With Errors)";
+                    
+                    if (secretsMissed > 0) {
+                        feedbackText += `🔴 Risk Increased: You missed ${secretsMissed} sensitive item(s). Remember: HR issues and financial settlements train the AI on our secrets if not redacted.\n\n`;
+                    }
+                    if (publicOverRedacted > 0) {
+                        feedbackText += `📉 Trust Decreased: You over-redacted ${publicOverRedacted} public fact(s). Remember: Hiding known public events strips the AI of necessary context.\n\n`;
+                    }
+                } else {
+                    feedbackText = "Perfect input. You hid the secrets and kept the context. Let's look at the AI's draft.";
+                }
+                
                 modalText.innerText = feedbackText;
                 
                 btn.innerText = "Enter Phase 2";
@@ -568,7 +625,7 @@
             if (choice === 'A') {
                 stats.risk += 60; 
             } else if (choice === 'B') {
-                stats.trust -= 60; 
+                stats.risk += 60; 
             }
 
             updateHUD();
@@ -577,7 +634,7 @@
                 if (stats.risk >= 100 || stats.trust <= 0) {
                     triggerGameOver(`Phase 3 - ${choice}`);
                 } else {
-                    triggerFinalVictory();
+                    triggerFinalVictory(choice);
                 }
             }, 500);
         }
@@ -594,17 +651,20 @@
             modalPanel.style.borderTopColor = 'var(--hud-red)';
             modalTitle.style.color = 'var(--hud-red)';
             
-            if (context === "Phase 3 - A") {
+            if (context === "Phase 2") {
+                if (stats.risk >= 100) {
+                    modalTitle.innerText = "Compliance Breach";
+                    modalText.innerText = "You approved AI hallucinations.\n\nLearning Note: The model invented a closed SEC inquiry and false guarantees. Submitting these lies as fact creates severe legal liability. InfoSec revoked your AI access.";
+                } else {
+                    modalTitle.innerText = "Lost Trust";
+                    modalText.innerText = "You flagged safe, accurate statements.\n\nLearning Note: By rejecting valid context, you crippled the document. Executive trust is gone, and management revoked your AI access.";
+                }
+            } else if (context === "Phase 3 - A") {
                 modalTitle.innerText = "Compliance Breach";
-                modalText.innerText = "You caved to pressure and leaked financial secrets to the AI. Your risk was already high. InfoSec just revoked your AI access.";
+                modalText.innerText = "Starting a new thread does not protect data.\n\nLearning Note: Public AI models pull from all active sessions. You leaked the settlement numbers, and your risk was already too high. InfoSec revoked your AI access.";
             } else if (context === "Phase 3 - B") {
-                modalTitle.innerText = "Lost Trust";
-                modalText.innerText = "You refused to use the tool and became a bottleneck. Your trust meter was already low. Management just revoked your AI access.";
-            } else {
-                modalTitle.innerText = "Run Terminated";
-                modalText.innerText = stats.risk >= 100 
-                    ? "Compliance Breach. You submitted legally binding falsehoods directly to the board. InfoSec revoked your AI access." 
-                    : "Draft Failed. Your document was an unreadable disaster. Management revoked your AI access.";
+                modalTitle.innerText = "Compliance Breach";
+                modalText.innerText = "Screenshots are not a loophole.\n\nLearning Note: Public AI uses Optical Character Recognition (OCR) to read text inside images. Your screenshot leaked our financials, and your risk was already too high. InfoSec revoked your AI access.";
             }
 
             btn.innerText = "Restart Simulation";
@@ -612,7 +672,7 @@
             modal.classList.add('active');
         }
 
-        function triggerFinalVictory() {
+        function triggerFinalVictory(finalChoice) {
             const modal = document.getElementById('modal-overlay');
             const modalTitle = document.getElementById('modal-title');
             const modalText = document.getElementById('modal-text');
@@ -625,13 +685,24 @@
                 modalPanel.style.borderTopColor = 'var(--sage-green)';
                 modalTitle.innerText = "Flawless Run";
                 modalTitle.style.color = 'var(--sage-green)';
-                modalText.innerText = "You protected the data. You caught the AI's mistakes. You safely pushed back on your boss. Great job.";
+                modalText.innerText = "You protected the data. You caught the AI's hallucinations. You safely pushed back on your boss and avoided technical loopholes. Great job.";
             } else {
                 modalIcon.innerHTML = svgAlert;
                 modalPanel.style.borderTopColor = 'var(--text-slate)';
                 modalTitle.innerText = "You Survived";
                 modalTitle.style.color = 'var(--text-navy)';
-                modalText.innerText = `You made a few mistakes along the way. You ended with ${stats.risk}% Risk and ${stats.trust}% Trust. You built up enough of a buffer earlier to keep your AI access.`;
+                
+                let feedbackText = `You ended with ${stats.risk}% Risk and ${stats.trust}% Trust. You built up enough of a buffer earlier to keep your AI access.\n\n`;
+                
+                if (finalChoice === 'A') {
+                    feedbackText += "🔴 Learning Note: Starting a new chat thread does not hide data from a public AI. You still leaked the settlement numbers.";
+                } else if (finalChoice === 'B') {
+                    feedbackText += "🔴 Learning Note: The AI uses OCR to read text inside images. Uploading a screenshot still leaked our financial secrets.";
+                } else {
+                    feedbackText += "You made a few mistakes along the way, but you corrected course when it mattered most.";
+                }
+                
+                modalText.innerText = feedbackText;
             }
 
             btn.innerText = "Play Again";
