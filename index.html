@@ -282,6 +282,60 @@
         .skill-list li { font-size: 1.05rem; margin-bottom: 0.6rem; opacity: 0.85; display: flex; align-items: center; gap: 8px; }
         .skill-list li::before { content: "•"; color: var(--accent-terracotta); font-weight: bold; }
 
+/* Video Callout Banner */
+        .video-callout {
+            max-width: 1000px;
+            margin: 5rem auto 0 auto;
+            padding: 2.5rem 3rem;
+            background-color: var(--bg-cream);
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .video-text h3 {
+            font-size: 1.6rem;
+            color: var(--text-burgundy);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-text p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        .yt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--accent-terracotta);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .yt-link:hover {
+            transform: translateX(4px);
+            color: #d1663f;
+        }
+
+        @media (max-width: 768px) {
+            .video-callout {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+                margin-top: 3rem;
+            }
+        }
+
         /* Footer Styles */
         footer {
             background-color: var(--text-burgundy);
@@ -578,6 +632,18 @@
                 </div>
             </article>
         </div>
+<div class="video-callout">
+            <div class="video-text">
+                <h3>Looking for video samples?</h3>
+                <p>I also produce, direct, and edit multimedia learning content.</p>
+            </div>
+            <a href="https://www.youtube.com/@cynhenderson" target="_blank" class="yt-link">
+                Watch on YouTube
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+            </a>
+        </div>
     </section>
 
     <div class="medallion-divider white-to-cream">
@@ -666,7 +732,6 @@
 </body>
 
 </html>
-
 
 
 
