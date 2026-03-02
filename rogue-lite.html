@@ -54,7 +54,7 @@
     /* LAYER 1: THE SUN (Lowered to match new horizon) */
     .synth-sun {
         position: absolute;
-        bottom: 5%; /* Lowered so it stays chopped off by the 25% horizon */
+        bottom: 5%;
         left: 50%;
         transform: translateX(-50%);
         width: 380px;
@@ -73,7 +73,7 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 25%; /* Lowered from 45% to 25% */
+        height: 25%; 
         background-color: var(--bg-color);
         
         border-top: 2px solid rgba(0, 240, 255, 0.2); 
@@ -86,10 +86,10 @@
     /* LAYER 3: V14 GRID (Shifted down to align with 25% horizon) */
     .synth-grid {
         position: absolute;
-        bottom: -25%; /* Shifted down to maintain perspective ratio */
+        bottom: -25%; 
         left: -50%;
         width: 200%;
-        height: 85%; /* Adjusted so it only covers the 25% floor */
+        height: 85%;
         background:
             linear-gradient(rgba(0, 240, 255, 0.6) 4px, transparent 4px),
             linear-gradient(90deg, rgba(0, 240, 255, 0.6) 4px, transparent 4px);
@@ -328,9 +328,23 @@
         .intro-subtitle { margin-bottom: 15px; font-size: 0.9rem; }
         .intro-brief { font-size: 0.95rem; margin-bottom: 20px; }
         .start-btn { padding: 12px 20px; font-size: 1rem; width: 100%; }
-        
-        /* Shrink the background art so it doesn't crowd the text box */
         .synth-sun { width: 250px; height: 250px; bottom: 10%; }
+        .cyber-watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            text-decoration: none;
+            z-index: 1000;
+            transition: color 0.3s, text-shadow 0.3s;
+            letter-spacing: 1px;
+        }
+        .cyber-watermark:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
     }
 </style>
 </head>
@@ -390,7 +404,7 @@
         </div>
     </div>
 </div>
-
+<a href="https://cynhenderson.com" target="_blank" class="cyber-watermark">// cynhenderson.com</a>
 <script>
     // --- WEB AUDIO API SOUND ENGINE ---
     let audioCtx;
@@ -733,3 +747,4 @@
 </script>
 </body>
 </html>
+
