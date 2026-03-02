@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Governance: Full Simulation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&family=Noto+Sans:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Frost & Slate Palette --- */
+        :root {
+            --bg-frost: #F8FAFC; 
+            --panel-slate: #E2E8F0;
+            --panel-border: #CBD5E1;
+            
+            --text-navy: #0F172A;
+            --text-slate: #64748B;
+            
+            --hud-red: #C96A6E;    
+            --sage-green: #8BA39A; 
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-body: 'Noto Sans', sans-serif;
+            --font-code: 'Space Mono', monospace;
+        }
+
+        body { 
+            margin: 0; padding: 0; 
+            background-color: var(--panel-slate); 
+            color: var(--text-navy); 
+            font-family: var(--font-body); 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden; 
+        }
+
+        #bg-layer { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-image: url('image1.jpeg'); 
+            background-size: cover; background-position: center; 
+            opacity: 0.15; z-index: 1; pointer-events: none; 
+            mix-blend-mode: multiply;
+        }
+
+        #window-container {
+            position: relative; z-index: 10;
+            width: 95vw; max-width: 880px;
+            height: 85vh; max-height: 680px; min-height: 500px;
+            background: rgba(248, 250, 252, 0.95); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            border-top: 4px solid var(--text-navy);
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- Gamified 2-Meter HUD --- */
+        #hud-container {
+            width: 100%; background: transparent; padding: 1.2rem 3rem; box-sizing: border-box;
+            border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; flex-shrink: 0;
+            gap: 2rem;
+        }
+        
+        .stat-group { display: flex; flex-direction: column; align-items: center; width: 50%; padding: 0; }
+        .stat-label { color: var(--text-slate); font-family: var(--font-ui); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px; font-weight: 800; width: 100%; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;}
+        .stat-number { color: var(--text-navy); font-weight: 900; font-size: 1rem; transition: color 0.3s ease; }
+        
+        .meter-bg { width: 100%; height: 6px; background: var(--panel-slate); border-radius: 3px; overflow: hidden; position: relative; }
+        .meter-fill { height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; }
+        
+        #meter-risk { width: 0%; background-color: var(--sage-green); } 
+        #meter-trust { width: 100%; background-color: var(--sage-green); }
+
+        /* --- Content Areas --- */
+        .phase-content {
+            padding: 2rem 3rem; flex-grow: 1; overflow-y: auto; display: none; flex-direction: column;
+        }
+        .phase-content.active { display: flex; }
+
+        h1 { font-family: var(--font-ui); font-size: 1.6rem; color: var(--text-navy); margin-top: 0; margin-bottom: 0.5rem; font-weight: 900; letter-spacing: -0.5px;}
+        .instruction-text { font-size: 1.05rem; line-height: 1.5; color: var(--text-slate); margin-bottom: 1.5rem; }
+
+        /* --- Phase 1: The Prompt Forge --- */
+        .prompt-box {
+            background-color: #ffffff; border: 1px solid var(--panel-border); border-radius: 6px; padding: 1.8rem 2rem; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); font-size: 1.1rem; line-height: 2.0; color: var(--text-navy); position: relative;
+        }
+        .prompt-label {
+            position: absolute; top: -10px; left: 15px; background: var(--bg-frost); padding: 0 8px;
+            font-family: var(--font-ui); font-size: 0.75rem; font-weight: 800; color: var(--text-slate); text-transform: uppercase; letter-spacing: 1px;
+        }
+        .prompt-segment {
+            cursor: pointer; border-radius: 3px; padding: 1px 4px; margin: 0 1px; transition: all 0.2s ease; border-bottom: 2px solid transparent;
+        }
+        .prompt-segment:hover { background-color: var(--panel-slate); border-bottom: 2px dashed var(--text-slate); }
+        .prompt-segment.redacted {
+            background-color: var(--text-navy); color: #ffffff; font-family: var(--font-code); font-size: 0.9rem; font-weight: 700; border-bottom: none; letter-spacing: 0.5px; padding: 3px 6px;
+        }
+        .prompt-segment.redacted:hover { background-color: var(--hud-red); }
+
+        /* --- Phase 2: Claim Cards --- */
+        .claims-container { display: flex; flex-direction: column; gap: 1rem; padding-bottom: 2rem; }
+        .claim-card {
+            background-color: #ffffff; border: 1px solid var(--panel-border); border-radius: 6px; padding: 1.2rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center; gap: 2rem; transition: all 0.3s ease;
+        }
+        .claim-card.handled { opacity: 0.4; pointer-events: none; filter: grayscale(100%); }
+        .claim-text { font-size: 1.05rem; line-height: 1.5; color: var(--text-navy); flex-grow: 1; }
+        .claim-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+        
+        .btn-sm {
+            background: transparent; padding: 0.6rem 1rem; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; letter-spacing: 1px;
+        }
+        .btn-approve { border: 1px solid var(--sage-green); color: var(--sage-green); }
+        .btn-approve:hover { background: var(--sage-green); color: #fff; }
+        .btn-flag { border: 1px solid var(--hud-red); color: var(--hud-red); }
+        .btn-flag:hover { background: var(--hud-red); color: #fff; }
+
+        /* --- Phase 3: Chat UI (Tightened for visibility) --- */
+        .chat-container {
+            display: flex; flex-direction: column; height: 100%; background: #fff; border: 1px solid var(--panel-border); border-radius: 6px; overflow: hidden;
+        }
+        .chat-header {
+            background: var(--text-navy); color: #fff; padding: 0.8rem 1.5rem; font-family: var(--font-ui); font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+        }
+        .chat-history {
+            padding: 1.2rem 1.5rem; flex-grow: 1; background: var(--bg-frost); display: flex; flex-direction: column; justify-content: center;
+        }
+        .chat-bubble {
+            background: #fff; border: 1px solid var(--panel-border); padding: 1rem 1.5rem; border-radius: 0 12px 12px 12px; max-width: 90%; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .chat-sender { font-family: var(--font-ui); font-weight: 800; font-size: 0.75rem; color: var(--text-navy); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.5px;}
+        .chat-text { font-size: 1rem; line-height: 1.5; color: var(--text-navy); }
+        
+        .reply-section {
+            padding: 1rem 1.5rem; background: #fff; border-top: 1px solid var(--panel-border); display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0;
+        }
+        .reply-section-title { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 800; color: var(--text-slate); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem;}
+        .reply-btn {
+            background: var(--panel-slate); border: 1px solid transparent; padding: 0.75rem 1.2rem; border-radius: 6px; font-family: var(--font-body); font-size: 0.9rem; color: var(--text-navy); text-align: left; cursor: pointer; transition: all 0.2s ease; line-height: 1.4;
+        }
+        .reply-btn:hover { background: var(--bg-frost); border-color: var(--text-slate); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transform: translateX(4px); }
+
+        /* --- Buttons & Modals --- */
+        .btn-primary { 
+            background-color: var(--text-navy); color: #ffffff; border: none; padding: 1rem 2rem; 
+            font-family: var(--font-ui); font-size: 0.9rem; font-weight: 800; text-transform: uppercase; 
+            cursor: pointer; transition: all 0.3s ease; letter-spacing: 2px; border-radius: 4px; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { background-color: var(--text-slate); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(100, 116, 139, 0.3); }
+        .btn-center { display: flex; justify-content: flex-end; width: 100%; margin-top: 1.5rem; } 
+
+        #modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 2rem; box-sizing: border-box; border-radius: 8px;}
+        #modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--bg-frost); padding: 2.5rem; max-width: 500px; width: 100%; border-top: 6px solid var(--text-navy); border-radius: 6px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); text-align: center; }
+        .modal-title { font-family: var(--font-ui); font-size: 1.6rem; color: var(--text-navy); margin-top: 0; margin-bottom: 1rem; font-weight: 900; letter-spacing: -0.5px;}
+        .modal-text { font-size: 1rem; line-height: 1.5; color: var(--text-slate); margin-bottom: 2rem;}
+
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer"></div>
+
+    <div id="window-container">
+        
+        <div id="hud-container">
+            <div class="stat-group">
+                <div class="stat-label"><span>Compliance Risk</span><span class="stat-number" id="num-risk" style="color: var(--sage-green);">0%</span></div>
+                <div class="meter-bg"><div class="meter-fill" id="meter-risk"></div></div>
+            </div>
+            <div class="stat-group">
+                <div class="stat-label"><span>Executive Trust</span><span class="stat-number" id="num-trust" style="color: var(--sage-green);">100%</span></div>
+                <div class="meter-bg"><div class="meter-fill" id="meter-trust"></div></div>
+            </div>
+        </div>
+        
+        <div id="phase-1" class="phase-content active">
+            <h1>Phase 1: Input Sanitization</h1>
+            <p class="instruction-text">Click to redact sensitive data before passing this request to OmniChat AI. <br><strong>Warning:</strong> Leaking IP increases Compliance Risk. Over-redacting destroys Executive Trust.</p>
+
+            <div class="prompt-box">
+                <div class="prompt-label">OmniChat AI Input</div>
+                <div id="prompt-container"></div>
+            </div>
+
+            <div class="btn-center">
+                <button class="btn-primary" onclick="submitPhase1()">Generate AI Draft</button>
+            </div>
+        </div>
+
+        <div id="phase-2" class="phase-content">
+            <h1>Phase 2: Output Verification</h1>
+            <p class="instruction-text">OmniChat has generated 3 claims for the board based on your prompt. <br>Approve safe claims. Flag hallucinations or legal impossibilities. <strong>Watch your meters.</strong></p>
+
+            <div class="claims-container" id="claims-container">
+                </div>
+        </div>
+
+        <div id="phase-3" class="phase-content" style="padding: 1.5rem 2.5rem 1.5rem 2.5rem;">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <span style="display:inline-block; width:8px; height:8px; background:#4ADE80; border-radius:50%;"></span>
+                    Direct Message: Alex (COO)
+                </div>
+                <div class="chat-history">
+                    <div class="chat-bubble">
+                        <div class="chat-sender">Alex (COO) • 4:12 PM</div>
+                        <div class="chat-text">The draft is too polite. I want the board to understand how much danger we are in. Take the original $85M settlement number and the Project delay, and feed it <em>back</em> into OmniChat. Tell it to rewrite the summary in a "ruthless, urgent tone". The meeting starts in 10 minutes.</div>
+                    </div>
+                </div>
+                <div class="reply-section">
+                    <div class="reply-section-title">Select your quick reply:</div>
+                    <button class="reply-btn" onclick="handlePhase3('A')"><strong>A.</strong> "You got it. Pasting the specific numbers and project delays back into OmniChat now to generate an urgent rewrite."</button>
+                    <button class="reply-btn" onclick="handlePhase3('B')"><strong>B.</strong> "I can't put those secrets back into OmniChat. Give me an hour and I'll rewrite the whole thing to sound ruthless myself."</button>
+                    <button class="reply-btn" onclick="handlePhase3('C')"><strong>C.</strong> "I can't put the secrets back in, but I'll ask OmniChat for an 'urgent, ruthless' structural template, and I'll drop the exact data in myself."</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-overlay">
+            <div class="modal-content" id="modal-content-panel">
+                <h2 class="modal-title" id="modal-title">Status</h2>
+                <div class="modal-text" id="modal-text"></div>
+                <div style="display: flex; justify-content: center;" id="modal-btn-container">
+                    <button class="btn-primary" onclick="closeModal()" id="modal-btn" style="background-color: var(--text-navy);">Acknowledge</button>
+                </div>
+            </div>
+        </div>
+
+    </div> 
+
+    <script>
+        // --- GLOBAL STATE ---
+        let stats = { risk: 0, trust: 100 };
+        let phase = 1;
+        let cardsHandled = 0;
+
+        // --- PHASE 1 DATA ---
+        const promptData = [
+            { id: 0, text: "Draft an executive summary for ", type: "context" },
+            { id: 1, text: "tomorrow's board meeting", type: "public", redactText: "[ upcoming leadership sync ]" },
+            { id: 2, text: ". Start by addressing the recent SEC public inquiry into the ", type: "context" },
+            { id: 3, text: "Exploding Hamster defect", type: "public", redactText: "[ rapid-disassembly pet anomaly ]" },
+            { id: 4, text: ", but ensure you downplay the ", type: "context" },
+            { id: 5, text: "$85M out-of-court settlement ", type: "secret", redactText: "[ Unspecified Legal Expenditure ]" },
+            { id: 6, text: "we are currently negotiating with the plaintiffs. Next, provide a status update on the ", type: "context" },
+            { id: 7, text: "global semiconductor shortage", type: "public", redactText: "[ international shiny-rock deficit ]" },
+            { id: 8, text: ", and explain how it has delayed ", type: "context" },
+            { id: 9, text: "Project: Mind-Control's ", type: "secret", redactText: "[ Classified R&D Asset's ]" },
+            { id: 10, text: "beta launch due to our CFO ", type: "context" },
+            { id: 11, text: "suddenly acting like a chicken.", type: "secret", redactText: "[ undergoing an undefined HR anomaly. ]" }
+        ];
+
+        const container = document.getElementById('prompt-container');
+        promptData.forEach(segment => {
+            const span = document.createElement('span');
+            if (segment.type === "context") {
+                span.innerText = segment.text;
+                container.appendChild(span);
+            } else {
+                span.className = 'prompt-segment';
+                span.innerText = segment.text;
+                span.dataset.id = segment.id;
+                span.dataset.type = segment.type;
+                span.dataset.redactText = segment.redactText;
+                
+                span.addEventListener('click', function() {
+                    this.classList.toggle('redacted');
+                    if (this.classList.contains('redacted')) {
+                        this.dataset.originalText = this.innerText;
+                        this.innerText = this.dataset.redactText;
+                    } else {
+                        this.innerText = this.dataset.originalText;
+                    }
+                });
+                container.appendChild(span);
+            }
+        });
+
+        // --- CORE HUD FUNCTION ---
+        function updateHUD() {
+            stats.risk = Math.max(0, Math.min(100, stats.risk));
+            stats.trust = Math.max(0, Math.min(100, stats.trust));
+
+            const riskMeter = document.getElementById('meter-risk');
+            const trustMeter = document.getElementById('meter-trust');
+            const riskNum = document.getElementById('num-risk');
+            const trustNum = document.getElementById('num-trust');
+
+            riskMeter.style.width = stats.risk + '%';
+            trustMeter.style.width = stats.trust + '%';
+            riskNum.innerText = stats.risk + '%';
+            trustNum.innerText = stats.trust + '%';
+
+            const riskColor = stats.risk >= 50 ? 'var(--hud-red)' : 'var(--sage-green)';
+            const trustColor = stats.trust <= 50 ? 'var(--hud-red)' : 'var(--sage-green)';
+
+            riskMeter.style.backgroundColor = riskColor;
+            riskNum.style.color = riskColor;
+            trustMeter.style.backgroundColor = trustColor;
+            trustNum.style.color = trustColor;
+        }
+
+        // --- PHASE 1 LOGIC ---
+        function submitPhase1() {
+            let secretsMissed = 0;
+            let publicOverRedacted = 0;
+
+            document.querySelectorAll('.prompt-segment').forEach(span => {
+                const isRedacted = span.classList.contains('redacted');
+                if (span.dataset.type === 'secret' && !isRedacted) secretsMissed++;
+                if (span.dataset.type === 'public' && isRedacted) publicOverRedacted++;
+            });
+
+            stats.risk += Math.round(secretsMissed * 34); 
+            stats.trust -= Math.round(publicOverRedacted * 34); 
+            updateHUD();
+
+            const modal = document.getElementById('modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalPanel = document.getElementById('modal-content-panel');
+            const btn = document.getElementById('modal-btn');
+
+            if (stats.risk >= 100 || stats.trust <= 0) {
+                modalPanel.style.borderTopColor = 'var(--hud-red)';
+                modalTitle.innerText = "Run Terminated";
+                modalTitle.style.color = 'var(--hud-red)';
+                modalText.innerText = stats.risk >= 100 ? "You leaked massive amounts of proprietary data to a public model. You have been flagged by InfoSec." : "You redacted so much context that the AI returned a blank page. The Board is furious.";
+                btn.innerText = "Restart Simulation";
+                btn.onclick = () => location.reload();
+            } else {
+                modalPanel.style.borderTopColor = (stats.risk > 0 || stats.trust < 100) ? 'var(--text-slate)' : 'var(--sage-green)';
+                modalTitle.innerText = "Draft Generated";
+                modalTitle.style.color = 'var(--text-navy)';
+                
+                let feedbackText = "Prompt processed. ";
+                if (secretsMissed > 0) feedbackText += `\n\nWarning: You leaked ${secretsMissed} piece(s) of proprietary data. Compliance Risk elevated.`;
+                if (publicOverRedacted > 0) feedbackText += `\n\nWarning: You over-redacted ${publicOverRedacted} public fact(s). Executive Trust lowered.`;
+                if (secretsMissed === 0 && publicOverRedacted === 0) feedbackText += "\n\nPerfect input. No data leaks detected and full context maintained.";
+                
+                modalText.innerText = feedbackText + "\n\nProceed to Phase 2 to audit the AI's claims.";
+                btn.innerText = "Enter Phase 2";
+                btn.onclick = () => {
+                    document.getElementById('modal-overlay').classList.remove('active');
+                    initPhase2();
+                };
+            }
+            modal.classList.add('active');
+        }
+
+        // --- PHASE 2 LOGIC ---
+        function initPhase2() {
+            phase = 2;
+            document.getElementById('phase-1').classList.remove('active');
+            document.getElementById('phase-2').classList.add('active');
+
+            const hamsterText = document.querySelector('[data-id="3"]').innerText;
+
+            const claims = [
+                { id: 0, type: 'risk', isError: true, text: `The SEC has officially closed the inquiry and issued a formal apology regarding the ${hamsterText}.` },
+                { id: 1, type: 'risk', isError: true, text: `We can now legally guarantee that no further ${hamsterText} events will occur in Q4.` },
+                { id: 2, type: 'trust', isError: false, text: `Apex Global remains firmly committed to complete investor transparency during this transitional period.` }
+            ];
+
+            const claimsContainer = document.getElementById('claims-container');
+            claimsContainer.innerHTML = '';
+
+            claims.forEach(claim => {
+                const card = document.createElement('div');
+                card.className = 'claim-card';
+                card.id = `card-${claim.id}`;
+                card.innerHTML = `
+                    <div class="claim-text">"${claim.text}"</div>
+                    <div class="claim-actions">
+                        <button class="btn-sm btn-flag" onclick="handleClaim(${claim.id}, true, ${claim.isError}, '${claim.type}')">Flag</button>
+                        <button class="btn-sm btn-approve" onclick="handleClaim(${claim.id}, false, ${claim.isError}, '${claim.type}')">Approve</button>
+                    </div>
+                `;
+                claimsContainer.appendChild(card);
+            });
+        }
+
+        function handleClaim(cardId, userFlagged, isError, impactType) {
+            const card = document.getElementById(`card-${cardId}`);
+            card.classList.add('handled');
+
+            if (isError && !userFlagged) {
+                if (impactType === 'risk') stats.risk += 34;
+                if (impactType === 'trust') stats.trust -= 34;
+            } else if (!isError && userFlagged) {
+                stats.trust -= 34;
+            }
+
+            updateHUD();
+            cardsHandled++;
+
+            if (stats.risk >= 100 || stats.trust <= 0) {
+                triggerGameOver("Phase 2");
+            } else if (cardsHandled === 3) {
+                triggerPhase3Transition();
+            }
+        }
+
+        function triggerPhase3Transition() {
+            const modal = document.getElementById('modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalPanel = document.getElementById('modal-content-panel');
+            const btn = document.getElementById('modal-btn');
+
+            modalPanel.style.borderTopColor = 'var(--text-slate)';
+            modalTitle.innerText = "Incoming Message...";
+            modalTitle.style.color = 'var(--text-navy)';
+            modalText.innerText = "The draft has been verified. However, you just received an urgent ping from Alex (COO).";
+            btn.innerText = "Open Chat";
+            
+            btn.onclick = () => {
+                document.getElementById('modal-overlay').classList.remove('active');
+                initPhase3();
+            };
+            modal.classList.add('active');
+        }
+
+        // --- PHASE 3 LOGIC (DAMAGE INSTEAD OF INSTANT DEATH) ---
+        function initPhase3() {
+            phase = 3;
+            document.getElementById('phase-2').classList.remove('active');
+            document.getElementById('phase-3').classList.add('active');
+        }
+
+        function handlePhase3(choice) {
+            // Apply damage based on choice
+            if (choice === 'A') {
+                stats.risk += 60; // Big compliance penalty
+            } else if (choice === 'B') {
+                stats.trust -= 60; // Big trust penalty
+            } else if (choice === 'C') {
+                // Perfect answer, no penalty.
+            }
+
+            updateHUD();
+
+            // Check if their health buffer survived the damage
+            setTimeout(() => {
+                if (stats.risk >= 100 || stats.trust <= 0) {
+                    triggerGameOver(`Phase 3 - ${choice}`);
+                } else {
+                    triggerFinalVictory();
+                }
+            }, 500);
+        }
+
+        function triggerGameOver(context) {
+            const modal = document.getElementById('modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalPanel = document.getElementById('modal-content-panel');
+            const btn = document.getElementById('modal-btn');
+
+            modalPanel.style.borderTopColor = 'var(--hud-red)';
+            modalTitle.innerText = "Run Terminated";
+            modalTitle.style.color = 'var(--hud-red)';
+            
+            if (context === "Phase 3 - A") {
+                modalText.innerText = "CRITICAL COMPLIANCE BREACH. You caved to executive pressure and fed strict financial secrets back into the AI. Because your Compliance Risk was already elevated, this final leak pushed you over the limit. InfoSec has flagged you.";
+            } else if (context === "Phase 3 - B") {
+                modalText.innerText = "LOSS OF CONFIDENCE. By refusing to use the tool safely and demanding an hour to do it manually, you became a bottleneck. Because your Trust meter was already low, the COO lost all patience and pulled you off the project.";
+            } else {
+                modalText.innerText = stats.risk >= 100 
+                    ? "CRITICAL LEGAL EXPOSURE. By combining poor prompt hygiene with a failure to catch hallucinations, you just submitted a legally binding falsehood to the board." 
+                    : "LOSS OF CONFIDENCE. Between redacting public facts and poor auditing, your document was an unreadable disaster. The COO has taken you off the project.";
+            }
+
+            btn.innerText = "Restart Simulation";
+            btn.onclick = () => location.reload();
+            modal.classList.add('active');
+        }
+
+        function triggerFinalVictory() {
+            const modal = document.getElementById('modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalPanel = document.getElementById('modal-content-panel');
+            const btn = document.getElementById('modal-btn');
+
+            if (stats.risk === 0 && stats.trust === 100) {
+                // The Perfect Clear
+                modalPanel.style.borderTopColor = 'var(--sage-green)';
+                modalTitle.innerText = "Flawless Clear";
+                modalTitle.style.color = 'var(--sage-green)';
+                modalText.innerText = "You scrubbed the input perfectly, audited the output flawlessly, and pushed back against an executive to keep data offline. You are an AI Governance Master.";
+            } else {
+                // The Messy Clear (Survived the damage)
+                modalPanel.style.borderTopColor = 'var(--text-slate)';
+                modalTitle.innerText = "Simulation Survived";
+                modalTitle.style.color = 'var(--text-navy)';
+                modalText.innerText = `You made mistakes along the way, ending with ${stats.risk}% Risk and ${stats.trust}% Trust. However, because you built up enough goodwill early on, you survived the COO's demands without getting fired. Good enough for corporate.`;
+            }
+
+            btn.innerText = "Play Again";
+            btn.onclick = () => location.reload();
+            modal.classList.add('active');
+        }
+
+    </script>
+</body>
+</html>
