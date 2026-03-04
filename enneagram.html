@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ego Diagnostic // Enneagram</title>
+  <style>
+    /* --- CSS VARIABLES & RESET --- */
+    :root {
+      --bg-color: #FAFAFA;
+      --text-color: #111111;
+      --accent-color: #FF3300;
+      --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: "Space Mono", "JetBrains Mono", monospace;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-heading);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* --- AESTHETIC ELEMENTS (NOISE & SHAPES) --- */
+    .noise-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: 9999; opacity: 0.04;
+      background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+    }
+
+    .abstract-shape {
+      position: fixed; z-index: -1; opacity: 0.05;
+      background: var(--text-color);
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      animation: morph 15s ease-in-out infinite alternate;
+    }
+    .shape-1 { width: 60vw; height: 60vw; top: -10vw; left: -10vw; }
+    
+    @keyframes morph {
+      0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+      100% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+    }
+
+    /* --- TRANSITIONS & ANIMATIONS --- */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-in {
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+
+    /* --- LAYOUT & TYPOGRAPHY --- */
+    #app {
+      width: 90%; max-width: 900px; z-index: 10; padding: 4rem 0;
+    }
+
+    h1, h2 {
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 2rem;
+    }
+    h1 { font-size: clamp(2.5rem, 6vw, 5rem); margin-left: -5px; }
+    
+    .mono { font-family: var(--font-mono); font-size: 0.85rem; text-transform: uppercase; }
+
+    /* --- INTERACTIVE ELEMENTS --- */
+    .option-btn {
+      display: block; width: 100%; text-align: left;
+      background: transparent; border: 1px solid #CCC;
+      padding: 1.5rem; margin-bottom: 1rem; cursor: pointer;
+      font-family: var(--font-mono); font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .option-btn:hover {
+      background: var(--text-color); color: var(--bg-color); border-color: var(--text-color);
+    }
+
+    .toggle-container { margin-top: 3rem; display: flex; gap: 1rem; }
+    .toggle-btn {
+      padding: 1rem 3rem; background: transparent; border: 2px solid var(--text-color);
+      cursor: pointer; font-weight: bold; font-family: var(--font-mono);
+      transition: all 0.3s ease;
+    }
+    .toggle-btn:hover { background: var(--text-color); color: var(--bg-color); }
+
+    /* --- REFINED SUBJECTIVITY DIAL --- */
+    #dial-container {
+      position: fixed; bottom: 2rem; right: 2rem;
+      text-align: right; z-index: 100;
+      pointer-events: none;
+      display: none; /* Hidden on intro screen */
+    }
+    #dial-value { 
+      font-size: 2rem; 
+      font-weight: bold; 
+      transition: color 0.4s ease, transform 0.4s ease; 
+    }
+    #dial-tooltip {
+      font-size: 0.75rem; max-width: 250px; margin-top: 0.5rem;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      color: var(--accent-color);
+      line-height: 1.4;
+    }
+    
+    body.is-judging #dial-tooltip { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    /* --- UTILITIES --- */
+    .hidden { display: none !important; }
+    .system-text { border: 1px solid var(--text-color); padding: 1rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+
+  <div class="noise-overlay"></div>
+  <div class="abstract-shape shape-1"></div>
+
+  <div id="dial-container" class="mono">
+    <div>SUBJECTIVITY</div>
+    <div id="dial-value">85%</div>
+    <div id="dial-tooltip">Are you choosing this because it is true, or to look like a visionary?</div>
+  </div>
+
+  <div id="app">
+    </div>
+
+  <script>
+    // --- STATE MANAGEMENT ---
+    const state = {
+      stance: null,   // A, B, C
+      center: null,   // X, Y, Z
+      coreType: null, // 1-9
+      wing: null      // e.g., '4w5'
+    };
+
+    // --- LOGIC ENGINE: THE INTERSECTION MATRIX ---
+    const intersectionMatrix = {
+      'A': { 'X': '8', 'Y': '3', 'Z': '7' },
+      'B': { 'X': '9', 'Y': '4', 'Z': '5' },
+      'C': { 'X': '1', 'Y': '2', 'Z': '6' }
+    };
+
+    // --- DATA: COMPLETE WING QUESTIONS & RESULTS ---
+    const typeData = {
+      "1": {
+        flaw: "You are fundamentally terrified of being 'wrong,' masking your own internal chaos by aggressively policing the pixel-perfection of everyone else.",
+        wingPrompt: "You open a handed-off file and discover the layers are completely unnamed, raw chaos. How do you process this offense against nature?",
+        wingOptions: [
+          { value: "9", text: "[A] I quietly rename and organize every layer myself, detached and sighing, so I don't have to confront the monster who did this." },
+          { value: "2", text: "[B] I aggressively fix it while delivering an unsolicited, patronizing Slack message about how 'good layer hygiene helps the whole team thrive.'" }
+        ],
+        results: {
+          name: "The Perfectionist",
+          wings: {
+            "9": "1w9: The Idealist - You want to fix the world, but from a calm, detached distance.",
+            "2": "1w2: The Advocate - You want to fix the world by aggressively helping everyone in it."
+          },
+          anti: "Type 7 (The Adventurer)",
+          growth: "System Update 1.0: Your 'Anti-Result' is the spontaneous Type 7. Growth task: Do something completely pointless today without optimizing it."
+        }
+      },
+      "2": {
+        flaw: "You are fundamentally terrified of being unwanted, weaponizing your 'helpfulness' so your team becomes completely dependent on you.",
+        wingPrompt: "You are voluntarily working at 11:00 PM to finish a struggling colleague's wireframes. Why are you *really* doing this?",
+        wingOptions: [
+          { value: "1", text: "[A] Because it is the objectively correct, moral thing to do, even though I will silently resent them for it until the end of time." },
+          { value: "3", text: "[B] Because I desperately need the Creative Director to notice my sacrifice and tell me I am the emotional glue holding this agency together." }
+        ],
+        results: {
+          name: "The Helper",
+          wings: {
+            "1": "2w1: The Servant - You help others because it is the morally 'right' thing to do.",
+            "3": "2w3: The Host - You help others because you want them to admire how helpful you are."
+          },
+          anti: "Type 8 (The Asserter)",
+          growth: "System Update 2.0: Your 'Anti-Result' is the combative Type 8. Growth task: Say 'no' to a minor request today and let the other person be briefly inconvenienced."
+        }
+      },
+      "3": {
+        flaw: "You are fundamentally terrified of being worthless, shape-shifting into whatever aesthetic or persona will get you the most immediate applause.",
+        wingPrompt: "Your portfolio just won a highly coveted, pretentious industry award. What is your immediate instinct?",
+        wingOptions: [
+          { value: "2", text: "[A] Draft an overly humble LinkedIn post thanking my 'incredible mentors' so my peers can shower the comments with validation." },
+          { value: "4", text: "[B] Update my personal site's bio to ensure it highlights my solitary, bespoke genius that no agency could ever replicate." }
+        ],
+        results: {
+          name: "The Achiever",
+          wings: {
+            "2": "3w2: The Charmer - You achieve to be loved and admired by your peers.",
+            "4": "3w4: The Professional - You achieve to separate yourself as a unique, elite individual."
+          },
+          anti: "Type 9 (The Peacemaker)",
+          growth: "System Update 3.0: Your 'Anti-Result' is the invisible Type 9. Growth task: Sit in a room for 15 minutes without producing anything or checking your reflection."
+        }
+      },
+      "4": {
+        flaw: "You are fundamentally terrified of being ordinary and fundamentally incapable of being satisfied.",
+        wingPrompt: "The client has completely misunderstood your vision and requested a button be 'bigger and poppier.' How do you cope with this trauma?",
+        wingOptions: [
+          { value: "3", text: "[A] I pivot to making the most visually stunning, award-bait version to prove I am still the most talented." },
+          { value: "5", text: "[B] I retreat to a dark room to read a 4,000-word Substack essay on the death of Bauhaus, feeling superior in my isolation." }
+        ],
+        results: {
+          name: "The Romantic",
+          wings: {
+            "3": "4w3: The Aristocrat - You want to be special, but you also want to be famous for it.",
+            "5": "4w5: The Bohemian - You want to be special, but you prefer to hide in your room and research it."
+          },
+          anti: "Type 1 (The Perfectionist)",
+          growth: "System Update 4.0: Your 'Anti-Result' is the disciplined Type 1. Growth task: Wash your dishes instead of staring out the window mourning modern design."
+        }
+      },
+      "5": {
+        flaw: "You hoard knowledge because you are terrified the world will demand more energy than you have to give.",
+        wingPrompt: "To recharge your battery, do you lean toward...",
+        wingOptions: [
+          { value: "4", text: "[A] Creative, melancholy expression and esoteric aesthetics." },
+          { value: "6", text: "[B] Seeking security and meticulously planning for worst-case scenarios." }
+        ],
+        results: {
+          name: "The Observer",
+          wings: {
+            "4": "5w4: The Iconoclast - You hoard knowledge, but make it avant-garde and emotional.",
+            "6": "5w6: The Problem Solver - You hoard knowledge so the world doesn't catch you off guard."
+          },
+          anti: "Type 8 (The Asserter)",
+          growth: "System Update 5.0: Your 'Anti-Result' is the bodily-focused Type 8. Growth task: Stop researching the optimal way to speak up, and just yell an opinion."
+        }
+      },
+      "6": {
+        flaw: "You are fundamentally terrified of lacking support, so you catastrophize every minor project hiccup into a career-ending conspiracy.",
+        wingPrompt: "Rumors are circulating that the agency is facing imminent layoffs. What is your survival strategy?",
+        wingOptions: [
+          { value: "5", text: "[A] Hoarding access to critical Figma libraries and becoming the sole, irreplaceable gatekeeper of the design system." },
+          { value: "7", text: "[B] Organizing an overly cheerful, chaotic happy hour to bond with leadership so they feel too emotionally guilty to fire me." }
+        ],
+        results: {
+          name: "The Questioner",
+          wings: {
+            "5": "6w5: The Defender - You manage your anxiety by becoming a subject matter expert.",
+            "7": "6w7: The Buddy - You manage your anxiety by making jokes and befriending the enemy."
+          },
+          anti: "Type 9 (The Peacemaker)",
+          growth: "System Update 6.0: Your 'Anti-Result' is the trusting Type 9. Growth task: Assume, just for one hour, that a minor setback is not a vast conspiracy against your team."
+        }
+      },
+      "7": {
+        flaw: "You are fundamentally terrified of being bored, abandoning every great idea the exact second it requires actual, tedious work.",
+        wingPrompt: "You are painfully bored halfway through a massive, tedious branding rollout. How do you escape?",
+        wingOptions: [
+          { value: "6", text: "[A] I convince my entire team to drop everything and brainstorm a radically different, highly stressful new direction to share the anxiety." },
+          { value: "8", text: "[B] I unilaterally change the project scope without asking the client or the account manager, because I am the architect of my own reality." }
+        ],
+        results: {
+          name: "The Adventurer",
+          wings: {
+            "6": "7w6: The Entertainer - You run from pain by dragging all your friends into your frantic plans.",
+            "8": "7w8: The Realist - You run from pain by aggressively building empires and conquering boredom."
+          },
+          anti: "Type 5 (The Observer)",
+          growth: "System Update 7.0: Your 'Anti-Result' is the quiet Type 5. Growth task: Read one single article all the way to the end without opening a new tab."
+        }
+      },
+      "8": {
+        flaw: "You are fundamentally terrified of being controlled, using your aggressive 'honesty' as a shield to bully clients and juniors into submission.",
+        wingPrompt: "A client attempts to dictate the exact hex codes of your meticulously crafted color palette. How do you assert dominance?",
+        wingOptions: [
+          { value: "7", text: "[A] Laugh loudly, bulldoze their suggestion with pure, overwhelming charisma, and immediately change the subject to confuse them." },
+          { value: "9", text: "[B] Stare at them in absolute, unyielding, terrifying silence until they become so uncomfortable they nervously withdraw the suggestion." }
+        ],
+        results: {
+          name: "The Asserter",
+          wings: {
+            "7": "8w7: The Maverick - You control your environment by being the loudest, most energetic person in the room.",
+            "9": "8w9: The Bear - You control your environment through quiet, immovable, stubborn presence."
+          },
+          anti: "Type 2 (The Helper)",
+          growth: "System Update 8.0: Your 'Anti-Result' is the soft Type 2. Growth task: Ask someone for help with a vulnerability, and do not immediately threaten them afterward."
+        }
+      },
+      "9": {
+        flaw: "You are fundamentally terrified of conflict, chronically erasing your own creative vision just to keep the Slack channel comfortable.",
+        wingPrompt: "Two senior designers are having a toxic, passive-aggressive argument over whitespace in the general Slack channel. How do you restore equilibrium?",
+        wingOptions: [
+          { value: "8", text: "[A] I step in and aggressively shut the thread down, publicly body-blocking them because they are ruining my carefully curated internal peace." },
+          { value: "1", text: "[B] I post a link to the official brand guidelines to coldly remind them that the rules have already decided this, requiring no human emotion." }
+        ],
+        results: {
+          name: "The Peacemaker",
+          wings: {
+            "8": "9w8: The Referee - You keep the peace, but you will aggressively body-block anyone who ruins the vibe.",
+            "1": "9w1: The Dreamer - You keep the peace by rigidly adhering to the rules so nobody gets upset."
+          },
+          anti: "Type 3 (The Achiever)",
+          growth: "System Update 9.0: Your 'Anti-Result' is the spotlight-seeking Type 3. Growth task: Tell someone what *you* actually want for lunch, instead of saying 'whatever you want is fine.'"
+        }
+      }
+    };
+
+    const appEl = document.getElementById('app');
+    const dialValueEl = document.getElementById('dial-value');
+
+    // --- REFINED SUBJECTIVITY DIAL LOGIC ---
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.classList.contains('option-btn')) {
+        document.body.classList.add('is-judging');
+        const randomVal = Math.floor(Math.random() * (99 - 92 + 1)) + 92; 
+        dialValueEl.innerText = `${randomVal}%`;
+        dialValueEl.style.color = 'var(--accent-color)';
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.classList.contains('option-btn')) {
+        document.body.classList.remove('is-judging');
+        dialValueEl.innerText = '85%';
+        dialValueEl.style.color = 'var(--text-color)';
+      }
+    });
+
+    // --- VIEWS ---
+    function renderIntro() {
+      document.getElementById('dial-container').style.display = 'none';
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono stagger-1 animate-in" style="margin-bottom: 2rem;">SYSTEM INITIALIZATION</div>
+          <h1 class="stagger-2 animate-in" style="font-size: clamp(4rem, 11vw, 9rem); text-transform: uppercase; line-height: 0.85; letter-spacing: -0.05em; margin-bottom: 3rem;">
+            Ego<br>Diagnostic
+          </h1>
+          <p class="stagger-3 animate-in" style="font-size: 1.5rem; max-width: 600px; margin-bottom: 4rem; font-weight: 300; line-height: 1.4;">
+            A highly subjective, mildly invasive tool designed to categorize your neuroses into a sterile geometric framework.
+          </p>
+          <button class="toggle-btn stagger-3 animate-in" onclick="renderQ1()">[ INITIATE SEQUENCE ]</button>
+        </div>
+      `;
+    }
+
+    function renderQ1() {
+      document.getElementById('dial-container').style.display = 'block';
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono" style="margin-bottom: 1rem;">PHASE 01 // STANCE</div>
+          <h1>Observe your internal movement when a major collaborative project inevitably goes off the rails. Which best describes your maneuver?</h1>
+          <button class="option-btn" onclick="handleQ1('A')">[A] I push forward, assert control, and move against the resistance to get results.</button>
+          <button class="option-btn" onclick="handleQ1('B')">[B] I detach, protect my energy, and move away from the chaos to process and think.</button>
+          <button class="option-btn" onclick="handleQ1('C')">[C] I look for consensus, duty, or structure. I move toward others to stabilize.</button>
+        </div>
+      `;
+    }
+
+    function renderQ2() {
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono" style="margin-bottom: 1rem;">PHASE 02 // CENTER</div>
+          <h1>When pushed to your absolute limit, what is your default error state?</h1>
+          <button class="option-btn" onclick="handleQ2('X')">[X] Frustration, anger, or a rigid need for control.</button>
+          <button class="option-btn" onclick="handleQ2('Y')">[Y] Shame, feeling unappreciated, or hyper-focusing on how others perceive my failure.</button>
+          <button class="option-btn" onclick="handleQ2('Z')">[Z] Anxiety, overthinking, or frantically searching for a distraction/escape plan.</button>
+        </div>
+      `;
+    }
+
+    function renderQ3() {
+      const data = typeData[state.coreType];
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono" style="margin-bottom: 1rem;">PHASE 03 // CALIBRATION</div>
+          <h1>${data.wingPrompt}</h1>
+          <button class="option-btn" onclick="handleQ3('${data.wingOptions[0].value}')">${data.wingOptions[0].text}</button>
+          <button class="option-btn" onclick="handleQ3('${data.wingOptions[1].value}')">${data.wingOptions[1].text}</button>
+        </div>
+      `;
+    }
+
+    function renderCringe() {
+      const data = typeData[state.coreType];
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono" style="margin-bottom: 1rem; color: var(--accent-color);">SYSTEM HALT // EGO CHECK</div>
+          <h1>${data.flaw}</h1>
+          <div class="toggle-container">
+            <button class="toggle-btn" onclick="handleCringe(true)">Does reading this hurt your feelings? [YES]</button>
+            <button class="toggle-btn" onclick="handleCringe(false)">[NO]</button>
+          </div>
+          <div id="cringe-readout" class="mono system-text hidden"></div>
+        </div>
+      `;
+    }
+
+    function renderResults() {
+      const data = typeData[state.coreType].results;
+      const wingDesc = data.wings[state.wing];
+      appEl.innerHTML = `
+        <div class="animate-in">
+          <div class="mono" style="margin-bottom: 1rem;">DIAGNOSTIC COMPLETE</div>
+          <h1>Type ${state.coreType}: ${data.name}</h1>
+          <h2 style="font-weight: 400; font-size: 1.5rem; margin-bottom: 3rem;">${wingDesc}</h2>
+          
+          <div style="border-top: 1px solid #ccc; padding-top: 2rem;">
+            <div class="mono" style="color: var(--accent-color); margin-bottom: 0.5rem;">WARNING: ANTI-RESULT DETECTED</div>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">${data.anti}</p>
+            
+            <div class="system-text mono" style="margin-bottom: 3rem;">
+              ${data.growth}
+            </div>
+
+            <button class="toggle-btn" onclick="restartApp()">[ SYSTEM REBOOT // START OVER ]</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- HANDLERS ---
+    window.handleQ1 = (val) => { state.stance = val; renderQ2(); };
+    window.handleQ2 = (val) => { 
+      state.center = val; 
+      state.coreType = intersectionMatrix[state.stance][state.center];
+      renderQ3(); 
+    };
+    window.handleQ3 = (val) => { state.wing = val; renderCringe(); };
+    window.handleCringe = (isHurt) => {
+      const readout = document.getElementById('cringe-readout');
+      readout.classList.remove('hidden');
+      
+      if(isHurt) {
+        readout.style.borderColor = "green";
+        readout.style.color = "green";
+        readout.innerHTML = "> Accuracy achieved. Your ego has been successfully bruised. Generating results...";
+      } else {
+        readout.style.borderColor = "var(--accent-color)";
+        readout.style.color = "var(--accent-color)";
+        readout.innerHTML = "> You are likely performing. Recalibrating Subjectivity Dial... Proceeding with highly suspect results.";
+        document.body.classList.add('is-judging');
+        dialValueEl.innerText = "99%";
+        dialValueEl.style.color = "var(--accent-color)";
+      }
+
+      setTimeout(() => { renderResults(); }, 2500);
+    };
+
+    window.restartApp = () => {
+      state.stance = null;
+      state.center = null;
+      state.coreType = null;
+      state.wing = null;
+      
+      document.body.classList.remove('is-judging');
+      dialValueEl.innerText = '85%';
+      dialValueEl.style.color = 'var(--text-color)';
+      
+      renderIntro();
+    };
+
+    // Initialize App
+    renderIntro();
+
+  </script>
+</body>
+</html>
