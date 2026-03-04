@@ -282,7 +282,7 @@
         .skill-list li { font-size: 1.05rem; margin-bottom: 0.6rem; opacity: 0.85; display: flex; align-items: center; gap: 8px; }
         .skill-list li::before { content: "•"; color: var(--accent-terracotta); font-weight: bold; }
 
-/* Video Callout Banner */
+        /* Video Callout Banner */
         .video-callout {
             max-width: 1000px;
             margin: 5rem auto 0 auto;
@@ -325,15 +325,6 @@
         .yt-link:hover {
             transform: translateX(4px);
             color: #d1663f;
-        }
-
-        @media (max-width: 768px) {
-            .video-callout {
-                flex-direction: column;
-                text-align: center;
-                padding: 2rem;
-                margin-top: 3rem;
-            }
         }
 
         /* Footer Styles */
@@ -388,6 +379,50 @@
             opacity: 0.6;
         }
 
+        /* --- Easter Egg Styles --- */
+        .glitch-text {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(253, 251, 247, 0.4); 
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+            padding: 0 4px;
+        }
+
+        .glitch-text:hover {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace;
+            color: var(--text-burgundy);
+            background: var(--bg-cream);
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+        /* Full screen transition overlay */
+        #glitch-overlay {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh;
+            background: #FAFAFA; /* The diagnostic app background color */
+            z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; 
+            transition: opacity 0.4s ease-in;
+        }
+
+        #glitch-overlay.active {
+            opacity: 1; 
+            pointer-events: all;
+        }
+
+        .glitch-msg {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: clamp(1rem, 3vw, 2rem); 
+            color: #111111;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 20px;
+        }
+
         /* Mobile Breakpoints */
         @media (max-width: 900px) {
             .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 3rem; gap: 2rem;}
@@ -397,6 +432,7 @@
             #works h2, #about h2 { font-size: 2.2rem; }
             #works, #about { padding: 4rem 5%; }
             footer { padding: 3rem 5% 1.5rem 5%; }
+            .video-callout { flex-direction: column; text-align: center; padding: 2rem; margin-top: 3rem; }
         }
     </style>
 </head>
@@ -556,7 +592,7 @@
                 </div>
             </article>
 
-<article class="work-card">
+            <article class="work-card">
                 <div class="work-image-container">
                     <div class="browser-mockup">
                         <div class="mockup-header">
@@ -632,7 +668,8 @@
                 </div>
             </article>
         </div>
-<div class="video-callout">
+        
+        <div class="video-callout">
             <div class="video-text">
                 <h3>Looking for video samples?</h3>
                 <p>I also produce, direct, and edit multimedia learning content.</p>
@@ -726,15 +763,46 @@
             </a>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Cynthia. Designed and vibe-coded with care.</p>
+            <p>&copy; 2026 Cynthia. Designed and <span id="easter-egg-trigger" class="glitch-text">vibe-coded</span> with care.</p>
         </div>
     </footer>
+
+    <script>
+        const trigger = document.getElementById('easter-egg-trigger');
+        let clickCount = 0;
+
+        if(trigger) {
+            trigger.addEventListener('click', (e) => {
+                clickCount++;
+                
+                if (clickCount === 1) {
+                    // Escalation warning
+                    trigger.innerText = "[ANOMALY DETECTED. CLICK AGAIN TO DIAGNOSE]";
+                    trigger.style.fontFamily = "'Space Mono', monospace";
+                    trigger.style.color = "var(--text-burgundy)";
+                    trigger.style.background = "var(--bg-cream)";
+                    trigger.style.fontWeight = "bold";
+                    trigger.style.borderBottom = "none";
+                    trigger.style.padding = "2px 8px";
+                } else if (clickCount === 2) {
+                    // Fire the transition
+                    const overlay = document.createElement('div');
+                    overlay.id = 'glitch-overlay';
+                    overlay.innerHTML = '<div class="glitch-msg">> VIBE CHECK FAILED. INITIATING EGO DIAGNOSTIC...</div>';
+                    document.body.appendChild(overlay);
+
+                    // Force browser reflow to trigger CSS animation
+                    setTimeout(() => {
+                        overlay.classList.add('active');
+                    }, 10);
+
+                    // Redirect to the Enneagram app after 2.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'enneagram.html'; 
+                    }, 2500);
+                }
+            });
+        }
+    </script>
 </body>
-
 </html>
-
-
-
-
-
-
