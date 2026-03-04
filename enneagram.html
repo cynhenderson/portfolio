@@ -123,6 +123,24 @@
     /* --- UTILITIES --- */
     .hidden { display: none !important; }
     .system-text { border: 1px solid var(--text-color); padding: 1rem; margin-top: 2rem; }
+
+/* --- ESCAPE HATCH (FOOTER) --- */
+    #escape-hatch {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      text-decoration: none;
+      color: var(--text-color);
+      opacity: 0.4;
+      z-index: 100;
+      transition: opacity 0.3s ease, color 0.3s ease;
+    }
+    
+    #escape-hatch:hover {
+      opacity: 1;
+      color: var(--accent-color);
+    }
+
   </style>
 </head>
 <body>
@@ -136,6 +154,7 @@
     <div id="dial-tooltip">Are you choosing this because it is true, or to look like a visionary?</div>
   </div>
 
+<a href="index.html" id="escape-hatch" class="mono">// CYNHENDERSON.COM</a>
   <div id="app">
     </div>
 
