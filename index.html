@@ -380,7 +380,7 @@
         }
 
         /* --- Easter Egg Styles --- */
-        .glitch-text {
+.glitch-text {
             cursor: pointer;
             border-bottom: 1px dashed rgba(253, 251, 247, 0.4); 
             transition: all 0.2s ease;
@@ -397,16 +397,20 @@
             font-weight: bold;
         }
 
-        /* Full screen transition overlay */
+/* Full screen transition overlay */
+/* Smooth, clinical whiteout transition */
         #glitch-overlay {
             position: fixed; 
             top: 0; left: 0; 
             width: 100vw; height: 100vh;
-            background: #FAFAFA; /* The diagnostic app background color */
+            background: #FAFAFA; /* Matches the diagnostic app */
             z-index: 99999;
-            display: flex; justify-content: center; align-items: center;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
             opacity: 0; pointer-events: none; 
-            transition: opacity 0.4s ease-in;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         #glitch-overlay.active {
@@ -416,13 +420,32 @@
 
         .glitch-msg {
             font-family: 'Space Mono', 'JetBrains Mono', monospace; 
-            font-size: clamp(1rem, 3vw, 2rem); 
+            font-size: 1.1rem; 
             color: #111111;
-            text-transform: uppercase;
             text-align: center;
-            padding: 20px;
+        }
+        .glitch-sub {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: 1rem;
+            color: #FAFAFA;
+            margin-top: 1rem;
+            opacity: 0.7;
         }
 
+/* A minimal, clinical loading spinner */
+        .system-spinner {
+            margin-top: 2rem;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-top-color: #FF3300;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         /* Mobile Breakpoints */
         @media (max-width: 900px) {
             .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 3rem; gap: 2rem;}
@@ -767,12 +790,13 @@
         </div>
     </footer>
 
-    <script>
+<script>
         const trigger = document.getElementById('easter-egg-trigger');
         let clickCount = 0;
 
         if(trigger) {
             trigger.addEventListener('click', (e) => {
+                e.preventDefault();
                 clickCount++;
                 
                 if (clickCount === 1) {
@@ -785,21 +809,28 @@
                     trigger.style.borderBottom = "none";
                     trigger.style.padding = "2px 8px";
                 } else if (clickCount === 2) {
-                    // Fire the transition
+                    // Lock the screen so they can't scroll away
+                    document.body.style.overflow = 'hidden';
+
+                    // Build the clean overlay
                     const overlay = document.createElement('div');
                     overlay.id = 'glitch-overlay';
-                    overlay.innerHTML = '<div class="glitch-msg">> VIBE CHECK FAILED. INITIATING EGO DIAGNOSTIC...</div>';
+                    overlay.innerHTML = `
+                        <div class="glitch-msg">> Suspending portfolio aesthetic...</div>
+                        <div class="glitch-msg" style="margin-top: 0.5rem; color: #FF3300;">> Routing to diagnostic server...</div>
+                        <div class="system-spinner"></div>
+                    `;
                     document.body.appendChild(overlay);
 
-                    // Force browser reflow to trigger CSS animation
+                    // Fade it in smoothly
                     setTimeout(() => {
                         overlay.classList.add('active');
-                    }, 10);
+                    }, 50);
 
-                    // Redirect to the Enneagram app after 2.5 seconds
+                    // Redirect to the Enneagram app after 2.2 seconds
                     setTimeout(() => {
                         window.location.href = 'enneagram.html'; 
-                    }, 2500);
+                    }, 2200);
                 }
             });
         }
