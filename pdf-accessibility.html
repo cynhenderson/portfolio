@@ -1,0 +1,989 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude PDF Accessibility</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Matte Gouache Palette */
+    --bg: #1c1b1a;
+    --surface: #262422;
+    --surface-hover: #312e2c;
+    --border: #3b3734;
+    --text: #f4efe6;
+    --text-secondary: #c9c3ba;
+    --text-dim: #9e9991;
+    --accent: #c48b52;
+    --accent-glow: rgba(196, 139, 82, 0.25);
+    --green: #6b8e73;
+    --green-glow: rgba(107, 142, 115, 0.25);
+    --step-dot: #c48b52;
+    --step-dot-inactive: #423e3b;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Subtle Canvas Noise Texture */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+  }
+
+  .simulation-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100vw;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === TOP BAR === */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 36px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .top-bar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .top-bar-subtitle {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-top: 3px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--step-dot-inactive);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+  }
+
+  .step-dot.active {
+    background: var(--step-dot);
+    box-shadow: 0 0 12px var(--accent-glow);
+    transform: scale(1.4);
+  }
+
+  .step-dot.completed {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green-glow);
+  }
+
+  .step-counter {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-left: 14px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  /* === MAIN CONTENT === */
+  .main-area {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* === SCREENSHOT PANEL === */
+  .screenshot-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, #2c2a28 0%, #1c1b1a 80%);
+  }
+
+  .screenshot-container {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.3),
+      0 30px 60px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(244, 239, 230, 0.03);
+  }
+
+  .screenshot-container img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    transition: opacity 0.6s ease;
+  }
+
+  /* Cinematic Pulse ring */
+  .pulse-ring {
+    position: absolute;
+    border: 1.5px solid rgba(196, 139, 82, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 12px var(--accent-glow);
+    opacity: 0;
+    z-index: 15;
+    pointer-events: none;
+  }
+
+  .pulse-ring.visible {
+    animation: pulseRing 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseRing {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.02); }
+  }
+
+  /* === DRAG & DROP OVERLAY === */
+  .drag-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .drag-pdf-icon {
+    position: absolute;
+    width: 72px;
+    height: 88px;
+    cursor: grab;
+    pointer-events: auto;
+    z-index: 35;
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .drag-pdf-icon:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+  }
+
+  .drag-pdf-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .drop-zone {
+    position: absolute;
+    border: 2px dashed rgba(196, 139, 82, 0.6);
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .drop-zone.highlight {
+    opacity: 1;
+    background: rgba(196, 139, 82, 0.08);
+    border-color: var(--accent);
+  }
+
+  .drop-zone.success {
+    border-color: var(--green);
+    background: rgba(107, 142, 115, 0.15);
+    opacity: 1;
+  }
+
+  .drop-zone-label {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-weight: 500;
+  }
+
+  .drop-zone.highlight .drop-zone-label {
+    opacity: 1;
+  }
+
+  /* === AUTOMATED DRAG ANIMATION === */
+  .drag-pdf-icon.animate-fly {
+    animation: flyToDrop 1.2s ease-in-out forwards;
+  }
+
+  @keyframes flyToDrop {
+    0% {
+      left: 4%;
+      top: 4%;
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      left: 48%;
+      top: 52%;
+      transform: scale(0.7) rotate(-6deg);
+      opacity: 0;
+    }
+  }
+
+  /* === NEW SUBTITLE BOTTOM NAV === */
+  .bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 36px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 10;
+    position: relative; /* For keyboard hint anchoring */
+    min-height: 140px;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+  }
+
+  .nav-side {
+    flex: 0 0 120px;
+    display: flex;
+  }
+
+  .nav-side.right {
+    justify-content: flex-end;
+  }
+
+  .nav-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    margin: 0 40px;
+    max-width: 800px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .nav-center.fade-out {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .callout-step-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .callout-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .callout-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .callout-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .callout-hint {
+    margin-top: 12px;
+    padding: 6px 16px;
+    background: rgba(196, 139, 82, 0.08);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    border: 1px solid rgba(196, 139, 82, 0.2);
+    display: inline-block;
+  }
+  
+  .nav-context {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  /* Keyboard hint moved to float above the right side of the nav bar */
+  .keyboard-hint {
+    position: absolute;
+    top: -36px;
+    right: 36px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+    z-index: 5;
+    letter-spacing: 0.02em;
+  }
+
+  kbd {
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+
+  /* Buttons */
+  .nav-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-hover);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    background: #3c3835;
+    border-color: #504b47;
+  }
+
+  .nav-btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: transparent;
+  }
+
+  .nav-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #1a1511; 
+    font-weight: 600;
+  }
+
+  .nav-btn.primary:hover {
+    background: #d69d65;
+    box-shadow: 0 4px 15px var(--accent-glow);
+  }
+
+  /* === FADE TRANSITIONS === */
+  .slide-enter {
+    animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; filter: blur(4px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  .slide-exit {
+    animation: fadeOut 0.3s cubic-bezier(0.8, 0.2, 0.8, 1) forwards;
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; filter: blur(0); }
+    to { opacity: 0; filter: blur(4px); }
+  }
+
+  /* === INTRO OVERLAY === */
+  .intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12vw;
+    transition: opacity 0.8s ease;
+  }
+
+  .intro-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .intro-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent), #966131);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+    box-shadow: 0 10px 40px var(--accent-glow);
+  }
+
+  .intro-icon svg {
+    width: 36px;
+    height: 36px;
+    fill: #1a1511;
+  }
+
+  .intro-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .intro-desc {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    text-align: center;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  .start-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 16px 54px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: #1a1511;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px var(--accent-glow);
+  }
+
+  .start-btn:hover {
+    background: #d69d65;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px var(--accent-glow);
+  }
+
+  .start-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px var(--accent-glow);
+  }
+
+  /* === COMPLETION OVERLAY === */
+  .completion-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(28, 27, 26, 0.95);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .completion-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .completion-check {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 40px var(--green-glow);
+    animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .completion-check svg {
+    width: 40px;
+    height: 40px;
+    stroke: #1a1511;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .completion-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .completion-desc {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 460px;
+    text-align: left;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .restart-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 14px 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .restart-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-icon">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="#1a1511" stroke-width="1.5"/></svg>
+  </div>
+  <h1 class="intro-title">RIP our million dollar idea.</h1>
+  <p class="intro-desc">"What is AI good for if it can't even make a PDF accessible?!"<br /> I tested it in Claude this weekend, and here is exactly how stupidly simple this actually is.</p>
+  <button class="start-btn" onclick="startSimulation()">See for yourself</button>
+</div>
+
+<div class="completion-overlay" id="completionOverlay">
+  <div class="completion-check">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <h2 class="completion-title">Well, that was it.</h2>
+  <p class="completion-desc">The easiest accessibility fix of all time.</p>
+  <button class="restart-btn" onclick="restartSimulation()">Start over</button>
+</div>
+
+<div class="simulation-wrapper" id="simWrapper" style="opacity:0;">
+  <div class="top-bar">
+    <div>
+      <div class="top-bar-title">PDF Accessibility with Claude</div>
+      <div class="top-bar-subtitle">Interactive Simulation</div>
+    </div>
+    <div class="step-indicator" id="stepIndicator"></div>
+  </div>
+
+  <div class="main-area">
+    <div class="screenshot-panel" id="screenshotPanel">
+      <div class="screenshot-container" id="screenshotContainer">
+        <img id="screenshotImg" src="" alt="Step screenshot" />
+        <div class="pulse-ring" id="pulseRing"></div>
+
+        <div class="drag-overlay" id="dragOverlay" style="display:none;">
+          <div class="drag-pdf-icon" id="dragPdf">
+            <svg viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="72" height="88" rx="6" fill="#b34b34"/>
+              <rect x="4" y="4" width="64" height="80" rx="4" fill="#d95c41"/>
+              <rect x="12" y="48" width="48" height="18" rx="3" fill="#b34b34"/>
+              <text x="36" y="62" text-anchor="middle" fill="#f4efe6" font-family="Arial, sans-serif" font-weight="bold" font-size="14">PDF</text>
+              <rect x="12" y="14" width="48" height="4" rx="2" fill="rgba(244,239,230,0.3)"/>
+              <rect x="12" y="24" width="36" height="4" rx="2" fill="rgba(244,239,230,0.3)"/>
+              <rect x="12" y="34" width="42" height="4" rx="2" fill="rgba(244,239,230,0.3)"/>
+            </svg>
+          </div>
+          <div class="drop-zone" id="dropZone">
+            <span class="drop-zone-label">Drop here to upload</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="keyboard-hint"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> to navigate</div>
+    
+    <div class="nav-side">
+      <button class="nav-btn" id="prevBtn" onclick="prevStep()" disabled>&#8592; Back</button>
+    </div>
+    
+    <div class="nav-center" id="navCenter">
+      <div class="callout-step-label" id="calloutLabel"></div>
+      <div class="callout-title" id="calloutTitle"></div>
+      <div class="callout-text" id="calloutText"></div>
+      <div class="nav-context" id="navContext"></div>
+      <div class="callout-hint" id="calloutHint" style="display:none;"></div>
+    </div>
+    
+    <div class="nav-side right">
+      <button class="nav-btn primary" id="nextBtn" onclick="nextStep()">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMG = {
+  1: "photos/1.png",
+  2: "photos/2.png",
+  3: "photos/3.png",
+  4: "photos/4.png",
+  5: "photos/5.png",
+  6: "photos/6.png"
+};
+
+const STEPS = [
+  {
+    img: 1,
+    label: "Step 1 of 5",
+    title: "Step 1: Do the hardest part",
+    text: "You literally just drop the file into the app. Find a PDF on your desktop and drag it into the chat box.",
+    navContext: "",
+    pulse: { left: '25%', top: '46%', width: '52%', height: '18%' },
+    animateDrag: true,
+    showPulse: true
+  },
+  {
+    img: 2,
+    label: "Step 2 of 5",
+    title: "Great job.",
+    text: "The thumbnail shows up. The file is attached. You are now halfway done with the entire process.",
+    navContext: "File attached.",
+    pulse: { left: '26%', top: '45%', width: '11%', height: '16%' },
+    showPulse: true
+  },
+  {
+    img: 3,
+    label: "Step 3 of 5",
+    title: "Just ask for what you want",
+    text: "Tell Claude to fix the accessibility issues based on standard compliance. Make sure to explicitly tell it not to change the actual visual content. That is the entire prompt. We don't even need any secret developer codes.",
+    navContext: "",
+    pulse: { left: '25.75%', top: '60%', width: '46%', height: '9%' },
+    showPulse: true
+  },
+  {
+    img: 4,
+    label: "Step 4a of 5",
+    title: "The machine thinks",
+    text: "Hit enter and Claude immediately starts checking the PDF structure. You can watch it look for missing tags and broken metadata right in the chat window.",
+    navContext: "",
+    pulse: { left: '22%', top: '40%', width: '56%', height: '42%' },
+    showPulse: true
+  },
+  {
+    img: 5,
+    label: "Step 4b of 5",
+    title: "Finding the problems",
+    text: "It spits out a list of everything wrong with the file. Missing alt text. Bad link annotations. The usual suspects. Then it just starts writing the fixes all by itself.",
+    navContext: "",
+    pulse: { left: '22%', top: '34%', width: '57%', height: '45%' },
+    showPulse: true
+  },
+  {
+    img: 6,
+    label: "Step 5 of 5",
+    title: "The final product",
+    text: "There it is. A fully accessible PDF ready to download, and the visual design is totally untouched.",
+    navContext: "",
+    showPulse: false
+  }
+];
+
+let currentStep = 0;
+let isTransitioning = false;
+
+// === FIT CONTAINER TO IMAGE ASPECT RATIO ===
+const IMG_ASPECT = 1500 / 960; 
+
+function fitContainer() {
+  const panel = document.getElementById('screenshotPanel');
+  const container = document.getElementById('screenshotContainer');
+  if (!panel || !container) return;
+
+  const panelRect = panel.getBoundingClientRect();
+  const maxW = panelRect.width * 0.96;
+  const maxH = panelRect.height * 0.96;
+
+  let w, h;
+  if (maxW / maxH > IMG_ASPECT) {
+    h = maxH;
+    w = h * IMG_ASPECT;
+  } else {
+    w = maxW;
+    h = w / IMG_ASPECT;
+  }
+
+  container.style.width = w + 'px';
+  container.style.height = h + 'px';
+}
+
+window.addEventListener('resize', fitContainer);
+
+// === ANIMATED DRAG SEQUENCE ===
+function playDragAnimation() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+
+  const dragOverlay = document.getElementById('dragOverlay');
+  const pdf = document.getElementById('dragPdf');
+  const dropZone = document.getElementById('dropZone');
+
+  // Reset state
+  pdf.classList.remove('animate-fly');
+  dropZone.classList.remove('highlight', 'success');
+  pdf.style.opacity = '1';
+  pdf.style.position = 'absolute';
+  pdf.style.left = '4%';
+  pdf.style.top = '4%';
+  pdf.style.transform = 'scale(1) rotate(0deg)';
+
+  // Position drop zone
+  dropZone.style.left = '25%';
+  dropZone.style.top = '46%';
+  dropZone.style.width = '52%';
+  dropZone.style.height = '18%';
+
+  // Show overlay and kick off animation
+  dragOverlay.style.display = 'flex';
+
+  requestAnimationFrame(() => {
+    pdf.classList.add('animate-fly');
+
+    // Drop zone highlights as PDF approaches
+    setTimeout(() => { dropZone.classList.add('highlight'); }, 500);
+    setTimeout(() => {
+      dropZone.classList.remove('highlight');
+      dropZone.classList.add('success');
+    }, 900);
+
+    // Clean up and advance
+    setTimeout(() => {
+      pdf.classList.remove('animate-fly');
+      dragOverlay.style.display = 'none';
+      dropZone.classList.remove('highlight', 'success');
+      pdf.style.opacity = '1';
+      pdf.style.transform = 'scale(1) rotate(0deg)';
+      isTransitioning = false;
+      transitionStep(currentStep + 1);
+    }, 1400);
+  });
+}
+
+// === STEP NAVIGATION ===
+function buildDots() {
+  const container = document.getElementById('stepIndicator');
+  container.innerHTML = '';
+  STEPS.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToStep(i);
+    container.appendChild(dot);
+  });
+  const counter = document.createElement('span');
+  counter.className = 'step-counter';
+  counter.id = 'stepCounter';
+  counter.textContent = '1 / ' + STEPS.length;
+  container.appendChild(counter);
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  const img = document.getElementById('screenshotImg');
+  const navCenter = document.getElementById('navCenter');
+  const pulse = document.getElementById('pulseRing');
+  const dragOverlay = document.getElementById('dragOverlay');
+  const hintEl = document.getElementById('calloutHint');
+  const contextEl = document.getElementById('navContext');
+
+  // Image
+  img.src = IMG[step.img];
+  fitContainer();
+
+  // Subtitle content
+  document.getElementById('calloutLabel').textContent = step.label;
+  document.getElementById('calloutTitle').textContent = step.title;
+  document.getElementById('calloutText').innerHTML = step.text;
+
+  // Hint
+  if (step.hint) {
+    hintEl.textContent = step.hint;
+    hintEl.style.display = 'inline-block';
+  } else {
+    hintEl.style.display = 'none';
+  }
+
+  // Pulse ring
+  if (step.showPulse && step.pulse) {
+    pulse.style.left = step.pulse.left;
+    pulse.style.top = step.pulse.top;
+    pulse.style.width = step.pulse.width;
+    pulse.style.height = step.pulse.height;
+    pulse.style.display = 'block';
+  } else {
+    pulse.style.display = 'none';
+  }
+
+  // Nav context
+  if (step.navContext) {
+    contextEl.textContent = step.navContext;
+    contextEl.style.display = 'block';
+  } else {
+    contextEl.style.display = 'none';
+  }
+
+  // Buttons
+  document.getElementById('prevBtn').disabled = currentStep === 0;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.display = '';
+  if (currentStep === STEPS.length - 1) {
+    nextBtn.textContent = 'Finish \u2713';
+  } else {
+    nextBtn.innerHTML = 'Next &#8594;';
+  }
+
+  // Hide drag overlay (only shown during animation)
+  dragOverlay.style.display = 'none';
+
+  // Dots
+  const dots = document.querySelectorAll('.step-dot');
+  dots.forEach((d, i) => {
+    d.className = 'step-dot';
+    if (i < currentStep) d.classList.add('completed');
+    if (i === currentStep) d.classList.add('active');
+  });
+  document.getElementById('stepCounter').textContent = (currentStep + 1) + ' / ' + STEPS.length;
+
+  // Animate elements back in
+  setTimeout(() => {
+    navCenter.classList.remove('fade-out');
+    if (step.showPulse) pulse.classList.add('visible');
+  }, 100);
+}
+
+function transitionStep(newStep) {
+  if (isTransitioning || newStep < 0 || newStep >= STEPS.length) return;
+  isTransitioning = true;
+
+  const navCenter = document.getElementById('navCenter');
+  const pulse = document.getElementById('pulseRing');
+  const container = document.getElementById('screenshotContainer');
+
+  navCenter.classList.add('fade-out');
+  pulse.classList.remove('visible');
+  container.classList.add('slide-exit');
+
+  setTimeout(() => {
+    container.classList.remove('slide-exit');
+    currentStep = newStep;
+    updateUI();
+    container.classList.add('slide-enter');
+    
+    setTimeout(() => {
+      container.classList.remove('slide-enter');
+      isTransitioning = false;
+    }, 400); 
+  }, 300); 
+}
+
+function nextStep() {
+  if (currentStep === STEPS.length - 1) {
+    document.getElementById('completionOverlay').classList.add('visible');
+    return;
+  }
+  if (STEPS[currentStep].animateDrag) {
+    playDragAnimation();
+    return;
+  }
+  transitionStep(currentStep + 1);
+}
+
+function prevStep() {
+  transitionStep(currentStep - 1);
+}
+
+function goToStep(i) {
+  transitionStep(i);
+}
+
+function startSimulation() {
+  document.getElementById('introOverlay').classList.add('hidden');
+  const wrapper = document.getElementById('simWrapper');
+  wrapper.style.opacity = '1';
+  wrapper.style.transition = 'opacity 0.8s ease';
+  buildDots();
+  fitContainer();
+  updateUI();
+}
+
+function restartSimulation() {
+  document.getElementById('completionOverlay').classList.remove('visible');
+  currentStep = 0;
+  updateUI();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('introOverlay').classList.contains('hidden')) {
+    if (e.key === 'Enter') startSimulation();
+    return;
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') nextStep();
+  if (e.key === 'ArrowLeft') prevStep();
+});
+</script>
+</body>
+</html>
