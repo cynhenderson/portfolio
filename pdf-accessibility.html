@@ -139,7 +139,7 @@
   .screenshot-container {
     position: relative;
     border-radius: 14px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow:
       0 10px 30px rgba(0,0,0,0.3),
       0 30px 60px rgba(0,0,0,0.5),
@@ -266,103 +266,86 @@
     }
   }
 
-  /* === NEW SUBTITLE BOTTOM NAV === */
-  .bottom-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px 36px;
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    z-index: 10;
-    position: relative; /* For keyboard hint anchoring */
-    min-height: 140px;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-  }
-
-  .nav-side {
-    flex: 0 0 120px;
-    display: flex;
-  }
-
-  .nav-side.right {
-    justify-content: flex-end;
-  }
-
-  .nav-center {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    margin: 0 40px;
-    max-width: 800px;
+  /* === CALLOUT CARD (Tutorial-style) === */
+  .callout-card {
+    position: absolute;
+    z-index: 20;
+    width: 320px;
+    background: rgba(38, 36, 34, 0.94);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
-  .nav-center.fade-out {
+  .callout-card.fade-out {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
 
-  .callout-step-label {
-    font-size: 0.75rem;
+  .callout-card .callout-step-label {
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     color: var(--accent);
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
-  .callout-title {
+  .callout-card .callout-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
+    font-size: 1.15rem;
     color: var(--text);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.01em;
   }
 
-  .callout-text {
-    font-size: 1rem;
-    line-height: 1.6;
+  .callout-card .callout-text {
+    font-size: 0.88rem;
+    line-height: 1.55;
     color: var(--text-secondary);
   }
 
-  .callout-text strong {
+  .callout-card .callout-text strong {
     color: var(--text);
     font-weight: 500;
   }
 
-  .callout-hint {
-    margin-top: 12px;
-    padding: 6px 16px;
+  .callout-card .callout-hint {
+    margin-top: 10px;
+    padding: 5px 14px;
     background: rgba(196, 139, 82, 0.08);
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--accent);
     border: 1px solid rgba(196, 139, 82, 0.2);
     display: inline-block;
   }
-  
-  .nav-context {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-top: 8px;
-    font-weight: 500;
-    text-align: left;
+
+  .callout-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
   }
 
-  /* Keyboard hint moved to float above the right side of the nav bar */
+  .callout-nav .nav-btn {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+  }
+
+  /* Keyboard hint in top bar */
   .keyboard-hint {
-    position: absolute;
-    top: -36px;
-    right: 36px;
     font-size: 0.75rem;
     color: var(--text-dim);
     opacity: 0.6;
-    z-index: 5;
     letter-spacing: 0.02em;
+    margin-left: 18px;
   }
 
   kbd {
@@ -627,7 +610,10 @@
       <div class="top-bar-title">PDF Accessibility with Claude</div>
       <div class="top-bar-subtitle">Interactive Simulation</div>
     </div>
-    <div class="step-indicator" id="stepIndicator"></div>
+    <div style="display:flex;align-items:center;">
+      <div class="step-indicator" id="stepIndicator"></div>
+      <div class="keyboard-hint"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> to navigate</div>
+    </div>
   </div>
 
   <div class="main-area">
@@ -635,6 +621,17 @@
       <div class="screenshot-container" id="screenshotContainer">
         <img id="screenshotImg" src="" alt="Step screenshot" />
         <div class="pulse-ring" id="pulseRing"></div>
+
+        <div class="callout-card" id="calloutCard">
+          <div class="callout-step-label" id="calloutLabel"></div>
+          <div class="callout-title" id="calloutTitle"></div>
+          <div class="callout-text" id="calloutText"></div>
+          <div class="callout-hint" id="calloutHint" style="display:none;"></div>
+          <div class="callout-nav">
+            <button class="nav-btn" id="prevBtn" onclick="prevStep()" disabled>&#8592; Back</button>
+            <button class="nav-btn primary" id="nextBtn" onclick="nextStep()">Next &#8594;</button>
+          </div>
+        </div>
 
         <div class="drag-overlay" id="dragOverlay" style="display:none;">
           <div class="drag-pdf-icon" id="dragPdf">
@@ -656,25 +653,6 @@
     </div>
   </div>
 
-  <div class="bottom-nav">
-    <div class="keyboard-hint"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> to navigate</div>
-    
-    <div class="nav-side">
-      <button class="nav-btn" id="prevBtn" onclick="prevStep()" disabled>&#8592; Back</button>
-    </div>
-    
-    <div class="nav-center" id="navCenter">
-      <div class="callout-step-label" id="calloutLabel"></div>
-      <div class="callout-title" id="calloutTitle"></div>
-      <div class="callout-text" id="calloutText"></div>
-      <div class="nav-context" id="navContext"></div>
-      <div class="callout-hint" id="calloutHint" style="display:none;"></div>
-    </div>
-    
-    <div class="nav-side right">
-      <button class="nav-btn primary" id="nextBtn" onclick="nextStep()">Next &#8594;</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -693,8 +671,8 @@ const STEPS = [
     label: "Step 1 of 5",
     title: "Step 1: Do the hardest part",
     text: "You literally just drop the file into the app. Find a PDF on your desktop and drag it into the chat box.",
-    navContext: "",
     pulse: { left: '25%', top: '46%', width: '52%', height: '18%' },
+    callout: { right: '2%', top: '6%' },
     animateDrag: true,
     showPulse: true
   },
@@ -703,8 +681,8 @@ const STEPS = [
     label: "Step 2 of 5",
     title: "Great job.",
     text: "The thumbnail shows up. The file is attached. You are now halfway done with the entire process.",
-    navContext: "File attached.",
     pulse: { left: '26%', top: '45%', width: '11%', height: '16%' },
+    callout: { left: '40%', top: '35%' },
     showPulse: true
   },
   {
@@ -712,8 +690,8 @@ const STEPS = [
     label: "Step 3 of 5",
     title: "Just ask for what you want",
     text: "Tell Claude to fix the accessibility issues based on standard compliance. Make sure to explicitly tell it not to change the actual visual content. That is the entire prompt. We don't even need any secret developer codes.",
-    navContext: "",
     pulse: { left: '25.75%', top: '60%', width: '46%', height: '9%' },
+    callout: { right: '2%', top: '18%' },
     showPulse: true
   },
   {
@@ -721,8 +699,8 @@ const STEPS = [
     label: "Step 4a of 5",
     title: "The machine thinks",
     text: "Hit enter and Claude immediately starts checking the PDF structure. You can watch it look for missing tags and broken metadata right in the chat window.",
-    navContext: "",
     pulse: { left: '22%', top: '40%', width: '56%', height: '42%' },
+    callout: { right: '2%', top: '4%' },
     showPulse: true
   },
   {
@@ -730,8 +708,8 @@ const STEPS = [
     label: "Step 4b of 5",
     title: "Finding the problems",
     text: "It spits out a list of everything wrong with the file. Missing alt text. Bad link annotations. The usual suspects. Then it just starts writing the fixes all by itself.",
-    navContext: "",
     pulse: { left: '22%', top: '34%', width: '57%', height: '45%' },
+    callout: { right: '2%', top: '2%' },
     showPulse: true
   },
   {
@@ -739,7 +717,7 @@ const STEPS = [
     label: "Step 5 of 5",
     title: "The final product",
     text: "There it is. A fully accessible PDF ready to download, and the visual design is totally untouched.",
-    navContext: "",
+    callout: { right: '4%', top: '20%' },
     showPulse: false
   }
 ];
@@ -844,17 +822,16 @@ function buildDots() {
 function updateUI() {
   const step = STEPS[currentStep];
   const img = document.getElementById('screenshotImg');
-  const navCenter = document.getElementById('navCenter');
+  const card = document.getElementById('calloutCard');
   const pulse = document.getElementById('pulseRing');
   const dragOverlay = document.getElementById('dragOverlay');
   const hintEl = document.getElementById('calloutHint');
-  const contextEl = document.getElementById('navContext');
 
   // Image
   img.src = IMG[step.img];
   fitContainer();
 
-  // Subtitle content
+  // Callout content
   document.getElementById('calloutLabel').textContent = step.label;
   document.getElementById('calloutTitle').textContent = step.title;
   document.getElementById('calloutText').innerHTML = step.text;
@@ -867,6 +844,11 @@ function updateUI() {
     hintEl.style.display = 'none';
   }
 
+  // Position callout card
+  card.style.left = step.callout.left || 'auto';
+  card.style.right = step.callout.right || 'auto';
+  card.style.top = step.callout.top || 'auto';
+
   // Pulse ring
   if (step.showPulse && step.pulse) {
     pulse.style.left = step.pulse.left;
@@ -876,14 +858,6 @@ function updateUI() {
     pulse.style.display = 'block';
   } else {
     pulse.style.display = 'none';
-  }
-
-  // Nav context
-  if (step.navContext) {
-    contextEl.textContent = step.navContext;
-    contextEl.style.display = 'block';
-  } else {
-    contextEl.style.display = 'none';
   }
 
   // Buttons
@@ -910,7 +884,7 @@ function updateUI() {
 
   // Animate elements back in
   setTimeout(() => {
-    navCenter.classList.remove('fade-out');
+    card.classList.remove('fade-out');
     if (step.showPulse) pulse.classList.add('visible');
   }, 100);
 }
@@ -919,11 +893,11 @@ function transitionStep(newStep) {
   if (isTransitioning || newStep < 0 || newStep >= STEPS.length) return;
   isTransitioning = true;
 
-  const navCenter = document.getElementById('navCenter');
+  const card = document.getElementById('calloutCard');
   const pulse = document.getElementById('pulseRing');
   const container = document.getElementById('screenshotContainer');
 
-  navCenter.classList.add('fade-out');
+  card.classList.add('fade-out');
   pulse.classList.remove('visible');
   container.classList.add('slide-exit');
 
