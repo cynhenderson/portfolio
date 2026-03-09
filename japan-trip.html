@@ -45,6 +45,7 @@
             background: rgba(249, 247, 242, 0.9); /* Translucent parchment */
             padding: 20px;
             border-radius: 12px;
+            transition: background 0.35s ease, border-left-color 0.35s ease;
             border-left: 4px solid var(--accent-primary);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             width: 100%;
@@ -247,7 +248,7 @@
 
     <header class="hero">
         <div class="hero-overlay">
-            <h1>Tokyo Spring</h1>
+            <h1>Hendersons in Tokyo</h1>
             <p>April 10 – 17, 2026</p>
         </div>
     </header>
@@ -935,6 +936,8 @@
     <script>
         const pills = document.querySelectorAll('.day-pill');
         const cards = document.querySelectorAll('.zen-card');
+        const heroTitle = document.querySelector('.hero-overlay h1');
+        const heroOverlay = document.querySelector('.hero-overlay');
 
         pills.forEach(pill => {
             pill.addEventListener('click', () => {
@@ -947,6 +950,17 @@
                 cards.forEach(card => {
                     card.style.display = card.id === target ? 'block' : 'none';
                 });
+
+                // Swap hero title + overlay color for "our days"
+                if (pill.classList.contains('our-day')) {
+                    heroTitle.textContent = 'Castros in Tokyo';
+                    heroOverlay.style.background = 'rgba(224, 237, 246, 0.92)';
+                    heroOverlay.style.borderLeftColor = '#7A9BB5';
+                } else {
+                    heroTitle.textContent = 'Hendersons in Tokyo';
+                    heroOverlay.style.background = '';
+                    heroOverlay.style.borderLeftColor = '';
+                }
 
                 // Scroll pill into view if clipped
                 pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
