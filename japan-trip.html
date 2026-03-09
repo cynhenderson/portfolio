@@ -180,13 +180,74 @@
             margin-bottom: 15px;
             display: block;
         }
+
+        /* ── Our Days section ── */
+        .nav-divider {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            color: var(--accent-primary);
+            font-size: 0.85rem;
+            opacity: 0.5;
+            padding: 0 2px;
+            user-select: none;
+        }
+
+        .day-pill.our-day {
+            border-color: #7A9BB5;
+            color: #4a6275;
+        }
+
+        .day-pill.our-day.active {
+            background-color: #7A9BB5;
+            color: var(--bg-color);
+            border-color: #7A9BB5;
+        }
+
+        .zen-card.our-card {
+            border-top-color: #A8C4DB;
+        }
+
+        .zen-card.our-card h2 {
+            color: #4a6275;
+        }
+
+        /* Action-required callout */
+        .action-needed {
+            background: #FFFAF0;
+            border: 1.5px solid #D4A373;
+            border-left: 4px solid #C0832A;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 10px 0 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .action-needed .action-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #C0832A;
+            margin-bottom: 6px;
+        }
+
+        .action-needed a {
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 600;
+            color: #C0832A;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
     <header class="hero">
         <div class="hero-overlay">
-            <h1>Hendersons in Tokyo</h1>
+            <h1>Tokyo Spring</h1>
             <p>April 10 – 17, 2026</p>
         </div>
     </header>
@@ -200,6 +261,11 @@
         <button class="day-pill" data-target="day-6">Apr 15</button>
         <button class="day-pill" data-target="day-7">Apr 16</button>
         <button class="day-pill" data-target="day-8">Apr 17</button>
+        <span class="nav-divider">· · ·</span>
+        <button class="day-pill our-day" data-target="our-day-1">Apr 7</button>
+        <button class="day-pill our-day" data-target="our-day-2">Apr 8</button>
+        <button class="day-pill our-day" data-target="our-day-3">Apr 9</button>
+        <button class="day-pill our-day" data-target="our-day-4">Apr 10 AM</button>
     </nav>
 
     <main class="container">
@@ -223,14 +289,6 @@
                 ⚠️ Most shops open 7:30–8:00 AM and close around 8:00–9:00 PM.</p>
             </div>
 
-           <div class="time-block">
-                <h3>Dinner</h3>
-                <span class="tag">Low-Stress</span>
-                <p class="notes"><strong>Primary: Kineyamugimaru (udon)</strong> — comfortable and low-stress after travel. Recommended for the first night.<br><br>
-                <strong>Plan B: Kaiten sushi (conveyor belt)</strong> — call ahead to confirm proper chairs and tables.</p>
-                <a href="https://maps.google.com/?q=Kineyamugimaru+udon+narita" target="_blank" rel="noopener" class="btn-large">📍 Kineyamugimaru on Maps</a>
-            </div>
-            
             <div class="time-block">
                 <h3>Keisei Skyliner to Hotel</h3>
                 <span class="tag">Reserved Seats</span>
@@ -240,7 +298,14 @@
                 <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
             </div>
 
-
+            <div class="time-block">
+                <h3>Dinner</h3>
+                <span class="tag">Low-Stress</span>
+                <span class="tag">Near Hotel</span>
+                <p class="notes"><strong>Primary: Kineyamugimaru (udon)</strong> — comfortable and low-stress after travel. Recommended for the first night.<br><br>
+                <strong>Plan B: Kaiten sushi (conveyor belt)</strong> — call ahead to confirm proper chairs and tables.</p>
+                <a href="https://maps.google.com/?q=Kineyamugimaru+udon+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Kineyamugimaru on Maps</a>
+            </div>
         </article>
 
 
@@ -297,7 +362,7 @@
                 <h3>Evening — Dinner: Dandadan</h3>
                 <span class="tag">Ramen & Gyoza</span>
                 <p class="notes">Lively and beloved chain known for hearty ramen and crispy gyoza. A satisfying end to a full day.</p>
-                <a href="https://maps.google.com/?q=nikujiru+gyoza+dandadan+kappabashi" target="_blank" rel="noopener" class="btn-large">📍 Dandadan on Maps</a>
+                <a href="https://maps.google.com/?q=Dandadan+ramen+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Dandadan on Maps</a>
             </div>
         </article>
 
@@ -314,7 +379,7 @@
                 <span class="tag">Iconic Photo Stop</span>
                 <img src="photos/nijubashi-bridge.png" alt="Nijubashi Bridge at the Imperial Palace" class="location-photo">
                 <p class="notes">Taxi from Akihabara (~10 min). A flat 2-minute walk for the iconic Imperial Palace castle photo. Then taxi directly into north Ginza — no need to linger.</p>
-                <a href="https://maps.google.com/?q=Nijubashi+Bridge" target="_blank" rel="noopener" class="btn-large">📍 Nijubashi Bridge on Maps</a>
+                <a href="https://maps.google.com/?q=Nijubashi+Bridge+Imperial+Palace+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nijubashi Bridge on Maps</a>
             </div>
 
             <div class="time-block">
@@ -588,7 +653,7 @@
                 <h3>6:45 PM — Kingdom Hall Meeting</h3>
                 <span class="tag">~25 Min by Taxi</span>
                 <p class="notes">Taxi to Kingdom Hall at 7-3-3 Arakawa, Arakawa-ku (~25 min). Meeting at 7:30 PM.</p>
-                <a href="https://maps.app.goo.gl/GyT7SZXB3JSZrXCBA" target="_blank" rel="noopener" class="btn-large">📍 Kingdom Hall on Maps</a>
+                <a href="https://maps.google.com/?q=7-3-3+Arakawa+Arakawa-ku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Kingdom Hall on Maps</a>
             </div>
         </article>
 
@@ -679,6 +744,191 @@
             </div>
         </article>
 
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- OUR DAY 1 — Tuesday, April 7: Arrival + Odaiba -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card our-card" id="our-day-1" style="display:none">
+            <h2>Tuesday, April 7: Arrival + Odaiba</h2>
+
+            <div class="time-block">
+                <h3>2:20 PM — Land at Haneda</h3>
+                <span class="tag">Haneda Airport</span>
+                <p class="notes">Budget 60–90 minutes through immigration and baggage claim. Taxi from Haneda to Resol Stay Akihabara is ~35–45 min.</p>
+                <a href="https://maps.google.com/?q=Haneda+Airport+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Haneda Airport on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>~4:00 PM — Hotel Check-In</h3>
+                <span class="tag">Freshen Up</span>
+                <p class="notes">Check in to Resol Stay Akihabara and freshen up before heading out for the evening.</p>
+                <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>~5:30 PM — Taxi to Odaiba</h3>
+                <span class="tag">~35 Min</span>
+                <p class="notes">Taxi to DiverCity Tokyo Plaza on Odaiba. Head to the <strong>Gundam Base</strong> shop inside to browse before the evening show.</p>
+                <a href="https://maps.google.com/?q=DiverCity+Tokyo+Plaza+Odaiba" target="_blank" rel="noopener" class="btn-large">📍 DiverCity Tokyo Plaza on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Gundam Base Shop</h3>
+                <span class="tag">Inside DiverCity</span>
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Action Required Before You Go</span>
+                    Check whether the lottery system applies to your visit — some exclusive items require advance entry.
+                    <a href="https://www.gundam-base.net/news/55669.html" target="_blank" rel="noopener">→ Check Gundam Base Lottery Details</a>
+                </div>
+                <p class="notes">Largest Gunpla retail store in Tokyo — wide selection of kits, figures, and limited items. Browse before the 7 PM projection show starts.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>7:00 PM — WALL-G Projection Show</h3>
+                <span class="tag">Unicorn Gundam</span>
+                <span class="tag">Free to Watch</span>
+                <p class="notes">The <strong>WALL-G</strong> projection mapping show plays on the life-size Unicorn Gundam statue outside DiverCity. Shows run on the hour in the evening — 7 PM is the perfect slot.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Dinner — DiverCity or Odaiba Waterfront</h3>
+                <span class="tag">Flexible</span>
+                <p class="notes">DiverCity has a large restaurant floor. The Odaiba waterfront has plenty of alternatives with views of the Rainbow Bridge.</p>
+                <a href="https://maps.google.com/?q=Odaiba+restaurants+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Dining in Odaiba on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- OUR DAY 2 — Wednesday, April 8: Jimbocho + Harajuku -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card our-card" id="our-day-2" style="display:none">
+            <h2>Wednesday, April 8: Jimbocho + Harajuku</h2>
+
+            <div class="time-block">
+                <h3>Slow Morning at Hotel</h3>
+                <span class="tag">No Rush</span>
+                <p class="notes">Late start — Jimbocho bookshops open from 11 AM so no need to rush.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>11:00 AM — Jimbocho Book Town</h3>
+                <span class="tag">Used Books</span>
+                <span class="tag">English Section</span>
+                <p class="notes">Taxi to Jimbocho, Tokyo's legendary used-book district. <strong>Kitazawa Bookstore</strong> (2F) has a good English-language section. Wander the street at your own pace.</p>
+                <a href="https://maps.google.com/?q=Jinbocho+book+town+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Jimbocho on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>1:30 PM — Taxi to Harajuku</h3>
+                <span class="tag">~20 Min</span>
+                <p class="notes">Head to Harajuku for the afternoon. The route flows naturally from Laforet south through Cat Street.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Harajuku — Shopping Route</h3>
+                <span class="tag">Laforet → Cat Street</span>
+                <p class="notes">
+                    <strong>Laforet Harajuku</strong> — multi-floor fashion complex, eclectic and fun.<br><br>
+                    <strong>Kiddy Land</strong> — beloved toy and character goods store, 5 floors on Omotesando-dori.<br><br>
+                    <strong>Ura-Harajuku / Cat Street</strong> — wander the backstreets for vintage shops and independent boutiques.<br><br>
+                    <strong>PAMM-ke</strong> — cute accessories and stationery, worth a stop.<br><br>
+                    <strong>B-Side Label + Junie Moon</strong> — on the same block, stickers and kawaii goods.<br><br>
+                    <strong>Sanrio</strong> — shop-only visit, no café needed here.
+                </p>
+                <a href="https://maps.google.com/?q=Laforet+Harajuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Laforet Harajuku on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Evening — Dinner in Omotesando</h3>
+                <span class="tag">Flexible</span>
+                <p class="notes">Plenty of dinner options in Omotesando after the Harajuku shopping stretch — no need to plan ahead.</p>
+                <a href="https://maps.google.com/?q=Omotesando+restaurants+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Omotesando Dining on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- OUR DAY 3 — Thursday, April 9: Shimokitazawa + Nakano Broadway -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card our-card" id="our-day-3" style="display:none">
+            <h2>Thursday, April 9: Shimokitazawa + Nakano Broadway</h2>
+
+            <div class="time-block">
+                <h3>7:30 AM — Arashio Stable: Sumo Morning Practice</h3>
+                <span class="tag">No Reservation Needed</span>
+                <span class="tag">Street-Facing Window</span>
+                <p class="notes">Show up at the street-facing window at 2-47-2 Hamacho, Nihonbashi — no tickets, no booking. Watch wrestlers train live on the dohyo from 7:30–9:30 AM.<br><br>
+                🤫 Be quiet and respectful throughout.<br>
+                📷 No flash photography.<br><br>
+                Taxi back toward Shimokitazawa by 10:30 AM — you'll still arrive by 11 AM as planned.</p>
+                <a href="https://maps.google.com/?q=Arashio+Stable+2-47-2+Hamacho+Nihonbashi+Chuo+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Arashio Stable on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>~11:00 AM → Shimokitazawa</h3>
+                <span class="tag">Arrive ~11 AM</span>
+                <p class="notes">No agenda — just let the neighbourhood pull you. Pure wander through vintage shops, record stores, and small theatres.</p>
+                <a href="https://maps.google.com/?q=Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shimokitazawa on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Lunch in Shimokitazawa</h3>
+                <span class="tag">Two Good Options</span>
+                <p class="notes">
+                    <strong>City Country City</strong> (4.6★) — vinyl café with pasta, relaxed atmosphere.<br><br>
+                    <strong>Ten to Sen.</strong> (4.4★) — curry ramen, local favourite.
+                </p>
+                <a href="https://maps.google.com/?q=City+Country+City+cafe+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 City Country City on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>2:30 PM — Taxi to Nakano Broadway</h3>
+                <span class="tag">~20 Min</span>
+                <span class="tag">Browse 2 Hours</span>
+                <p class="notes">Nakano Broadway is a labyrinthine mall famous for anime, manga, figures, retro games, and vintage collectibles. Budget about 2 hours to explore the upper floors.</p>
+                <a href="https://maps.google.com/?q=Nakano+Broadway+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nakano Broadway on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>5:00 PM — Dinner: Maguro Mart</h3>
+                <span class="tag">Right Next Door</span>
+                <span class="tag">Opens 5 PM</span>
+                <span class="tag">Cash Only</span>
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Reservation Required</span>
+                    Maguro Mart is very popular and fills up fast. Book in advance at tablecheck.com before you go — cash only, opens at 5 PM.
+                    <a href="https://www.tablecheck.com/en/japan/search?query=maguro+mart" target="_blank" rel="noopener">→ Reserve at TableCheck</a>
+                </div>
+                <p class="notes">Right next door to Nakano Broadway. Fresh tuna specialist — excellent value, very popular with locals. Arrive right at 5 PM when dinner service opens.</p>
+                <a href="https://maps.google.com/?q=Maguro+Mart+Nakano+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Maguro Mart on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- OUR DAY 4 — Friday, April 10: Morning Only     -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card our-card" id="our-day-4" style="display:none">
+            <h2>Friday, April 10: Morning — Matcha Experience</h2>
+
+            <div class="time-block">
+                <h3>9:00 AM — Matcha Tasting &amp; Making</h3>
+                <span class="tag">Booked via GetYourGuide</span>
+                <span class="tag">Small Group</span>
+                <p class="notes">Small-group matcha tasting and making experience led by a tea farmer in Asakusa. Taste and compare matcha from 5 different production regions of Japan, then make your own. Personal and educational — recent reviews call it a genuine one-on-one experience.<br><br>
+                <strong>Meeting point:</strong> 〒111-0042 東京都台東区寿３丁目１９−８ 変なホテル 2F</p>
+                <a href="https://maps.google.com/?q=Henna+Hotel+Asakusa+3-19-8+Kotobuki+Taito+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meeting Point on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>~11:00 AM — Head to Narita</h3>
+                <span class="tag">Pick Up Parents</span>
+                <span class="tag">Keisei Skyliner</span>
+                <p class="notes">After the matcha experience, take the Keisei Skyliner from Ueno to Narita to meet your parents. Their flight lands at 2:20 PM — budget plenty of time. The family trip begins here.</p>
+                <a href="https://maps.google.com/?q=Keisei+Ueno+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Keisei Ueno Station on Maps</a>
+            </div>
+        </article>
+
     </main>
 
 
@@ -708,9 +958,4 @@
     </script>
 
 </body>
-
 </html>
-
-
-
-
