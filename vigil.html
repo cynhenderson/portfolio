@@ -177,6 +177,7 @@
             display: flex; border-top: 1px solid rgba(0, 255, 204, 0.3); border-bottom: 1px solid rgba(0, 255, 204, 0.3);
             align-items: center; justify-content: space-between; background: rgba(0, 255, 204, 0.03);
             margin-bottom: 15px; padding: 12px 0;
+            transition: background-color 0.3s ease;
         }
         .annotation-area { width: 65%; padding: 0 20px; font-size: 1rem; line-height: 1.5; }
         .vigil-clinical { font-weight: bold; min-height: 1.5rem; text-shadow: 0 2px 4px #000; }
@@ -569,9 +570,9 @@
 
         const CARD_REACTIONS = {
             VANGUARD:       "I'm glad someone finally gets it. ",
-            THREAT_ID:      "I see the risk, but... ",
+            THREAT_ID:      "I see the risk you're pointing out. ", 
             PROBE:          "The 'why' is that leadership needs it to look good. ",
-            THE_BOUNDARY:   "I know what the agreement says, but we need to be flexible. ",
+            THE_BOUNDARY:   "I know what the agreement says. ", 
             TACTICAL_DELAY: "Waiting until next week kills our momentum. ",
             NUCLEAR_OPTION: "Wow. Okay. If that's how we're doing this... ",
             CALL_THE_BLUFF: "I'm not making this up. ",
@@ -692,28 +693,28 @@
         const WILDCARD_EVENTS = {
             CTO_ESCALATION: {
                 name: 'ESCALATION',
-                oliver_line: "Actually, I just got cc'd on an email from the CTO. He's expecting this in the demo.",
+                oliver_line: "...Wait. I just got cc'd on an email from the CTO. He's expecting this in the demo.",
                 vigil_clinical: '[WILDCARD: ESCALATION] Executive authority has entered the conversation.',
                 vigil_aside: "The CTO's name changes the math. Scope projections adjusted.",
                 effect: function(gs) { gs.scope_integrity = Math.max(0, gs.scope_integrity - 12); }
             },
             SUNK_COST: {
                 name: 'SUNK COST',
-                oliver_line: "My team has already spent three days on this. I can't go back to them empty-handed.",
+                oliver_line: "Look, I have to be honest. My team has already spent three days on this. I can't go back empty-handed.",
                 vigil_clinical: '[WILDCARD: SUNK COST] Unauthorized work is being used as leverage.',
                 vigil_aside: "Sunk costs are logically irrelevant. Oliver does not know this. You do.",
                 effect: function(gs) { gs.relationship_health = Math.max(0, gs.relationship_health - 15); }
             },
             CLIENT_COMMITMENT: {
                 name: 'COMMITMENT',
-                oliver_line: "Marketing already told the client this ships next week. It's in the approved proposal.",
+                oliver_line: "There's another factor here. Marketing already told the client this ships next week.",
                 vigil_clinical: '[WILDCARD: COMMITMENT] An external promise was made without consulting scope.',
                 vigil_aside: 'The scope boundary was broken before this meeting started. This is how it always begins.',
                 effect: function(gs) { gs.scope_integrity = Math.max(0, gs.scope_integrity - 10); }
             },
             EMOTIONAL_APPEAL: {
                 name: 'MORALE PLAY',
-                oliver_line: "The team is burned out. This feature is the one thing keeping them going right now.",
+                oliver_line: "You have to understand the human cost. The team is burned out. They need this win.",
                 vigil_clinical: '[WILDCARD: MORALE PLAY] Team wellbeing is being invoked as leverage.',
                 vigil_aside: 'Empathy for the team is real. The request is still out of scope. Both things are true.',
                 effect: function(gs) {
@@ -886,13 +887,8 @@
 
             if (GAME_STATE.last_card_played) {
                 const prefix = CARD_REACTIONS[GAME_STATE.last_card_played];
-                
                 if (prefix) {
-                    if (baseText.startsWith("I ") || baseText.startsWith("I'") || baseText.startsWith("I'll") || baseText.startsWith("I'm")) {
-                        return prefix + baseText;
-                    } else {
-                        return prefix + baseText.charAt(0).toLowerCase() + baseText.slice(1);
-                    }
+                    return prefix + baseText;
                 }
             }
 
@@ -967,57 +963,68 @@
 
         function fireWildcard(callback) {
             const event = WILDCARD_EVENTS[GAME_STATE.wildcard];
-
-            gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 10 });
-            gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
-
             const tl = gsap.timeline();
             
-            tl.set(".annotation-area", { opacity: 0 }) 
-              .set("#oliver-text", { text: "" })
-              .to("#oliver-text", { duration: 2.0, text: event.oliver_line, ease: "none" })
-              .to({}, { duration: 0.8 }) 
-              .add(() => {
-                  event.effect(GAME_STATE);
-                  checkRelThreshold();
-                  gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
-                  gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
-                  updateGauges();
-              })
-              .set(".annotation-area", { opacity: 1 }, "+=0.3")
+            tl.set(".annotation-area", { opacity: 1 })
               .set("#v-clin", { text: "" })
               .set("#v-aside", { text: "" })
+              .to("#mid-zone", { backgroundColor: 'rgba(255, 176, 0, 0.1)', duration: 0.3 })
+              .to("#v-clin", { duration: 1.0, text: ">>> SYSTEM ALERT: EXTERNAL VARIABLE DETECTED.", ease: "none" })
+              .to({}, { duration: 0.8 }); 
+
+            tl.add(() => {
+                gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 6 });
+                gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
+            });
+
+            tl.to("#oliver-text", { opacity: 0, duration: 0.3 })
+              .set("#oliver-text", { text: "" })
+              .to("#oliver-text", { opacity: 1, duration: 0.1 })
+              .to("#oliver-text", { duration: 2.0, text: event.oliver_line, ease: "none" })
+              .to({}, { duration: 0.8 }); 
+              
+            tl.add(() => {
+                event.effect(GAME_STATE);
+                checkRelThreshold();
+                gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
+                gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
+                updateGauges();
+            });
+
+            tl.set("#v-clin", { text: "" })
               .to("#v-clin", { duration: 1.2, text: event.vigil_clinical, ease: "none" })
-              .to("#v-aside", { duration: 1.8, text: event.vigil_aside, ease: "none" })
-              .add(() => {
-                  const handEl = document.getElementById('player-hand');
-                  handEl.innerHTML = ''; 
-                  
-                  const ackBtn = document.createElement('div');
-                  ackBtn.className = 'card';
-                  ackBtn.style.borderColor = 'var(--vigil-amber)';
-                  ackBtn.style.width = '200px'; 
-                  ackBtn.style.backgroundColor = 'rgba(255, 176, 0, 0.05)';
-                  ackBtn.innerHTML = `
-                      <div class="card-title" style="color: var(--vigil-amber);">CONTEXT SHIFT</div>
-                      <div class="card-icon-node" style="color: var(--vigil-amber); border-color: var(--vigil-amber);">⚠</div>
-                      <div class="card-sub" style="color: var(--vigil-amber);">[ CLICK TO ACKNOWLEDGE ]</div>
-                  `;
-                  
-                  ackBtn.onclick = () => {
-                      ackBtn.style.pointerEvents = 'none'; 
-                      
-                      const outTl = gsap.timeline();
-                      outTl.to(ackBtn, { opacity: 0, scale: 0.9, duration: 0.2 })
-                           .to(".annotation-area", { opacity: 0, duration: 0.3 }, "<")
-                           .add(() => {
-                               if (callback) callback();
-                           });
-                  };
-                  
-                  handEl.appendChild(ackBtn);
-                  gsap.fromTo(ackBtn, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
-              });
+              .to("#v-aside", { duration: 1.8, text: event.vigil_aside, ease: "none" });
+
+            tl.add(() => {
+                const handEl = document.getElementById('player-hand');
+                handEl.innerHTML = ''; 
+                
+                const ackBtn = document.createElement('div');
+                ackBtn.className = 'card';
+                ackBtn.style.borderColor = 'var(--vigil-amber)';
+                ackBtn.style.width = '200px'; 
+                ackBtn.style.backgroundColor = 'rgba(255, 176, 0, 0.05)';
+                ackBtn.innerHTML = `
+                    <div class="card-title" style="color: var(--vigil-amber);">CONTEXT SHIFT</div>
+                    <div class="card-icon-node" style="color: var(--vigil-amber); border-color: var(--vigil-amber);">⚠</div>
+                    <div class="card-sub" style="color: var(--vigil-amber);">[ CLICK TO ACKNOWLEDGE ]</div>
+                `;
+                
+                ackBtn.onclick = () => {
+                    ackBtn.style.pointerEvents = 'none'; 
+                    
+                    const outTl = gsap.timeline();
+                    outTl.to(ackBtn, { opacity: 0, scale: 0.9, duration: 0.2 })
+                         .to("#mid-zone", { backgroundColor: 'rgba(0, 255, 204, 0.03)', duration: 0.3 }, "<") 
+                         .to(".annotation-area", { opacity: 0, duration: 0.3 }, "<")
+                         .add(() => {
+                             if (callback) callback();
+                         });
+                };
+                
+                handEl.appendChild(ackBtn);
+                gsap.fromTo(ackBtn, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
+            });
         }
 
         function applyPressureSequence() {
