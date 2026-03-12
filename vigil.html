@@ -344,7 +344,7 @@
         <div id="briefing-container">
             <div class="dossier">
                 <div class="portrait-container" id="briefing-portrait">
-                    <img src="neutral.png" alt="Oliver">
+                    <img src="photos/neutral.png" alt="Oliver">
                     <div class="scanner-line"></div>
                 </div>
                 <div class="stats-list">
@@ -376,7 +376,7 @@
         <div id="game-container">
             <div id="top-zone">
                 <div class="portrait-container" id="encounter-portrait">
-                    <img src="neutral.png" id="oliver-img" alt="Oliver">
+                    <img src="photos/neutral.png" id="oliver-img" alt="Oliver">
                     <div class="scanner-line"></div>
                 </div>
                 <div class="dialogue-box">
@@ -567,6 +567,17 @@
             wildcard_fired: false
         };
 
+        const CARD_REACTIONS = {
+            VANGUARD:       "I'm glad someone finally gets it. ",
+            THREAT_ID:      "I see the risk, but... ",
+            PROBE:          "The 'why' is that leadership needs it to look good. ",
+            THE_BOUNDARY:   "I know what the agreement says, but we need to be flexible. ",
+            TACTICAL_DELAY: "Waiting until next week kills our momentum. ",
+            NUCLEAR_OPTION: "Wow. Okay. If that's how we're doing this... ",
+            CALL_THE_BLUFF: "I'm not making this up. ",
+            RELEASE_VALVE:  "It is hard. It's been a nightmare week. "
+        };
+
         const CARDS = {
             VANGUARD: {
                 id: 'VANGUARD', title: 'VANGUARD', subtitle: '"I see the effort here."', icon: '◈',
@@ -735,6 +746,12 @@
             '2_surprised_aggressive':  "After what you just said, I need a moment to recalibrate.",
             '2_resolved_aggressive':   "Look, if you're going to drag leadership into this, fine. I'll pull the request. But this isn't how we should be working together.",
 
+            '2_neutral_tactical':    "I get the logic, but what about just the read-only version? No new API calls.",
+            '2_defensive_tactical':  "Process is great, but my team already started on the export widget. We're losing time.",
+            '2_receptive_tactical':  "That makes sense logically. What if we timebox it? Two days max to mitigate the risk.",
+            '2_surprised_tactical':  "I hadn't looked at the mechanics that way. Let me think about this for a second.",
+            '2_resolved_tactical':   "Alright, the constraints are clear. Let me reframe what we actually need.",
+
             // Round 3
             '3_neutral':    "The thing is, marketing already told the client it would be in the next release.",
             '3_defensive':  "You're not seeing the full picture. This is coming from above me.",
@@ -753,6 +770,12 @@
             '3_receptive_aggressive':  "Even with all this... I still think we can find a path. Document it as a fast-follow?",
             '3_surprised_aggressive':  "Wait... you're taking this up the chain because of a marketing promise? Was that commitment even confirmed? Now you have me second-guessing.",
             '3_resolved_aggressive':   "I'll reset expectations with marketing. But I want that on record.",
+
+            '3_neutral_tactical':    "Even with the rules in place, marketing already told the client it would be in the next release.",
+            '3_defensive_tactical':  "You can quote the agreement all you want, but this is coming from above me.",
+            '3_receptive_tactical':  "I see the technical risk. But can we at least document it as a fast-follow?",
+            '3_surprised_tactical':  "Wait, so technically, the commitment was never actually confirmed on paper?",
+            '3_resolved_tactical':   "Okay. I'll take these facts to marketing and reset expectations.",
 
             // Round 4
             '4_neutral':    "So where does that leave us? I still need to give my team something.",
@@ -773,6 +796,12 @@
             '4_surprised_aggressive':  "After all that, I don't even know where we stand anymore.",
             '4_resolved_aggressive':   "Let's keep scope clean. But we should talk about how we got here.",
 
+            '4_neutral_tactical':    "So realistically, where does that leave us? I still need to give my team something.",
+            '4_defensive_tactical':  "Fine. If that's the policy, I'll just tell the CTO we couldn't make it work.",
+            '4_receptive_tactical':  "Alright, looking at our actual bandwidth, let's figure out what we can commit to.",
+            '4_surprised_tactical':  "Looking at the numbers... I hadn't thought about it that way. Let me reconsider.",
+            '4_resolved_tactical':   "You're right. Let's keep the scope strictly to the requirements and revisit next sprint.",
+
             // Round 5
             '5_neutral':    "Okay. I think I understand the constraints better now.",
             '5_defensive':  "I'll take this to the next leadership sync. We'll see what happens.",
@@ -791,6 +820,12 @@
             '5_receptive_aggressive':  "I'll adjust the timeline. I just wish this conversation had gone differently.",
             '5_surprised_aggressive':  "I need to rethink this. I'll scope it properly. But I'm not happy about it.",
             '5_resolved_aggressive':   "I'll pull the export from this sprint. But we need to talk about process.",
+
+            '5_neutral_tactical':    "Okay. I understand the mechanical constraints better now.",
+            '5_defensive_tactical':  "I'll take this ruling to the next leadership sync. We'll see what happens.",
+            '5_receptive_tactical':  "Thanks for walking me through the logistics. I'll adjust the timeline.",
+            '5_surprised_tactical':  "These parameters change things. I need to rethink the whole request.",
+            '5_resolved_tactical':   "Makes sense. I'll pull the export from this sprint and scope it by the book for next.",
 
             // Hostile state
             '2_hostile': "You know what? I'll just take this to the leadership sync.",
@@ -843,10 +878,25 @@
 
         function getOliverDialogue(round, state, lastRole) {
             const roleKey = lastRole ? `_${lastRole}` : '';
-            return OLIVER_DIALOGUE[`${round}_${state}${roleKey}`] 
-                || OLIVER_DIALOGUE[`${round}_${state}`] 
-                || OLIVER_DIALOGUE[`${round}_neutral`] 
-                || "...";
+            
+            let baseText = OLIVER_DIALOGUE[`${round}_${state}${roleKey}`] 
+                        || OLIVER_DIALOGUE[`${round}_${state}`] 
+                        || OLIVER_DIALOGUE[`${round}_neutral`] 
+                        || "...";
+
+            if (GAME_STATE.last_card_played) {
+                const prefix = CARD_REACTIONS[GAME_STATE.last_card_played];
+                
+                if (prefix) {
+                    if (baseText.startsWith("I ") || baseText.startsWith("I'") || baseText.startsWith("I'll") || baseText.startsWith("I'm")) {
+                        return prefix + baseText;
+                    } else {
+                        return prefix + baseText.charAt(0).toLowerCase() + baseText.slice(1);
+                    }
+                }
+            }
+
+            return baseText;
         }
 
         function updateGauges() {
@@ -860,9 +910,10 @@
 
         function setPortrait(state) {
             const img = document.getElementById('oliver-img');
-            if (img.src.includes(state + '.png')) return;
+            const newSrc = 'photos/' + state + '.png';
+            if (img.src.includes(newSrc)) return;
             gsap.to(img, { opacity: 0, duration: 0.15, onComplete: () => {
-                img.src = state + '.png';
+                img.src = newSrc;
                 gsap.to(img, { opacity: 1, duration: 0.25 });
             }});
         }
@@ -914,14 +965,80 @@
             return                { text: '28/rnd', cls: 'hostile' };
         }
 
-        function applyPressure(callback) {
+        function fireWildcard(callback) {
+            const event = WILDCARD_EVENTS[GAME_STATE.wildcard];
+
+            gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 10 });
+            gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
+
+            const tl = gsap.timeline();
+            
+            tl.set(".annotation-area", { opacity: 0 }) 
+              .set("#oliver-text", { text: "" })
+              .to("#oliver-text", { duration: 2.0, text: event.oliver_line, ease: "none" })
+              .to({}, { duration: 0.8 }) 
+              .add(() => {
+                  event.effect(GAME_STATE);
+                  checkRelThreshold();
+                  gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
+                  gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
+                  updateGauges();
+              })
+              .set(".annotation-area", { opacity: 1 }, "+=0.3")
+              .set("#v-clin", { text: "" })
+              .set("#v-aside", { text: "" })
+              .to("#v-clin", { duration: 1.2, text: event.vigil_clinical, ease: "none" })
+              .to("#v-aside", { duration: 1.8, text: event.vigil_aside, ease: "none" })
+              .add(() => {
+                  const handEl = document.getElementById('player-hand');
+                  handEl.innerHTML = ''; 
+                  
+                  const ackBtn = document.createElement('div');
+                  ackBtn.className = 'card';
+                  ackBtn.style.borderColor = 'var(--vigil-amber)';
+                  ackBtn.style.width = '200px'; 
+                  ackBtn.style.backgroundColor = 'rgba(255, 176, 0, 0.05)';
+                  ackBtn.innerHTML = `
+                      <div class="card-title" style="color: var(--vigil-amber);">CONTEXT SHIFT</div>
+                      <div class="card-icon-node" style="color: var(--vigil-amber); border-color: var(--vigil-amber);">⚠</div>
+                      <div class="card-sub" style="color: var(--vigil-amber);">[ CLICK TO ACKNOWLEDGE ]</div>
+                  `;
+                  
+                  ackBtn.onclick = () => {
+                      ackBtn.style.pointerEvents = 'none'; 
+                      
+                      const outTl = gsap.timeline();
+                      outTl.to(ackBtn, { opacity: 0, scale: 0.9, duration: 0.2 })
+                           .to(".annotation-area", { opacity: 0, duration: 0.3 }, "<")
+                           .add(() => {
+                               if (callback) callback();
+                           });
+                  };
+                  
+                  handEl.appendChild(ackBtn);
+                  gsap.fromTo(ackBtn, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
+              });
+        }
+
+        function applyPressureSequence() {
+            if (GAME_STATE.current_round === 3 && !GAME_STATE.wildcard_fired && GAME_STATE.wildcard) {
+                GAME_STATE.wildcard_fired = true;
+                fireWildcard(() => { 
+                    applyPressureSequence(); 
+                });
+                return;
+            }
+
             const pressure = getOliverPressure();
             GAME_STATE.scope_integrity = Math.max(0, GAME_STATE.scope_integrity - pressure);
 
-            const gaugeEl = document.getElementById('g-scope');
-            gsap.to(gaugeEl, { backgroundColor: 'rgba(255, 0, 51, 0.8)', duration: 0.15, yoyo: true, repeat: 1 });
-            gsap.to("body", { x: 2, y: 1, duration: 0.04, yoyo: true, repeat: 3 });
-            updateGauges();
+            const tl = gsap.timeline();
+            
+            tl.add(() => {
+                gsap.to("#g-scope", { backgroundColor: 'rgba(255, 0, 51, 0.8)', duration: 0.15, yoyo: true, repeat: 1 });
+                gsap.to("body", { x: 2, y: 1, duration: 0.04, yoyo: true, repeat: 3 });
+                updateGauges();
+            });
 
             const rh = GAME_STATE.relationship_health;
             let tierNote = '';
@@ -930,74 +1047,46 @@
             else if (rh >= 15) tierNote = 'Relationship strained. Oliver is pushing harder.';
             else               tierNote = 'Relationship hostile. Oliver is no longer listening.';
 
-            const tl = gsap.timeline();
             tl.set(".annotation-area", { opacity: 1 })
               .set("#v-clin", { text: "" })
               .set("#v-aside", { text: "" })
               .to("#v-clin", { duration: 0.6, text: `> PRESSURE APPLIED: -${pressure}% scope integrity.`, ease: "none" })
-              .to("#v-aside", { duration: 0.8, text: tierNote, ease: "none" });
+              .to("#v-aside", { duration: 0.8, text: tierNote, ease: "none" })
+              .to({}, { duration: 1.8 })
+              .to(".annotation-area", { opacity: 0.3, duration: 0.5 });
 
-            tl.to(".annotation-area", { opacity: 0.3, duration: 0.5 }, "+=1.5");
-            tl.add(() => { if (callback) callback(); });
+            tl.add(() => {
+                if (GAME_STATE.scope_integrity <= 0) { endEncounter(); return; }
+                drawHand(3);
+                renderHand();
+                roundActive = true;
+            });
         }
 
-        function fireWildcard(callback) {
-            const event = WILDCARD_EVENTS[GAME_STATE.wildcard];
-
-            gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 10 });
-            gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
-
-            const tl = gsap.timeline();
-            tl.set("#oliver-text", { text: "" })
-              .to("#oliver-text", { duration: 2.0, text: event.oliver_line, ease: "none" })
-              .add(() => {
-                  event.effect(GAME_STATE);
-                  checkRelThreshold();
-                  gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
-                  gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
-                  updateGauges();
-              }, "+=0.4")
-              .set(".annotation-area", { opacity: 1 }, "+=0.3")
-              .set("#v-clin", { text: "" })
-              .set("#v-aside", { text: "" })
-              .to("#v-clin", { duration: 1.2, text: event.vigil_clinical, ease: "none" })
-              .to("#v-aside", { duration: 1.8, text: event.vigil_aside, ease: "none" })
-              .to(".annotation-area", { opacity: 0.3, duration: 0.5 }, "+=1.5")
-              .add(() => callback());
-        }
-
-        function beginRound() {
+        function executeRoundTransition() {
             const round = GAME_STATE.current_round;
-
-            if (round === 3 && !GAME_STATE.wildcard_fired && GAME_STATE.wildcard) {
-                GAME_STATE.wildcard_fired = true;
-                fireWildcard(() => {
-                    applyPressure(() => {
-                        if (GAME_STATE.scope_integrity <= 0) { endEncounter(); return; }
-                        drawHand(3);
-                        renderHand();
-                        roundActive = true;
-                    });
-                });
-                return;
-            }
 
             const stateToFetch = GAME_STATE.rel_threshold === 'hostile' ? 'hostile' : GAME_STATE.oliver_state;
             const lastRole = GAME_STATE.last_card_played ? CARDS[GAME_STATE.last_card_played].role : null;
-            
             const dialogue = getOliverDialogue(round, stateToFetch, lastRole);
             
             const tl = gsap.timeline();
-            tl.set("#oliver-text", { text: "" })
-              .to("#oliver-text", { duration: 1.5, text: dialogue, ease: "none" });
+            
+            tl.to(".annotation-area", { opacity: 0, duration: 0.3 })
+              .set("#oliver-text", { text: "" })
+              .to("#oliver-text", { duration: 1.5, text: dialogue, ease: "none" })
+              .to({}, { duration: 2.0 }); 
 
             tl.add(() => {
-                applyPressure(() => {
-                    if (GAME_STATE.scope_integrity <= 0) { endEncounter(); return; }
+                if (GAME_STATE.current_round > 5) {
+                    endEncounter(); 
+                } else if (GAME_STATE.current_round === 1) {
                     drawHand(3);
                     renderHand();
                     roundActive = true;
-                });
+                } else {
+                    applyPressureSequence();
+                }
             });
         }
 
@@ -1014,14 +1103,13 @@
             GAME_STATE.wildcard = wildcardKeys[Math.floor(Math.random() * wildcardKeys.length)];
             GAME_STATE.wildcard_fired = false;
 
-            // Reset gauge glows from previous runs
             document.getElementById('g-scope').style.boxShadow = 'none';
             document.getElementById('g-rel').style.boxShadow = 'none';
 
             shuffleDeck();
             updateGauges();
 
-            beginRound();
+            executeRoundTransition();
         }
 
         function playCard(cardElement, cardId) {
@@ -1111,9 +1199,9 @@
                 innerTl.set(".annotation-area", { opacity: 1 }, "+=0.2")
                   .set("#v-clin", { text: "" })
                   .set("#v-aside", { text: "" })
-                  .to("#v-clin", { duration: 1, text: "> " + ann.clinical, ease: "none" })
+                  .to("#v-clin", { duration: 1.0, text: "> " + ann.clinical, ease: "none" })
                   .to("#v-aside", { duration: 1.5, text: ann.aside, ease: "none" })
-                  .to(".annotation-area", { opacity: 0.3, duration: 1.0 }, "+=3.0");
+                  .to({}, { duration: 2.5 }); 
 
                 innerTl.add(() => {
                     if (GAME_STATE.rel_threshold === 'shutdown') {
@@ -1122,11 +1210,7 @@
                     }
 
                     GAME_STATE.current_round++;
-                    if (GAME_STATE.current_round > 5) {
-                        endEncounter();
-                    } else {
-                        beginRound();
-                    }
+                    executeRoundTransition(); 
                 });
             });
 
