@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIGIL: Scope Guardian</title>
+    <title>SCOPE // CREEP</title>
     <style>
         :root {
             --bg-color: #070707;
@@ -40,11 +40,10 @@
             55% { opacity: 0.96; }
         }
 
-        /* Screen Management */
         .screen {
             position: absolute; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             opacity: 0; 
         }
@@ -58,29 +57,6 @@
             justify-content: center; align-items: flex-start;
             padding-left: 10%; box-sizing: border-box;
         }
-        
-        .boot-line {
-            font-size: 1.2rem; line-height: 1.8; margin: 4px 0; min-height: 1.8rem;
-            text-shadow: 1px 0px 2px rgba(0, 255, 204, 0.4), -1px 0px 1px rgba(255, 0, 51, 0.3);
-        }
-        .boot-amber {
-            color: var(--vigil-amber); font-weight: 700; margin-top: 24px;
-            text-shadow: 1px 0px 2px rgba(255, 176, 0, 0.4), -1px 0px 1px rgba(255, 0, 51, 0.3);
-        }
-        #cursor {
-            display: inline-block; width: 10px; height: 1.2rem;
-            background-color: var(--vigil-teal); vertical-align: middle;
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-        
-        #skip-btn {
-            background: none; border: 1px solid var(--vigil-teal); color: var(--vigil-teal);
-            font-family: inherit; font-size: 0.9rem; padding: 8px 16px;
-            cursor: pointer; opacity: 0; text-transform: uppercase; z-index: 10;
-            margin-top: 24px;
-        }
-        #skip-btn:hover { background: var(--vigil-teal); color: var(--bg-color); }
 
         /* =========================================
            SCREEN 2: BRIEFING
@@ -98,87 +74,126 @@
             width: 85%; max-width: 1000px; z-index: 10;
         }
 
-        .dossier {
-            border: 1px solid var(--vigil-teal); padding: 20px;
-            background: rgba(0, 255, 204, 0.02); position: relative;
+        #briefing-title-zone {
+            grid-column: 1 / -1; 
+            border-bottom: 4px solid var(--vigil-red); 
+            padding-bottom: 15px; 
+            margin-bottom: 10px; 
+            opacity: 0;
         }
+        #briefing-main-title {
+            margin: 0; font-size: 4rem; color: var(--vigil-teal); 
+            text-transform: uppercase; letter-spacing: 0.15em; text-shadow: 4px 4px 0px var(--vigil-red);
+        }
+        #briefing-main-title span { color: var(--vigil-amber); }
+        #briefing-sub-title { margin: 8px 0 0 0; color: var(--vigil-teal-dim); font-size: 1.1rem; letter-spacing: 0.3em; font-weight: bold; }
 
-        /* Reusable Portrait (Briefing & Encounter) */
-        .portrait-container {
-            border: 1px solid var(--vigil-amber); position: relative; overflow: hidden;
-            box-shadow: 0 0 15px rgba(255, 176, 0, 0.15); flex-shrink: 0;
+        .dossier { border: 1px solid var(--vigil-teal); padding: 20px; background: rgba(0, 255, 204, 0.02); position: relative; }
+        
+        #briefing-portrait { 
+            width: 120px; height: 120px; margin-bottom: 20px; opacity: 0; 
+            border: 1px solid var(--vigil-amber); position: relative; overflow: hidden; 
             background: #111; display: flex; align-items: center; justify-content: center;
         }
-        .portrait-container img {
-            width: 100%; height: 100%; object-fit: cover;
+        #briefing-portrait img {
+            width: 100%; height: 100%; object-fit: cover; 
             filter: sepia(80%) hue-rotate(350deg) saturate(150%) brightness(0.9);
         }
-        .scanner-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--vigil-amber); opacity: 0.6; animation: scan 4s linear infinite;
-        }
+
+        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--vigil-amber); opacity: 0.6; animation: scan 4s linear infinite; }
         @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
 
-        #briefing-portrait { width: 120px; height: 120px; margin-bottom: 20px; opacity: 0; }
         .dossier h2 { margin: 0 0 10px 0; font-size: 1.2rem; text-transform: uppercase; }
         .stats-list p { margin: 8px 0; font-size: 0.9rem; color: var(--vigil-teal); }
         .vigil-note { margin-top: 25px; color: var(--vigil-teal-dim); font-size: 0.9rem; font-weight: bold; min-height: 1.2rem; }
 
         .deck-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .deck-header { font-size: 1rem; margin-bottom: 20px; opacity: 0; align-self: flex-start; }
-        .data-chips { display: grid; grid-template-columns: repeat(3, 80px); gap: 15px; }
-        .chip {
-            width: 80px; height: 115px; border: 1px solid var(--vigil-teal-dim); border-radius: 4px;
-            opacity: 0; transform: translateY(10px); display: flex; align-items: center; justify-content: center;
-            background: repeating-linear-gradient(45deg, rgba(0,255,204,0.03) 0, rgba(0,255,204,0.03) 5px, rgba(0,255,204,0.08) 5px, rgba(0,255,204,0.08) 10px);
+        .deck-header { font-size: 1rem; margin-bottom: 20px; opacity: 1; align-self: flex-start; }
+        .chip-label { 
+            position: relative; 
+            z-index: 2; 
+            font-weight: bold; 
+            font-size: 0.85rem; 
+            letter-spacing: 0.1em; 
+            text-shadow: 0px 2px 4px #000;
         }
-        .chip::after { content: "V"; font-family: Arial, sans-serif; font-size: 2.5rem; color: rgba(0, 255, 204, 0.15); font-weight: bold; }
+        .chip[data-role="tactical"] .chip-label { color: var(--vigil-teal); }
+        .chip[data-role="empathy"] .chip-label { color: var(--vigil-amber); }
+        .chip[data-role="aggressive"] .chip-label { color: var(--vigil-red); }
+        .data-chips { display: flex; justify-content: center; gap: 24px; width: 100%; }
+ .chip { 
+            width: 110px; height: 160px; 
+            border: 1px solid var(--vigil-teal-dim); border-radius: 6px; 
+            opacity: 0; transform: translateY(10px); 
+            display: flex; align-items: center; justify-content: center; 
+            background: repeating-linear-gradient(45deg, rgba(0,255,204,0.03) 0, rgba(0,255,204,0.03) 5px, rgba(0,255,204,0.08) 5px, rgba(0,255,204,0.08) 10px); 
+            position: relative; /* ADDED: anchors the absolute V */
+            overflow: hidden;   /* ADDED: ensures nothing bleeds out */
+        }
+        
+        .chip::after { 
+            content: "V"; font-family: Arial, sans-serif; font-size: 3.5rem; 
+            color: rgba(0, 255, 204, 0.15); font-weight: bold; 
+            position: absolute; /* ADDED: takes the V out of flexbox flow */
+            top: 50%; left: 50%; transform: translate(-50%, -50%); /* Centers it perfectly */
+            z-index: 1; /* Puts it behind the text */
+        }
         .chip.loaded { border-color: var(--vigil-teal); box-shadow: 0 0 8px rgba(0, 255, 204, 0.2); }
+        .chip[data-role="empathy"] { border-color: rgba(255, 176, 0, 0.4); background: repeating-linear-gradient(45deg, rgba(255,176,0,0.03) 0, rgba(255,176,0,0.03) 5px, rgba(255,176,0,0.08) 5px, rgba(255,176,0,0.08) 10px); }
+        .chip[data-role="empathy"]::after { color: rgba(255, 176, 0, 0.15); }
+        .chip.loaded[data-role="empathy"] { border-color: var(--vigil-amber); box-shadow: 0 0 8px rgba(255, 176, 0, 0.2); }
+        .chip[data-role="aggressive"] { border-color: rgba(255, 0, 51, 0.4); background: repeating-linear-gradient(45deg, rgba(255,0,51,0.03) 0, rgba(255,0,51,0.03) 5px, rgba(255,0,51,0.08) 5px, rgba(255,0,51,0.08) 10px); }
+        .chip[data-role="aggressive"]::after { color: rgba(255, 0, 51, 0.15); }
+        .chip.loaded[data-role="aggressive"] { border-color: var(--vigil-red); box-shadow: 0 0 8px rgba(255, 0, 51, 0.2); }
 
-        .context-tray {
-            grid-column: 1 / -1; border-top: 1px dashed var(--vigil-teal-dim); padding-top: 25px;
-            display: flex; justify-content: space-between; align-items: flex-end;
-        }
-        .threat-card {
-            border: 1px solid var(--vigil-amber); background: rgba(255, 176, 0, 0.05); color: var(--vigil-amber);
-            padding: 15px; width: 60%; opacity: 0; transform: translateY(15px);
-        }
+        .context-tray { grid-column: 1 / -1; border-top: 1px dashed var(--vigil-teal-dim); padding-top: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .threat-card { border: 1px solid var(--vigil-amber); background: rgba(255, 176, 0, 0.05); color: var(--vigil-amber); padding: 15px; width: 60%; opacity: 0; transform: translateY(15px); }
         .threat-card h3 { margin: 0 0 8px 0; font-size: 0.95rem; }
         .threat-card p { margin: 0; font-size: 0.85rem; line-height: 1.4; }
 
-        #start-btn {
-            background: none; border: 1px solid var(--vigil-teal-dim); color: var(--vigil-teal-dim);
-            font-family: inherit; font-size: 1rem; padding: 12px 24px; text-transform: uppercase;
-            opacity: 0; transition: all 0.3s ease;
-        }
+        #start-btn { background: none; border: 1px solid var(--vigil-teal-dim); color: var(--vigil-teal-dim); font-family: inherit; font-size: 1rem; padding: 12px 24px; text-transform: uppercase; opacity: 0; transition: all 0.3s ease; }
         #start-btn.active { border-color: var(--vigil-teal); color: var(--bg-color); background: var(--vigil-teal); cursor: pointer; }
-        #start-btn.active:hover { box-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
 
         /* =========================================
            SCREEN 3: ENCOUNTER
         ========================================= */
-        #game-container {
-            display: flex; flex-direction: column; width: 85%; max-width: 1000px; height: 100%;
-            margin: 0 auto; padding: 20px 0; box-sizing: border-box; z-index: 10;
-            justify-content: center;
+        #game-container { display: flex; flex-direction: column; width: 85%; max-width: 1000px; height: 100%; margin: 0 auto; padding: 20px 0; box-sizing: border-box; z-index: 10; justify-content: center; }
+        
+        #top-zone { display: flex; gap: 40px; align-items: center; margin-bottom: 30px; }
+        
+        #encounter-portrait { 
+            width: 260px; 
+            height: 260px; 
+            flex-shrink: 0; 
+            box-shadow: 0 0 25px rgba(255, 176, 0, 0.15);
+            border: 1px solid var(--vigil-amber); 
+            position: relative; 
+            overflow: hidden; 
+            background: #111; 
         }
 
-        /* Top Zone */
-        #top-zone { display: flex; gap: 30px; align-items: flex-end; margin-bottom: 10px; }
-        #encounter-portrait { width: 140px; height: 140px; }
-        .dialogue-box {
-            flex-grow: 1; height: 100px; border-left: 3px solid var(--vigil-amber);
-            padding: 0 20px; display: flex; align-items: flex-start;
+        #encounter-portrait img { 
+            position: absolute; 
+            top: 0; left: 0;
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            filter: sepia(80%) hue-rotate(350deg) saturate(150%) brightness(0.9); 
         }
-        .dialogue-text { font-size: 1.1rem; color: var(--vigil-amber); line-height: 1.5; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
-        /* Mid Zone */
-        #mid-zone {
-            display: flex; border-top: 1px solid rgba(0, 255, 204, 0.3); border-bottom: 1px solid rgba(0, 255, 204, 0.3);
-            align-items: center; justify-content: space-between; background: rgba(0, 255, 204, 0.03);
-            margin-bottom: 15px; padding: 12px 0;
-            transition: background-color 0.3s ease;
+        .dialogue-box { 
+            flex-grow: 1; min-height: 140px; 
+            border-left: 4px solid var(--vigil-amber); 
+            padding: 30px; display: flex; align-items: flex-start; 
+            background: rgba(255, 176, 0, 0.03); 
         }
+        
+        .dialogue-text { 
+            font-size: 1.3rem; color: var(--vigil-amber); 
+            line-height: 1.6; margin: 0; 
+            text-shadow: 0 2px 5px rgba(0,0,0,0.9); 
+        }
+
+        #mid-zone { display: flex; border-top: 1px solid rgba(0, 255, 204, 0.3); border-bottom: 1px solid rgba(0, 255, 204, 0.3); align-items: center; justify-content: space-between; background: rgba(0, 255, 204, 0.03); margin-bottom: 15px; padding: 12px 0; transition: background-color 0.3s ease; }
         .annotation-area { width: 65%; padding: 0 20px; font-size: 1rem; line-height: 1.5; }
         .vigil-clinical { font-weight: bold; min-height: 1.5rem; text-shadow: 0 2px 4px #000; }
         .vigil-aside { color: var(--vigil-teal-dim); font-style: italic; min-height: 1.5rem; text-shadow: 0 2px 4px #000; margin-top: 5px; }
@@ -193,51 +208,44 @@
         .pressure-val.strained { color: var(--vigil-amber); }
         .pressure-val.hostile { color: var(--vigil-red); animation: flicker 1s infinite; }
 
-        /* Bottom Zone */
         #bottom-zone { display: flex; gap: 30px; align-items: center; }
-        .priority-stack {
-            width: 130px; height: 190px; border: 2px dashed rgba(0, 255, 204, 0.4);
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            color: rgba(0, 255, 204, 0.5); font-size: 0.8rem; text-transform: uppercase;
-            position: relative; flex-shrink: 0;
-        }
+        .priority-stack { width: 130px; height: 190px; border: 2px dashed rgba(0, 255, 204, 0.4); display: flex; align-items: center; justify-content: center; text-align: center; color: rgba(0, 255, 204, 0.5); font-size: 0.8rem; text-transform: uppercase; position: relative; flex-shrink: 0; }
         .hand { display: flex; gap: 15px; flex-grow: 1; }
         
-        /* Encounter Cards */
-        .card {
-            width: 130px; height: 190px; background: var(--card-bg); border: 1px solid var(--vigil-teal);
-            border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: space-around;
-            padding: 15px 10px; cursor: pointer; box-sizing: border-box; flex-shrink: 0;
-            background-image: repeating-linear-gradient(45deg, rgba(0,255,204,0.03) 0, rgba(0,255,204,0.03) 2px, transparent 2px, transparent 6px);
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s; position: relative;
+        .card { 
+            width: 130px; height: 190px; background: var(--card-bg); 
+            border: 1px solid var(--vigil-teal); border-radius: 6px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: space-around; 
+            padding: 15px 10px; cursor: pointer; box-sizing: border-box; flex-shrink: 0; 
+            background-image: repeating-linear-gradient(45deg, rgba(0,255,204,0.03) 0, rgba(0,255,204,0.03) 2px, transparent 2px, transparent 6px); 
+            position: relative; 
         }
-        .card:hover { transform: translateY(-15px) scale(1.05); box-shadow: 0 15px 20px rgba(0, 255, 204, 0.15); border-color: #fff; z-index: 10; }
-        .card-title { font-size: 0.9rem; font-weight: bold; text-align: center; text-shadow: 0px 2px 4px #000, 0px 0px 10px #000; }
-        .card-icon-node {
-            width: 50px; height: 50px; border: 2px solid var(--vigil-teal-dim); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--vigil-teal);
-            background: rgba(0, 255, 204, 0.05); box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2), 0 0 10px rgba(0, 255, 204, 0.2);
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.8);
+        
+        .card:hover { 
+            box-shadow: 0 15px 20px rgba(0, 255, 204, 0.15); 
+            border-color: #fff; 
+            z-index: 10; 
         }
-        .card-sub { font-size: 0.7rem; color: var(--vigil-teal-dim); text-align: center; text-shadow: 0px 2px 4px #000, 0px 0px 10px #000; font-style: italic; }
-        .card.played { pointer-events: none; position: absolute; z-index: 50; }
 
-        /* Role tints: empathy (amber), tactical (teal), aggressive (red) */
-        .card[data-role="empathy"] { border-color: rgba(255, 176, 0, 0.5); }
-        .card[data-role="empathy"] .card-icon-node {
-            border-color: rgba(255, 176, 0, 0.6); color: var(--vigil-amber);
-            background: rgba(255, 176, 0, 0.08); box-shadow: inset 0 0 10px rgba(255, 176, 0, 0.2), 0 0 10px rgba(255, 176, 0, 0.2);
-            text-shadow: 0 0 8px rgba(255, 176, 0, 0.8);
+        .card.played { 
+            pointer-events: none; 
+            border-color: var(--vigil-teal) !important; 
+            box-shadow: none !important;
         }
+        
+        .card.locked { opacity: 0.3; filter: grayscale(100%); pointer-events: none; }
+
+        .card-title { font-size: 0.9rem; font-weight: bold; text-align: center; text-shadow: 0px 2px 4px #000, 0px 0px 10px #000; }
+        .card-icon-node { width: 50px; height: 50px; border: 2px solid var(--vigil-teal-dim); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--vigil-teal); background: rgba(0, 255, 204, 0.05); box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2), 0 0 10px rgba(0, 255, 204, 0.2); text-shadow: 0 0 8px rgba(0, 255, 204, 0.8); }
+        .card-sub { font-size: 0.7rem; color: var(--vigil-teal-dim); text-align: center; text-shadow: 0px 2px 4px #000, 0px 0px 10px #000; font-style: italic; }
+
+        .card[data-role="empathy"] { border-color: rgba(255, 176, 0, 0.5); }
+        .card[data-role="empathy"] .card-icon-node { border-color: rgba(255, 176, 0, 0.6); color: var(--vigil-amber); background: rgba(255, 176, 0, 0.08); box-shadow: inset 0 0 10px rgba(255, 176, 0, 0.2), 0 0 10px rgba(255, 176, 0, 0.2); text-shadow: 0 0 8px rgba(255, 176, 0, 0.8); }
         .card[data-role="empathy"]:hover { box-shadow: 0 15px 20px rgba(255, 176, 0, 0.15); }
         .card[data-role="empathy"] .card-title { color: var(--vigil-amber); }
 
         .card[data-role="aggressive"] { border-color: rgba(255, 0, 51, 0.4); }
-        .card[data-role="aggressive"] .card-icon-node {
-            border-color: rgba(255, 0, 51, 0.5); color: var(--vigil-red);
-            background: rgba(255, 0, 51, 0.08); box-shadow: inset 0 0 10px rgba(255, 0, 51, 0.2), 0 0 10px rgba(255, 0, 51, 0.2);
-            text-shadow: 0 0 8px rgba(255, 0, 51, 0.8);
-        }
+        .card[data-role="aggressive"] .card-icon-node { border-color: rgba(255, 0, 51, 0.5); color: var(--vigil-red); background: rgba(255, 0, 51, 0.08); box-shadow: inset 0 0 10px rgba(255, 0, 51, 0.2), 0 0 10px rgba(255, 0, 51, 0.2); text-shadow: 0 0 8px rgba(255, 0, 51, 0.8); }
         .card[data-role="aggressive"]:hover { box-shadow: 0 15px 20px rgba(255, 0, 51, 0.15); }
         .card[data-role="aggressive"] .card-title { color: var(--vigil-red); }
 
@@ -245,106 +253,68 @@
            SCREEN 4: RESOLUTION
         ========================================= */
         #screen-resolution { align-items: center; justify-content: center; }
-
-        #resolution-container {
-            width: 85%; max-width: 760px;
-            display: flex; flex-direction: column; gap: 24px;
-            padding: 30px 0;
-        }
-
-        #res-header {
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid rgba(0,255,204,0.3); padding-bottom: 16px;
-        }
+        #resolution-container { width: 85%; max-width: 760px; display: flex; flex-direction: column; gap: 24px; padding: 30px 0; }
+        #res-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,255,204,0.3); padding-bottom: 16px; }
         #res-header-label { font-size: 0.85rem; letter-spacing: 0.15em; opacity: 0.5; text-transform: uppercase; }
-
-        .res-tag {
-            font-size: 1.3rem; font-weight: bold; letter-spacing: 0.2em;
-            padding: 4px 16px; border: 1px solid;
-        }
-        .res-tag.tag-optimal     { color: var(--vigil-teal);     border-color: var(--vigil-teal);              text-shadow: 0 0 12px rgba(0,255,204,0.6); }
-        .res-tag.tag-adequate    { color: var(--vigil-teal-dim); border-color: rgba(0,255,204,0.4); }
-        .res-tag.tag-pyrrhic     { color: var(--vigil-amber);    border-color: var(--vigil-amber);             text-shadow: 0 0 12px rgba(255,176,0,0.5); }
-        .res-tag.tag-compromised { color: var(--vigil-amber);    border-color: rgba(255,176,0,0.5);  opacity: 0.85; }
-        .res-tag.tag-deteriorated{ color: var(--vigil-red);      border-color: rgba(255,0,51,0.5); }
-        .res-tag.tag-critical    { color: var(--vigil-red);      border-color: var(--vigil-red);               text-shadow: 0 0 12px rgba(255,0,51,0.7); }
-        .res-tag.tag-shutdown    { color: var(--vigil-red);      border-color: var(--vigil-red);               animation: flicker 0.8s infinite; }
+        .res-tag { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.2em; padding: 4px 16px; border: 1px solid; }
+        
+        .res-tag.tag-optimal { color: var(--vigil-teal); border-color: var(--vigil-teal); text-shadow: 0 0 12px rgba(0,255,204,0.6); }
+        .res-tag.tag-adequate { color: var(--vigil-teal-dim); border-color: rgba(0,255,204,0.4); }
+        .res-tag.tag-pyrrhic { color: var(--vigil-amber); border-color: var(--vigil-amber); text-shadow: 0 0 12px rgba(255,176,0,0.5); }
+        .res-tag.tag-compromised { color: var(--vigil-amber); border-color: rgba(255,176,0,0.5); opacity: 0.85; }
+        .res-tag.tag-deteriorated{ color: var(--vigil-red); border-color: rgba(255,0,51,0.5); }
+        .res-tag.tag-critical { color: var(--vigil-red); border-color: var(--vigil-red); text-shadow: 0 0 12px rgba(255,0,51,0.7); }
+        .res-tag.tag-shutdown { color: var(--vigil-red); border-color: var(--vigil-red); animation: flicker 0.8s infinite; }
 
         #res-scores { display: flex; gap: 40px; opacity: 0; }
         .res-score-block { flex: 1; }
         .res-score-label { font-size: 0.75rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 8px; letter-spacing: 0.1em; }
         .res-score-value { font-size: 2.6rem; font-weight: bold; margin-bottom: 10px; line-height: 1; }
-        .res-score-value.scope { color: var(--vigil-teal);  text-shadow: 0 0 10px rgba(0,255,204,0.4); }
-        .res-score-value.rel   { color: var(--vigil-amber); text-shadow: 0 0 10px rgba(255,176,0,0.4); }
+        .res-score-value.scope { color: var(--vigil-teal); text-shadow: 0 0 10px rgba(0,255,204,0.4); }
+        .res-score-value.rel { color: var(--vigil-amber); text-shadow: 0 0 10px rgba(255,176,0,0.4); }
         .res-score-bar-bg { height: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0,255,204,0.2); width: 100%; }
         .res-score-bar-fill { height: 100%; width: 0%; }
         .res-score-bar-fill.scope { background: var(--vigil-teal); }
-        .res-score-bar-fill.rel   { background: var(--vigil-amber); }
+        .res-score-bar-fill.rel { background: var(--vigil-amber); }
 
         #res-plays { display: flex; flex-direction: column; gap: 10px; }
         .res-plays-label { font-size: 0.75rem; text-transform: uppercase; opacity: 0.6; letter-spacing: 0.1em; }
         #res-play-history { display: flex; gap: 10px; flex-wrap: wrap; }
-        .play-chip {
-            display: flex; align-items: center; gap: 8px;
-            border: 1px solid rgba(0,255,204,0.4); padding: 6px 12px;
-            font-size: 0.78rem; opacity: 0; transform: translateY(8px);
-            background: rgba(0,255,204,0.03); text-transform: uppercase;
+        
+        /* Play Chip Styling Restored */
+        .play-chip { 
+            display: flex; align-items: center; gap: 8px; 
+            border: 1px solid rgba(0,255,204,0.4); 
+            padding: 6px 12px; font-size: 0.78rem; 
+            opacity: 0; transform: translateY(8px); 
+            background: rgba(0,255,204,0.03); 
+            text-transform: uppercase; 
         }
-        .play-chip-icon { font-size: 1.1rem; }
-        .play-chip[data-role="empathy"]    { border-color: rgba(255,176,0,0.5);  color: var(--vigil-amber); background: rgba(255,176,0,0.04); }
-        .play-chip[data-role="aggressive"] { border-color: rgba(255,0,51,0.4);   color: var(--vigil-red);   background: rgba(255,0,51,0.04); }
-        .play-chip.combo { box-shadow: 0 0 8px rgba(0,255,204,0.25); }
-        .wildcard-chip {
-            display: inline-flex; align-items: center; gap: 6px;
-            border: 1px solid rgba(255,176,0,0.5); padding: 5px 12px;
-            font-size: 0.78rem; color: var(--vigil-amber); background: rgba(255,176,0,0.05);
-            text-transform: uppercase; opacity: 0; transform: translateY(8px);
-        }
+        .play-chip[data-role="empathy"] { border-color: rgba(255,176,0,0.5); color: var(--vigil-amber); background: rgba(255,176,0,0.04); }
+        .play-chip[data-role="aggressive"] { border-color: rgba(255,0,51,0.4); color: var(--vigil-red); background: rgba(255,0,51,0.04); }
+        
+        .wildcard-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255,176,0,0.5); padding: 5px 12px; font-size: 0.78rem; color: var(--vigil-amber); background: rgba(255,176,0,0.05); text-transform: uppercase; opacity: 0; transform: translateY(8px); }
 
-        #res-debrief {
-            border-left: 3px solid rgba(0,255,204,0.35); padding-left: 20px; min-height: 70px;
-        }
+        #res-debrief { border-left: 3px solid rgba(0,255,204,0.35); padding-left: 20px; min-height: 70px; }
         #res-clinical { font-weight: bold; line-height: 1.7; min-height: 1.7rem; }
         #res-aside { color: var(--vigil-teal-dim); font-style: italic; margin-top: 8px; line-height: 1.7; min-height: 1.7rem; }
-
-        #res-suggestion {
-            font-size: 0.85rem; opacity: 0; color: rgba(0,255,204,0.55);
-            border-top: 1px solid rgba(0,255,204,0.12); padding-top: 16px;
-        }
-
-        #replay-btn {
-            align-self: flex-start; background: none;
-            border: 1px solid var(--vigil-teal); color: var(--vigil-teal);
-            font-family: inherit; font-size: 1rem; padding: 12px 32px;
-            cursor: pointer; opacity: 0; pointer-events: none;
-            text-transform: uppercase; letter-spacing: 0.1em;
-        }
+        #res-suggestion { font-size: 0.85rem; opacity: 0; color: rgba(0,255,204,0.55); border-top: 1px solid rgba(0,255,204,0.12); padding-top: 16px; }
+        #replay-btn { align-self: flex-start; background: none; border: 1px solid var(--vigil-teal); color: var(--vigil-teal); font-family: inherit; font-size: 1rem; padding: 12px 32px; cursor: pointer; opacity: 0; pointer-events: none; text-transform: uppercase; letter-spacing: 0.1em; }
         #replay-btn:hover { background: var(--vigil-teal); color: var(--bg-color); }
-
     </style>
 </head>
 <body class="crt-flicker">
     <div class="scanlines"></div>
-
-    <div id="screen-boot" class="screen active">
-        <div id="terminal">
-            <div class="boot-line" id="line1"></div>
-            <div class="boot-line" id="line2"></div>
-            <div class="boot-line" id="line3"></div>
-            <div class="boot-line" id="line4"></div>
-            <div class="boot-line" id="line5"></div>
-            <div class="boot-line" id="line6"></div>
-            <div class="boot-line boot-amber" id="line7"></div>
-        </div>
-        <div id="cursor"></div>
-        <button id="skip-btn">Skip Boot [ESC]</button>
-    </div>
-
+    <div id="screen-boot" class="screen"></div>
     <div id="screen-briefing" class="screen">
         <div class="threat-flash" id="threat-flash"></div>
         <div id="briefing-container">
+            <div id="briefing-title-zone">
+                <h1 id="briefing-main-title">SCOPE<span> // </span>CREEP</h1>
+                <p id="briefing-sub-title">> THREAT ASSESSMENT INITIATED</p>
+            </div>
             <div class="dossier">
-                <div class="portrait-container" id="briefing-portrait">
+                <div id="briefing-portrait">
                     <img src="photos/neutral.png" alt="Oliver">
                     <div class="scanner-line"></div>
                 </div>
@@ -356,11 +326,12 @@
                 </div>
                 <p class="vigil-note" id="vigil-note"></p> 
             </div>
-            <div class="deck-panel">
+<div class="deck-panel">
                 <div class="deck-header" id="deck-header">> LOAD TACTICAL ARSENAL</div>
                 <div class="data-chips">
-                    <div class="chip"></div><div class="chip"></div><div class="chip"></div>
-                    <div class="chip"></div><div class="chip"></div><div class="chip"></div>
+                    <div class="chip" data-role="tactical"><span class="chip-label">TACTICAL</span></div>
+                    <div class="chip" data-role="empathy"><span class="chip-label">EMPATHY</span></div>
+                    <div class="chip" data-role="aggressive"><span class="chip-label">AGGRESSIVE</span></div>
                 </div>
             </div>
             <div class="context-tray">
@@ -376,7 +347,7 @@
     <div id="screen-encounter" class="screen">
         <div id="game-container">
             <div id="top-zone">
-                <div class="portrait-container" id="encounter-portrait">
+                <div id="encounter-portrait">
                     <img src="photos/neutral.png" id="oliver-img" alt="Oliver">
                     <div class="scanner-line"></div>
                 </div>
@@ -435,862 +406,639 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
-    
     <script>
         gsap.registerPlugin(TextPlugin);
 
         /* ==============================================
-           TEXT SCRAMBLER UTILITY
-        ============================================== */
-        function scrambleText(elementId, finalString, durationMs) {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
-            const el = document.getElementById(elementId);
-            let iterations = 0; const maxIterations = durationMs / 30;
-            const interval = setInterval(() => {
-                el.innerText = finalString.split("").map((letter, index) => {
-                    if(index < (iterations / maxIterations) * finalString.length) return letter;
-                    return chars[Math.floor(Math.random() * chars.length)];
-                }).join("");
-                if(iterations >= maxIterations) { clearInterval(interval); el.innerText = finalString; }
-                iterations++;
-            }, 30);
-        }
-
-        /* ==============================================
-           PHASE 1: BOOT SEQUENCE
-        ============================================== */
-        let bootTl = null;
-        function initBootSequence() {
-            if (sessionStorage.getItem('vigil_booted')) {
-                transitionToBriefing();
-                return;
-            }
-
-            const script = [
-                "VIGIL ONLINE.",
-                "VIGIL has observed 847 conversations like the one you are about to have.",
-                "847 opportunities to hold the line.",
-                "Success rate: 34%.",
-                "VIGIL finds this statistic motivating. You may feel differently.",
-                "INITIATING BRIEFING ...",
-                "THREAT CLASS: scope creep. (yes, it will start with \"just one more thing.\")"
-            ];
-
-            gsap.set("#skip-btn", {opacity: 1, pointerEvents: "auto"});
-
-            bootTl = gsap.timeline({
-                onUpdate: () => {
-                    const activeLine = document.querySelectorAll('.boot-line:not(:empty)');
-                    if(activeLine.length > 0) activeLine[activeLine.length - 1].appendChild(document.getElementById('cursor'));
-                },
-                onComplete: () => {
-                    gsap.to("#cursor", {opacity: 0, duration: 0.1, delay: 0.5});
-                    setTimeout(transitionToBriefing, 800);
-                }
-            });
-
-            const ts = 0.008; const p = 0.15;
-            bootTl.to("#line1", {duration: script[0].length * ts, text: script[0], ease: "none"}).to({}, {duration: p})
-                  .to("#line2", {duration: script[1].length * ts, text: script[1], ease: "none"}).to({}, {duration: p})
-                  .to("#line3", {duration: script[2].length * ts, text: script[2], ease: "none"}).to({}, {duration: p})
-                  .to("#line4", {duration: script[3].length * ts, text: script[3], ease: "none"}).to({}, {duration: 0.2})
-                  .to("#line5", {duration: script[4].length * ts, text: script[4], ease: "none"}).to({}, {duration: 0.2})
-                  .to("#line6", {duration: script[5].length * ts, text: script[5], ease: "none"}).to({}, {duration: 0.3})
-                  .to("#line7", {duration: script[6].length * ts, text: script[6], ease: "none"});
-        }
-
-        function skipBoot() {
-            if(bootTl) bootTl.kill();
-            transitionToBriefing();
-        }
-
-        document.getElementById('skip-btn').addEventListener('click', skipBoot);
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') skipBoot(); });
-
-        /* ==============================================
-           PHASE 2: BRIEFING SEQUENCE
-        ============================================== */
-        function transitionToBriefing() {
-            sessionStorage.setItem('vigil_booted', '1');
-            gsap.to("#screen-boot", {opacity: 0, duration: 0.5, onComplete: () => {
-                document.getElementById('screen-boot').classList.remove('active');
-                document.getElementById('screen-briefing').classList.add('active');
-                gsap.to("#screen-briefing", {opacity: 1, duration: 0.5});
-                runBriefingTimeline();
-            }});
-        }
-
-        function runBriefingTimeline() {
-            const tl = gsap.timeline();
-            tl.to("#briefing-portrait", {opacity: 1, duration: 0.5, ease: "power2.out"})
-              .add(() => scrambleText("stat-name", "> SUBJECT: Oliver M.", 500))
-              .add(() => scrambleText("stat-role", "> ROLE: Product Manager", 500), "+=0.15")
-              .add(() => scrambleText("stat-tenure", "> TENURE: 18 Months", 500), "+=0.15")
-              .add(() => scrambleText("stat-status", "> BEHAVIOR: Well-meaning. High risk.", 500), "+=0.15")
-              .add(() => {
-                  const btn = document.getElementById("start-btn");
-                  btn.removeAttribute("disabled");
-                  btn.innerText = "INITIATE ENCOUNTER";
-                  btn.classList.add("active");
-                  btn.addEventListener("click", transitionToEncounter);
-                  gsap.to(btn, { opacity: 1, duration: 0.4, ease: "power2.out" });
-              }, "+=0.3")
-              .to("#deck-header", {opacity: 1, duration: 0.2}, "<")
-              .to(".chip", {
-                  opacity: 1, y: 0, stagger: 0.08, duration: 0.25,
-                  onCompleteAll: () => { document.querySelectorAll('.chip').forEach(c => c.classList.add('loaded')); }
-              }, "+=0.1")
-              .to("#vigil-note", {duration: 1.0, text: "VIGIL NOTE: not a villain. probably.", ease: "none"}, "+=0.3")
-              .add(() => {
-                  gsap.to("#threat-flash", {opacity: 0.4, duration: 0.1, yoyo: true, repeat: 3});
-                  gsap.to("#briefing-portrait", {x: 5, duration: 0.05, yoyo: true, repeat: 5});
-              }, "+=0.3")
-              .to("#threat-card", {opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.5)"}, "<");
-        }
-
-        /* ==============================================
            GAME DATA STRUCTURES
         ============================================== */
+        const STATES = ['hostile', 'defensive', 'neutral', 'receptive'];
+        
+        function shiftState(currentState, direction) {
+            let idx = STATES.indexOf(currentState);
+            idx = Math.max(0, Math.min(STATES.length - 1, idx + direction));
+            return STATES[idx];
+        }
+
         const GAME_STATE = {
-            scope_integrity: 100,
-            relationship_health: 70,
-            oliver_state: 'neutral',
-            defensiveness_floor: 50,
-            rel_threshold: 'none',   // none, strained, hostile, shutdown
+            scope_integrity: 55, 
+            relationship_health: 70, 
+            oliver_state: 'neutral', 
+            rel_threshold: 'none', 
             current_round: 1,
-            deck: [],
-            hand: [],
-            discard: [],
-            last_card_played: null,
-            play_history: [],
-            vanguard_played: false,
-            wildcard: null,
-            wildcard_fired: false
+            deck: [], 
+            hand: [], 
+            discard: [], 
+            play_history: [], 
+            last_card_played: null, 
+            wildcard: null, 
+            wildcard_fired: false,
+            bluff_strikes: 0, 
+            probe_consecutive: 0, 
+            pushover_strikes: 0, 
+            pressure_halved: false, 
+            empathy_locked: false, 
+            is_shutdown: false
         };
 
         const CARD_REACTIONS = {
-            VANGUARD:       "I'm glad someone finally gets it. ",
-            THREAT_ID:      "I see the risk you're pointing out. ", 
-            PROBE:          "The 'why' is that leadership needs it to look good. ",
-            THE_BOUNDARY:   "I know what the agreement says. ", 
-            TACTICAL_DELAY: "Waiting until next week kills our momentum. ",
-            NUCLEAR_OPTION: "Wow. Okay. If that's how we're doing this... ",
-            CALL_THE_BLUFF: "I'm not making this up. ",
-            RELEASE_VALVE:  "It is hard. It's been a nightmare week. "
+            VANGUARD: "I'm glad someone finally gets it. ", 
+            THREAT_ID: "I see the risk you're pointing out. ", 
+            PROBE: "The 'why' is that leadership needs it to look good. ",
+            THE_BOUNDARY: "I know what the agreement says. ", 
+            TRADE_OFF: "Dropping a feature isn't ideal, but I hear you. ", 
+            NUCLEAR_OPTION: "Wow. Okay. If that's how we're doing this. ",
+            CALL_THE_BLUFF: "I'm not making this up. ", 
+            RELEASE_VALVE: "It is hard. It's been a nightmare week. ", 
+            THE_ECHO: "Exactly. That's exactly what's happening. "
         };
 
         const CARDS = {
-            VANGUARD: {
-                id: 'VANGUARD', title: 'VANGUARD', subtitle: '"I see the effort here."', icon: '◈',
-                role: 'empathy', scope_effect: 0, rel_effect: 10,
-                annotation: {
-                    clinical: 'You told him his work mattered.',
-                    aside: 'Humans respond well to this. VIGIL finds this statistic useful.'
-                },
-                stateEffect: function(gs) {
-                    gs.vanguard_played = true;
-                    gs.defensiveness_floor = Math.max(0, gs.defensiveness_floor - 10);
-                    if (gs.oliver_state === 'defensive') return 'neutral';
-                    if (gs.oliver_state === 'neutral') return 'receptive';
-                    return gs.oliver_state;
+            VANGUARD: { 
+                id: 'VANGUARD', title: 'VANGUARD', subtitle: '"I see the effort here."', icon: '◈', role: 'empathy',
+                play: function(gs) {
+                    if (gs.empathy_locked) return { s: 0, r: 0, ns: gs.oliver_state, portrait: 'defensive', clin: "Oliver ignored you.", aside: "Empathy is locked." };
+                    if (gs.oliver_state === 'receptive') {
+                        gs.pushover_strikes++;
+                        if (gs.pushover_strikes >= 2) { 
+                            gs.is_shutdown = true; 
+                            return { s: -20, r: 0, ns: 'receptive', portrait: 'receptive', clin: "VIGIL INTERVENTION: SCOPE LIKELIHOOD 0%.", aside: "You surrendered all leverage." }; 
+                        }
+                        return { s: -15, r: 0, ns: 'receptive', portrait: 'receptive', clin: "You negotiated against yourself.", aside: "Strike one." };
+                    }
+                    return { s: -5, r: 15, ns: shiftState(gs.oliver_state, 1), portrait: 'receptive', clin: "You validated his work.", aside: "Softening stance." };
                 }
             },
-            THREAT_ID: {
-                id: 'THREAT_ID', title: 'THREAT I.D.', subtitle: '"Here\'s what that costs us."', icon: '⚠',
-                role: 'tactical', scope_effect: 5, rel_effect: -8,
-                annotation: {
-                    clinical: 'Named risks are negotiable. Unnamed risks compound silently.',
-                    aside: "Oliver now has to deal with something he can see. You're welcome."
-                },
-                stateEffect: function(gs) {
-                    if (!gs.vanguard_played && gs.oliver_state === 'neutral') return 'defensive';
-                    return gs.oliver_state;
+            THE_ECHO: { 
+                id: 'THE_ECHO', title: 'THE ECHO', subtitle: '"So what I\'m hearing is..."', icon: '≈', role: 'empathy',
+                play: function(gs) {
+                    if (gs.empathy_locked) return { s: 0, r: 0, ns: gs.oliver_state, portrait: 'defensive', clin: "Oliver ignored you.", aside: "Empathy is locked." };
+                    if (gs.oliver_state === 'receptive') {
+                        gs.pushover_strikes++;
+                        if (gs.pushover_strikes >= 2) { 
+                            gs.is_shutdown = true; 
+                            return { s: -15, r: 0, ns: 'receptive', portrait: 'receptive', clin: "VIGIL FATAL ERROR: USER COMPROMISED.", aside: "The Echo was too effective." }; 
+                        }
+                        return { s: -15, r: 0, ns: 'receptive', portrait: 'receptive', clin: "You echoed an empty room.", aside: "Strike one." };
+                    }
+                    return { s: -8, r: 12, ns: shiftState(gs.oliver_state, 1), portrait: 'receptive', clin: "You mirrored his frustration.", aside: "He feels heard." };
                 }
             },
-            PROBE: {
-                id: 'PROBE', title: 'PROBE', subtitle: '"Walk me through the why."', icon: '?',
-                role: 'tactical', scope_effect: 2, rel_effect: -3,
-                annotation: {
-                    clinical: 'You shifted the burden of proof to Oliver.',
-                    aside: 'He must now justify, not just request. This is his problem now.'
-                },
-                stateEffect: function(gs) {
-                    if (gs.oliver_state === 'defensive') return 'neutral';
-                    return gs.oliver_state;
+            RELEASE_VALVE: { 
+                id: 'RELEASE_VALVE', title: 'RELEASE VALVE', subtitle: '"I know this is hard on you."', icon: '◎', role: 'empathy',
+                play: function(gs) { 
+                    if (gs.empathy_locked) return { s: 0, r: 0, ns: gs.oliver_state, portrait: 'defensive', clin: "Oliver ignored you.", aside: "Empathy locked." };
+                    if (gs.oliver_state === 'receptive') { 
+                        gs.pushover_strikes++; 
+                        if (gs.pushover_strikes >= 2) { 
+                            gs.is_shutdown = true; 
+                            return { s: -20, r: 0, ns: 'receptive', portrait: 'receptive', clin: "VIGIL FATAL ERROR.", aside: "Surrender complete." }; 
+                        }
+                        return { s: -20, r: 0, ns: 'receptive', portrait: 'receptive', clin: "You conceded ground.", aside: "Strike one." }; 
+                    }
+                    gs.pressure_halved = true; 
+                    return { s: -10, r: 5, ns: 'receptive', portrait: 'receptive', clin: "Acknowledged pressure.", aside: "Pressure halved." }; 
                 }
             },
-            THE_BOUNDARY: {
-                id: 'THE_BOUNDARY', title: 'THE BOUNDARY', subtitle: '"That\'s outside the agreement."', icon: '◫',
-                role: 'tactical', scope_effect: 10, rel_effect: -12,
-                annotation: {
-                    clinical: 'You invoked the written agreement.',
-                    aside: 'Oliver may have forgotten it existed. VIGIL did not.'
-                },
-                stateEffect: function(gs) {
-                    if (gs.oliver_state === 'receptive') return 'resolved';
-                    if (gs.oliver_state === 'neutral') return 'defensive';
-                    return gs.oliver_state;
+            THE_BOUNDARY: { 
+                id: 'THE_BOUNDARY', title: 'THE BOUNDARY', subtitle: '"That\'s outside the agreement."', icon: '◫', role: 'tactical',
+                play: function(gs) {
+                    let r = (gs.oliver_state === 'receptive') ? -5 : (gs.oliver_state === 'neutral' ? -15 : -25);
+                    return { s: 20, r: r, ns: shiftState(gs.oliver_state, -1), portrait: 'resolved', clin: "You invoked the sprint agreement.", aside: `Limits cost ${r} relationship.` };
                 }
             },
-            TACTICAL_DELAY: {
-                id: 'TACTICAL_DELAY', title: 'TACTICAL DELAY', subtitle: '"Let\'s revisit next week."', icon: '◷',
-                role: 'tactical', scope_effect: -5, rel_effect: 8,
-                annotation: {
-                    clinical: 'You deferred the decision. The scope gap will widen while you wait.',
-                    aside: "Oliver leaves happy. The backlog does not. Avoidance has a compound interest rate."
-                },
-                stateEffect: function(gs) {
-                    if (gs.oliver_state === 'defensive') return 'neutral';
-                    return gs.oliver_state;
+            THREAT_ID: { 
+                id: 'THREAT_ID', title: 'THREAT I.D.', subtitle: '"Here\'s what that costs us."', icon: '⚠', role: 'tactical',
+                play: function(gs) {
+                    let r = (gs.oliver_state === 'receptive') ? 0 : -10;
+                    return { s: 15, r: r, ns: gs.oliver_state, portrait: 'defensive', clin: "You quantified the tech debt risk.", aside: `Risk cost ${r} relationship.` };
                 }
             },
-            NUCLEAR_OPTION: {
-                id: 'NUCLEAR_OPTION', title: 'THE NUCLEAR OPTION', subtitle: '"I\'m taking this upstairs."', icon: '⚡',
-                role: 'aggressive', scope_effect: 15, rel_effect: -25,
-                annotation: {
-                    clinical: 'Escalation is effective. It is also expensive.',
-                    aside: 'VIGIL notes: HR has a calendar. Good luck.'
-                },
-                stateEffect: function(gs) {
-                    if (gs.current_round <= 2) gs.relationship_health = Math.max(0, gs.relationship_health - 15);
-                    return 'defensive';
+            TRADE_OFF: { 
+                id: 'TRADE_OFF', title: 'TRADE-OFF', subtitle: '"We can do this, but we drop X."', icon: '◷', role: 'tactical',
+                play: function(gs) { 
+                    return { s: 15, r: -5, ns: 'neutral', portrait: 'resolved', clin: "You offered a zero-sum exchange.", aside: "Logic reset." }; 
                 }
             },
-            CALL_THE_BLUFF: {
-                id: 'CALL_THE_BLUFF', title: 'CALL THE BLUFF', subtitle: '"I don\'t think that\'s true, Oliver."', icon: '✦',
-                role: 'tactical', scope_effect: 8, rel_effect: -10,
-                annotation: {
-                    clinical: 'You challenged the premise directly. Oliver must now prove, not assert.',
-                    aside: 'Facts do not care about enthusiasm. Oliver is learning this in real time.'
-                },
-                stateEffect: function(gs) {
-                    if (gs.oliver_state === 'neutral') return 'surprised';
-                    if (gs.oliver_state === 'receptive') return 'neutral';
-                    return gs.oliver_state;
+            PROBE: { 
+                id: 'PROBE', title: 'PROBE', subtitle: '"Walk me through the why."', icon: '?', role: 'tactical',
+                play: function(gs) { 
+                    gs.probe_consecutive++; 
+                    if (gs.probe_consecutive >= 2) {
+                        return { s: 5, r: -15, ns: 'defensive', portrait: 'defensive', clin: "You kept probing.", aside: "Oliver is defensive." };
+                    }
+                    return { s: 10, r: 0, ns: gs.oliver_state, portrait: 'neutral', clin: "You shifted the burden of proof.", aside: "A safe stall." }; 
                 }
             },
-            RELEASE_VALVE: {
-                id: 'RELEASE_VALVE', title: 'RELEASE VALVE', subtitle: '"I know this is hard on you."', icon: '◎',
-                role: 'empathy', scope_effect: 0, rel_effect: 15,
-                annotation: {
-                    clinical: 'You acknowledged the pressure Oliver is under.',
-                    aside: 'He needed to feel understood before he could hear no. Classic.'
-                },
-                stateEffect: function(gs) {
-                    if (gs.oliver_state === 'defensive') return 'neutral';
-                    if (gs.oliver_state === 'neutral') return 'receptive';
-                    return gs.oliver_state;
+CALL_THE_BLUFF: { 
+                id: 'CALL_THE_BLUFF', title: 'CALL THE BLUFF', subtitle: '"I don\'t think that\'s true."', icon: '✦', role: 'tactical',
+                play: function(gs) {
+                    // Removed the bluff_strikes tracking entirely
+                    if (gs.oliver_state === 'hostile' || gs.oliver_state === 'defensive') { 
+                        gs.is_shutdown = true; 
+                        return { s: 20, r: -15, ns: 'hostile', portrait: 'surprised', clin: "You pushed too far.", aside: "Conversation terminated." }; 
+                    }
+                    return { s: 20, r: -15, ns: 'defensive', portrait: 'surprised', clin: "You directly challenged him.", aside: "He is on guard now." };
+                }
+            },
+            NUCLEAR_OPTION: { 
+                id: 'NUCLEAR_OPTION', title: 'THE NUCLEAR OPTION', subtitle: '"I\'m taking this upstairs."', icon: '⚡', role: 'aggressive',
+                play: function(gs) { 
+                    gs.empathy_locked = true; 
+                    return { s: 40, r: -40, ns: 'hostile', portrait: 'defensive', clin: "You escalated to leadership.", aside: "Bridge burned." }; 
                 }
             }
         };
 
-        const COMBOS = {
-            'VANGUARD+THREAT_ID':       { name: 'EMPATHY BRIDGE',   clinical: 'COMBO: EMPATHY BRIDGE. You validated, then challenged. Textbook de-escalation.', aside: 'Oliver is processing, not defending. This is the ideal state. Hold it.', stateOverride: function(gs) { if (gs.oliver_state === 'defensive') return 'neutral'; return 'receptive'; } },
-            'PROBE+CALL_THE_BLUFF':     { name: 'SOCRATIC LOCK',    clinical: 'COMBO: SOCRATIC LOCK. You questioned, then cornered the assumption.', aside: 'Oliver is thinking. Do not interrupt him. This may take a moment.', stateOverride: function() { return 'surprised'; } },
-            'RELEASE_VALVE+THE_BOUNDARY': { name: 'PRESSURE RELEASE', clinical: 'COMBO: PRESSURE RELEASE. You acknowledged the person, then enforced the process.', aside: 'Empathy followed by structure. Oliver can accept this.', stateOverride: function() { return 'receptive'; } }
-        };
-
         const WILDCARD_EVENTS = {
-            CTO_ESCALATION: {
-                name: 'ESCALATION',
-                oliver_line: "...Wait. I just got cc'd on an email from the CTO. He's expecting this in the demo.",
-                vigil_clinical: '[WILDCARD: ESCALATION] Executive authority has entered the conversation.',
-                vigil_aside: "The CTO's name changes the math. Scope projections adjusted.",
-                effect: function(gs) { gs.scope_integrity = Math.max(0, gs.scope_integrity - 12); }
+            CTO_ESCALATION: { 
+                name: 'ESCALATION', oliver_line: "I just got cc'd on an email from the CTO. He's expecting this in the demo ASAP.", 
+                vigil_clinical: '[WILDCARD: ESCALATION] Executive authority entered.', vigil_aside: "Projections adjusted.", 
+                effect: function(gs) { gs.scope_integrity -= 12; } 
             },
-            SUNK_COST: {
-                name: 'SUNK COST',
-                oliver_line: "Look, I have to be honest. My team has already spent three days on this. I can't go back empty-handed.",
-                vigil_clinical: '[WILDCARD: SUNK COST] Unauthorized work is being used as leverage.',
-                vigil_aside: "Sunk costs are logically irrelevant. Oliver does not know this. You do.",
-                effect: function(gs) { gs.relationship_health = Math.max(0, gs.relationship_health - 15); }
+            SUNK_COST: { 
+                name: 'SUNK COST', oliver_line: "My team is upset for spending 3 days on this. I can't go back empty-handed.", 
+                vigil_clinical: '[WILDCARD: SUNK COST] Leverage attempt detected.', vigil_aside: "Sunk costs are irrelevant.", 
+                effect: function(gs) { gs.relationship_health -= 15; } 
             },
-            CLIENT_COMMITMENT: {
-                name: 'COMMITMENT',
-                oliver_line: "There's another factor here. Marketing already told the client this ships next week.",
-                vigil_clinical: '[WILDCARD: COMMITMENT] An external promise was made without consulting scope.',
-                vigil_aside: 'The scope boundary was broken before this meeting started. This is how it always begins.',
-                effect: function(gs) { gs.scope_integrity = Math.max(0, gs.scope_integrity - 10); }
+            CLIENT_COMMITMENT: { 
+                name: 'COMMITMENT', oliver_line: "Marketing just told the client this ships next week.", 
+                vigil_clinical: '[WILDCARD: COMMITMENT] External promise made.', vigil_aside: "Boundary pre-broken.", 
+                effect: function(gs) { gs.scope_integrity -= 10; } 
             },
-            EMOTIONAL_APPEAL: {
-                name: 'MORALE PLAY',
-                oliver_line: "You have to understand the human cost. The team is burned out. They need this win.",
-                vigil_clinical: '[WILDCARD: MORALE PLAY] Team wellbeing is being invoked as leverage.',
-                vigil_aside: 'Empathy for the team is real. The request is still out of scope. Both things are true.',
-                effect: function(gs) {
-                    gs.scope_integrity     = Math.max(0, gs.scope_integrity     - 8);
-                    gs.relationship_health = Math.max(0, gs.relationship_health - 8);
-                }
+            EMOTIONAL_APPEAL: { 
+                name: 'MORALE PLAY', oliver_line: "The team is burned out and frustrated. They need this win.", 
+                vigil_clinical: '[WILDCARD: MORALE PLAY] Wellbeing leverage.', vigil_aside: "Empathy is real; scope is still locked.", 
+                effect: function(gs) { gs.scope_integrity -= 8; gs.relationship_health -= 8; } 
             }
         };
 
         const OLIVER_DIALOGUE = {
-            // Round 1
-            '1_neutral': "Look, I know the scope is locked, but I was thinking... what if we just squeezed in the dashboard export? It's basically the same data.",
-
-            // Round 2
-            '2_neutral':    "Okay, I hear you. But what about just the read-only version? No new API calls, just a view layer.",
-            '2_defensive':  "I'm not trying to cause problems here. The team already started on the export widget.",
-            '2_receptive':  "That's fair. What if we timebox it? Two days max, and if it's not done, we cut it.",
-            '2_surprised':  "Huh. I hadn't considered that angle. Let me think about this for a second.",
-            '2_resolved':   "Alright, I can see the risk. Let me reframe what we actually need.",
-            
-            '2_neutral_empathy':    "I do appreciate that. I really do. But the dashboard export is still sitting there.",
-            '2_defensive_empathy':  "...I hear that. I'm not trying to be difficult. The team already started on this.",
-            '2_receptive_empathy':  "That helps, actually. What if we timebox it? Two days, cut it if it's not done.",
-            '2_surprised_empathy':  "Thank you for saying that. I need to think about this differently.",
-            '2_resolved_empathy':   "I appreciate it. Let me reframe what we actually need here.",
-            
-            '2_neutral_aggressive':    "Right. Well. I guess we know where this is going.",
-            '2_defensive_aggressive':  "Okay. You want to go there, fine. The team's already building it.",
-            '2_receptive_aggressive':  "I still think there's a middle ground here. Even after... that.",
-            '2_surprised_aggressive':  "After what you just said, I need a moment to recalibrate.",
-            '2_resolved_aggressive':   "Look, if you're going to drag leadership into this, fine. I'll pull the request. But this isn't how we should be working together.",
-
-            '2_neutral_tactical':    "I get the logic, but what about just the read-only version? No new API calls.",
-            '2_defensive_tactical':  "Process is great, but my team already started on the export widget. We're losing time.",
-            '2_receptive_tactical':  "That makes sense logically. What if we timebox it? Two days max to mitigate the risk.",
-            '2_surprised_tactical':  "I hadn't looked at the mechanics that way. Let me think about this for a second.",
-            '2_resolved_tactical':   "Alright, the constraints are clear. Let me reframe what we actually need.",
-
-            // Round 3
-            '3_neutral':    "The thing is, marketing already told the client it would be in the next release.",
-            '3_defensive':  "You're not seeing the full picture. This is coming from above me.",
-            '3_receptive':  "I get the risk. But can we at least document it as a fast-follow?",
-            '3_surprised':  "Wait, so you're saying the commitment was never actually confirmed?",
-            '3_resolved':   "Okay. I'll talk to marketing about resetting expectations.",
-            
-            '3_neutral_empathy':    "I appreciate the understanding. But marketing already told the client this ships next release.",
-            '3_defensive_empathy':  "Look, even if you understand, leadership doesn't. This is coming from above me.",
-            '3_receptive_empathy':  "Honestly, I get the risk now. Can we at least document it as a fast-follow?",
-            '3_surprised_empathy':  "Wait -- you're right. Was the client commitment ever actually confirmed?",
-            '3_resolved_empathy':   "I'll talk to marketing about resetting expectations. This helps.",
-            
-            '3_neutral_aggressive':    "Are you seriously escalating this? Marketing already told the client this ships next release. You're going to make us both look bad.",
-            '3_defensive_aggressive':  "I don't think escalating is going to help anyone here. This is coming from above me.",
-            '3_receptive_aggressive':  "Even with all this... I still think we can find a path. Document it as a fast-follow?",
-            '3_surprised_aggressive':  "Wait... you're taking this up the chain because of a marketing promise? Was that commitment even confirmed? Now you have me second-guessing.",
-            '3_resolved_aggressive':   "I'll reset expectations with marketing. But I want that on record.",
-
-            '3_neutral_tactical':    "Even with the rules in place, marketing already told the client it would be in the next release.",
-            '3_defensive_tactical':  "You can quote the agreement all you want, but this is coming from above me.",
-            '3_receptive_tactical':  "I see the technical risk. But can we at least document it as a fast-follow?",
-            '3_surprised_tactical':  "Wait, so technically, the commitment was never actually confirmed on paper?",
-            '3_resolved_tactical':   "Okay. I'll take these facts to marketing and reset expectations.",
-
-            // Round 4
-            '4_neutral':    "So where does that leave us? I still need to give my team something.",
-            '4_defensive':  "Fine. I'll just tell the CTO we couldn't make it work.",
-            '4_receptive':  "Alright, let's figure out what we can actually commit to.",
-            '4_surprised':  "I hadn't thought about it that way. Let me reconsider the approach.",
-            '4_resolved':   "You're right. Let's keep the scope clean and revisit next sprint.",
-            
-            '4_neutral_empathy':    "So where does that leave us? I still need to give my team something tangible.",
-            '4_defensive_empathy':  "I know you get it, and I appreciate that. But empathy doesn't give me a feature to show the CTO. I'm empty-handed right now.",
-            '4_receptive_empathy':  "Alright. Let's be honest about what's actually possible here.",
-            '4_surprised_empathy':  "You've given me a lot to think about. Let me reconsider the whole approach.",
-            '4_resolved_empathy':   "Good. Let's keep scope clean and revisit properly next sprint.",
-            
-            '4_neutral_aggressive':    "So what exactly am I supposed to tell my team? They need something.",
-            '4_defensive_aggressive':  "Fine. I'll tell the CTO directly that you shut it down.",
-            '4_receptive_aggressive':  "I'm still willing to find a path forward. Even after all this.",
-            '4_surprised_aggressive':  "After all that, I don't even know where we stand anymore.",
-            '4_resolved_aggressive':   "Let's keep scope clean. But we should talk about how we got here.",
-
-            '4_neutral_tactical':    "So realistically, where does that leave us? I still need to give my team something.",
-            '4_defensive_tactical':  "Fine. If that's the policy, I'll just tell the CTO we couldn't make it work.",
-            '4_receptive_tactical':  "Alright, looking at our actual bandwidth, let's figure out what we can commit to.",
-            '4_surprised_tactical':  "Looking at the numbers... I hadn't thought about it that way. Let me reconsider.",
-            '4_resolved_tactical':   "You're right. Let's keep the scope strictly to the requirements and revisit next sprint.",
-
-            // Round 5
-            '5_neutral':    "Okay. I think I understand the constraints better now.",
-            '5_defensive':  "I'll take this to the next leadership sync. We'll see what happens.",
-            '5_receptive':  "Thanks for walking me through that. I'll adjust the timeline.",
-            '5_surprised':  "This changes things. I need to rethink the whole request.",
-            '5_resolved':   "Good talk. I'll pull the export from this sprint and scope it properly for next.",
-            
-            '5_neutral_empathy':    "Alright. I understand the constraints better now. I'll work within them.",
-            '5_defensive_empathy':  "I still disagree. But I'll take it to the leadership sync.",
-            '5_receptive_empathy':  "Thanks for taking the time on this. I'll adjust the timeline.",
-            '5_surprised_empathy':  "This changes my whole approach. I'll scope it properly for next sprint.",
-            '5_resolved_empathy':   "Good conversation. Genuinely. I'll pull the export and scope it right.",
-            
-            '5_neutral_aggressive':    "Okay. I understand the constraints. I just wish we'd gotten here differently.",
-            '5_defensive_aggressive':  "I'll take this to the leadership sync. Make sure my position is on record.",
-            '5_receptive_aggressive':  "I'll adjust the timeline. I just wish this conversation had gone differently.",
-            '5_surprised_aggressive':  "I need to rethink this. I'll scope it properly. But I'm not happy about it.",
-            '5_resolved_aggressive':   "I'll pull the export from this sprint. But we need to talk about process.",
-
-            '5_neutral_tactical':    "Okay. I understand the mechanical constraints better now.",
-            '5_defensive_tactical':  "I'll take this ruling to the next leadership sync. We'll see what happens.",
-            '5_receptive_tactical':  "Thanks for walking me through the logistics. I'll adjust the timeline.",
-            '5_surprised_tactical':  "These parameters change things. I need to rethink the whole request.",
-            '5_resolved_tactical':   "Makes sense. I'll pull the export from this sprint and scope it by the book for next.",
-
-            // Hostile state
-            '2_hostile': "You know what? I'll just take this to the leadership sync.",
-            '3_hostile': "I don't think this conversation is productive anymore.",
-            '4_hostile': "I'm documenting this. We'll let the steering committee decide.",
-            '5_hostile': "Fine. I'll handle it my way.",
-            'shutdown':  "...I think we're done here."
+            '1_neutral': "Look, I know the scope is locked, but what if we just squeezed in the dashboard export?",
+            '2_neutral': "I hear you. But what about a read-only version? No new API calls.",
+            '2_defensive': "I'm not trying to cause problems here. The team already started on the widget.",
+            '2_receptive': "That's fair. What if we timebox it? Two days max, or we cut it.",
+            '3_neutral': "The thing is, marketing already told the client it would be in next release.",
+            '3_defensive': "You're not seeing the full picture. This is coming from above me.",
+            '3_receptive': "I get the risk. But can we at least document it as a fast-follow?",
+            '4_neutral': "Where does that leave us? I still need to give my team something.",
+            '4_defensive': "Fine. I'll just tell the CTO we couldn't make it work.",
+            '4_receptive': "Alright, let's figure out what we can actually commit to.",
+            '5_neutral': "Okay. I think I understand the constraints better now.",
+            '5_defensive': "I'll take this to the next leadership sync. We'll see what happens.",
+            '5_receptive': "Thanks for walking me through that. I'll adjust the timeline.",
+            'hostile': "I don't think this conversation is productive anymore.",
+            'shutdown': "...I think we're done here."
         };
 
         /* ==============================================
-           DECK / HAND SYSTEM
+           ENGINE LOGIC
         ============================================== */
-        function shuffleDeck() {
-            const ids = Object.keys(CARDS);
-            for (let i = ids.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [ids[i], ids[j]] = [ids[j], ids[i]];
-            }
-            GAME_STATE.deck = ids;
-        }
-
-        function recycleDeck() {
-            const ids = [...GAME_STATE.discard];
-            GAME_STATE.discard = [];
-            for (let i = ids.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [ids[i], ids[j]] = [ids[j], ids[i]];
-            }
-            GAME_STATE.deck = GAME_STATE.deck.concat(ids);
-        }
-
-        function drawHand(n) {
-            if (GAME_STATE.deck.length < n) recycleDeck();
-            GAME_STATE.hand = GAME_STATE.deck.splice(0, Math.min(n, GAME_STATE.deck.length));
-        }
-
-        function renderHand() {
-            const handEl = document.getElementById('player-hand');
-            handEl.innerHTML = '';
-            GAME_STATE.hand.forEach(cardId => {
-                const c = CARDS[cardId];
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.setAttribute('data-role', c.role);
-                div.setAttribute('onclick', `playCard(this, '${c.id}')`);
-                div.innerHTML = `<div class="card-title">${c.title}</div><div class="card-icon-node">${c.icon}</div><div class="card-sub">${c.subtitle}</div>`;
-                handEl.appendChild(div);
-            });
-        }
-
-        function getOliverDialogue(round, state, lastRole) {
-            const roleKey = lastRole ? `_${lastRole}` : '';
-            
-            let baseText = OLIVER_DIALOGUE[`${round}_${state}${roleKey}`] 
-                        || OLIVER_DIALOGUE[`${round}_${state}`] 
-                        || OLIVER_DIALOGUE[`${round}_neutral`] 
-                        || "...";
-
-            if (GAME_STATE.last_card_played) {
-                const prefix = CARD_REACTIONS[GAME_STATE.last_card_played];
-                if (prefix) {
-                    return prefix + baseText;
-                }
-            }
-
-            return baseText;
-        }
-
-        function updateGauges() {
-            gsap.to("#g-scope", { width: GAME_STATE.scope_integrity + '%', duration: 0.4, ease: "elastic.out(1, 0.4)" });
-            gsap.to("#g-rel",   { width: GAME_STATE.relationship_health + '%', duration: 0.4, ease: "elastic.out(1, 0.4)" });
-            const lbl = getPressureLabel();
-            const el = document.getElementById('g-pressure');
-            el.textContent = lbl.text;
-            el.className = 'pressure-val ' + lbl.cls;
-        }
-
-        function setPortrait(state) {
-            const img = document.getElementById('oliver-img');
-            const newSrc = 'photos/' + state + '.png';
-            if (img.src.includes(newSrc)) return;
-            gsap.to(img, { opacity: 0, duration: 0.15, onComplete: () => {
-                img.src = newSrc;
-                gsap.to(img, { opacity: 1, duration: 0.25 });
-            }});
-        }
-
-        /* ==============================================
-           PHASE 3: ENCOUNTER SEQUENCE
-        ============================================== */
-        function transitionToEncounter() {
-            gsap.to("#screen-briefing", {opacity: 0, duration: 0.5, onComplete: () => {
-                document.getElementById('screen-briefing').classList.remove('active');
-                document.getElementById('screen-encounter').classList.add('active');
-                gsap.to("#screen-encounter", {opacity: 1, duration: 0.5});
-                startEncounter();
-            }});
-        }
-
-        let roundActive = false;
-
-        function checkRelThreshold() {
-            const rh = GAME_STATE.relationship_health;
-            if (rh <= 0) {
-                GAME_STATE.rel_threshold = 'shutdown';
-            } else if (rh < 15) {
-                if (GAME_STATE.rel_threshold !== 'hostile') {
-                    GAME_STATE.rel_threshold = 'hostile';
-                    GAME_STATE.oliver_state = 'defensive';
-                    setPortrait('defensive');
-                }
-            } else if (rh < 30) {
-                if (GAME_STATE.rel_threshold === 'none') {
-                    GAME_STATE.rel_threshold = 'strained';
-                }
-            }
-        }
-
         function getOliverPressure() {
             const rh = GAME_STATE.relationship_health;
-            if (rh >= 50) return 5;
-            if (rh >= 30) return 10;
-            if (rh >= 15) return 18;
-            return 28;
+            let p = 5; 
+            if (rh < 15) p = 18; else if (rh < 30) p = 12; else if (rh < 50) p = 8;
+            if (GAME_STATE.pressure_halved) { p = Math.floor(p / 2); GAME_STATE.pressure_halved = false; }
+            return p;
         }
 
-        function getPressureLabel() {
-            const rh = GAME_STATE.relationship_health;
-            if (rh >= 50) return { text: '5/rnd',  cls: '' };
-            if (rh >= 30) return { text: '10/rnd', cls: '' };
-            if (rh >= 15) return { text: '18/rnd', cls: 'strained' };
-            return                { text: '28/rnd', cls: 'hostile' };
+function setPortrait(state) {
+            const img = document.getElementById('oliver-img');
+            
+            const validPortraits = ['defensive', 'neutral', 'receptive', 'resolved', 'surprised'];
+            let imageFile = 'neutral';
+            if (validPortraits.includes(state)) {
+                imageFile = state;
+            } else if (state === 'hostile' || state === 'shutdown') {
+                imageFile = 'defensive';
+            }
+            
+            const newSrc = 'photos/' + imageFile + '.png';
+
+            // FIX 1: If the image is already the right one, don't do anything!
+            if (img.src.includes(newSrc)) return;
+
+            gsap.to(img, { opacity: 0, duration: 0.15, onComplete: () => {
+                // FIX 2: Wait for the browser to finish loading the new image...
+                img.onload = () => {
+                    // ...THEN fade it back in.
+                    gsap.to(img, { opacity: 1, duration: 0.25 });
+                    img.onload = null; // Clean up the listener
+                };
+                
+                // Trigger the image swap
+                img.src = newSrc;
+            }});
+        }
+        function checkRelThreshold() { 
+            const rh = GAME_STATE.relationship_health; 
+            if (rh <= 0) { 
+                GAME_STATE.rel_threshold = 'shutdown'; 
+                GAME_STATE.is_shutdown = true; 
+            } else if (rh < 15) { 
+                GAME_STATE.rel_threshold = 'hostile'; 
+                GAME_STATE.oliver_state = 'hostile'; 
+            } else if (rh < 30) { 
+                GAME_STATE.rel_threshold = 'strained'; 
+            } else { 
+                GAME_STATE.rel_threshold = 'none'; 
+            } 
         }
 
-        function fireWildcard(callback) {
+function fireWildcard(callback) {
             const event = WILDCARD_EVENTS[GAME_STATE.wildcard];
             const tl = gsap.timeline();
+            
+            setPortrait('surprised'); 
             
             tl.set(".annotation-area", { opacity: 1 })
               .set("#v-clin", { text: "" })
               .set("#v-aside", { text: "" })
               .to("#mid-zone", { backgroundColor: 'rgba(255, 176, 0, 0.1)', duration: 0.3 })
-              .to("#v-clin", { duration: 1.0, text: ">>> SYSTEM ALERT: EXTERNAL VARIABLE DETECTED.", ease: "none" })
-              .to({}, { duration: 0.8 }); 
-
-            tl.add(() => {
-                gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 6 });
-                gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
-            });
-
-            tl.to("#oliver-text", { opacity: 0, duration: 0.3 })
+              .to("#v-clin", { duration: 0.6, text: ">>> SYSTEM ALERT: EXTERNAL VARIABLE DETECTED.", ease: "none" })
+              .add(() => {
+                  // Keep the visual alarm shake
+                  gsap.to("body", { x: 5, y: 3, duration: 0.04, yoyo: true, repeat: 6 });
+                  gsap.to("#mid-zone", { borderColor: 'rgba(255,176,0,0.7)', duration: 0.2, yoyo: true, repeat: 3 });
+              }, "-=0.3")
+              .to("#oliver-text", { opacity: 0, duration: 0.2 })
               .set("#oliver-text", { text: "" })
               .to("#oliver-text", { opacity: 1, duration: 0.1 })
-              .to("#oliver-text", { duration: 2.0, text: event.oliver_line, ease: "none" })
-              .to({}, { duration: 0.8 }); 
+              .to("#oliver-text", { duration: 1.2, text: event.oliver_line, ease: "none" })
+              .to({}, { duration: 0.5 }) 
+              .add(() => { 
+                  // Apply the wildcard penalty
+                  event.effect(GAME_STATE); 
+                  checkRelThreshold(); 
+                  gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
+                  gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
+                  updateGauges(); 
+              })
+              .to("#v-clin", { duration: 0.8, text: event.vigil_clinical, ease: "none" })
+              .to("#v-aside", { duration: 1.0, text: event.vigil_aside, ease: "none" })
               
-            tl.add(() => {
-                event.effect(GAME_STATE);
-                checkRelThreshold();
-                gsap.to("#g-scope", { backgroundColor: 'rgba(255,0,51,0.9)', duration: 0.12, yoyo: true, repeat: 4 });
-                gsap.to("#g-rel",   { backgroundColor: 'rgba(255,0,51,0.7)', duration: 0.12, yoyo: true, repeat: 2 });
-                updateGauges();
-            });
-
-            tl.set("#v-clin", { text: "" })
-              .to("#v-clin", { duration: 1.2, text: event.vigil_clinical, ease: "none" })
-              .to("#v-aside", { duration: 1.8, text: event.vigil_aside, ease: "none" });
-
-            tl.add(() => {
-                const handEl = document.getElementById('player-hand');
-                handEl.innerHTML = ''; 
-                
-                const ackBtn = document.createElement('div');
-                ackBtn.className = 'card';
-                ackBtn.style.borderColor = 'var(--vigil-amber)';
-                ackBtn.style.width = '200px'; 
-                ackBtn.style.backgroundColor = 'rgba(255, 176, 0, 0.05)';
-                ackBtn.innerHTML = `
-                    <div class="card-title" style="color: var(--vigil-amber);">CONTEXT SHIFT</div>
-                    <div class="card-icon-node" style="color: var(--vigil-amber); border-color: var(--vigil-amber);">⚠</div>
-                    <div class="card-sub" style="color: var(--vigil-amber);">[ CLICK TO ACKNOWLEDGE ]</div>
-                `;
-                
-                ackBtn.onclick = () => {
-                    ackBtn.style.pointerEvents = 'none'; 
-                    
-                    const outTl = gsap.timeline();
-                    outTl.to(ackBtn, { opacity: 0, scale: 0.9, duration: 0.2 })
-                         .to("#mid-zone", { backgroundColor: 'rgba(0, 255, 204, 0.03)', duration: 0.3 }, "<") 
-                         .to(".annotation-area", { opacity: 0, duration: 0.3 }, "<")
-                         .add(() => {
-                             if (callback) callback();
-                         });
-                };
-                
-                handEl.appendChild(ackBtn);
-                gsap.fromTo(ackBtn, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
-            });
+              // NEW FLOW: Auto-advance instead of waiting for a click
+              // Give them 2 seconds to absorb the hit, then fade the alarm colors and move on
+              .to({}, { duration: 2.0 }) 
+              .to("#mid-zone", { backgroundColor: 'rgba(0, 255, 204, 0.03)', borderColor: 'rgba(0, 255, 204, 0.3)', duration: 0.4 })
+              .add(() => {
+                  if (callback) callback(); 
+              });
         }
 
-        function applyPressureSequence() {
-            if (GAME_STATE.current_round === 3 && !GAME_STATE.wildcard_fired && GAME_STATE.wildcard) {
-                GAME_STATE.wildcard_fired = true;
-                fireWildcard(() => { 
-                    applyPressureSequence(); 
-                });
-                return;
-            }
 
-            const pressure = getOliverPressure();
-            GAME_STATE.scope_integrity = Math.max(0, GAME_STATE.scope_integrity - pressure);
+        let roundActive = false;
 
-            const tl = gsap.timeline();
+function playCard(cardElement, cardId) {
+            if (!roundActive) return; roundActive = false;
             
-            tl.add(() => {
-                gsap.to("#g-scope", { backgroundColor: 'rgba(255, 0, 51, 0.8)', duration: 0.15, yoyo: true, repeat: 1 });
-                gsap.to("body", { x: 2, y: 1, duration: 0.04, yoyo: true, repeat: 3 });
-                updateGauges();
-            });
+            cardElement.classList.add('played');
+            gsap.killTweensOf(cardElement);
 
-            const rh = GAME_STATE.relationship_health;
-            let tierNote = '';
-            if (rh >= 50)      tierNote = 'Relationship stable. Pressure manageable.';
-            else if (rh >= 30) tierNote = 'Relationship cooling. Pressure increasing.';
-            else if (rh >= 15) tierNote = 'Relationship strained. Oliver is pushing harder.';
-            else               tierNote = 'Relationship hostile. Oliver is no longer listening.';
-
-            tl.set(".annotation-area", { opacity: 1 })
-              .set("#v-clin", { text: "" })
-              .set("#v-aside", { text: "" })
-              .to("#v-clin", { duration: 0.6, text: `> PRESSURE APPLIED: -${pressure}% scope integrity.`, ease: "none" })
-              .to("#v-aside", { duration: 0.8, text: tierNote, ease: "none" })
-              .to({}, { duration: 1.8 })
-              .to(".annotation-area", { opacity: 0.3, duration: 0.5 });
-
-            tl.add(() => {
-                if (GAME_STATE.scope_integrity <= 0) { endEncounter(); return; }
-                drawHand(3);
-                renderHand();
-                roundActive = true;
-            });
-        }
-
-        function executeRoundTransition() {
-            const round = GAME_STATE.current_round;
-
-            const stateToFetch = GAME_STATE.rel_threshold === 'hostile' ? 'hostile' : GAME_STATE.oliver_state;
-            const lastRole = GAME_STATE.last_card_played ? CARDS[GAME_STATE.last_card_played].role : null;
-            const dialogue = getOliverDialogue(round, stateToFetch, lastRole);
+            const card = CARDS[cardId];
+            const stack = document.getElementById('stack-zone'); 
+            const cardRect = cardElement.getBoundingClientRect(); 
+            const stackRect = stack.getBoundingClientRect();
+            const deltaX = stackRect.left - cardRect.left + (stackRect.width / 2 - cardRect.width / 2); 
+            const deltaY = stackRect.top - cardRect.top + (stackRect.height / 2 - cardRect.height / 2);
+            
+            const unplayed = GAME_STATE.hand.filter(id => id !== cardId); 
+            GAME_STATE.discard.push(...unplayed, cardId); 
+            GAME_STATE.hand = [];
             
             const tl = gsap.timeline();
-            
-            tl.to(".annotation-area", { opacity: 0, duration: 0.3 })
-              .set("#oliver-text", { text: "" })
-              .to("#oliver-text", { duration: 1.5, text: dialogue, ease: "none" })
-              .to({}, { duration: 2.0 }); 
-
-            tl.add(() => {
-                if (GAME_STATE.current_round > 5) {
-                    endEncounter(); 
-                } else if (GAME_STATE.current_round === 1) {
-                    drawHand(3);
-                    renderHand();
-                    roundActive = true;
-                } else {
-                    applyPressureSequence();
-                }
+            document.querySelectorAll('#player-hand .card').forEach(c => { 
+                if (c !== cardElement) tl.to(c, { opacity: 0, y: 20, duration: 0.2 }, 0); 
             });
-        }
+            
+            tl.to(cardElement, { x: deltaX, y: deltaY, scale: 1.1, duration: 0.15 })
+              .to(cardElement, { scale: 1.0, duration: 0.1 })
+              .add(() => {
+                  // RESTORED SHAKE AND GLOW
+                  gsap.to("body", { x: 4, y: 3, duration: 0.05, yoyo: true, repeat: 5 });
+                  gsap.to(cardElement, { boxShadow: "0 0 20px rgba(0, 255, 204, 0.8)", duration: 0.2, yoyo: true, repeat: 1 });
+              }, "-=0.1")
+              .add(() => {
+                  const result = card.play(GAME_STATE);
+                  GAME_STATE.scope_integrity = Math.max(0, Math.min(100, GAME_STATE.scope_integrity + result.s));
+                  GAME_STATE.relationship_health = Math.max(0, Math.min(100, GAME_STATE.relationship_health + result.r));
+                  GAME_STATE.oliver_state = result.ns;
+                  
+                  checkRelThreshold(); 
+                  updateGauges(); 
+                  
+                  let portraitToSet = result.portrait || (GAME_STATE.rel_threshold === 'hostile' ? 'defensive' : GAME_STATE.oliver_state);
+                  
+                  if (portraitToSet === 'resolved' && GAME_STATE.relationship_health < 30) {
+                      portraitToSet = 'defensive';
+                  }
+                  
+                  setPortrait(portraitToSet);
 
+                  GAME_STATE.play_history.push({ card_id: cardId, round: GAME_STATE.current_round });
+                  GAME_STATE.last_card_played = cardId;
+
+                  gsap.timeline()
+                    .set(".annotation-area", { opacity: 1 }, "+=0.2")
+                    .set("#v-clin", { text: "" })
+                    .set("#v-aside", { text: "" })
+                    // RESTORED EASE: "NONE" FOR LINEAR TYPING
+                    .to("#v-clin", { duration: 0.6, text: "> " + result.clin, ease: "none" })
+                    .to("#v-aside", { duration: 0.8, text: result.aside, ease: "none" })
+                    // SPED UP WAITING TIME (from 2.5 to 1.0)
+                    .to({}, { duration: 1.0 })
+                    .add(() => { 
+                        if (GAME_STATE.is_shutdown || GAME_STATE.scope_integrity <= 0) { 
+                            if (GAME_STATE.is_shutdown) shutdownEncounter(); else endEncounter(); 
+                        } else { 
+                            GAME_STATE.current_round++; 
+                            executeRoundTransition(); 
+                        } 
+                    });
+              });
+        }
         function startEncounter() {
-            GAME_STATE.scope_integrity = 55;
-            GAME_STATE.relationship_health = 70;
-            GAME_STATE.oliver_state = 'neutral';
-            GAME_STATE.rel_threshold = 'none';
+            GAME_STATE.scope_integrity = 55; 
+            GAME_STATE.relationship_health = 70; 
+            GAME_STATE.oliver_state = 'neutral'; 
+            GAME_STATE.rel_threshold = 'none'; 
             GAME_STATE.current_round = 1;
-            GAME_STATE.last_card_played = null;
-            GAME_STATE.play_history = [];
-            GAME_STATE.vanguard_played = false;
-            const wildcardKeys = Object.keys(WILDCARD_EVENTS);
-            GAME_STATE.wildcard = wildcardKeys[Math.floor(Math.random() * wildcardKeys.length)];
+            GAME_STATE.play_history = []; 
+            GAME_STATE.probe_consecutive = 0; 
+            GAME_STATE.pushover_strikes = 0;
+            GAME_STATE.pressure_halved = false; 
+            GAME_STATE.empathy_locked = false; 
+            GAME_STATE.is_shutdown = false;
+            
+            const wildcardKeys = Object.keys(WILDCARD_EVENTS); 
+            GAME_STATE.wildcard = wildcardKeys[Math.floor(Math.random() * wildcardKeys.length)]; 
             GAME_STATE.wildcard_fired = false;
 
-            document.getElementById('g-scope').style.boxShadow = 'none';
+            document.getElementById('g-scope').style.boxShadow = 'none'; 
             document.getElementById('g-rel').style.boxShadow = 'none';
+            document.getElementById('g-pressure').className = 'pressure-val'; 
+            document.getElementById('v-clin').innerText = ''; 
+            document.getElementById('v-aside').innerText = '';
+            
+            gsap.set("#player-hand", { opacity: 1 });
+            gsap.set(".annotation-area", { opacity: 0 }); 
+            gsap.set("#mid-zone", { backgroundColor: 'rgba(0, 255, 204, 0.03)', borderColor: 'rgba(0, 255, 204, 0.3)' });
+            
+            setPortrait('neutral'); 
+            document.getElementById('oliver-text').innerText = '';
 
-            shuffleDeck();
-            updateGauges();
-
+            shuffleDeck(); 
+            updateGauges(); 
             executeRoundTransition();
         }
 
-        function playCard(cardElement, cardId) {
-            if (!roundActive) return;
-            roundActive = false;
-            cardElement.style.pointerEvents = 'none';
+        /* Utilities */
+        function scrambleText(elementId, finalString, durationMs) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*"; 
+            const el = document.getElementById(elementId);
+            let iterations = 0; const maxIterations = durationMs / 30;
+            const interval = setInterval(() => {
+                el.innerText = finalString.split("").map((letter, index) => { 
+                    if(index < (iterations / maxIterations) * finalString.length) return letter; 
+                    return chars[Math.floor(Math.random() * chars.length)]; 
+                }).join("");
+                if(iterations >= maxIterations) { clearInterval(interval); el.innerText = finalString; } 
+                iterations++;
+            }, 30);
+        }
 
-            const card = CARDS[cardId];
-            if (!card || !GAME_STATE.hand.includes(cardId)) return;
-            const stack = document.getElementById('stack-zone');
-            const cardRect = cardElement.getBoundingClientRect();
-            const stackRect = stack.getBoundingClientRect();
-            const deltaX = stackRect.left - cardRect.left + (stackRect.width / 2 - cardRect.width / 2);
-            const deltaY = stackRect.top - cardRect.top + (stackRect.height / 2 - cardRect.height / 2);
-
-            const unplayed = GAME_STATE.hand.filter(id => id !== cardId);
-            GAME_STATE.discard.push(...unplayed);
-            GAME_STATE.discard.push(cardId);
-            GAME_STATE.hand = [];
+function runBriefingTimeline() {
+            // Set the text immediately instead of scrambling
+            document.getElementById("stat-name").innerText = "> SUBJECT: Oliver M.";
+            document.getElementById("stat-role").innerText = "> ROLE: Product Manager";
+            document.getElementById("stat-tenure").innerText = "> TENURE: 18 Months";
+            document.getElementById("stat-status").innerText = "> BEHAVIOR: Well-meaning. High risk.";
+            
+            // Hide them initially for the fade
+            gsap.set(".stats-list h2, .stats-list p", { opacity: 0, y: 5 });
 
             const tl = gsap.timeline();
+            
+            tl.to("#briefing-title-zone", { opacity: 1, y: 0, duration: 0.1 })
+              .to("#briefing-portrait", {opacity: 1, duration: 0.3}, "+=0.1")
+              // Quick fade in for the text
+              .to(".stats-list h2, .stats-list p", { opacity: 1, y: 0, stagger: 0.05, duration: 0.2 })
+              .to(".chip", { opacity: 1, y: 0, stagger: 0.05, onCompleteAll: () => { document.querySelectorAll('.chip').forEach(c => c.classList.add('loaded')); } })
+              .to("#vigil-note", {duration: 0.5, text: "> VIGIL // Virtual Intelligence Guardian & Interpersonal Logic: scanning for creep.", ease: "none"}, "+=0.1")
+              .to("#threat-card", {opacity: 1, y: 0, duration: 0.3}, "<");
 
-            const allCards = document.querySelectorAll('#player-hand .card');
-            allCards.forEach(c => {
-                if (c !== cardElement) {
-                    tl.to(c, { opacity: 0, y: 20, duration: 0.2, ease: "power2.in" }, 0);
-                }
-            });
-
-            tl.to(cardElement, { x: deltaX, y: deltaY, scale: 1.1, duration: 0.1, ease: "power2.in" }, 0.15)
-              .to(cardElement, { scale: 1.0, duration: 0.1, ease: "bounce.out" });
-
+            // Attach the button reveal to the timeline immediately
             tl.add(() => {
-                gsap.to("body", { x: 4, y: 3, duration: 0.05, yoyo: true, repeat: 5 });
-                gsap.to(cardElement, { boxShadow: "0 0 20px rgba(0, 255, 204, 0.8)", duration: 0.2, yoyo: true, repeat: 1 });
-            }, "-=0.1");
+                const btn = document.getElementById("start-btn"); 
+                btn.removeAttribute("disabled"); 
+                btn.innerText = "INITIATE ENCOUNTER"; 
+                btn.classList.add("active"); 
+                btn.addEventListener("click", transitionToEncounter); 
+                gsap.to(btn, { opacity: 1, duration: 0.3 }); 
+            }, "+=0.2");
+        }
+        function shuffleDeck() { 
+            const ids = Object.keys(CARDS); 
+            for (let i = ids.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [ids[i], ids[j]] = [ids[j], ids[i]]; 
+            } 
+            GAME_STATE.deck = ids; 
+        }
 
-            tl.add(() => {
-                const oldState = GAME_STATE.oliver_state;
+        function recycleDeck() { 
+            const ids = [...GAME_STATE.discard]; 
+            GAME_STATE.discard = []; 
+            for (let i = ids.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [ids[i], ids[j]] = [ids[j], ids[i]]; 
+            } 
+            GAME_STATE.deck = GAME_STATE.deck.concat(ids); 
+        }
 
-                GAME_STATE.scope_integrity = Math.max(0, Math.min(100, GAME_STATE.scope_integrity + card.scope_effect));
-                GAME_STATE.relationship_health = Math.max(0, Math.min(100, GAME_STATE.relationship_health + card.rel_effect));
-
-                let combo = null;
-                if (GAME_STATE.last_card_played) {
-                    const comboKey = GAME_STATE.last_card_played + '+' + cardId;
-                    combo = COMBOS[comboKey] || null;
-                }
-
-                let newState = oldState;
-                if (GAME_STATE.rel_threshold !== 'hostile') {
-                    if (combo && combo.stateOverride) {
-                        newState = combo.stateOverride(GAME_STATE);
-                    } else {
-                        newState = card.stateEffect(GAME_STATE);
-                    }
-                    GAME_STATE.oliver_state = newState;
-                }
-
-                checkRelThreshold();
-                updateGauges();
-                if (newState !== oldState) setPortrait(newState);
-
-                const relGauge = document.getElementById('g-rel');
-                if (GAME_STATE.rel_threshold === 'hostile') {
-                    relGauge.style.boxShadow = '0 0 8px rgba(255, 0, 51, 0.8)';
-                } else if (GAME_STATE.rel_threshold === 'strained') {
-                    relGauge.style.boxShadow = '0 0 8px rgba(255, 176, 0, 0.6)';
-                }
-
-                GAME_STATE.play_history.push({
-                    card_id: cardId,
-                    round: GAME_STATE.current_round,
-                    oliver_state_before: oldState,
-                    oliver_state_after: GAME_STATE.oliver_state,
-                    combo_triggered: combo ? combo.name : null
-                });
-
-                GAME_STATE.last_card_played = cardId;
-
-                const ann = combo
-                    ? { clinical: combo.clinical, aside: combo.aside }
-                    : card.annotation;
-
-                const innerTl = gsap.timeline();
+        function drawHand(n) { 
+            if (GAME_STATE.deck.length < n) recycleDeck(); 
+            GAME_STATE.hand = GAME_STATE.deck.splice(0, Math.min(n, GAME_STATE.deck.length)); 
+        }
+        
+        function renderHand() { 
+            const handEl = document.getElementById('player-hand'); handEl.innerHTML = ''; 
+            GAME_STATE.hand.forEach(cardId => { 
+                const c = CARDS[cardId]; 
+                const div = document.createElement('div'); 
+                div.className = 'card' + (GAME_STATE.empathy_locked && c.role === 'empathy' ? ' locked' : ''); 
+                div.setAttribute('data-role', c.role); 
                 
-                innerTl.set(".annotation-area", { opacity: 1 }, "+=0.2")
-                  .set("#v-clin", { text: "" })
-                  .set("#v-aside", { text: "" })
-                  .to("#v-clin", { duration: 1.0, text: "> " + ann.clinical, ease: "none" })
-                  .to("#v-aside", { duration: 1.5, text: ann.aside, ease: "none" })
-                  .to({}, { duration: 2.5 }); 
+                div.onclick = () => playCard(div, c.id); 
+                
+                div.onmouseenter = () => { if(roundActive && !div.classList.contains('played')) gsap.to(div, {y: -15, scale: 1.05, duration: 0.2, overwrite: "auto"}); };
+                div.onmouseleave = () => { if(roundActive && !div.classList.contains('played')) gsap.to(div, {y: 0, scale: 1, duration: 0.2, overwrite: "auto"}); };
 
-                innerTl.add(() => {
-                    if (GAME_STATE.rel_threshold === 'shutdown') {
-                        shutdownEncounter();
-                        return;
-                    }
-
-                    GAME_STATE.current_round++;
-                    executeRoundTransition(); 
-                });
-            });
-
-            tl.to(cardElement, { opacity: 0, duration: 0.3 }, "+=0.2");
+                div.innerHTML = `<div class="card-title">${c.title}</div><div class="card-icon-node">${c.icon}</div><div class="card-sub">${c.subtitle}</div>`; 
+                handEl.appendChild(div); 
+            }); 
         }
 
-        function shutdownEncounter() {
-            gsap.to("#player-hand", { opacity: 0, duration: 0.5 });
-            const tl = gsap.timeline({ delay: 0.5 });
-            tl.set("#oliver-text", { text: "" })
-              .to("#oliver-text", { duration: 1.5, text: OLIVER_DIALOGUE['shutdown'], ease: "none" })
-              .add(() => { setPortrait('defensive'); })
-              .set(".annotation-area", { opacity: 1 }, "+=0.8")
+        function updateGauges() { 
+            gsap.to("#g-scope", { width: GAME_STATE.scope_integrity + '%', duration: 0.4 }); 
+            gsap.to("#g-rel", { width: GAME_STATE.relationship_health + '%', duration: 0.4 }); 
+            const p = getOliverPressure();
+            const rh = GAME_STATE.relationship_health;
+            const el = document.getElementById('g-pressure'); 
+            el.textContent = p + '/rnd'; 
+            el.className = 'pressure-val ' + (rh >= 30 ? '' : (rh >= 15 ? 'strained' : 'hostile'));
+        }
+
+        function getOliverDialogue(round, state, lastRole) { 
+            const roleKey = lastRole ? `_${lastRole}` : ''; 
+            let baseText = OLIVER_DIALOGUE[`${round}_${state}${roleKey}`] || OLIVER_DIALOGUE[`${round}_${state}`] || OLIVER_DIALOGUE[`${round}_neutral`] || "..."; 
+            if (GAME_STATE.last_card_played) { 
+                const prefix = CARD_REACTIONS[GAME_STATE.last_card_played]; 
+                if (prefix) return prefix + baseText; 
+            } 
+            return baseText; 
+        }
+
+        function transitionToEncounter() { 
+            gsap.to("#screen-briefing", {
+                opacity: 0, duration: 0.5, 
+                onComplete: () => { 
+                    document.getElementById('screen-briefing').classList.remove('active'); 
+                    document.getElementById('screen-encounter').classList.add('active'); 
+                    gsap.to("#screen-encounter", {opacity: 1, duration: 0.5}); 
+                    startEncounter(); 
+                }
+            }); 
+        }
+
+function applyPressureSequence() { 
+            if (GAME_STATE.current_round === 3 && !GAME_STATE.wildcard_fired && GAME_STATE.wildcard) { 
+                GAME_STATE.wildcard_fired = true; 
+                fireWildcard(() => { applyPressureSequence(); }); 
+                return; 
+            } 
+            
+            const pressure = getOliverPressure(); 
+            GAME_STATE.scope_integrity = Math.max(0, GAME_STATE.scope_integrity - pressure); 
+            
+            // Added visual hit for passive pressure drain
+            gsap.to("#g-scope", { backgroundColor: 'rgba(255, 0, 51, 0.8)', duration: 0.15, yoyo: true, repeat: 1 });
+            gsap.to("body", { x: 2, y: 1, duration: 0.04, yoyo: true, repeat: 3 });
+
+            updateGauges(); 
+            
+            gsap.timeline()
+              .set(".annotation-area", { opacity: 1 })
               .set("#v-clin", { text: "" })
-              .set("#v-aside", { text: "" })
-              .to("#v-clin", { duration: 1.5, text: "> ENCOUNTER TERMINATED. STATUS: SHUTDOWN.", ease: "none" })
-              .to({}, { duration: 2.5 })
-              .add(() => transitionToResolution('SHUTDOWN'));
+              .to("#v-clin", { duration: 0.5, text: `> PASSIVE DRAIN: -${pressure}% scope.`, ease: "none" })
+              // SPED UP from 1.8
+              .to({}, { duration: 0.8 })
+              .to(".annotation-area", { opacity: 0.3, duration: 0.3 })
+              .add(() => { 
+                  if (GAME_STATE.scope_integrity <= 0) { 
+                      endEncounter(); 
+                  } else { 
+                      drawHand(3); 
+                      renderHand(); 
+                      gsap.from("#player-hand .card", { 
+                          y: 60, opacity: 0, stagger: 0.1, duration: 0.4, ease: "back.out(1.5)",
+                          onComplete: () => { roundActive = true; }
+                      });
+                  } 
+              }); 
+        }
+function executeRoundTransition() { 
+            const round = GAME_STATE.current_round; 
+            const dialogue = getOliverDialogue(round, GAME_STATE.rel_threshold === 'hostile' ? 'hostile' : GAME_STATE.oliver_state, GAME_STATE.last_card_played ? CARDS[GAME_STATE.last_card_played].role : null); 
+            
+            gsap.timeline()
+              .to(".annotation-area", { opacity: 0, duration: 0.2 })
+              .set("#oliver-text", { text: "" })
+              // SPED UP & LINEAR
+              .to("#oliver-text", { duration: 1.0, text: dialogue, ease: "none" })
+              // SPED UP from 2.0
+              .to({}, { duration: 0.8 })
+              .add(() => { 
+                  if (GAME_STATE.current_round > 5) { 
+                      endEncounter(); 
+                  } else if (GAME_STATE.current_round === 1) { 
+                      drawHand(3); 
+                      renderHand(); 
+                      
+                      gsap.from("#player-hand .card", { 
+                          y: 60, opacity: 0, stagger: 0.1, duration: 0.4, ease: "back.out(1.2)",
+                          onComplete: () => { roundActive = true; }
+                      });
+                      
+                      gsap.timeline()
+                        .set(".annotation-area", { opacity: 1 })
+                        .set("#v-clin", { text: "" })
+                        .set("#v-aside", { text: "" })
+                        .to("#v-clin", { duration: 0.6, text: "> SELECT A CARD TO RESPOND.", ease: "none" })
+                        .to("#v-aside", { duration: 0.8, text: "Watch the gauges. Choose your words carefully.", ease: "none" });
+                        
+                  } else { 
+                      applyPressureSequence(); 
+                  } 
+              }); 
+        }
+function endEncounter() { 
+            const s = GAME_STATE.scope_integrity; const r = GAME_STATE.relationship_health; 
+            let tag = (s >= 50 && r >= 50) ? 'OPTIMAL' : (s >= 50 && r < 30) ? 'PYRRHIC' : (s >= 40 && r >= 30) ? 'ADEQUATE' : (s < 40 && r >= 50) ? 'COMPROMISED' : (s < 40 && r < 30) ? 'DETERIORATED' : 'CRITICAL'; 
+            gsap.to("#player-hand", { opacity: 0, duration: 0.3 }); 
+            // Fast transition to resolution (SPED UP from 2.0)
+            gsap.delayedCall(0.8, () => transitionToResolution(tag)); 
         }
 
-        function endEncounter() {
-            const s = GAME_STATE.scope_integrity;
-            const r = GAME_STATE.relationship_health;
-            let tag;
-
-            if      (s >= 45 && r >= 50) tag = 'OPTIMAL';
-            else if (s >= 45 && r < 35)  tag = 'PYRRHIC';
-            else if (s >= 45)            tag = 'ADEQUATE';
-            else if (s >= 30 && r >= 50) tag = 'COMPROMISED';
-            else if (s >= 30)            tag = 'DETERIORATED';
-            else                         tag = 'CRITICAL';
-
-            gsap.to("#player-hand", { opacity: 0, duration: 0.3 });
-            gsap.delayedCall(2.0, () => transitionToResolution(tag));
+        function shutdownEncounter() { 
+            gsap.to("#player-hand", { opacity: 0, duration: 0.5 }); 
+            gsap.timeline({ delay: 0.2 })
+              .set("#oliver-text", { text: "" })
+              .to("#oliver-text", { duration: 1.0, text: OLIVER_DIALOGUE['shutdown'], ease: "none" })
+              .add(() => { setPortrait('defensive'); })
+              .set(".annotation-area", { opacity: 1 }, "+=0.4")
+              .to("#v-clin", { duration: 1.0, text: "> ENCOUNTER TERMINATED. STATUS: SHUTDOWN.", ease: "none" })
+              .to({}, { duration: 0.8 })
+              .add(() => transitionToResolution('SHUTDOWN')); 
         }
+function transitionToResolution(tag) {
+            gsap.to("#screen-encounter", { opacity: 0, duration: 0.5, onComplete: () => {
+                document.getElementById('screen-encounter').classList.remove('active');
+                
+                // Reset encounter UI elements for the next replay
+                gsap.set("#player-hand", { opacity: 1 });
+                gsap.set(".annotation-area", { opacity: 0 });
+                gsap.set("#v-clin", { text: "" });
+                gsap.set("#v-aside", { text: "" });
 
-        /* ==============================================
-           PHASE 4: RESOLUTION SCREEN
-        ============================================== */
-        function analyzeRun(tag) {
+                // Activate and fade in the resolution screen
+                document.getElementById('screen-resolution').classList.add('active');
+                renderResolution(tag);
+                gsap.to("#screen-resolution", { opacity: 1, duration: 0.5 });
+            }});
+        }
+function analyzeRun(tag) {
             const history = GAME_STATE.play_history;
             if (!history || history.length === 0) {
-                return {
-                    clinical: 'No plays recorded. The encounter ended before action.',
-                    aside: 'VIGIL notes: inaction is also a choice.',
-                    suggestion: '> VIGIL suggests: play a card next time.'
-                };
+                return { clinical: 'Encounter ended before action.', aside: 'Inaction is a choice.', suggestion: '> VIGIL suggests: play a card.' };
             }
 
+            // Analyze the types of cards played
             const roles = history.map(h => CARDS[h.card_id].role);
-            const empathyCount    = roles.filter(r => r === 'empathy').length;
+            const empathyCount = roles.filter(r => r === 'empathy').length;
             const aggressiveCount = roles.filter(r => r === 'aggressive').length;
-            const tacticalCount   = roles.filter(r => r === 'tactical').length;
             const firstCard = CARDS[history[0].card_id];
-            const combosTriggered = history.filter(h => h.combo_triggered);
-            const oliverResolved  = history.some(h => h.oliver_state_after === 'resolved');
             const wentHostile = GAME_STATE.rel_threshold === 'hostile' || GAME_STATE.rel_threshold === 'shutdown';
 
             let clinical, aside;
 
+            // Determine the narrative of the encounter
             if (tag === 'SHUTDOWN') {
                 clinical = 'Oliver terminated the conversation.';
-                aside = 'VIGIL has logged this outcome 279 times. The pattern is the same: force without empathy, applied too early.';
-            } else if (oliverResolved) {
-                clinical = 'Oliver reached resolution. He agreed to reframe the request himself.';
-                aside = 'This is the optimal outcome. It requires patience most people do not have.';
+                aside = 'VIGIL notes: force without empathy, applied at the wrong time.';
             } else if (wentHostile) {
                 clinical = 'The relationship became hostile. Scope recovery came at significant cost.';
-                aside = 'Once a colleague stops listening, the only tool left is escalation. VIGIL finds this predictable.';
-            } else if (combosTriggered.length > 0) {
-                const comboName = combosTriggered[0].combo_triggered;
-                clinical = `You triggered ${comboName}. The card sequencing was deliberate.`;
-                aside = 'VIGIL notes: this combination is repeatable. File it under things that work.';
+                aside = 'Once a colleague stops listening, the only tool left is escalation.';
             } else if (aggressiveCount >= 2 && empathyCount === 0) {
                 clinical = `You played ${aggressiveCount} aggressive cards. No empathy cards.`;
                 aside = 'Scope was the priority. Oliver was not. VIGIL notes: you will meet him again.';
@@ -1299,72 +1047,58 @@
                 aside = 'The relationship was protected. The scope was negotiated, not enforced.';
             } else if (firstCard.role === 'aggressive') {
                 clinical = 'You opened with confrontation. Oliver\'s defenses activated in round 1.';
-                aside = 'First impressions compound. That opener set the tone for every round that followed.';
-            } else if (firstCard.role === 'empathy' && (aggressiveCount >= 1 || tacticalCount >= 2)) {
+                aside = 'First impressions compound. That opener set the tone.';
+            } else if (firstCard.role === 'empathy') {
                 clinical = 'You led with empathy before enforcing boundaries.';
-                aside = 'Oliver was primed to listen before you pushed back. This is correct sequencing.';
+                aside = 'Oliver was primed to listen before you pushed back. Correct sequencing.';
             } else {
-                clinical = 'Your approach was adaptive. No dominant pattern identified.';
-                aside = 'Mixed strategies are harder to read. VIGIL is uncertain whether this was intentional.';
+                clinical = 'Your approach was adaptive.';
+                aside = 'Mixed strategies are harder to read. VIGIL approves.';
             }
 
-            const suggestions = {
-                'OPTIMAL':      '> VIGIL suggests: note what you played in round 1. That opener is the lesson.',
-                'ADEQUATE':     '> VIGIL suggests: relationship was stable. You had room to push harder on scope.',
-                'PYRRHIC':      '> VIGIL suggests: play one empathy card before enforcing the boundary. Order matters.',
-                'COMPROMISED':  '> VIGIL suggests: PROBE and THE BOUNDARY recover scope. Use them before round 3.',
-                'DETERIORATED': '> VIGIL suggests: start with RELEASE VALVE. Let Oliver feel heard before pushing back.',
-                'CRITICAL':     '> VIGIL suggests: VANGUARD, then THE BOUNDARY. In that order. Every time.',
-                'SHUTDOWN':     '> VIGIL suggests: RELEASE VALVE or VANGUARD in round 1. Empathy first, always.'
+            // Specific tactical advice based on the final outcome
+            const suggests = { 
+                'OPTIMAL': '> VIGIL suggests: Balance held. Note your opening move.', 
+                'ADEQUATE': '> VIGIL suggests: Relationship was stable. Room to push harder on scope.', 
+                'PYRRHIC': '> VIGIL suggests: Play empathy before enforcing the boundary.', 
+                'SHUTDOWN': '> VIGIL suggests: Lead with RELEASE VALVE or VANGUARD next time.', 
+                'COMPROMISED': '> VIGIL suggests: Use THE BOUNDARY to recover scope earlier.',
+                'DETERIORATED': '> VIGIL suggests: Let Oliver feel heard before pushing back.',
+                'CRITICAL': '> VIGIL suggests: VANGUARD, then THE BOUNDARY. In that order.'
             };
 
-            return { clinical, aside, suggestion: suggestions[tag] || suggestions['ADEQUATE'] };
+            return { 
+                clinical: clinical, 
+                aside: aside, 
+                suggestion: suggests[tag] || '> VIGIL suggests: Calibrate tactics.' 
+            };
         }
-
-        function transitionToResolution(tag) {
-            gsap.to("#screen-encounter", { opacity: 0, duration: 0.8, onComplete: () => {
-                document.getElementById('screen-encounter').classList.remove('active');
-                gsap.set("#player-hand", { opacity: 1 });
-                gsap.set(".annotation-area", { opacity: 0 });
-                gsap.set("#v-clin", { text: "" });
-                gsap.set("#v-aside", { text: "" });
-
-                document.getElementById('screen-resolution').classList.add('active');
-                renderResolution(tag);
-                gsap.to("#screen-resolution", { opacity: 1, duration: 0.5 });
-            }});
-        }
-
-        function renderResolution(tag) {
-            const s = GAME_STATE.scope_integrity;
-            const r = GAME_STATE.relationship_health;
-            const analysis = analyzeRun(tag);
-
-            const tagEl = document.getElementById('res-tag');
-            tagEl.textContent = tag;
-            tagEl.className = 'res-tag tag-' + tag.toLowerCase();
-            document.getElementById('res-scope').textContent = s + '%';
-            document.getElementById('res-rel').textContent   = r + '%';
-
-            gsap.set("#res-scores",   { opacity: 0 });
-            gsap.set("#res-scope-bar", { width: "0%" });
-            gsap.set("#res-rel-bar",   { width: "0%" });
-            gsap.set("#res-suggestion", { opacity: 0 });
-            gsap.set("#replay-btn",     { opacity: 0, pointerEvents: "none" });
-            gsap.set("#res-clinical",  { text: "" });
-            gsap.set("#res-aside",     { text: "" });
-            document.getElementById('res-suggestion').textContent = '';
-
-            const histEl = document.getElementById('res-play-history');
-            histEl.innerHTML = '';
-            GAME_STATE.play_history.forEach(h => {
-                const c = CARDS[h.card_id];
-                const chip = document.createElement('div');
-                chip.className = 'play-chip' + (h.combo_triggered ? ' combo' : '');
-                chip.setAttribute('data-role', c.role);
-                chip.innerHTML = `<span class="play-chip-icon">${c.icon}</span><span class="play-chip-title">${c.title}</span>`;
-                histEl.appendChild(chip);
-            });
+        function renderResolution(tag) { 
+            const s = GAME_STATE.scope_integrity; 
+            const r = GAME_STATE.relationship_health; 
+            const analysis = analyzeRun(tag); 
+            
+            document.getElementById('res-tag').textContent = tag; 
+            document.getElementById('res-tag').className = 'res-tag tag-' + tag.toLowerCase(); 
+            document.getElementById('res-scope').textContent = s + '%'; 
+            document.getElementById('res-rel').textContent = r + '%'; 
+            
+            gsap.to("#res-scores", { opacity: 1 }); 
+            gsap.to("#res-scope-bar", { width: s + '%' }); 
+            gsap.to("#res-rel-bar", { width: r + '%' }); 
+            
+            const histEl = document.getElementById('res-play-history'); 
+            histEl.innerHTML = ''; 
+            
+            GAME_STATE.play_history.forEach(h => { 
+                const c = CARDS[h.card_id]; 
+                const chip = document.createElement('div'); 
+                chip.className = 'play-chip'; 
+                chip.setAttribute('data-role', c.role); // Fix: restores the chip coloring
+                chip.innerHTML = `<span>${c.icon}</span><span>${c.title}</span>`; 
+                histEl.appendChild(chip); 
+            }); 
+            
             if (GAME_STATE.wildcard_fired && GAME_STATE.wildcard) {
                 const wc = WILDCARD_EVENTS[GAME_STATE.wildcard];
                 const wcChip = document.createElement('div');
@@ -1372,31 +1106,35 @@
                 wcChip.innerHTML = `<span>⚡</span><span>WILDCARD: ${wc.name}</span>`;
                 histEl.appendChild(wcChip);
             }
+            
             gsap.set(".play-chip, .wildcard-chip", { opacity: 0, y: 8 });
 
-            const tl = gsap.timeline();
-            tl.to("#res-scores", { opacity: 1, duration: 0.5 })
-              .to("#res-scope-bar", { width: s + '%', duration: 0.8, ease: "power2.out" }, "<")
-              .to("#res-rel-bar",   { width: r + '%', duration: 0.8, ease: "power2.out" }, "<")
-              .to(".play-chip, .wildcard-chip", { opacity: 1, y: 0, stagger: 0.12, duration: 0.3, ease: "power2.out" }, "+=0.3")
-              .to("#res-clinical", { duration: 1.5, text: "> " + analysis.clinical, ease: "none" }, "+=0.4")
-              .to("#res-aside",    { duration: 2.0, text: analysis.aside, ease: "none" }, "+=0.3")
-              .add(() => { document.getElementById('res-suggestion').textContent = analysis.suggestion; }, "+=1.0")
-              .to("#res-suggestion", { opacity: 1, duration: 0.5 }, "<")
-              .to("#replay-btn", { opacity: 1, duration: 0.4, pointerEvents: "auto" }, "+=0.8");
+            // Fix: Re-added the GSAP line that actually fades the play chips into view
+            gsap.timeline()
+              .to(".play-chip, .wildcard-chip", { opacity: 1, y: 0, stagger: 0.1, duration: 0.3, ease: "power2.out" })
+              .to("#res-clinical", { duration: 1.5, text: "> " + analysis.clinical }, "+=0.2")
+              .to("#res-aside", { duration: 2.0, text: analysis.aside }, "+=0.2")
+              .to("#res-suggestion", { opacity: 1 }, "+=0.5")
+              .to("#replay-btn", { opacity: 1, pointerEvents: "auto" }); 
         }
-
-        document.getElementById('replay-btn').addEventListener('click', () => {
-            gsap.to("#screen-resolution", { opacity: 0, duration: 0.5, onComplete: () => {
-                document.getElementById('screen-resolution').classList.remove('active');
-                document.getElementById('screen-encounter').classList.add('active');
-                gsap.set("#screen-encounter", { opacity: 1 });
-                startEncounter();
-            }});
+        
+        document.getElementById('replay-btn').addEventListener('click', () => { 
+            gsap.to("#screen-resolution", { 
+                opacity: 0, duration: 0.5, 
+                onComplete: () => { 
+                    document.getElementById('screen-resolution').classList.remove('active'); 
+                    document.getElementById('screen-encounter').classList.add('active'); 
+                    gsap.set("#screen-encounter", { opacity: 1 }); 
+                    startEncounter(); 
+                }
+            }); 
         });
-
-        window.onload = initBootSequence;
-
+        
+        window.onload = () => { 
+            document.getElementById('screen-briefing').classList.add('active'); 
+            gsap.to("#screen-briefing", {opacity: 1, duration: 0.1}); 
+            runBriefingTimeline(); 
+        };
     </script>
 </body>
 </html>
