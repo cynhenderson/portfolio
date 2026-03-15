@@ -310,16 +310,17 @@
         }
 
         function nextPhrase() {
-            const cat = state.currentPhrase.cat;
-            const pool = state.phrases.filter(p => p.cat === cat);
+            const pool = state.phrases; // Use the entire deck instead of just the current category
             const unmastered = pool.filter(p => p.level < 3);
             
             if (unmastered.length > 0) {
-                // Prioritize phrases that need the most practice
+                // Prioritize phrases that need the most practice globally
                 const sorted = unmastered.sort((a, b) => a.level - b.level);
-                state.currentPhrase = sorted[0];
+                // Avoid showing the exact same phrase back-to-back if there are other unmastered ones
+                const nextOptions = sorted.filter(p => p.id !== state.currentPhrase.id);
+                state.currentPhrase = nextOptions.length > 0 ? nextOptions[0] : sorted[0];
             } else {
-                // If all mastered, pick a random phrase to review (avoiding the one just shown)
+                // If all mastered, pick a random phrase to review from any category
                 const others = pool.filter(p => p.id !== state.currentPhrase.id);
                 state.currentPhrase = others.length > 0 ? others[Math.floor(Math.random() * others.length)] : pool[0];
             }
