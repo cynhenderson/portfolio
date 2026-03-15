@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seafood Catch Arcade</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #a8edea 0%, #fed6e3 100%);
+            color: #ff758c;
+            font-family: 'Fredoka', sans-serif;
+            overflow: hidden;
+            touch-action: none; /* Prevents pull-to-refresh on mobile */
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #uiLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 10;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: #ff758c;
+            text-shadow: 3px 3px #ffb7b2;
+            font-size: 48px;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 80%;
+            margin-bottom: 30px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        button {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            padding: 15px 40px;
+            font-size: 22px;
+            cursor: pointer;
+            background-color: #ff758c;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 6px #ff4766;
+            text-transform: uppercase;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px #ff4766;
+        }
+
+        #scoreBoard {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 22px;
+            color: #ff758c;
+            font-weight: 600;
+            text-shadow: 2px 2px white;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        #livesBoard {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            color: #ff758c;
+            font-weight: 600;
+            text-shadow: 2px 2px white;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 32px; }
+            p { font-size: 14px; }
+            #scoreBoard, #livesBoard { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="scoreBoard">SCORE: <span id="scoreVal">0</span></div>
+    <div id="livesBoard">LIVES: <span id="livesVal">❤️❤️❤️</span></div>
+
+    <div id="uiLayer">
+        <h1 id="titleText">CAJUN<br>CATCHER</h1>
+        <p id="instructions">
+            Use Left/Right Arrows or Touch/Drag to move.<br><br>
+            CATCH: 🦞 (+10) | 🍤 (+5) | ✨🦞✨ (+50)<br>
+            AVOID: 💣 (-1 Life) | 🧪 (-1 Life)
+        </p>
+        <button id="startBtn">PLAY</button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const uiLayer = document.getElementById('uiLayer');
+        const startBtn = document.getElementById('startBtn');
+        const titleText = document.getElementById('titleText');
+        const instructions = document.getElementById('instructions');
+        const scoreVal = document.getElementById('scoreVal');
+        const livesVal = document.getElementById('livesVal');
+
+        // Game State
+        let state = 'START'; // START, PLAYING, GAMEOVER
+        let score = 0;
+        let lives = 3;
+        let frameCount = 0;
+        let animationId;
+
+        // Player Object
+        const player = {
+            x: 0,
+            y: 0,
+            size: 50,
+            speed: 8,
+            targetX: 0, // For smooth touch/mouse movement
+            emoji: '👩🏻',
+            hurtFrames: 0 // For visual feedback when hit
+        };
+
+        // Falling Items Array
+        let items = [];
+        let floatingTexts = [];
+
+        // Item Types Configurations
+        const itemTypes = [
+            { type: 'crawfish', emoji: '🦞', points: 10, prob: 0.4, isBad: false },
+            { type: 'shrimp', emoji: '🍤', points: 5, prob: 0.35, isBad: false },
+            { type: 'golden', emoji: '🌟', points: 50, prob: 0.05, isBad: false },
+            { type: 'bomb', emoji: '💣', points: 0, prob: 0.1, isBad: true },
+            { type: 'poison', emoji: '🧪', points: 0, prob: 0.1, isBad: true }
+        ];
+
+        // Input Tracking
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        // Initialize Canvas Size
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (state === 'START') {
+                player.x = canvas.width / 2;
+                player.targetX = player.x;
+            }
+            player.y = canvas.height - player.size - 20;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Input Listeners
+        window.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
+        });
+
+        // Touch & Mouse Controls
+        function handlePointer(e) {
+            if (state !== 'PLAYING') return;
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            player.targetX = clientX;
+        }
+        canvas.addEventListener('mousedown', handlePointer);
+        canvas.addEventListener('mousemove', (e) => {
+            if(e.buttons > 0) handlePointer(e);
+        });
+        canvas.addEventListener('touchstart', handlePointer);
+        canvas.addEventListener('touchmove', handlePointer);
+
+        // Start Game
+        startBtn.addEventListener('click', () => {
+            resetGame();
+            state = 'PLAYING';
+            uiLayer.classList.add('hidden');
+            loop();
+        });
+
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            items = [];
+            floatingTexts = [];
+            frameCount = 0;
+            player.x = canvas.width / 2;
+            player.targetX = player.x;
+            updateHUD();
+        }
+
+        function updateHUD() {
+            scoreVal.innerText = score;
+            let hearts = '';
+            for(let i=0; i<lives; i++) hearts += '❤️';
+            livesVal.innerText = hearts || '💀';
+        }
+
+        function spawnItem() {
+            // Starts much slower, difficulty ramps up very gently
+            const spawnRate = Math.max(40, 120 - Math.floor(score / 15)); 
+            
+            if (frameCount % spawnRate === 0) {
+                // Determine item type based on probabilities
+                let rand = Math.random();
+                let cumulativeProb = 0;
+                let selectedType = itemTypes[0];
+
+                for (let type of itemTypes) {
+                    cumulativeProb += type.prob;
+                    if (rand <= cumulativeProb) {
+                        selectedType = type;
+                        break;
+                    }
+                }
+
+                const size = 40;
+                // Much slower base speed for a floatier, cutesy feel
+                const baseSpeed = 0.8 + Math.random() * 1.0; 
+                // Barely speeds up over time to keep it manageable
+                const speedMultiplier = 1 + (score / 800); 
+
+                items.push({
+                    x: Math.random() * (canvas.width - size * 2) + size,
+                    y: -size,
+                    size: size,
+                    speed: baseSpeed * speedMultiplier,
+                    data: selectedType,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 5
+                });
+            }
+        }
+
+        function addFloatingText(text, x, y, color) {
+            floatingTexts.push({
+                text: text,
+                x: x,
+                y: y,
+                color: color,
+                life: 30 // frames
+            });
+        }
+
+        function checkCollisions() {
+            // Player hit box slightly smaller than visual size for fairness
+            const pBox = {
+                left: player.x - player.size * 0.4,
+                right: player.x + player.size * 0.4,
+                top: player.y - player.size * 0.4,
+                bottom: player.y + player.size * 0.4
+            };
+
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                
+                // Item Hitbox
+                const iBox = {
+                    left: item.x - item.size * 0.4,
+                    right: item.x + item.size * 0.4,
+                    top: item.y - item.size * 0.4,
+                    bottom: item.y + item.size * 0.4
+                };
+
+                // AABB Collision
+                if (pBox.left < iBox.right &&
+                    pBox.right > iBox.left &&
+                    pBox.top < iBox.bottom &&
+                    pBox.bottom > iBox.top) {
+                    
+                    // Caught!
+                    if (item.data.isBad) {
+                        lives--;
+                        player.hurtFrames = 15;
+                        addFloatingText("OUCH!", player.x, player.y - 40, "#e74c3c");
+                        updateHUD();
+                        if (lives <= 0) {
+                            gameOver();
+                        }
+                    } else {
+                        score += item.data.points;
+                        addFloatingText("+" + item.data.points, player.x, player.y - 40, "#2ecc71");
+                        updateHUD();
+                    }
+                    
+                    // Remove item
+                    items.splice(i, 1);
+                } else if (item.y > canvas.height + item.size) {
+                    // Remove if it falls off screen
+                    items.splice(i, 1);
+                }
+            }
+        }
+
+        function gameOver() {
+            state = 'GAMEOVER';
+            uiLayer.classList.remove('hidden');
+            titleText.innerHTML = "OH NO!";
+            instructions.innerHTML = `Final Score: <span style="color:#ff758c; font-size: 1.5em; font-weight: bold;">${score}</span><br><br>Tummy ache! Let's try again! 🎀`;
+            startBtn.innerText = "PLAY AGAIN";
+        }
+
+        function update() {
+            // Keyboard Movement
+            if (keys.ArrowLeft) player.targetX -= player.speed;
+            if (keys.ArrowRight) player.targetX += player.speed;
+
+            // Move player towards target smoothly (lerp)
+            player.x += (player.targetX - player.x) * 0.2;
+
+            // Constrain to screen
+            if (player.x < player.size / 2) {
+                player.x = player.size / 2;
+                player.targetX = player.x;
+            }
+            if (player.x > canvas.width - player.size / 2) {
+                player.x = canvas.width - player.size / 2;
+                player.targetX = player.x;
+            }
+
+            // Update Items
+            items.forEach(item => {
+                item.y += item.speed;
+                item.rotation += item.rotSpeed;
+            });
+
+            // Update Floating Texts
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                floatingTexts[i].y -= 2;
+                floatingTexts[i].life--;
+                if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
+            }
+
+            if (player.hurtFrames > 0) player.hurtFrames--;
+
+            spawnItem();
+            checkCollisions();
+            frameCount++;
+        }
+
+        function draw() {
+            // Clear Canvas to let the cute CSS pastel gradient show through!
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Soft Floor Line
+            ctx.beginPath();
+            ctx.moveTo(0, player.y + player.size * 0.5);
+            ctx.lineTo(canvas.width, player.y + player.size * 0.5);
+            ctx.strokeStyle = '#ffb7b2';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Draw Items
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            items.forEach(item => {
+                ctx.save();
+                ctx.translate(item.x, item.y);
+                // Wiggle/rotate effect
+                ctx.rotate(item.rotation * Math.PI / 180);
+                
+                // Add glow to golden item
+                if (item.data.type === 'golden') {
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = "gold";
+                } else if (item.data.type === 'poison') {
+                    // Add a softer toxic green glow to the poison
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = "#a8e6cf";
+                } else {
+                    ctx.shadowBlur = 0; // Reset for other items
+                }
+                
+                ctx.font = `${item.size}px Fredoka, Arial`;
+                ctx.fillText(item.data.emoji, 0, 0);
+                ctx.restore();
+            });
+
+            // Draw Player
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            
+            // Shake effect if hurt
+            if (player.hurtFrames > 0) {
+                ctx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
+                ctx.globalAlpha = 0.7; // Softer flicker
+            }
+
+            ctx.font = `${player.size}px Fredoka, Arial`;
+            // Change emoji if hit
+            ctx.fillText(player.hurtFrames > 0 ? '😵' : player.emoji, 0, 0);
+            ctx.restore();
+
+            // Draw Floating Texts
+            floatingTexts.forEach(ft => {
+                ctx.save();
+                ctx.globalAlpha = ft.life / 30; // Fade out
+                ctx.fillStyle = ft.color;
+                ctx.font = 'bold 20px "Fredoka", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            });
+        }
+
+        function loop() {
+            if (state === 'PLAYING') {
+                update();
+                draw();
+                animationId = requestAnimationFrame(loop);
+            }
+        }
+    </script>
+</body>
+</html>
