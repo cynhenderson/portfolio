@@ -154,7 +154,7 @@
         const player = {
             x: 0,
             y: 0,
-            size: 50,
+            size: 85, // Increased size for better visibility and larger hit box
             speed: 8,
             targetX: 0, // For smooth touch/mouse movement
             img: playerImg, // Now using the custom image
@@ -374,7 +374,13 @@
             if (keys.ArrowRight) player.targetX += player.speed;
 
             // Move player towards target smoothly (lerp)
-            player.x += (player.targetX - player.x) * 0.2;
+            const dx = player.targetX - player.x;
+            if (Math.abs(dx) > 1) {
+                player.x += dx * 0.2;
+            } else {
+                // Snap exactly to the target to prevent micro-jitters on mobile touch
+                player.x = player.targetX; 
+            }
 
             // Constrain to screen
             if (player.x < player.size / 2) {
