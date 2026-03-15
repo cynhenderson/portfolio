@@ -16,35 +16,6 @@
             touch-action: pan-x pan-y;
         }
 
-        .doghouse {
-            background-color: #e53e3e; /* Red */
-            border: 4px solid black;
-            border-bottom: 0;
-            position: relative;
-        }
-
-        .doghouse::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 0; right: 0;
-            height: 4px; background: black;
-        }
-        .doghouse::after {
-            content: '';
-            position: absolute;
-            top: 24px; left: 0; right: 0;
-            height: 4px; background: black;
-        }
-
-        .roof-overhang {
-            width: 120%;
-            height: 20px;
-            background-color: #e53e3e;
-            border: 4px solid black;
-            border-radius: 10px 10px 0 0;
-            margin-left: -10%;
-        }
-
         /* Keep pixel art crisp */
         .pixelated {
             image-rendering: pixelated;
@@ -89,31 +60,37 @@
     <main class="flex-grow flex flex-col items-center justify-end w-full max-w-md pb-4 z-10 relative">
         
         <!-- Thought Bubble containing the word -->
-        <div id="word-bubble" class="bg-white text-black px-6 py-3 rounded-2xl mb-2 text-3xl shadow-lg border-4 border-black relative transition-colors duration-200">
+        <div id="word-bubble" class="bg-white text-black px-6 py-3 rounded-2xl mb-32 text-3xl shadow-lg border-4 border-black relative transition-colors duration-200">
             <span id="target-word" class="tracking-wider">stormy</span>
             <!-- Bubble tail points to Snoopy -->
             <div class="absolute -bottom-3 left-1/4 transform -translate-x-1/2 w-4 h-4 bg-white border-b-4 border-r-4 border-black rotate-45"></div>
-            <!-- Extra thought bubble dots -->
-            <div class="absolute -bottom-8 left-1/4 transform -translate-x-2 w-3 h-3 bg-white border-2 border-black rounded-full"></div>
-            <div class="absolute -bottom-12 left-1/4 transform -translate-x-6 w-2 h-2 bg-white border-2 border-black rounded-full"></div>
+            <!-- Extra thought bubble dots spread further down -->
+            <div class="absolute -bottom-12 left-1/4 transform -translate-x-2 w-3 h-3 bg-white border-2 border-black rounded-full"></div>
+            <div class="absolute -bottom-24 left-1/4 transform -translate-x-6 w-2 h-2 bg-white border-2 border-black rounded-full"></div>
         </div>
 
         <!-- Snoopy & Doghouse -->
-        <div class="text-center relative mt-16">
-            <!-- Snoopy (Image representation) -->
-            <!-- Note: Added a fallback image just in case snoopy.png isn't found immediately -->
-            <div class="absolute -top-[5.5rem] left-1/2 transform -translate-x-full ml-4 z-10">
-                <img src="photos/27EB2E10-E4B5-489F-9D19-B9E3CEF3E673.png" alt="Snoopy" class="pixelated w-24 h-24 object-contain drop-shadow-xl" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Snoopy';">
+        <div class="relative flex flex-col items-center mt-8">
+            <!-- Characters sitting on roof -->
+            <div class="absolute bottom-full w-full flex justify-center items-end z-10 mb-[-12px]">
+                <!-- Snoopy is slightly smaller (w-32 h-32) -->
+                <img src="photos/27EB2E10-E4B5-489F-9D19-B9E3CEF3E673.png" alt="Snoopy" class="pixelated w-32 h-32 object-contain drop-shadow-xl -mr-2" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Snoopy';">
+                
+                <!-- Typewriter -->
+                <div class="text-4xl z-20 mb-[10px] ml-1">⌨️</div>
             </div>
             
-            <!-- Typewriter -->
-            <div class="text-4xl absolute -top-5 left-1/2 transform translate-x-2 z-20">
-                ⌨️
-            </div>
-            
-            <!-- Doghouse Structure -->
-            <div class="roof-overhang relative z-10"></div>
-            <div class="doghouse w-32 h-32 mx-auto"></div>
+            <!-- Doghouse SVG (Isosceles Trapezoid Roof) -->
+            <svg width="200" height="150" viewBox="0 0 200 150" class="drop-shadow-lg z-0 relative">
+                <!-- Body -->
+                <rect x="30" y="55" width="140" height="90" fill="#e53e3e" stroke="black" stroke-width="4"/>
+                <!-- Planks -->
+                <line x1="30" y1="85" x2="170" y2="85" stroke="black" stroke-width="4"/>
+                <line x1="30" y1="115" x2="170" y2="115" stroke="black" stroke-width="4"/>
+
+                <!-- Roof Trapezoid -->
+                <polygon points="45,5 155,5 195,55 5,55" fill="#e53e3e" stroke="black" stroke-width="4" stroke-linejoin="round"/>
+            </svg>
         </div>
 
     </main>
@@ -217,6 +194,3 @@
     </script>
 </body>
 </html>
-
-
-
