@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lilly Ate That!</title>
+    
+    <!-- Link Preview Meta Tags for iMessage / Social Media -->
+    <meta property="og:title" content="Lilly Ate That!">
+    <meta property="og:description" content="Help Lilly catch the falling seafood and defeat the Giant Seagull in this cute arcade game!">
+    <meta property="og:image" content="https://cynhenderson.com/photos/lilly.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lilly Ate That!">
+    <meta name="twitter:description" content="Help Lilly catch the falling seafood and defeat the Giant Seagull!">
+    <meta name="twitter:image" content="https://cynhenderson.com/photos/lilly.png">
+    <meta name="theme-color" content="#ff758c">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
@@ -282,13 +293,13 @@
         let items = [], floatingTexts = [], particles = [], confetti = [];
 
         const itemTypes = [
-            { type: 'crawfish', emoji: '🦞', points: 10, prob: 0.38, isBad: false, isPowerup: false, isWeapon: false },
-            { type: 'shrimp', emoji: '🍤', points: 5, prob: 0.34, isBad: false, isPowerup: false, isWeapon: false },
-            { type: 'golden', emoji: '🌟', points: 50, prob: 0.05, isBad: false, isPowerup: false, isWeapon: false },
-            { type: 'bomb', emoji: '💣', points: 0, prob: 0.08, isBad: true, isPowerup: false, isWeapon: false },
+            { type: 'crawfish', emoji: '🦞', points: 10, prob: 0.40, isBad: false, isPowerup: false, isWeapon: false },
+            { type: 'shrimp', emoji: '🍤', points: 5, prob: 0.35, isBad: false, isPowerup: false, isWeapon: false },
+            { type: 'golden', emoji: '🌟', points: 50, prob: 0.04, isBad: false, isPowerup: false, isWeapon: false },
+            { type: 'bomb', emoji: '💣', points: 0, prob: 0.09, isBad: true, isPowerup: false, isWeapon: false },
             { type: 'poison', emoji: '🧪', points: 0, prob: 0.09, isBad: true, isPowerup: false, isWeapon: false },
-            { type: 'shield', emoji: '🛡️', points: 0, prob: 0.03, isBad: false, isPowerup: true, isWeapon: false },
-            { type: 'magnet', emoji: '🧲', points: 0, prob: 0.03, isBad: false, isPowerup: true, isWeapon: false },
+            { type: 'shield', emoji: '🛡️', points: 0, prob: 0.015, isBad: false, isPowerup: true, isWeapon: false },
+            { type: 'magnet', emoji: '🧲', points: 0, prob: 0.015, isBad: false, isPowerup: true, isWeapon: false },
             { type: 'pepper', emoji: '🌶️', points: 0, prob: 0, isBad: false, isPowerup: false, isWeapon: true } 
         ];
 
@@ -382,10 +393,12 @@
             if (frameCount % dropRate === 0) {
                 let rand = Math.random();
                 let type;
-                if (rand < 0.25) type = itemTypes.find(t => t.type === 'pepper'); 
-                else if (rand < 0.55) type = itemTypes.find(t => t.type === 'bomb'); 
-                else if (rand < 0.85) type = itemTypes.find(t => t.type === 'crawfish'); 
-                else type = itemTypes.find(t => t.type === 'shield'); 
+                
+                if (rand < 0.25) type = itemTypes.find(t => t.type === 'pepper'); // 25% Pepper
+                else if (rand < 0.60) type = itemTypes.find(t => t.type === 'bomb'); // 35% Bomb
+                else if (rand < 0.70) type = itemTypes.find(t => t.type === 'poison'); // 10% Poison
+                else if (rand < 0.98) type = itemTypes.find(t => t.type === 'crawfish'); // 28% Crawfish
+                else type = itemTypes.find(t => t.type === 'shield'); // 2% Shield
                 
                 items.push({
                     x: boss.x + (Math.random() * 60 - 30), y: boss.y + 40, size: 40,
@@ -429,7 +442,6 @@
                 if (pBox.left < iBox.right && pBox.right > iBox.left && pBox.top < iBox.bottom && pBox.bottom > iBox.top) {
                     
                     if (item.data.isWeapon) {
-                        // Only trigger boss hit logic if the boss is actually alive/active!
                         if (isBossBattle) {
                             playSound('powerup');
                             addFloatingText("FIRE!", player.x, player.y - 40, "#e74c3c");
@@ -455,12 +467,10 @@
                                 spawnConfetti();
                                 addFloatingText("SEAGULL DEFEATED! +300", canvas.width/2, canvas.height/2, "#f39c12", 30);
                                 
-                                // Spawn the 5 golden crawfish reward
                                 for(let j=0; j<5; j++) {
                                     items.push({ x: boss.x, y: boss.y, size: 40, speed: 2, data: itemTypes.find(t=>t.type==='golden'), rotation: 0, rotSpeed: 2 });
                                 }
 
-                                // FIX: Turn any extra leftover peppers on screen into regular crawfish!
                                 items.forEach(itm => {
                                     if (itm.data.type === 'pepper') {
                                         itm.data = itemTypes.find(t => t.type === 'crawfish');
@@ -496,7 +506,7 @@
                         }
                         updateHUD();
                     }
-                    items.splice(i, 1); // Remove the item
+                    items.splice(i, 1);
                 } else if (item.y > canvas.height + item.size) {
                     if (!item.data.isBad && !item.data.isPowerup && !item.data.isWeapon && combo > 0) {
                         combo = 0; updateHUD(); addFloatingText("Combo lost!", canvas.width/2, canvas.height - 50, "#e74c3c", 16);
