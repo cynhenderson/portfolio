@@ -7,12 +7,12 @@
     
     <!-- Link Preview Meta Tags for iMessage / Social Media -->
     <meta property="og:title" content="Lilly Ate That!">
-    <meta property="og:description" content="Help Lilly catch the falling seafood and defeat the Giant Seagull in this cute arcade game!">
-    <meta property="og:image" content="https://cynhenderson.com/photos/lilly.png">
+    <meta property="og:description" content="Help Lilly catch the falling seafood and defeat the bosses in this cute arcade game!">
+    <meta property="og:image" content="photos/lilly.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Lilly Ate That!">
-    <meta name="twitter:description" content="Help Lilly catch the falling seafood and defeat the Giant Seagull!">
-    <meta name="twitter:image" content="https://cynhenderson.com/photos/lilly.png">
+    <meta name="twitter:description" content="Help Lilly catch the falling seafood and defeat the bosses!">
+    <meta name="twitter:image" content="photos/lilly.png">
     <meta name="theme-color" content="#ff758c">
 
     <style>
@@ -161,7 +161,7 @@
             CATCH: 🦞🍤🌟<br>
             AVOID: 💣🧪<br>
             POWER-UPS: 🛡️ (Shield) | 🧲 (Magnet)<br>
-            BOSS: Catch 🌶️ to fight back!
+            BOSS: Aim under the boss and catch 🌶️ to fire!
         </p>
         <button id="startBtn">PLAY</button>
     </div>
@@ -222,6 +222,7 @@
         const livesVal = document.getElementById('livesVal');
         const comboBoard = document.getElementById('comboBoard');
         const warningOverlay = document.getElementById('warningOverlay');
+        const warningText = document.getElementById('warningText');
 
         // --- AUDIO SYSTEM ---
         const bgMusic = new Audio('sounds/gameboy.mp3');
@@ -281,11 +282,17 @@
         let score = 0, lives = 3, combo = 0, frameCount = 0;
         let animationId, screenShakeFrames = 0, freezeFrames = 0;
 
-        // Boss Variables
+        // --- NEW BOSS PROFILES ---
+        const bossProfiles = [
+            { name: "GIANT SEAGULL", emoji: '🦅', speed: 4, moveType: 'linear', dropRateMod: 1 },
+            { name: "SWAMP GATOR", emoji: '🐊', speed: 2, moveType: 'sine', dropRateMod: 1.2 },
+            { name: "TRASH PANDA", emoji: '🦝', speed: 8, moveType: 'dart', dropRateMod: 0.7 } 
+        ];
+
         let isBossBattle = false;
         let bossLevel = 1; 
         let nextBossScore = 300; 
-        let boss = { x: 0, y: 100, size: 120, hp: 3, maxHp: 3, vx: 4, emoji: '🦅', hurtFrames: 0, entryTimer: 0 };
+        let boss = { x: 0, y: 100, baseY: 100, size: 120, hp: 1, maxHp: 1, vx: 4, emoji: '🦅', name: 'GIANT SEAGULL', moveType: 'linear', dropRateMod: 1, hurtFrames: 0, entryTimer: 0 };
         let lasers = [];
 
         const player = { x: 0, y: 0, size: 85, speed: 8, targetX: 0, img: playerImg, hurtFrames: 0, hasShield: false, magnetTimer: 0 };
@@ -346,11 +353,26 @@
 
         function startBossPhase() {
             isBossBattle = true;
-            boss.maxHp = 2 + bossLevel; 
+            
+            const profileIndex = (bossLevel - 1) % bossProfiles.length;
+            const bProfile = bossProfiles[profileIndex];
+            
+            boss.name = bProfile.name;
+            boss.emoji = bProfile.emoji;
+            boss.moveType = bProfile.moveType;
+            boss.dropRateMod = bProfile.dropRateMod;
+            boss.vx = bProfile.speed * (Math.random() > 0.5 ? 1 : -1);
+            
+            // Loop 1 (Boss 1-3) = 1 HP. Loop 2 (Boss 4-6) = 2 HP.
+            boss.maxHp = 1 + Math.floor((bossLevel - 1) / 3); 
             boss.hp = boss.maxHp;
+            
             boss.x = canvas.width / 2;
             boss.y = -100; 
+            boss.baseY = 100;
             boss.entryTimer = 60;
+            
+            warningText.innerHTML = `${boss.name}<br>APPROACHING!`;
             playSound('boss_warning');
             warningOverlay.classList.add('active');
             setTimeout(() => { warningOverlay.classList.remove('active'); }, 3000);
@@ -388,17 +410,17 @@
         }
 
         function spawnBossItem() {
-            const dropRate = Math.max(25, 45 - (bossLevel * 2)); 
+            const dropRate = Math.max(15, Math.floor((45 - (bossLevel * 2)) * boss.dropRateMod)); 
 
             if (frameCount % dropRate === 0) {
                 let rand = Math.random();
                 let type;
                 
-                if (rand < 0.25) type = itemTypes.find(t => t.type === 'pepper'); // 25% Pepper
-                else if (rand < 0.60) type = itemTypes.find(t => t.type === 'bomb'); // 35% Bomb
-                else if (rand < 0.70) type = itemTypes.find(t => t.type === 'poison'); // 10% Poison
-                else if (rand < 0.98) type = itemTypes.find(t => t.type === 'crawfish'); // 28% Crawfish
-                else type = itemTypes.find(t => t.type === 'shield'); // 2% Shield
+                if (rand < 0.25) type = itemTypes.find(t => t.type === 'pepper'); 
+                else if (rand < 0.60) type = itemTypes.find(t => t.type === 'bomb'); 
+                else if (rand < 0.70) type = itemTypes.find(t => t.type === 'poison'); 
+                else if (rand < 0.98) type = itemTypes.find(t => t.type === 'crawfish'); 
+                else type = itemTypes.find(t => t.type === 'shield'); 
                 
                 items.push({
                     x: boss.x + (Math.random() * 60 - 30), y: boss.y + 40, size: 40,
@@ -446,37 +468,8 @@
                             playSound('powerup');
                             addFloatingText("FIRE!", player.x, player.y - 40, "#e74c3c");
                             
-                            lasers.push({ x: player.x, y: player.y, targetX: boss.x, targetY: boss.y });
-                            
-                            boss.hp--;
-                            boss.hurtFrames = 15;
-                            playSound('boss_hit');
-                            screenShakeFrames = 10;
-                            createExplosion(boss.x, boss.y, '#e74c3c');
-
-                            if (boss.hp <= 0) {
-                                isBossBattle = false;
-                                bossLevel++; 
-                                score += 300; 
-                                
-                                nextBossScore = score + 1000; 
-                                
-                                playSound('combo');
-                                freezeFrames = 20;
-                                screenShakeFrames = 30;
-                                spawnConfetti();
-                                addFloatingText("SEAGULL DEFEATED! +300", canvas.width/2, canvas.height/2, "#f39c12", 30);
-                                
-                                for(let j=0; j<5; j++) {
-                                    items.push({ x: boss.x, y: boss.y, size: 40, speed: 2, data: itemTypes.find(t=>t.type==='golden'), rotation: 0, rotSpeed: 2 });
-                                }
-
-                                items.forEach(itm => {
-                                    if (itm.data.type === 'pepper') {
-                                        itm.data = itemTypes.find(t => t.type === 'crawfish');
-                                    }
-                                });
-                            }
+                            // NEW SKILL SHOT MECHANIC: Shoots straight up from player's current X position
+                            lasers.push({ x: player.x, y: player.y, speed: 15 });
                         }
                     } else if (item.data.isBad) {
                         if (player.hasShield) {
@@ -536,31 +529,89 @@
             if (player.x < player.size / 2) { player.x = player.size / 2; player.targetX = player.x; }
             if (player.x > canvas.width - player.size / 2) { player.x = canvas.width - player.size / 2; player.targetX = player.x; }
 
-            // Boss Logic
+            // Dynamic Boss Movement Logic
             if (isBossBattle) {
                 if (boss.entryTimer > 0) {
                     boss.entryTimer--;
-                    boss.y += 3; // Fly down into screen
+                    boss.y += 3; 
+                    boss.baseY = boss.y; 
                 } else {
-                    boss.x += boss.vx;
-                    if (boss.x < boss.size) { boss.x = boss.size; boss.vx *= -1; }
-                    if (boss.x > canvas.width - boss.size) { boss.x = canvas.width - boss.size; boss.vx *= -1; }
+                    if (boss.moveType === 'linear') {
+                        boss.x += boss.vx;
+                    } else if (boss.moveType === 'sine') {
+                        boss.x += boss.vx;
+                        boss.y = boss.baseY + Math.sin(frameCount * 0.05) * 50; 
+                    } else if (boss.moveType === 'dart') {
+                        if (frameCount % 120 < 70) {
+                            boss.x += boss.vx;
+                        }
+                    }
+
+                    if (boss.x < boss.size/2) { boss.x = boss.size/2; boss.vx *= -1; }
+                    if (boss.x > canvas.width - boss.size/2) { boss.x = canvas.width - boss.size/2; boss.vx *= -1; }
+                    
                     spawnBossItem();
                 }
                 if (boss.hurtFrames > 0) boss.hurtFrames--;
             }
 
-            // Lasers
+            // Lasers (Fireballs) Logic & Boss Collision
             for (let i = lasers.length - 1; i >= 0; i--) {
                 let l = lasers[i];
-                l.x += (l.targetX - l.x) * 0.3; l.y += (l.targetY - l.y) * 0.3;
-                if (Math.abs(l.y - l.targetY) < 10) lasers.splice(i, 1);
+                l.y -= l.speed; // Fly straight up
+                
+                // Check if the fireball hit the boss
+                if (isBossBattle && boss.entryTimer <= 0 && boss.hurtFrames === 0) {
+                    // Check bounding box overlap
+                    if (l.x > boss.x - boss.size * 0.4 && l.x < boss.x + boss.size * 0.4 &&
+                        l.y < boss.y + boss.size * 0.4 && l.y > boss.y - boss.size * 0.4) {
+                        
+                        // Hit confirmed!
+                        boss.hp--;
+                        boss.hurtFrames = 15;
+                        playSound('boss_hit');
+                        screenShakeFrames = 10;
+                        createExplosion(boss.x, boss.y, '#e74c3c');
+                        lasers.splice(i, 1); // Remove laser
+
+                        // Did the boss die?
+                        if (boss.hp <= 0) {
+                            isBossBattle = false;
+                            bossLevel++; 
+                            score += 300; 
+                            
+                            nextBossScore = score + 1000; 
+                            
+                            playSound('combo');
+                            freezeFrames = 20;
+                            screenShakeFrames = 30;
+                            spawnConfetti();
+                            addFloatingText("BOSS DEFEATED! +300", canvas.width/2, canvas.height/2, "#f39c12", 30);
+                            
+                            for(let j=0; j<5; j++) {
+                                items.push({ x: boss.x, y: boss.y, size: 40, speed: 2, data: itemTypes.find(t=>t.type==='golden'), rotation: 0, rotSpeed: 2 });
+                            }
+
+                            items.forEach(itm => {
+                                if (itm.data.type === 'pepper') {
+                                    itm.data = itemTypes.find(t => t.type === 'crawfish');
+                                }
+                            });
+                        }
+                        continue; 
+                    }
+                }
+
+                // Remove laser if it misses and flies off the top of the screen
+                if (l.y < -50) {
+                    lasers.splice(i, 1);
+                }
             }
 
             if (player.magnetTimer > 0) {
                 player.magnetTimer--;
                 items.forEach(item => {
-                    if (!item.data.isBad && !item.data.isPowerup) { // Pulls good food AND peppers!
+                    if (!item.data.isBad && !item.data.isPowerup) { 
                         const distX = player.x - item.x, distY = player.y - item.y;
                         if (Math.sqrt(distX * distX + distY * distY) < 300) item.x += distX * 0.04;
                     }
@@ -591,10 +642,9 @@
                 ctx.translate(boss.x, boss.y);
                 if (boss.hurtFrames > 0) {
                     ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
-                    ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)'; // Flash red
+                    ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)'; 
                 }
                 ctx.font = `${boss.size}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                // Flip boss sprite depending on direction
                 if (boss.vx > 0) { ctx.scale(-1, 1); } 
                 ctx.fillText(boss.emoji, 0, 0);
                 ctx.restore();
@@ -604,9 +654,17 @@
                 ctx.fillStyle = "#e74c3c"; ctx.fillRect(boss.x - 50, boss.y - 70, (boss.hp / boss.maxHp) * 100, 10);
             }
 
-            // Draw Lasers
-            ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 6; ctx.lineCap = 'round';
-            lasers.forEach(l => { ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x, l.y - 40); ctx.stroke(); });
+            // Draw Lasers (Fireballs)
+            lasers.forEach(l => { 
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(l.x, l.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath();
+                ctx.arc(l.x, l.y + 12, 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
 
             confetti.forEach(c => { ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot * Math.PI / 180); ctx.globalAlpha = c.life / 100; ctx.fillStyle = c.color; ctx.fillRect(-c.width/2, -c.height/2, c.width, c.height); ctx.restore(); });
 
