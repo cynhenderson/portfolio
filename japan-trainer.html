@@ -309,6 +309,23 @@
             showFeedback();
         }
 
+        function nextPhrase() {
+            const cat = state.currentPhrase.cat;
+            const pool = state.phrases.filter(p => p.cat === cat);
+            const unmastered = pool.filter(p => p.level < 3);
+            
+            if (unmastered.length > 0) {
+                // Prioritize phrases that need the most practice
+                const sorted = unmastered.sort((a, b) => a.level - b.level);
+                state.currentPhrase = sorted[0];
+            } else {
+                // If all mastered, pick a random phrase to review (avoiding the one just shown)
+                const others = pool.filter(p => p.id !== state.currentPhrase.id);
+                state.currentPhrase = others.length > 0 ? others[Math.floor(Math.random() * others.length)] : pool[0];
+            }
+            showLesson();
+        }
+
         function showFeedback() {
             const container = document.getElementById('game-container');
             const dog = CHARACTERS.dog;
@@ -329,7 +346,7 @@
                         <p class="text-sm text-gray-400">Current Level: ${state.currentPhrase.level}/3</p>
                     </div>
 
-                    <button onclick="showDashboard()" class="btn-pastel bg-indigo-400 text-white w-full py-4 text-lg shadow-md hover:bg-indigo-500">
+                    <button onclick="nextPhrase()" class="btn-pastel bg-indigo-400 text-white w-full py-4 text-lg shadow-md hover:bg-indigo-500">
                         Next Phrase ➔
                     </button>
                 </div>
