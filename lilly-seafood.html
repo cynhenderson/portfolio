@@ -279,7 +279,7 @@
 
         // Game State
         let state = 'START';
-        let score = 0, lives = 3, combo = 0, frameCount = 0;
+        let score = 0, lives = 3, combo = 0, maxCombo = 0, frameCount = 0;
         let animationId, screenShakeFrames = 0, freezeFrames = 0;
 
         // --- NEW BOSS PROFILES ---
@@ -334,7 +334,7 @@
         });
 
         function resetGame() {
-            score = 0; lives = 3; combo = 0; frameCount = 0;
+            score = 0; lives = 3; combo = 0; maxCombo = 0; frameCount = 0;
             items = []; floatingTexts = []; particles = []; confetti = []; lasers = [];
             screenShakeFrames = 0; freezeFrames = 0;
             player.x = canvas.width / 2; player.targetX = player.x;
@@ -487,6 +487,7 @@
                         else if (item.data.type === 'magnet') { player.magnetTimer = 300; addFloatingText("MAGNET!", player.x, player.y - 40, "#9b59b6"); }
                     } else {
                         combo++;
+                        if (combo > maxCombo) maxCombo = combo;
                         let multiplier = combo >= 20 ? 3 : (combo >= 10 ? 2 : 1);
                         let earnedPoints = item.data.points * multiplier; score += earnedPoints;
 
@@ -514,7 +515,7 @@
             uiLayer.classList.remove('hidden'); warningOverlay.classList.remove('active');
             let titleHtml = score >= globalHighScore && score > 0 ? "NEW HIGH<br>SCORE! 🎉" : "OH NO!";
             titleText.innerHTML = titleHtml;
-            instructions.innerHTML = `Final Score: <span style="color:#ff758c; font-size: 1.5em; font-weight: bold;">${score}</span><br>Max Combo: ${comboVal.innerText}<br><br>Tummy ache! Let's try again! 🎀`;
+            instructions.innerHTML = `Final Score: <span style="color:#ff758c; font-size: 1.5em; font-weight: bold;">${score}</span><br>Max Combo: ${maxCombo}<br><br>Tummy ache! Let's try again! 🎀`;
             startBtn.innerText = "PLAY AGAIN";
         }
 
@@ -694,5 +695,3 @@
     </script>
 </body>
 </html>
-
-
