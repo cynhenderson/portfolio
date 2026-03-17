@@ -225,8 +225,30 @@
         const warningText = document.getElementById('warningText');
 
         // --- AUDIO SYSTEM ---
-        const bgMusic = new Audio('sounds/gameboy.mp3');
-        bgMusic.loop = true; bgMusic.volume = 0.2; 
+        const playlist = [
+            'sounds/gameboy.mp3',
+            'sounds/gabriela.mp3',
+            'sounds/touch.mp3'
+        ];
+        
+        const bgMusic = new Audio();
+        bgMusic.volume = 0.2; 
+        let currentTrackIndex = -1;
+
+        // Function to select and play a random track that isn't the currently playing one
+        function playNextRandomTrack() {
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * playlist.length);
+            } while (nextIndex === currentTrackIndex && playlist.length > 1);
+            
+            currentTrackIndex = nextIndex;
+            bgMusic.src = playlist[currentTrackIndex];
+            bgMusic.play().catch(e => console.log("Audio play prevented:", e));
+        }
+
+        // When the current song finishes, play the next one
+        bgMusic.addEventListener('ended', playNextRandomTrack);
 
         let audioCtx;
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
@@ -275,7 +297,9 @@
             }
         }
 
-        const playerImg = new Image(); playerImg.src = 'photos/lilly.png';
+        const lillySkins = ['photos/lilly.png', 'photos/lilly2.png', 'photos/lilly3.png'];
+        const playerImg = new Image(); 
+        playerImg.src = lillySkins[Math.floor(Math.random() * lillySkins.length)];
 
         // Game State
         let state = 'START';
@@ -329,7 +353,14 @@
         canvas.addEventListener('touchstart', handlePointer); canvas.addEventListener('touchmove', handlePointer);
 
         startBtn.addEventListener('click', () => {
-            initAudio(); bgMusic.play().catch(e=>{});
+            initAudio(); 
+            // If no song is loaded yet, pick a random one and play it. Otherwise, resume playback.
+            if (!bgMusic.src) {
+                playNextRandomTrack();
+            } else {
+                bgMusic.play().catch(e=>{});
+            }
+            
             resetGame(); state = 'PLAYING'; uiLayer.classList.add('hidden'); loop();
         });
 
@@ -339,6 +370,7 @@
             screenShakeFrames = 0; freezeFrames = 0;
             player.x = canvas.width / 2; player.targetX = player.x;
             player.hasShield = false; player.magnetTimer = 0;
+            playerImg.src = lillySkins[Math.floor(Math.random() * lillySkins.length)];
             isBossBattle = false; bossLevel = 1; nextBossScore = 300;
             warningOverlay.classList.remove('active');
             updateHUD();
@@ -511,7 +543,10 @@
         }
 
         function gameOver() {
-            state = 'GAMEOVER'; bgMusic.pause(); bgMusic.currentTime = 0; saveHighScore(score);
+            state = 'GAMEOVER'; 
+            bgMusic.pause(); // Just pause it, so when we hit play again it resumes where it left off
+            saveHighScore(score);
+            
             uiLayer.classList.remove('hidden'); warningOverlay.classList.remove('active');
             let titleHtml = score >= globalHighScore && score > 0 ? "NEW HIGH<br>SCORE! 🎉" : "OH NO!";
             titleText.innerHTML = titleHtml;
