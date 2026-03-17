@@ -149,7 +149,7 @@
 
     <div id="scoreBoard" class="hud-text">SCORE: <span id="scoreVal">0</span></div>
     <div id="comboBoard" class="hud-text">COMBO: <span id="comboVal">0</span></div>
-    <div id="highScoreBoard" class="hud-text">🏆 HIGH: <span id="highScoreVal">0</span></div>
+    <div id="highScoreBoard" class="hud-text">🏆 HIGH: <span id="highScoreVal">...</span></div>
     <div id="livesBoard" class="hud-text">LIVES: <span id="livesVal">❤️❤️❤️</span></div>
 
     <div id="warningOverlay"><div id="warningText">GIANT SEAGULL<br>APPROACHING!</div></div>
@@ -195,12 +195,17 @@
                         const docSnap = await getDoc(docRef);
                         if (docSnap.exists() && docSnap.data().highScore) {
                             globalHighScore = docSnap.data().highScore;
-                            document.getElementById('highScoreVal').innerText = globalHighScore;
                         }
+                        document.getElementById('highScoreVal').innerText = globalHighScore;
                     }
                 });
+            } else {
+                document.getElementById('highScoreVal').innerText = globalHighScore;
             }
-        } catch (e) { console.log("Running without cloud saves."); }
+        } catch (e) { 
+            console.log("Running without cloud saves."); 
+            document.getElementById('highScoreVal').innerText = globalHighScore;
+        }
 
         function saveHighScore(newScore) {
             if (newScore > globalHighScore) {
