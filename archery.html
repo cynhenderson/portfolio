@@ -157,6 +157,20 @@
     <button id="nextLevelBtn" class="btn">NEXT LEVEL ➡️</button>
 </div>
 
+<div id="gameWonScreen" class="screen-overlay hidden" style="background:rgba(255,255,255,0.85); pointer-events:none; z-index: 50;">
+    <div style="pointer-events:none; display:flex; flex-direction:column; align-items:center;">
+        <div class="text-[120px] leading-none mb-2 drop-shadow-2xl">🏆</div>
+        <h2 class="text-5xl sm:text-7xl font-black text-yellow-400 drop-shadow-lg mb-2 retro-text" style="-webkit-text-stroke:3px #111;">CHAMPION ARCHER!</h2>
+        <p class="text-xl font-bold text-gray-700 mb-1">Final Score</p>
+        <p id="winScore" class="text-6xl font-black text-yellow-500 mb-4 retro-text" style="-webkit-text-stroke:2px #111;">0</p>
+        <p class="text-md font-bold text-gray-600 mb-8 animate-pulse bg-white px-5 py-2 rounded-full shadow-md border-2 border-gray-200">✨ Tap anywhere for confetti! ✨</p>
+        <div class="flex flex-col gap-3" style="pointer-events:auto;">
+            <button id="winRestartBtn" class="btn">PLAY AGAIN 🔄</button>
+            <button id="winMenuBtn" class="btn" style="background:#eee; font-size:1.1rem; padding:0.7rem 2rem;">MAIN MENU</button>
+        </div>
+    </div>
+</div>
+
 <div id="gameOverScreen" class="screen-overlay hidden">
     <h2 class="text-6xl font-black text-red-500 mb-2 drop-shadow-md" id="gameOverTitle" style="-webkit-text-stroke:2px #111;">GAME OVER!</h2>
     <p class="text-xl font-bold text-gray-700 mb-1">Final Score</p>
@@ -205,7 +219,7 @@ function playSound(type) {
     }
 }
 
-// Color blender for Zen Mode
+// Color blender for Zen & Victory Mode
 function lerpColor(a, b, amount) { 
     const ah = parseInt(a.replace(/#/g, ''), 16),
         ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
@@ -217,7 +231,7 @@ function lerpColor(a, b, amount) {
     return '#' + (((1 << 24) + (rr << 16) + (rg << 8) + rb) | 0).toString(16).slice(1);
 }
 
-// Zen Mode Time and Palettes
+// Time and Palettes
 let zenTime = 0;
 const ZEN_PALETTES = [
     { top: '#87CEEB', bot: '#A5D6A7' }, // Morning
@@ -251,6 +265,7 @@ window.onload = function () {
     const waveTransText = document.getElementById('waveTransitionText');
     const waveSubText = document.getElementById('waveSubText');
     const levelCompleteScreen = document.getElementById('levelCompleteScreen');
+    const gameWonScreen = document.getElementById('gameWonScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const zenBackBtn = document.getElementById('zenBackBtn');
 
@@ -290,8 +305,8 @@ window.onload = function () {
     const DRAG = 0.985;
 
     const LEVEL_CONFIGS = [
-        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: false, wavy: false },
-        { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.4, clouds: false, wavy: false },
+        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: true, wavy: false },
+        { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.4, clouds: true, wavy: false },
         { name: 'Cloudy Grove',       bgTop: '#6EB5D3', bgBot: '#81C784', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 8,  birdSpeed: 1.2, spawnRate: 0.014, waveTransDuration: 2.5, bossType: 'pelicanking', armorChance: 0.5, clouds: true, wavy: false },
         { name: 'Storm Summit',       bgTop: '#2C3E50', bgBot: '#1A252F', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 10, birdSpeed: 1.4, spawnRate: 0.016, waveTransDuration: 2.0, bossType: 'condor', armorChance: 0.6, clouds: false, wavy: true },
         { name: 'Championship Arena', bgTop: '#7B5EA7', bgBot: '#9CCC65', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 12, birdSpeed: 1.7, spawnRate: 0.018, waveTransDuration: 2.0, bossType: 'champion', armorChance: 0.7, clouds: true, wavy: true },
@@ -346,7 +361,7 @@ window.onload = function () {
 
     function drawBackground() {
         let top, bot;
-        if (mode === 'zen') {
+        if (mode === 'zen' || state === 'victory') {
             let cycle = zenTime % (ZEN_PALETTES.length - 1); 
             let index = Math.floor(cycle);
             let nextIndex = index + 1;
@@ -366,7 +381,7 @@ window.onload = function () {
         ctx.fillStyle = grad; 
         ctx.fillRect(0, 0, width, height);
         
-        ctx.fillStyle = (mode === 'zen') ? '#BDC3C7' : '#2E4053'; 
+        ctx.fillStyle = (mode === 'zen' || state === 'victory') ? '#BDC3C7' : '#2E4053'; 
         ctx.fillRect(0, height - 18, width, 18);
         ctx.fillStyle = '#111'; 
         ctx.fillRect(0, height - 6, width, 6);
@@ -497,7 +512,28 @@ window.onload = function () {
                         
                         if (en.isBoss) {
                             bossActive = false; bossBar.classList.add('hidden'); playSound('levelup');
-                            setTimeout(() => { state = 'levelComplete'; levelCompleteScreen.classList.remove('hidden'); document.getElementById('levelScore').textContent = score; }, 1200);
+                            setTimeout(() => { 
+                                if (currentLevel === 4) { // Final Level Victory!
+                                    state = 'victory';
+                                    gameWonScreen.classList.remove('hidden');
+                                    document.getElementById('winScore').textContent = score;
+                                    
+                                    // Massive Initial Victory Confetti
+                                    let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
+                                    for (let c = 0; c < 150; c++) {
+                                        particles.push({
+                                            x: width / 2, y: height,
+                                            vx: (Math.random() - 0.5) * 30, vy: -(Math.random() * 25 + 10),
+                                            color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                                            life: 2.5, size: Math.random() * 8 + 4
+                                        });
+                                    }
+                                } else {
+                                    state = 'levelComplete'; 
+                                    levelCompleteScreen.classList.remove('hidden'); 
+                                    document.getElementById('levelScore').textContent = score; 
+                                }
+                            }, 1200);
                         }
                     }
                 }
@@ -506,7 +542,17 @@ window.onload = function () {
     }
 
     function update(dt) {
-        if (mode === 'zen') zenTime += dt * 0.03; 
+        if (mode === 'zen' || state === 'victory') zenTime += dt * 0.03; 
+
+        // Always update particles (even during victory screen)
+        for (let i = particles.length - 1; i >= 0; i--) { 
+            let p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += GRAVITY * 0.08; 
+            p.life -= dt * 0.8; 
+            if (p.life <= 0) particles.splice(i, 1); 
+        }
+
+        // Freeze all other game updates if we have won
+        if (state === 'victory') return; 
 
         if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
@@ -560,7 +606,6 @@ window.onload = function () {
             } else if (e.state === 'bonked' || e.state === 'dead') { e.y -= 1.8; if (e.y < -100) enemies.splice(i, 1); }
         }
 
-        for (let i = particles.length - 1; i >= 0; i--) { let p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += GRAVITY * 0.08; p.life -= 0.022; if (p.life <= 0) particles.splice(i, 1); }
         for (let i = floatingTexts.length - 1; i >= 0; i--) { let ft = floatingTexts[i]; ft.y -= 1.1; ft.life -= 0.022; if (ft.life <= 0) floatingTexts.splice(i, 1); }
         handleCollisions();
     }
@@ -604,7 +649,7 @@ window.onload = function () {
         arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
         bossActive = false; bossEnemy = null; waveTransTimer = 0;
         
-        startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden');
+        startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden'); gameWonScreen.classList.add('hidden');
         storyPanel.classList.toggle('hidden', mode !== 'story'); 
         livesPanel.classList.toggle('hidden', mode === 'zen');
         zenPanel.classList.toggle('hidden', mode !== 'zen');
@@ -724,14 +769,12 @@ window.onload = function () {
                 
                 ctx.fillStyle = baseColor;
                 if (e.phase === 2) {
-                    // Thick, fuzzy angry eyebrows positioned ABOVE the eyes
                     ctx.strokeStyle = '#3e2723';
                     ctx.lineWidth = r * 0.2;
                     ctx.lineCap = 'round';
                     ctx.beginPath(); ctx.moveTo(-r*0.65, -r*0.45); ctx.lineTo(-r*0.15, -r*0.25); ctx.stroke();
                     ctx.beginPath(); ctx.moveTo(r*0.65, -r*0.45); ctx.lineTo(r*0.15, -r*0.25); ctx.stroke();
                     
-                    // Red glowing pupils
                     ctx.fillStyle = '#ff4757';
                     ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
@@ -752,7 +795,6 @@ window.onload = function () {
                     ctx.fillStyle = '#5c2a00';
                     let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.5;
                     ctx.save();
-                    // Flip the wing drawing based on the bird's direction (d)
                     ctx.translate(d * -r*0.2, -r*0.3);
                     ctx.scale(d, 1);
                     ctx.rotate(flapAngle);
@@ -787,7 +829,6 @@ window.onload = function () {
             } else if (e.type === 'condor') {
                 let baseColor = e.state === 'bonked' ? '#576574' : e.color; 
 
-                // Flapping cardboard/foil pauldron wings
                 if (e.state === 'flying') {
                     ctx.fillStyle = '#1e272e';
                     let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.4;
@@ -799,83 +840,65 @@ window.onload = function () {
                     ctx.restore();
                 }
 
-                // Plump body
                 ctx.fillStyle = baseColor;
                 ctx.beginPath(); ctx.ellipse(0, r*0.2, r*0.8, r*0.8, 0, 0, Math.PI*2); ctx.fill();
-                // Lighter belly
                 ctx.fillStyle = '#808e9b';
                 ctx.beginPath(); ctx.ellipse(d*r*0.2, r*0.3, r*0.6, r*0.5, 0, 0, Math.PI*2); ctx.fill();
 
-                // Tin Pot Helmet
-                ctx.fillStyle = '#d2dae2'; // Light silver
-                ctx.beginPath(); ctx.rect(-r*0.4, -r*0.8, r*0.8, r*0.5); ctx.fill(); // Pot body
-                ctx.beginPath(); ctx.ellipse(0, -r*0.3, r*0.45, r*0.08, 0, 0, Math.PI*2); ctx.fill(); // Pot rim
-                // Pot handle sticking out the back
+                ctx.fillStyle = '#d2dae2'; 
+                ctx.beginPath(); ctx.rect(-r*0.4, -r*0.8, r*0.8, r*0.5); ctx.fill(); 
+                ctx.beginPath(); ctx.ellipse(0, -r*0.3, r*0.45, r*0.08, 0, 0, Math.PI*2); ctx.fill(); 
                 ctx.strokeStyle = '#808e9b'; ctx.lineWidth = 4;
                 ctx.beginPath(); ctx.arc(-r*0.4, -r*0.55, r*0.2, Math.PI/2, Math.PI*1.5); ctx.stroke();
 
-                // Eyes & Expression Logic
                 if (e.phase === 2) {
-                    // Panicked! The pot slipped down and the eyes are frantic
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.1, r*0.18, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.1, r*0.18, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#ff4757'; // Red panicked pupils
+                    ctx.fillStyle = '#ff4757'; 
                     ctx.beginPath(); ctx.arc(d*r*0.2 + d*3, -r*0.1, r*0.06, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55 + d*3, -r*0.1, r*0.06, 0, Math.PI*2); ctx.fill();
                 } else if (!e.shield) {
-                    // Shield broken: Wide, nervous eyes
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#111'; // Tiny terrified pupils
+                    ctx.fillStyle = '#111'; 
                     ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.05, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.05, 0, Math.PI*2); ctx.fill();
                 } else {
-                    // Shield active: Confident, angry knight
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
                     ctx.fillStyle = '#111';
                     ctx.beginPath(); ctx.arc(d*r*0.2 + d*4, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.55 + d*4, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
-                    // Angry unibrow touching the helmet rim
                     ctx.strokeStyle = '#1e272e'; ctx.lineWidth = 5; ctx.lineCap = 'round';
                     ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.35); ctx.lineTo(d*r*0.35, -r*0.25); ctx.lineTo(d*r*0.7, -r*0.35); ctx.stroke();
                 }
 
-                // Sharp orange beak
                 ctx.fillStyle = '#f39c12';
                 ctx.beginPath(); ctx.moveTo(d*r*0.7, -r*0.05); ctx.lineTo(d*r*1.1, r*0.1); ctx.lineTo(d*r*0.5, r*0.2); ctx.fill();
 
-                // Garbage Can Lid Shield
                 if (e.shield) {
                     let shieldX = d * r * 0.85;
                     let shieldY = r * 0.2;
-                    
-                    // Lid base
                     ctx.fillStyle = '#a4b0be';
                     ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.25, r*0.7, 0, 0, Math.PI*2); ctx.fill();
-                    // Ridges for the trash can lid look
                     ctx.strokeStyle = '#747d8c'; ctx.lineWidth = 2;
                     ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.15, r*0.5, 0, 0, Math.PI*2); ctx.stroke();
                     ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.08, r*0.25, 0, 0, Math.PI*2); ctx.stroke();
-                    // Center Handle
                     ctx.fillStyle = '#57606f';
                     ctx.beginPath(); ctx.ellipse(shieldX + d*r*0.1, shieldY, r*0.06, r*0.15, 0, 0, Math.PI*2); ctx.fill();
-                    
-                    // Glowing electric aura to show it's a magic/recharging shield
                     ctx.strokeStyle = 'rgba(0, 210, 255, 0.4)'; ctx.lineWidth = 6;
                     ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.35, r*0.8, 0, 0, Math.PI*2); ctx.stroke();
                 }
 
             } else if (e.type === 'champion') {
-                let baseColor = e.state === 'bonked' ? '#ff9f43' : '#e84118'; // Bright red body
+                let baseColor = e.state === 'bonked' ? '#ff9f43' : '#e84118';
 
-                // Flapping muscular/stubby wings
                 if (e.state === 'flying') {
                     ctx.fillStyle = baseColor;
-                    let flapAngle = Math.sin(e.flapPhase * 3) * 0.6; // Fast flapping
+                    let flapAngle = Math.sin(e.flapPhase * 3) * 0.6;
                     ctx.save();
                     ctx.translate(d * -r*0.1, -r*0.1);
                     ctx.scale(d, 1);
@@ -884,64 +907,53 @@ window.onload = function () {
                     ctx.restore();
                 }
 
-                // Extremely plump body
                 ctx.fillStyle = baseColor;
                 ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
 
-                // Lucha Libre Mask (Bright blue with gold trim)
-                ctx.fillStyle = '#0984e3'; // Blue mask
+                ctx.fillStyle = '#0984e3'; 
                 ctx.beginPath(); ctx.arc(0, -r*0.2, r*0.8, Math.PI, Math.PI*2); 
                 ctx.lineTo(r*0.8, r*0.1); ctx.quadraticCurveTo(0, r*0.4, -r*0.8, r*0.1); ctx.fill();
                 
-                // Mask eye holes (gold trim)
                 ctx.fillStyle = '#f1c40f';
                 ctx.beginPath(); ctx.ellipse(d*r*0.3, -r*0.3, r*0.35, r*0.25, 0, 0, Math.PI*2); ctx.fill();
                 ctx.beginPath(); ctx.ellipse(d*r*0.7, -r*0.3, r*0.35, r*0.25, 0, 0, Math.PI*2); ctx.fill();
 
-                // Inside eye holes (black)
                 ctx.fillStyle = '#111';
                 ctx.beginPath(); ctx.ellipse(d*r*0.3, -r*0.3, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
                 ctx.beginPath(); ctx.ellipse(d*r*0.7, -r*0.3, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
 
-                // Championship Belt
-                ctx.fillStyle = '#2d3436'; // Black leather
+                ctx.fillStyle = '#2d3436'; 
                 ctx.fillRect(-r*0.9, r*0.3, r*1.8, r*0.3);
-                ctx.fillStyle = '#f1c40f'; // Gold buckle
+                ctx.fillStyle = '#f1c40f'; 
                 ctx.beginPath(); ctx.arc(0, r*0.45, r*0.3, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#fff'; // Diamond in buckle
+                ctx.fillStyle = '#fff'; 
                 ctx.beginPath(); ctx.moveTo(0, r*0.25); ctx.lineTo(r*0.15, r*0.45); ctx.lineTo(0, r*0.65); ctx.lineTo(-r*0.15, r*0.45); ctx.fill();
 
-                // Eyes / Expression
                 if (e.phase === 2) {
-                    // Enraged: Bugged out eyes popping out of the mask holes
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.3, r*0.2, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.7, -r*0.3, r*0.2, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#ff4757'; // Panicked red pupils
+                    ctx.fillStyle = '#ff4757'; 
                     ctx.beginPath(); ctx.arc(d*r*0.3 + d*r*0.05, -r*0.3, r*0.08, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.7 + d*r*0.05, -r*0.3, r*0.08, 0, Math.PI*2); ctx.fill();
                     
-                    // Sweat drops flying off
                     ctx.fillStyle = '#74b9ff';
                     ctx.beginPath(); ctx.arc(-r*0.6, -r*0.6, r*0.1, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(r*0.6, -r*0.8, r*0.1, 0, Math.PI*2); ctx.fill();
                 } else {
-                    // Phase 1: Confident, intense stare
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.3, r*0.12, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(d*r*0.7, -r*0.3, r*0.12, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#fff'; // Glint
+                    ctx.fillStyle = '#fff'; 
                     ctx.beginPath(); ctx.arc(d*r*0.32, -r*0.32, r*0.04, 0, Math.PI*2); ctx.fill();
                 }
 
-                // Tiny angry beak
                 ctx.fillStyle = '#f39c12';
                 ctx.beginPath(); ctx.moveTo(d*r*0.8, -r*0.1); ctx.lineTo(d*r*1.1, 0); ctx.lineTo(d*r*0.7, r*0.1); ctx.fill();
                 
             } else if (e.type === 'pelicanking') {
                 let baseColor = e.state === 'bonked' ? '#ffe0e0' : '#fffacd';
                 
-                // Pompous Cape (Flapping)
                 if (e.state === 'flying') {
                     ctx.fillStyle = '#e74c3c';
                     let flapAngle = Math.sin(e.flapPhase * 2) * 0.4;
@@ -949,18 +961,15 @@ window.onload = function () {
                     ctx.translate(d * -r*0.2, -r*0.2);
                     ctx.scale(d, 1);
                     ctx.rotate(flapAngle);
-                    // Cape swoosh
                     ctx.beginPath(); ctx.ellipse(-r*0.5, r*0.2, r*0.7, r*0.4, -Math.PI/6, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#fff'; // Ermine trim
+                    ctx.fillStyle = '#fff'; 
                     ctx.beginPath(); ctx.ellipse(-r*1.1, r*0.3, r*0.2, r*0.4, -Math.PI/6, 0, Math.PI*2); ctx.fill();
                     ctx.restore();
                 }
 
-                // Plump Royal Body
                 ctx.fillStyle = baseColor;
                 ctx.beginPath(); ctx.ellipse(0, r*0.1, r*0.9, r*0.8, 0, 0, Math.PI*2); ctx.fill();
 
-                // Fluffy Ermine Collar with black spots
                 ctx.fillStyle = '#fff';
                 ctx.beginPath(); ctx.ellipse(0, -r*0.3, r*0.9, r*0.3, 0, 0, Math.PI*2); ctx.fill();
                 ctx.fillStyle = '#111';
@@ -968,33 +977,36 @@ window.onload = function () {
                 ctx.beginPath(); ctx.arc(r*0.4, -r*0.2, 2, 0, Math.PI*2); ctx.fill();
                 ctx.beginPath(); ctx.arc(0, -r*0.4, 2, 0, Math.PI*2); ctx.fill();
 
-                // Massive Snooty Beak
                 ctx.fillStyle = '#ffd700'; 
                 ctx.beginPath(); ctx.moveTo(d*r*0.3, -r*0.1); ctx.quadraticCurveTo(d*r*1.6, -r*0.2, d*r*1.4, r*0.2); ctx.quadraticCurveTo(d*r*0.8, r*1.2, d*r*0.1, r*0.5); ctx.fill();
 
-                // Head & Crown Logic
                 if (e.phase === 2) {
-                    // Head
                     ctx.fillStyle = baseColor;
                     ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.4, r*0.5, 0, Math.PI*2); ctx.fill();
                     
-                    // Crown slipped entirely over the eyes in a panic!
+                    // Angry, wide open eye (crown no longer falls)
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.45, -r*0.5, r*0.2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#e74c3c'; // Red enraged pupil
+                    ctx.beginPath(); ctx.arc(d*r*0.5, -r*0.5, r*0.06, 0, Math.PI*2); ctx.fill();
+                    // Angry eyebrow
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(d*r*0.2, -r*0.7); ctx.lineTo(d*r*0.6, -r*0.6); ctx.stroke();
+                    
+                    // Crown sitting proudly on top, tilted back slightly
                     ctx.fillStyle = '#f1c40f'; 
-                    ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.1); ctx.lineTo(d*r*0.8, -r*0.1); ctx.lineTo(d*r*0.9, -r*0.8); ctx.lineTo(d*r*0.6, -r*0.5); ctx.lineTo(d*r*0.4, -r*0.9); ctx.lineTo(d*r*0.2, -r*0.5); ctx.lineTo(d*r*-0.1, -r*0.8); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(d*r*0.1, -r*0.8); ctx.lineTo(d*r*0.7, -r*0.8); ctx.lineTo(d*r*0.9, -r*1.4); ctx.lineTo(d*r*0.6, -r*1.1); ctx.lineTo(d*r*0.4, -r*1.5); ctx.lineTo(d*r*0.2, -r*1.1); ctx.lineTo(d*r*-0.1, -r*1.4); ctx.fill();
                 } else {
-                    // Head
                     ctx.fillStyle = baseColor;
                     ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.4, r*0.5, 0, Math.PI*2); ctx.fill();
                     
-                    // Snooty half-closed eye
                     ctx.fillStyle = '#fff';
                     ctx.beginPath(); ctx.arc(d*r*0.45, -r*0.5, r*0.15, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = baseColor; // Heavy eyelid
+                    ctx.fillStyle = baseColor; 
                     ctx.beginPath(); ctx.rect(d*r*0.25, -r*0.7, r*0.4, r*0.2); ctx.fill();
-                    ctx.fillStyle = '#111'; // Pupil looking down its beak
+                    ctx.fillStyle = '#111'; 
                     ctx.beginPath(); ctx.arc(d*r*0.5, -r*0.45, r*0.04, 0, Math.PI*2); ctx.fill();
                     
-                    // Crown sitting proudly on top of his head
                     ctx.fillStyle = '#f1c40f'; 
                     ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.8); ctx.lineTo(d*r*0.6, -r*0.8); ctx.lineTo(d*r*0.8, -r*1.4); ctx.lineTo(d*r*0.5, -r*1.1); ctx.lineTo(d*r*0.3, -r*1.5); ctx.lineTo(d*r*0.1, -r*1.1); ctx.lineTo(d*r*-0.2, -r*1.4); ctx.fill();
                 }
@@ -1058,18 +1070,31 @@ window.onload = function () {
             ctx.fillStyle = '#f1c40f';
             ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI*2); ctx.fill();
         } else if (p.type === 'pelicanking') {
-            ctx.fillStyle = '#3498db'; ctx.beginPath(); ctx.ellipse(0, 5, 15, 18, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.moveTo(-5, -12); ctx.lineTo(5, -12); ctx.lineTo(0, -18); ctx.fill();
+            ctx.fillStyle = '#f1c40f';
+            ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#f39c12';
+            ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(6, 0); ctx.lineTo(0, 6); ctx.lineTo(-6, 0); ctx.fill();
         } else if (p.type === 'condor') {
-            ctx.fillStyle = '#f9ca24'; ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-10, -5); ctx.lineTo(2, 5); ctx.lineTo(-2, 10); ctx.lineTo(10, -5); ctx.stroke();
+            ctx.fillStyle = '#ced6e0';
+            ctx.beginPath();
+            for (let i = 0; i < Math.PI * 2; i += Math.PI / 4) {
+                let dist = 12 + Math.random() * 6;
+                ctx.lineTo(Math.cos(i) * dist, Math.sin(i) * dist);
+            }
+            ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#a4b0be'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(-8, -5); ctx.lineTo(5, 8); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(8, -2); ctx.lineTo(-4, 10); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-10, 5); ctx.lineTo(0, -10); ctx.stroke();
         } else if (p.type === 'champion') {
-            // Spicy Red Pepper Projectile
-            ctx.fillStyle = '#e84118'; // Bright Red
+            ctx.fillStyle = '#e84118'; 
             ctx.beginPath(); 
             ctx.moveTo(-8, -10); 
-            ctx.quadraticCurveTo(15, -15, 18, 15); // Curved point
-            ctx.quadraticCurveTo(0, 8, -8, 8); // Bottom belly
+            ctx.quadraticCurveTo(15, -15, 18, 15); 
+            ctx.quadraticCurveTo(0, 8, -8, 8); 
             ctx.fill();
-            // Green stem
             ctx.strokeStyle = '#44bd32';
             ctx.lineWidth = 3;
             ctx.lineCap = 'round';
@@ -1084,11 +1109,14 @@ window.onload = function () {
         drawBackground();
         if (activePowerup === 'freeze') { ctx.fillStyle = 'rgba(0, 210, 255, 0.15)'; ctx.fillRect(0, 0, width, height); ctx.strokeStyle = 'rgba(0, 210, 255, 0.3)'; ctx.lineWidth = 15; ctx.strokeRect(0, 0, width, height); }
 
-        particles.forEach(p => { ctx.save(); ctx.translate(p.x, p.y); ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
+        particles.forEach(p => { ctx.save(); ctx.translate(p.x, p.y); ctx.globalAlpha = p.life > 1 ? 1 : p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
+        
+        if (state === 'victory') { ctx.restore(); return; } // Freeze the rest of drawing if we won
+        
         projectiles.forEach(drawProjectile);
         enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
         
-        if (LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') {
+        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive) {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             clouds.forEach(c => { 
                 ctx.beginPath(); 
@@ -1117,7 +1145,7 @@ window.onload = function () {
     }
 
     function loop(timestamp) { 
-        if (state !== 'playing') return; 
+        if (state !== 'playing' && state !== 'victory') return; 
         let dt = Math.min((timestamp - lastTime) / 1000, 0.05); 
         lastTime = timestamp; 
         update(dt); 
@@ -1126,7 +1154,26 @@ window.onload = function () {
     }
     
     function getPos(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
-    function pointerDown(e) { if (state === 'playing') { isAiming = true; dragStart = getPos(e); dragCurrent = { ...dragStart }; } }
+    
+    function pointerDown(e) { 
+        let pos = getPos(e);
+        if (state === 'playing') { 
+            isAiming = true; dragStart = pos; dragCurrent = { ...dragStart }; 
+        } else if (state === 'victory') {
+            // Interactive Confetti Burst!
+            playSound('powerup');
+            let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
+            for (let c = 0; c < 30; c++) {
+                particles.push({
+                    x: pos.x, y: pos.y,
+                    vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.5) * 15 - 5,
+                    color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                    life: 1.5, size: Math.random() * 6 + 4
+                });
+            }
+        }
+    }
+    
     function pointerMove(e) { if (isAiming) { dragCurrent = getPos(e); e.preventDefault(); } }
     function pointerUp() { if (isAiming) { isAiming = false; pointerUpFire(); } }
     
@@ -1179,6 +1226,18 @@ window.onload = function () {
             levelCompleteScreen.classList.add('hidden'); 
             stopMusic();
         } 
+    });
+    
+    // Victory Screen Buttons
+    document.getElementById('winRestartBtn').addEventListener('click', () => { 
+        gameWonScreen.classList.add('hidden'); 
+        startGame(mode); 
+    });
+    document.getElementById('winMenuBtn').addEventListener('click', () => { 
+        state='menu'; 
+        gameWonScreen.classList.add('hidden'); 
+        startScreen.classList.remove('hidden'); 
+        stopMusic(); 
     });
     
     document.getElementById('restartBtn').addEventListener('click', () => startGame(mode));
