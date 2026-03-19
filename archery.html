@@ -295,7 +295,7 @@ window.onload = function () {
         hawk:       { name: 'Speed Hawk',       hp: 6,  radius: 45, color: '#7B3F00', speed: 2.0 },
         pelicanking:{ name: 'Pelican King',     hp: 10, radius: 70, color: '#FFFDE0', speed: 1.4 },
         condor:     { name: 'Thunder Condor',   hp: 12, radius: 60, color: '#2c3e50', speed: 2.2, shield: true },
-        champion:   { name: 'Champion Bird',    hp: 15, radius: 55, color: '#FF6B6B', speed: 2.8 },
+        champion:   { name: 'El Luchador',      hp: 15, radius: 55, color: '#FF6B6B', speed: 2.8 },
     };
 
     let width, height;
@@ -718,8 +718,14 @@ window.onload = function () {
                 
                 ctx.fillStyle = baseColor;
                 if (e.phase === 2) {
-                    ctx.beginPath(); ctx.moveTo(-r*0.7, -r*0.5); ctx.lineTo(-r*0.1, -r*0.1); ctx.lineTo(-r*0.7, -r*0.3); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(r*0.7, -r*0.5); ctx.lineTo(r*0.1, -r*0.1); ctx.lineTo(r*0.7, -r*0.3); ctx.fill();
+                    // Thick, fuzzy angry eyebrows positioned ABOVE the eyes
+                    ctx.strokeStyle = '#3e2723';
+                    ctx.lineWidth = r * 0.2;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(-r*0.65, -r*0.45); ctx.lineTo(-r*0.15, -r*0.25); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(r*0.65, -r*0.45); ctx.lineTo(r*0.15, -r*0.25); ctx.stroke();
+                    
+                    // Red glowing pupils
                     ctx.fillStyle = '#ff4757';
                     ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
@@ -740,8 +746,10 @@ window.onload = function () {
                     ctx.fillStyle = '#5c2a00';
                     let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.5;
                     ctx.save();
-                    ctx.translate(-r*0.2, -r*0.3);
-                    ctx.rotate(flapAngle * d);
+                    // Flip the wing drawing based on the bird's direction (d)
+                    ctx.translate(d * -r*0.2, -r*0.3);
+                    ctx.scale(d, 1);
+                    ctx.rotate(flapAngle);
                     ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-r*0.8, -r*0.8, -r*1.2, -r*0.2); ctx.quadraticCurveTo(-r*0.6, 0, 0, r*0.2); ctx.fill();
                     ctx.restore();
                 }
@@ -771,23 +779,219 @@ window.onload = function () {
                 ctx.beginPath(); ctx.moveTo(d*r*0.85, -r*0.05); ctx.lineTo(d*r*1.2, r*0.05); ctx.lineTo(d*r*0.75, r*0.15); ctx.fill();
                 
             } else if (e.type === 'condor') {
-                if (e.shield) { ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, r*1.2 + Math.sin(Date.now()/100)*5, 0, Math.PI*2); ctx.stroke(); }
-                ctx.fillStyle = e.state === 'bonked' ? '#576574' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r, r*0.7, 0, 0, Math.PI*2); ctx.fill(); 
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(d*r*0.6, -r*0.3, r*0.4, r*0.3, 0, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#ff9ff3'; ctx.beginPath(); ctx.arc(d*r*0.9, -r*0.5, r*0.25, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.moveTo(d*r*1.1, -r*0.6); ctx.lineTo(d*r*1.5, -r*0.3); ctx.lineTo(d*r*1.0, -r*0.4); ctx.fill();
+                let baseColor = e.state === 'bonked' ? '#576574' : e.color; 
+
+                // Flapping cardboard/foil pauldron wings
+                if (e.state === 'flying') {
+                    ctx.fillStyle = '#1e272e';
+                    let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.4;
+                    ctx.save();
+                    ctx.translate(d * -r*0.2, -r*0.1);
+                    ctx.scale(d, 1);
+                    ctx.rotate(flapAngle);
+                    ctx.beginPath(); ctx.ellipse(-r*0.4, 0, r*0.6, r*0.3, Math.PI/6, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                }
+
+                // Plump body
+                ctx.fillStyle = baseColor;
+                ctx.beginPath(); ctx.ellipse(0, r*0.2, r*0.8, r*0.8, 0, 0, Math.PI*2); ctx.fill();
+                // Lighter belly
+                ctx.fillStyle = '#808e9b';
+                ctx.beginPath(); ctx.ellipse(d*r*0.2, r*0.3, r*0.6, r*0.5, 0, 0, Math.PI*2); ctx.fill();
+
+                // Tin Pot Helmet
+                ctx.fillStyle = '#d2dae2'; // Light silver
+                ctx.beginPath(); ctx.rect(-r*0.4, -r*0.8, r*0.8, r*0.5); ctx.fill(); // Pot body
+                ctx.beginPath(); ctx.ellipse(0, -r*0.3, r*0.45, r*0.08, 0, 0, Math.PI*2); ctx.fill(); // Pot rim
+                // Pot handle sticking out the back
+                ctx.strokeStyle = '#808e9b'; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.arc(-r*0.4, -r*0.55, r*0.2, Math.PI/2, Math.PI*1.5); ctx.stroke();
+
+                // Eyes & Expression Logic
+                if (e.phase === 2) {
+                    // Panicked! The pot slipped down and the eyes are frantic
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.1, r*0.18, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.1, r*0.18, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#ff4757'; // Red panicked pupils
+                    ctx.beginPath(); ctx.arc(d*r*0.2 + d*3, -r*0.1, r*0.06, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55 + d*3, -r*0.1, r*0.06, 0, Math.PI*2); ctx.fill();
+                } else if (!e.shield) {
+                    // Shield broken: Wide, nervous eyes
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#111'; // Tiny terrified pupils
+                    ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.05, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.05, 0, Math.PI*2); ctx.fill();
+                } else {
+                    // Shield active: Confident, angry knight
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.2, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(d*r*0.2 + d*4, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.55 + d*4, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
+                    // Angry unibrow touching the helmet rim
+                    ctx.strokeStyle = '#1e272e'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.35); ctx.lineTo(d*r*0.35, -r*0.25); ctx.lineTo(d*r*0.7, -r*0.35); ctx.stroke();
+                }
+
+                // Sharp orange beak
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath(); ctx.moveTo(d*r*0.7, -r*0.05); ctx.lineTo(d*r*1.1, r*0.1); ctx.lineTo(d*r*0.5, r*0.2); ctx.fill();
+
+                // Garbage Can Lid Shield
+                if (e.shield) {
+                    let shieldX = d * r * 0.85;
+                    let shieldY = r * 0.2;
+                    
+                    // Lid base
+                    ctx.fillStyle = '#a4b0be';
+                    ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.25, r*0.7, 0, 0, Math.PI*2); ctx.fill();
+                    // Ridges for the trash can lid look
+                    ctx.strokeStyle = '#747d8c'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.15, r*0.5, 0, 0, Math.PI*2); ctx.stroke();
+                    ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.08, r*0.25, 0, 0, Math.PI*2); ctx.stroke();
+                    // Center Handle
+                    ctx.fillStyle = '#57606f';
+                    ctx.beginPath(); ctx.ellipse(shieldX + d*r*0.1, shieldY, r*0.06, r*0.15, 0, 0, Math.PI*2); ctx.fill();
+                    
+                    // Glowing electric aura to show it's a magic/recharging shield
+                    ctx.strokeStyle = 'rgba(0, 210, 255, 0.4)'; ctx.lineWidth = 6;
+                    ctx.beginPath(); ctx.ellipse(shieldX, shieldY, r*0.35, r*0.8, 0, 0, Math.PI*2); ctx.stroke();
+                }
+
             } else if (e.type === 'champion') {
-                ctx.shadowColor = '#F1C40F'; ctx.shadowBlur = 20; ctx.fillStyle = e.state === 'bonked' ? '#ff9f43' : e.color; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-                ctx.fillStyle = '#F1C40F'; ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.8); ctx.lineTo(-r*0.5, -r*1.4); ctx.lineTo(-r*0.1, -r*1.1); ctx.lineTo(0, -r*1.6); ctx.lineTo(r*0.1, -r*1.1); ctx.lineTo(r*0.5, -r*1.4); ctx.lineTo(r*0.4, -r*0.8); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(255,107,107,0.7)'; let wY = -Math.sin(e.flapPhase)*r*1.2; ctx.beginPath(); ctx.ellipse(0, wY, r*0.8, r*0.3, 0, 0, Math.PI*2); ctx.fill(); }
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(d*r*0.5, -r*0.2, r*0.1, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(d*r*0.8, 0); ctx.lineTo(d*r*1.3, 0); ctx.lineTo(d*r*0.8, r*0.3); ctx.fill();
+                let baseColor = e.state === 'bonked' ? '#ff9f43' : '#e84118'; // Bright red body
+
+                // Flapping muscular/stubby wings
+                if (e.state === 'flying') {
+                    ctx.fillStyle = baseColor;
+                    let flapAngle = Math.sin(e.flapPhase * 3) * 0.6; // Fast flapping
+                    ctx.save();
+                    ctx.translate(d * -r*0.1, -r*0.1);
+                    ctx.scale(d, 1);
+                    ctx.rotate(flapAngle);
+                    ctx.beginPath(); ctx.ellipse(-r*0.5, 0, r*0.5, r*0.3, Math.PI/4, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                }
+
+                // Extremely plump body
+                ctx.fillStyle = baseColor;
+                ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
+
+                // Lucha Libre Mask (Bright blue with gold trim)
+                ctx.fillStyle = '#0984e3'; // Blue mask
+                ctx.beginPath(); ctx.arc(0, -r*0.2, r*0.8, Math.PI, Math.PI*2); 
+                ctx.lineTo(r*0.8, r*0.1); ctx.quadraticCurveTo(0, r*0.4, -r*0.8, r*0.1); ctx.fill();
+                
+                // Mask eye holes (gold trim)
+                ctx.fillStyle = '#f1c40f';
+                ctx.beginPath(); ctx.ellipse(d*r*0.3, -r*0.3, r*0.35, r*0.25, 0, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(d*r*0.7, -r*0.3, r*0.35, r*0.25, 0, 0, Math.PI*2); ctx.fill();
+
+                // Inside eye holes (black)
+                ctx.fillStyle = '#111';
+                ctx.beginPath(); ctx.ellipse(d*r*0.3, -r*0.3, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(d*r*0.7, -r*0.3, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
+
+                // Championship Belt
+                ctx.fillStyle = '#2d3436'; // Black leather
+                ctx.fillRect(-r*0.9, r*0.3, r*1.8, r*0.3);
+                ctx.fillStyle = '#f1c40f'; // Gold buckle
+                ctx.beginPath(); ctx.arc(0, r*0.45, r*0.3, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#fff'; // Diamond in buckle
+                ctx.beginPath(); ctx.moveTo(0, r*0.25); ctx.lineTo(r*0.15, r*0.45); ctx.lineTo(0, r*0.65); ctx.lineTo(-r*0.15, r*0.45); ctx.fill();
+
+                // Eyes / Expression
+                if (e.phase === 2) {
+                    // Enraged: Bugged out eyes popping out of the mask holes
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.3, r*0.2, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.7, -r*0.3, r*0.2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#ff4757'; // Panicked red pupils
+                    ctx.beginPath(); ctx.arc(d*r*0.3 + d*r*0.05, -r*0.3, r*0.08, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.7 + d*r*0.05, -r*0.3, r*0.08, 0, Math.PI*2); ctx.fill();
+                    
+                    // Sweat drops flying off
+                    ctx.fillStyle = '#74b9ff';
+                    ctx.beginPath(); ctx.arc(-r*0.6, -r*0.6, r*0.1, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.6, -r*0.8, r*0.1, 0, Math.PI*2); ctx.fill();
+                } else {
+                    // Phase 1: Confident, intense stare
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.3, r*0.12, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.7, -r*0.3, r*0.12, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#fff'; // Glint
+                    ctx.beginPath(); ctx.arc(d*r*0.32, -r*0.32, r*0.04, 0, Math.PI*2); ctx.fill();
+                }
+
+                // Tiny angry beak
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath(); ctx.moveTo(d*r*0.8, -r*0.1); ctx.lineTo(d*r*1.1, 0); ctx.lineTo(d*r*0.7, r*0.1); ctx.fill();
+                
             } else if (e.type === 'pelicanking') {
-                ctx.fillStyle = e.state === 'bonked' ? '#ffe0e0' : '#fffacd'; ctx.beginPath(); ctx.ellipse(0, 2, r * 1.08, r, 0, 0, Math.PI * 2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(140,140,140,0.28)'; ctx.beginPath(); ctx.ellipse(0, -Math.sin(e.flapPhase)*4, r * 0.92, r * 0.28, 0, 0, Math.PI * 2); ctx.fill(); }
-                let hx = d * r * 0.82, hy = -r * 0.42; ctx.beginPath(); ctx.arc(hx, hy, r * 0.48, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.moveTo(hx+d*r*0.4, hy+1); ctx.quadraticCurveTo(hx+d*55, hy-4, hx+d*55, hy+8); ctx.quadraticCurveTo(hx+d*30, hy+30, hx+d*r*0.3, hy+10); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*3, hy-2, 3.5, 0, Math.PI*2); ctx.fill();
+                let baseColor = e.state === 'bonked' ? '#ffe0e0' : '#fffacd';
+                
+                // Pompous Cape (Flapping)
+                if (e.state === 'flying') {
+                    ctx.fillStyle = '#e74c3c';
+                    let flapAngle = Math.sin(e.flapPhase * 2) * 0.4;
+                    ctx.save();
+                    ctx.translate(d * -r*0.2, -r*0.2);
+                    ctx.scale(d, 1);
+                    ctx.rotate(flapAngle);
+                    // Cape swoosh
+                    ctx.beginPath(); ctx.ellipse(-r*0.5, r*0.2, r*0.7, r*0.4, -Math.PI/6, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#fff'; // Ermine trim
+                    ctx.beginPath(); ctx.ellipse(-r*1.1, r*0.3, r*0.2, r*0.4, -Math.PI/6, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                }
+
+                // Plump Royal Body
+                ctx.fillStyle = baseColor;
+                ctx.beginPath(); ctx.ellipse(0, r*0.1, r*0.9, r*0.8, 0, 0, Math.PI*2); ctx.fill();
+
+                // Fluffy Ermine Collar with black spots
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.ellipse(0, -r*0.3, r*0.9, r*0.3, 0, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#111';
+                ctx.beginPath(); ctx.arc(-r*0.4, -r*0.3, 2, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.4, -r*0.2, 2, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, -r*0.4, 2, 0, Math.PI*2); ctx.fill();
+
+                // Massive Snooty Beak
+                ctx.fillStyle = '#ffd700'; 
+                ctx.beginPath(); ctx.moveTo(d*r*0.3, -r*0.1); ctx.quadraticCurveTo(d*r*1.6, -r*0.2, d*r*1.4, r*0.2); ctx.quadraticCurveTo(d*r*0.8, r*1.2, d*r*0.1, r*0.5); ctx.fill();
+
+                // Head & Crown Logic
+                if (e.phase === 2) {
+                    // Head
+                    ctx.fillStyle = baseColor;
+                    ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.4, r*0.5, 0, Math.PI*2); ctx.fill();
+                    
+                    // Crown slipped entirely over the eyes in a panic!
+                    ctx.fillStyle = '#f1c40f'; 
+                    ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.1); ctx.lineTo(d*r*0.8, -r*0.1); ctx.lineTo(d*r*0.9, -r*0.8); ctx.lineTo(d*r*0.6, -r*0.5); ctx.lineTo(d*r*0.4, -r*0.9); ctx.lineTo(d*r*0.2, -r*0.5); ctx.lineTo(d*r*-0.1, -r*0.8); ctx.fill();
+                } else {
+                    // Head
+                    ctx.fillStyle = baseColor;
+                    ctx.beginPath(); ctx.arc(d*r*0.3, -r*0.4, r*0.5, 0, Math.PI*2); ctx.fill();
+                    
+                    // Snooty half-closed eye
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.45, -r*0.5, r*0.15, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = baseColor; // Heavy eyelid
+                    ctx.beginPath(); ctx.rect(d*r*0.25, -r*0.7, r*0.4, r*0.2); ctx.fill();
+                    ctx.fillStyle = '#111'; // Pupil looking down its beak
+                    ctx.beginPath(); ctx.arc(d*r*0.5, -r*0.45, r*0.04, 0, Math.PI*2); ctx.fill();
+                    
+                    // Crown sitting proudly on top of his head
+                    ctx.fillStyle = '#f1c40f'; 
+                    ctx.beginPath(); ctx.moveTo(d*r*0.0, -r*0.8); ctx.lineTo(d*r*0.6, -r*0.8); ctx.lineTo(d*r*0.8, -r*1.4); ctx.lineTo(d*r*0.5, -r*1.1); ctx.lineTo(d*r*0.3, -r*1.5); ctx.lineTo(d*r*0.1, -r*1.1); ctx.lineTo(d*r*-0.2, -r*1.4); ctx.fill();
+                }
             }
         } else {
             if (e.type === 'robin') {
@@ -837,7 +1041,6 @@ window.onload = function () {
         if (p.type === 'owl') {
             ctx.fillStyle = '#8B7355'; ctx.beginPath(); ctx.ellipse(0, 0, 8, 22, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, 20); ctx.stroke();
         } else if (p.type === 'hawk') {
-            // Spinning Superhero Boomerang
             ctx.fillStyle = '#3498db'; 
             ctx.beginPath(); 
             ctx.moveTo(-15, -10); 
@@ -846,7 +1049,6 @@ window.onload = function () {
             ctx.quadraticCurveTo(0, 8, -12, -2); 
             ctx.closePath(); 
             ctx.fill();
-            // Yellow Star Center
             ctx.fillStyle = '#f1c40f';
             ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI*2); ctx.fill();
         } else if (p.type === 'pelicanking') {
@@ -854,7 +1056,18 @@ window.onload = function () {
         } else if (p.type === 'condor') {
             ctx.fillStyle = '#f9ca24'; ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-10, -5); ctx.lineTo(2, 5); ctx.lineTo(-2, 10); ctx.lineTo(10, -5); ctx.stroke();
         } else if (p.type === 'champion') {
-            ctx.fillStyle = '#e84118'; ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fbc531'; ctx.beginPath(); ctx.arc(0, 2, 12, 0, Math.PI * 2); ctx.fill();
+            // Spicy Red Pepper Projectile
+            ctx.fillStyle = '#e84118'; // Bright Red
+            ctx.beginPath(); 
+            ctx.moveTo(-8, -10); 
+            ctx.quadraticCurveTo(15, -15, 18, 15); // Curved point
+            ctx.quadraticCurveTo(0, 8, -8, 8); // Bottom belly
+            ctx.fill();
+            // Green stem
+            ctx.strokeStyle = '#44bd32';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(-8, -2); ctx.quadraticCurveTo(-15, -10, -10, -15); ctx.stroke();
         }
         ctx.restore();
     }
