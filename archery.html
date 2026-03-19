@@ -102,9 +102,9 @@
         <div class="hud-panel text-center hidden flex flex-col justify-center" id="storyPanel">
             <div class="text-xl text-gray-800 mt-1 ui-text-dark" id="waveDisplay">Wave 1/3</div>
         </div>
-        <div class="hud-panel text-center hidden" id="timerPanel">
+        <div class="hud-panel text-center hidden relative" id="timerPanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Time Left</div>
-            <div class="text-xl font-black text-blue-500" id="timerDisplay">30.0</div>
+            <div class="text-xl font-black text-blue-500 transition-all duration-300 ease-out inline-block" id="timerDisplay">30.0</div>
         </div>
         <div class="hud-panel text-center hidden" id="livesPanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Lives</div>
@@ -122,7 +122,7 @@
     </div>
     
     <button id="zenBackBtn" class="hidden absolute bottom-4 right-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto shadow-md" style="background:#fff;color:#111;">&#8592; Done</button>
-    <button id="challengeEndBtn" class="hidden absolute bottom-4 right-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto shadow-md" style="background:#ff4757;color:#fff;">END RUN &#9209;</button>
+    <button id="challengeEndBtn" class="hidden absolute bottom-4 left-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto shadow-md" style="background:#ff4757;color:#fff;">END RUN &#9209;</button>
 </div>
 
 <div id="bossBar" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40 text-center" style="width:min(320px,80vw)">
@@ -158,8 +158,8 @@
             <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
         </button>
         <button id="modeChallengeBtn" class="mode-card">
-            <span class="text-3xl ui-text-dark">🎯 CHALLENGE</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">clear targets · dodge obstacles · test your aim</div>
+            <span class="text-3xl ui-text-dark">⏱️ CHALLENGE</span>
+            <div class="text-sm text-gray-600 mt-1 font-semibold">clear targets · dodge obstacles · strict timer</div>
         </button>
         <button id="modeZenBtn" class="mode-card">
             <span class="text-3xl ui-text-dark">🧘 ZEN</span>
@@ -286,11 +286,13 @@ window.onload = function () {
     const bossNameEl = document.getElementById('bossName');
     
     // Challenge Mode Variables
+    let challengeTime = 30.0;
     let challengeLevel = 1;
     let challengeTotalTargetsHit = 0;
     let targetsToHit = 3;
     let targetsHit = 0;
-    const timerPanel = document.getElementById('timerPanel'); // Timer is purely hidden now
+    const timerPanel = document.getElementById('timerPanel');
+    const timerDisp = document.getElementById('timerDisplay');
 
     const startScreen = document.getElementById('startScreen');
     const modeSelectScreen = document.getElementById('modeSelectScreen');
@@ -431,37 +433,78 @@ window.onload = function () {
         if (arrowsFired > 0) { accuracyDisp.textContent = Math.round((arrowsHit / arrowsFired) * 100) + '%'; }
     }
 
+    // --- NEW CHALLENGE MODE LOGIC ---
+    function getChallengeConfig(level) {
+        let numTargets = 3; let numObstacles = 0; let speedMod = 0; let wavy = false;
+
+        if (level === 1) { numTargets = 3; speedMod = 0; }
+        else if (level === 2) { numTargets = 5; speedMod = 0; }
+        else if (level === 3) { numTargets = 5; speedMod = 1.0; }
+        else if (level === 4) { numTargets = 6; speedMod = 1.5; numObstacles = 1; }
+        else if (level === 5) { numTargets = 6; speedMod = 2.0; numObstacles = 2; }
+        else { 
+            numTargets = Math.min(8, 6 + Math.floor((level - 5) / 2)); 
+            speedMod = 2.0 + (level - 5) * 0.2; 
+            numObstacles = Math.min(4, 2 + Math.floor((level - 4) / 2));
+            wavy = level > 6;
+        }
+
+        let isMoving = speedMod > 0;
+        let targetTime = isMoving ? 3.5 : 2.5;
+        let obstacleTime = 1.5;
+        let baseTime = 3.0; // Small buffer just to aim the first shot
+
+        let calculatedTime = baseTime + (numTargets * targetTime) + (numObstacles * obstacleTime);
+
+        return { numTargets, numObstacles, speedMod, wavy, calculatedTime };
+    }
+
     function spawnChallengeWave() {
         enemies = [];
         targetsHit = 0;
         
-        let numTargets = 3; let numObstacles = 0; let speedMod = 0; let wavy = false;
-
-        if (challengeLevel === 1) { numTargets = 3; speedMod = 0; }
-        else if (challengeLevel === 2) { numTargets = 5; speedMod = 0; }
-        else if (challengeLevel === 3) { numTargets = 5; speedMod = 1.0; }
-        else if (challengeLevel === 4) { numTargets = 6; speedMod = 1.5; numObstacles = 1; }
-        else if (challengeLevel === 5) { numTargets = 6; speedMod = 2.0; numObstacles = 2; }
-        else { 
-            numTargets = Math.min(8, 6 + Math.floor((challengeLevel - 5) / 2)); 
-            speedMod = 2.0 + (challengeLevel - 5) * 0.2; 
-            numObstacles = Math.min(4, 2 + Math.floor((challengeLevel - 4) / 2));
-            wavy = challengeLevel > 6;
-        }
-
-        targetsToHit = numTargets;
+        let config = getChallengeConfig(challengeLevel);
+        targetsToHit = config.numTargets;
         scoreDisp.textContent = targetsToHit;
-
-        for(let i=0; i<numTargets; i++) {
-            let r = 25; let x = r + Math.random() * (width - r * 2); let y = 80 + Math.random() * (height * 0.4);
-            let vx = speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * speedMod) : 0;
-            enemies.push({ x, y, baseY: y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, hasArmor: false, wavy: false, bounces: true });
+        
+        let spawnedPositions = [];
+        
+        // Helper to find spaced-out locations
+        function getSpawnPos(r) {
+            let x, y;
+            for(let i=0; i<50; i++) {
+                x = r + Math.random() * (width - r * 2);
+                y = 80 + Math.random() * (height * 0.4);
+                let collision = false;
+                for(let p of spawnedPositions) {
+                    if(Math.hypot(x - p.x, y - p.y) < r + p.r + 20) { collision = true; break; } 
+                }
+                if(!collision) break;
+            }
+            spawnedPositions.push({x, y, r});
+            return {x, y};
         }
 
-        for(let i=0; i<numObstacles; i++) {
-            let r = 26; let x = r + Math.random() * (width - r * 2); let y = 100 + Math.random() * (height * 0.35);
-            let vx = speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * speedMod) : 0;
-            enemies.push({ x, y, baseY: y, radius: r, hp: 1, maxHp: 1, vx, type: 'obstacle', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, hasArmor: true, wavy: wavy, bounces: true });
+        // Spawn Targets
+        for(let i=0; i<config.numTargets; i++) {
+            let r = 25; 
+            let pos = getSpawnPos(r);
+            let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
+            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, hasArmor: false, wavy: false, bounces: true, isObstacle: false });
+        }
+
+        // Spawn Character Obstacles
+        let obstacleTypes = ['robin', 'pelican', 'hummingbird', 'thor', 'football'];
+        let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
+        
+        for(let i=0; i<config.numObstacles; i++) {
+            let oType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+            let r = oType === 'thor' ? 26 : (oType === 'hummingbird' ? 12 : oType === 'pelican' ? 32 : oType === 'football' ? 22 : 22);
+            let pos = getSpawnPos(r);
+            let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
+            let color = oType === 'hummingbird' ? '#2ed573' : (oType === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
+            
+            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: oType, color: color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor: false, wavy: config.wavy, bounces: true, isObstacle: true });
         }
     }
 
@@ -488,7 +531,7 @@ window.onload = function () {
         let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
         let color = type === 'hummingbird' ? '#2ed573' : (type === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
 
-        enemies.push({ x: startX, y: startY, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy, bounces: false });
+        enemies.push({ x: startX, y: startY, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy, bounces: false, isObstacle: false });
     }
 
     function spawnBoss() {
@@ -528,6 +571,15 @@ window.onload = function () {
 
                 arrow.hitTargets.add(en);
 
+                // Challenge mode Character obstacles act as bouncy walls
+                if (mode === 'challenge' && en.isObstacle) {
+                    playSound('clink'); 
+                    arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; arrow.deflected = true; 
+                    spawnParticles(en.x, en.y, '#bdc3c7', 10); 
+                    spawnText(en.x, en.y - 30, 'BLOCKED!', '#bdc3c7'); 
+                    break;
+                }
+
                 if (en.hasArmor) {
                     if (arrow.isPlunger) { 
                         en.hasArmor = false; playSound('clink'); spawnParticles(en.x, en.y, '#bdc3c7', 15); 
@@ -536,13 +588,8 @@ window.onload = function () {
                         playSound('clink'); 
                         arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; arrow.deflected = true; 
                         spawnParticles(en.x, en.y, '#bdc3c7', 10); 
-                        
-                        if (en.type === 'obstacle') {
-                            spawnText(en.x, en.y - 30, 'BLOCKED!', '#bdc3c7'); 
-                        } else {
-                            en.hasArmor = false; 
-                            spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); 
-                        }
+                        en.hasArmor = false; 
+                        spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); 
                         break; 
                     }
                 } else if (en.shield) { 
@@ -578,14 +625,14 @@ window.onload = function () {
                             if (mult > 1) { comboDisp.textContent = `NICE!`; comboDisp.classList.remove('hidden'); }
                         }
                         
-                        if (en.type === 'football') {
+                        if (en.type === 'football' && mode !== 'challenge') {
                             playSound('powerup');
                             let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
                             for (let c = 0; c < 40; c++) spawnParticles(en.x, en.y, confettiColors[Math.floor(Math.random() * confettiColors.length)], 1);
                             spawnText(en.x, en.y - 40, 'TOUCHDOWN!', '#f1c40f');
                         }
 
-                        if (en.type === 'thor') {
+                        if (en.type === 'thor' && mode !== 'challenge') {
                             playSound('powerup'); spawnText(en.x, en.y - 20, 'FLUFFY SURPRISE!', '#fff');
                             let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#ffffff'];
                             for (let c = 0; c < 40; c++) { spawnParticles(en.x, en.y, confettiColors[Math.floor(Math.random() * confettiColors.length)], 2); }
@@ -607,7 +654,7 @@ window.onload = function () {
                             }, 1200);
                         }
                     }
-                    break; // Critical fix: arrow is completely dead after one hit
+                    break;
                 }
             }
         }
@@ -615,9 +662,25 @@ window.onload = function () {
 
     function prepareNextChallengeLevel() {
         challengeLevel++;
-        let numTargets = challengeLevel === 1 ? 3 : (challengeLevel === 2 || challengeLevel === 3) ? 5 : Math.min(8, 6 + Math.floor((challengeLevel - 4) / 2));
-        waveTransTimer = 2.0; waveTransText.textContent = `LEVEL ${challengeLevel}`; waveSubText.textContent = `HIT ${numTargets} TARGETS!`;
-        waveTransition.classList.remove('hidden'); playSound('levelup');
+        let config = getChallengeConfig(challengeLevel);
+        
+        // STRICT RESET TIMER 
+        challengeTime = config.calculatedTime;
+        timerDisp.textContent = challengeTime.toFixed(1);
+        
+        // Visual pop for the new fresh clock
+        timerDisp.style.color = '#2ed573';
+        timerDisp.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            timerDisp.style.color = '';
+            timerDisp.style.transform = 'scale(1)';
+        }, 800);
+
+        waveTransTimer = 2.0; 
+        waveTransText.textContent = `LEVEL ${challengeLevel}`; 
+        waveSubText.textContent = `HIT ${config.numTargets} TARGETS!`;
+        waveTransition.classList.remove('hidden'); 
+        playSound('levelup');
     }
 
     function update(dt) {
@@ -634,6 +697,7 @@ window.onload = function () {
         if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
         
+        // PAUSE GAMEPLAY DURING WAVE TRANSITION
         if (waveTransTimer > 0) { 
             waveTransTimer -= dt; 
             if (waveTransTimer <= 0) { 
@@ -641,10 +705,16 @@ window.onload = function () {
                 if (mode === 'story' && currentWave >= 3) spawnBoss(); 
                 if (mode === 'challenge') spawnChallengeWave();
             } 
-            return; 
+            return; // Time does not tick down while this is active
         }
 
         if (mode === 'challenge') {
+            challengeTime -= dt;
+            timerDisp.textContent = Math.max(0, challengeTime).toFixed(1);
+            if (challengeTime <= 0) {
+                endGame();
+                return;
+            }
             if (targetsHit >= targetsToHit) { arrows = []; prepareNextChallengeLevel(); return; }
         }
 
@@ -754,7 +824,7 @@ window.onload = function () {
         
         startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden'); gameWonScreen.classList.add('hidden');
         
-        timerPanel.classList.add('hidden'); // Fully hidden
+        timerPanel.classList.toggle('hidden', mode !== 'challenge'); 
         storyPanel.classList.toggle('hidden', mode === 'challenge' || mode === 'zen'); 
         livesPanel.classList.toggle('hidden', mode === 'zen' || mode === 'challenge');
         zenPanel.classList.toggle('hidden', mode !== 'zen');
@@ -771,9 +841,18 @@ window.onload = function () {
             waveTransTimer = 3; waveTransText.textContent = "LEVEL " + (currentLevel + 1); waveSubText.textContent = ""; waveTransition.classList.remove('hidden'); 
         } else if (mode === 'challenge') {
             scoreLabel.textContent = 'TARGETS LEFT';
-            challengeLevel = 1; challengeTotalTargetsHit = 0; targetsHit = 0; targetsToHit = 3;
+            challengeLevel = 1; challengeTotalTargetsHit = 0; targetsHit = 0; 
+            
+            let config = getChallengeConfig(1);
+            targetsToHit = config.numTargets;
+            challengeTime = config.calculatedTime; // Init strict timer
+            
             scoreDisp.textContent = targetsToHit;
-            waveTransTimer = 2.0; waveTransText.textContent = "CHALLENGE 1"; waveSubText.textContent = "HIT 3 TARGETS!"; waveTransition.classList.remove('hidden');
+            timerDisp.textContent = challengeTime.toFixed(1);
+            timerDisp.style.color = '';
+            timerDisp.style.transform = 'scale(1)';
+            
+            waveTransTimer = 2.0; waveTransText.textContent = "CHALLENGE 1"; waveSubText.textContent = `HIT ${config.numTargets} TARGETS!`; waveTransition.classList.remove('hidden');
         } else {
             scoreLabel.textContent = 'SCORE'; scoreDisp.textContent = score;
         }
@@ -1039,11 +1118,6 @@ window.onload = function () {
                     ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(-r*0.12, r*0.2, r*0.12, 0, Math.PI); ctx.stroke(); ctx.beginPath(); ctx.arc(r*0.12, r*0.2, r*0.12, 0, Math.PI); ctx.stroke();
                 }
                 ctx.fillStyle = '#ff9ff3'; ctx.beginPath(); ctx.arc(0, r*0.12, r*0.08, 0, Math.PI*2); ctx.fill();
-            } else if (e.type === 'obstacle') {
-                ctx.fillStyle = '#7f8c8d'; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
-                ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke();
-                ctx.fillStyle = '#bdc3c7'; ctx.beginPath(); ctx.arc(-r*0.3, -r*0.3, r*0.2, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(-r*0.5, -r*0.5); ctx.lineTo(r*0.5, r*0.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(r*0.5, -r*0.5); ctx.lineTo(-r*0.5, r*0.5); ctx.stroke();
             }
         }
         if (e.damageFlash > 0) { ctx.globalAlpha = e.damageFlash * 0.5; ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.arc(0, 0, r * 1.1, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; }
