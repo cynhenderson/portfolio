@@ -2,745 +2,862 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ally's Archery</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cynthia Henderson | Learning Experience Designer</title>
+<title>Cynthia Henderson | LXD + Creative Technologist</title>
+<meta name="description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cynhenderson.com/">
+<meta property="og:title" content="Cynthia Henderson | LXD + Creative Technologist">
+<meta property="og:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+<meta property="og:image" content="https://cynhenderson.com/photos/cat-pixel.png">
+
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://cynhenderson.com/">
+<meta property="twitter:title" content="Cynthia Henderson | LXD + Creative Technologist">
+<meta property="twitter:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+<meta property="twitter:image" content="https://cynhenderson.com/photos/cat-pixel.png">
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+        /* Color Palette */
+        :root {
+            --bg-cream: #FDFBF7;
+            --text-burgundy: #4A0E17;
+            --accent-terracotta: #C25934;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-cream);
+            color: var(--text-burgundy);
+            font-family: 'Lora', serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .logo {
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: sticky;
+            top: 0;
+            background-color: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+        }
+
+        .logo { font-size: 1.5rem; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-burgundy); font-size: 1.1rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent-terracotta); }
+
+        /* --- Transition Dividers --- */
+        .medallion-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .medallion-divider.cream-to-white {
+            background: linear-gradient(to bottom, var(--bg-cream) 50%, #ffffff 50%);
+        }
+
+        .medallion-divider.white-to-cream {
+            background: linear-gradient(to bottom, #ffffff 50%, var(--bg-cream) 50%);
+        }
+
+        .medallion-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: rgba(74, 14, 23, 0.15); 
+            max-width: 45%;
+        }
+
+        .medallion-icon {
+            width: 45px;
+            height: 45px;
+            margin: 0 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(74, 14, 23, 0.08));
+        }
+
+        /* Works Section */
+        #works {
+            height: auto;
+            min-height: 100vh;
+            padding: 4rem 5% 6rem 5%; 
+            background-color: #ffffff; 
+            position: relative;
+            z-index: 10;
+        }
+
+        /* About Section */
+        #about {
+            padding: 4rem 5% 6rem 5%; 
+            background-color: var(--bg-cream); 
+            color: var(--text-burgundy);
+            position: relative;
+            z-index: 10;
+        }
+
+        .about-container { max-width: 1000px; margin: 0 auto; }
+
+        #works h2, #about h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 3rem; 
+            text-align: center; 
+            color: var(--text-burgundy); 
+        }
+
+        .about-block { margin-bottom: 4rem; }
+        .about-block h3 {
+            font-size: 1.8rem;
+            color: var(--accent-terracotta);
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid rgba(194, 89, 52, 0.15);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .about-text { font-size: 1.2rem; line-height: 1.7; opacity: 0.9; }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 85vh;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 4rem;
+            position: relative;
+        }
+
+        .hero-content { flex: 1.2; max-width: 650px; z-index: 10; }
+        .hero-content h1 { font-size: 3.8rem; line-height: 1.15; margin-bottom: 1.5rem; }
+        .hero-content p { font-size: 1.5rem; color: var(--text-burgundy); opacity: 0.9; max-width: 90%; }
+        .highlight { color: var(--accent-terracotta); }
+
+        .hero-graphic {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-graphic svg { width: 100%; height: auto; max-width: 500px; }
+
+        /* Floating Animations */
+        .g-floating { will-change: transform; }
+        .float-1 { animation: gentleBounce 6s ease-in-out infinite; }
+        .float-2 { animation: gentleBounce 8s ease-in-out infinite 1s; } 
+        .float-3 { animation: gentleBounce 7s ease-in-out infinite 2s; } 
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Works Grid & Cards */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .work-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
             overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            touch-action: none;
-            background-color: #87CEEB;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
-        #gameCanvas { display: block; width: 100%; height: 100%; }
-        .ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; display: flex; flex-direction: column;
-            justify-content: space-between; padding: 0.75rem; box-sizing: border-box;
+
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(74, 14, 23, 0.08);
         }
-        .hud-panel {
-            background: rgba(255,255,255,0.95); border-radius: 1rem;
-            padding: 0.4rem 0.9rem; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            border: 3px solid #222; pointer-events: auto;
+
+        /* Mockup Container */
+        .work-image-container {
+            width: 100%;
+            height: 250px; 
+            background-color: rgba(194, 89, 52, 0.04);
+            padding: 2rem 2rem 0 2rem;
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.05);
         }
-        .hud-panel.zen { border-color: #555; }
-        .screen-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; pointer-events: auto; z-index: 50;
+
+        .browser-mockup {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid rgba(74, 14, 23, 0.12);
+            border-bottom: none;
+            box-shadow: 0 12px 24px rgba(74, 14, 23, 0.08);
+            transition: transform 0.4s ease;
         }
-        .btn {
-            background: linear-gradient(135deg, #F1C40F, #F39C12); border: 4px solid #111;
-            border-radius: 999px; padding: 0.9rem 2.2rem; font-weight: 900; color: #111;
-            font-size: 1.4rem; box-shadow: 0 8px 0px #111; cursor: pointer;
-            transition: all 0.1s; text-transform: uppercase;
+
+        .work-card:hover .browser-mockup { transform: translateY(-8px); }
+
+        .mockup-header {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background-color: var(--bg-cream);
+            border-bottom: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 8px 8px 0 0;
         }
-        .btn:active { transform: translateY(6px); box-shadow: 0 2px 0px #111; }
-        .mode-card {
-            background: white; border-radius: 1.2rem; padding: 1rem 1.5rem;
-            border: 4px solid #222; cursor: pointer; text-align: left;
-            box-shadow: 0 6px 0px #222; transition: all 0.1s;
-            pointer-events: auto; width: 100%;
+
+        .mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
+        .dot-1 { background-color: var(--text-burgundy); opacity: 0.15; }
+        .dot-2 { background-color: var(--text-burgundy); opacity: 0.3; }
+        .dot-3 { background-color: var(--accent-terracotta); opacity: 0.8; }
+
+        .mockup-content { width: 100%; height: 180px; overflow: hidden; }
+        .mockup-content img, .mockup-content svg { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+        .work-content { padding: 2rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .work-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+        .tag {
+            font-family: 'Domine', serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-terracotta);
+            background: rgba(194, 89, 52, 0.08);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
         }
-        .mode-card:active { transform: translateY(4px); box-shadow: 0 2px 0px #222; }
-        .hidden { display: none !important; }
-        .shake { animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both; }
-        .life-lost-flash { animation: flashRed 0.5s ease-out; }
-        @keyframes shake {
-            10%,90% { transform: translate3d(-2px,2px,0); }
-            20%,80% { transform: translate3d(4px,-2px,0); }
-            30%,50%,70% { transform: translate3d(-5px,3px,0); }
-            40%,60% { transform: translate3d(5px,-3px,0); }
+        .work-title { font-size: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+        .work-desc { font-size: 1.05rem; opacity: 0.85; margin-bottom: 2rem; flex-grow: 1; }
+
+        .work-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            align-self: flex-start;
         }
-        @keyframes flashRed {
-            0% { background-color: rgba(255,0,0,0.4); }
-            100% { background-color: transparent; }
+        .work-link:hover { color: var(--accent-terracotta); }
+        .work-link svg { transition: transform 0.3s ease; }
+        .work-link:hover svg { transform: translateX(4px); }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-top: 1.5rem;
         }
-        #flashOverlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 45; background: transparent;
+        .skill-column h4 { font-family: 'Domine', serif; font-size: 1.2rem; color: var(--text-burgundy); margin-bottom: 1rem; }
+        .skill-list { list-style: none; padding: 0; margin: 0; }
+        .skill-list li { font-size: 1.05rem; margin-bottom: 0.6rem; opacity: 0.85; display: flex; align-items: center; gap: 8px; }
+        .skill-list li::before { content: "•"; color: var(--accent-terracotta); font-weight: bold; }
+
+        /* Video Callout Banner */
+        .video-callout {
+            max-width: 1000px;
+            margin: 5rem auto 0 auto;
+            padding: 2.5rem 3rem;
+            background-color: var(--bg-cream);
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .video-text h3 {
+            font-size: 1.6rem;
+            color: var(--text-burgundy);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-text p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        .yt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--accent-terracotta);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .yt-link:hover {
+            transform: translateX(4px);
+            color: #d1663f;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--text-burgundy);
+            color: var(--bg-cream);
+            text-align: center;
+            padding: 3.5rem 5% 1.5rem 5%; 
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto 2rem auto; 
+        }
+
+        .footer-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--bg-cream);
+        }
+
+        .footer-content p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin-bottom: 1.5rem; 
+        }
+
+        .linkedin-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background-color: var(--accent-terracotta);
+            color: var(--bg-cream);
+            text-decoration: none;
+            padding: 0.8rem 1.8rem; 
+            border-radius: 4px;
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .linkedin-btn:hover {
+            transform: translateY(-3px);
+            background-color: #d1663f;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(253, 251, 247, 0.1);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* --- Easter Egg Styles --- */
+.glitch-text {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(253, 251, 247, 0.4); 
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+            padding: 0 4px;
+        }
+
+        .glitch-text:hover {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace;
+            color: var(--text-burgundy);
+            background: var(--bg-cream);
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+/* Full screen transition overlay */
+/* Smooth, clinical whiteout transition */
+        #glitch-overlay {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh;
+            background: #FAFAFA; /* Matches the diagnostic app */
+            z-index: 99999;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            opacity: 0; pointer-events: none; 
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #glitch-overlay.active {
+            opacity: 1; 
+            pointer-events: all;
+        }
+
+        .glitch-msg {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: 1.1rem; 
+            color: #111111;
+            text-align: center;
+        }
+        .glitch-sub {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: 1rem;
+            color: #FAFAFA;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+/* A minimal, clinical loading spinner */
+        .system-spinner {
+            margin-top: 2rem;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-top-color: #FF3300;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Mobile Breakpoints */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 3rem; gap: 2rem;}
+            .hero-content p { margin: 0 auto; }
+            .hero-graphic { width: 100%; height: 350px; }
+            .works-grid, .skills-grid { grid-template-columns: 1fr; }
+            #works h2, #about h2 { font-size: 2.2rem; }
+            #works, #about { padding: 4rem 5%; }
+            footer { padding: 3rem 5% 1.5rem 5%; }
+            .video-callout { flex-direction: column; text-align: center; padding: 2rem; margin-top: 3rem; }
         }
     </style>
 </head>
-<body id="gameBody">
+<body>
 
-<div id="flashOverlay"></div>
-<canvas id="gameCanvas"></canvas>
+    <nav>
+        <a href="#" class="logo-container">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+                <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+            </svg>
+            <span class="logo">Cynthia Henderson</span>
+        </a>
+        <div class="nav-links">
+            <a href="#works">Works</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
 
-<!-- HUD Layer -->
-<div class="ui-layer" id="uiLayer">
-    <div class="flex justify-between items-start gap-2" id="topHud">
-        <div class="hud-panel text-center" id="scorePanel">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Score</div>
-            <div class="text-2xl font-black text-yellow-500" id="scoreDisplay" style="-webkit-text-stroke: 1px #222;">0</div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Hello, I'm <span class="highlight">Cynthia</span>.</h1>
+            <p>I don't just design training. I build the tools to deliver it.</p>
         </div>
-        <div class="hud-panel text-center hidden" id="storyPanel">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide" id="levelLabel">Level 1</div>
-            <div class="text-lg font-black text-gray-800" id="waveDisplay">Wave 1/3</div>
+
+        <div class="hero-graphic">
+            <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="talavera-core" transform="translate(190, 100) scale(1.2)">
+                    <path d="M90 10 L65 44 L50 50 L56 35 Z M90 90 L56 65 L50 50 L65 56 Z M10 90 L35 56 L50 50 L44 65 Z M10 10 L44 35 L50 50 L35 44 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+                    <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                    <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+                </g>
+                <g id="g-depth-close" class="g-floating float-1">
+                    <path d="M250 40 L 262 65 L 250 85 L 238 65 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <line x1="250" y1="65" x2="250" y2="85" stroke="var(--text-burgundy)" stroke-width="2"/>
+                    <circle cx="250" cy="55" r="2.5" fill="var(--accent-terracotta)"/>
+                    <path d="M330 220 C 330 220, 315 240, 315 255 C 315 265, 322 270, 330 270 C 338 270, 345 265, 345 255 C 345 240, 330 220, 330 220 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M330 240 C 330 240, 322 250, 322 258 C 322 262, 325 265, 330 265 C 335 265, 338 262, 338 258 C 338 250, 330 240, 330 240 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M160 220 L 160 250 L 170 240 L 180 255 L 185 250 L 175 235 L 190 230 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                </g>
+                <g id="g-depth-mid" class="g-floating float-2">
+                    <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M360 160 L 360 135 C 355 131, 350 132, 345 135 L 345 160 C 350 157, 355 155, 360 160 Z" />
+                        <path d="M360 160 L 360 135 C 365 131, 370 132, 375 135 L 375 160 C 370 157, 365 155, 360 160 Z" />
+                    </g>
+                    <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                        <rect x="243" y="243" width="14" height="14" transform="rotate(45 250 250)"/>
+                        <line x1="250" y1="260" x2="250" y2="285" />
+                        <path d="M250 275 H 260 V 280" />
+                        <path d="M250 280 H 260 V 285" />
+                    </g>
+                    <path d="M125 165 L 145 165 L 140 180 L 130 180 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M135 165 Q 125 135 120 140 Q 130 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M135 165 Q 135 130 135 135 Q 140 150 135 165 Z" fill="var(--text-burgundy)"/>
+                    <path d="M135 165 Q 145 135 150 140 Q 140 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                </g>
+                <g id="g-depth-far" class="g-floating float-3">
+                    <g stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                        <path d="M310 110 L 330 70 L 350 110 Z" />
+                        <circle cx="350" cy="75" r="5" stroke="var(--accent-terracotta)"/>
+                    </g>
+                    <rect x="155" y="85" width="12" height="12" transform="rotate(45 161 91)" stroke="var(--accent-terracotta)" stroke-width="2"/>
+                </g>
+            </svg>
         </div>
-        <div class="hud-panel text-center hidden" id="livesPanel">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Lives</div>
-            <div class="text-xl font-black text-red-500" id="livesDisplay">5</div>
-        </div>
-        <div class="hud-panel text-center zen hidden" id="zenPanel">
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
-            <div class="text-xl font-black text-gray-800" id="accuracyDisplay">0%</div>
+    </section>
+
+    <div class="medallion-divider cream-to-white">
+        <div class="medallion-line"></div>
+        <svg class="medallion-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+            <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+            <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+            <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+        </svg>
+        <div class="medallion-line"></div>
+    </div>
+
+    <section id="works">
+        <h2>Selected Works</h2>
+
+        <div class="works-grid">
+
+<article class="work-card">
+    <div class="work-image-container">
+        <div class="browser-mockup">
+            <div class="mockup-header">
+                <div class="mockup-dot dot-1"></div>
+                <div class="mockup-dot dot-2"></div>
+                <div class="mockup-dot dot-3"></div>
+            </div>
+            <div class="mockup-content">
+                <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="400" height="320" fill="#FDFBF7"/>
+
+                    <rect x="40" y="40" width="320" height="70" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                    <circle cx="80" cy="75" r="18" fill="#4A0E17" opacity="0.1"/>
+                    <line x1="120" y1="65" x2="300" y2="65" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                    <line x1="120" y1="85" x2="240" y2="85" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+
+                    <rect x="40" y="140" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                    <rect x="40" y="140" width="130" height="8" rx="4" fill="#C25934"/>
+
+                    <rect x="40" y="160" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                    <rect x="40" y="160" width="160" height="8" rx="4" fill="#C25934" opacity="0.6"/>
+
+                    <rect x="40" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#C25934" stroke-width="2"/>
+                    <rect x="105" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                    <rect x="170" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                </svg>
+            </div>
         </div>
     </div>
-    
-    <div class="absolute top-20 right-4 flex flex-col items-end gap-2 pointer-events-none z-50">
-        <div id="comboDisplay" class="hidden text-3xl font-black drop-shadow-md select-none" style="color:#F1C40F; -webkit-text-stroke:1.5px #111;"></div>
-        <div id="powerupDisplay" class="hidden bg-yellow-400 text-black font-black py-1 px-3 rounded-lg border-2 border-black shadow-md text-sm animate-pulse">POWERUP ACTIVE!</div>
-    </div>
-    
-    <button id="zenBackBtn" class="hidden absolute bottom-4 right-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto" style="background:#fff;color:#111;">&#8592; Done</button>
-</div>
-
-<!-- Boss HP Bar -->
-<div id="bossBar" class="hidden absolute top-1 left-1/2 -translate-x-1/2 z-40" style="width:min(320px,80vw)">
-    <div class="text-center text-sm font-black text-white drop-shadow mb-0.5" id="bossName" style="text-shadow:0 2px 4px #000">Giant Owl</div>
-    <div class="h-6 border-4 border-black overflow-hidden" style="background:rgba(100,0,0,0.8);">
-        <div id="bossBarFill" class="h-full transition-all duration-150" style="width:100%;background:linear-gradient(90deg,#ff4757,#ff6b81);"></div>
-    </div>
-</div>
-
-<!-- Start Screen -->
-<div id="startScreen" class="screen-overlay">
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 px-4 max-w-4xl w-full">
-        
-        <!-- Unconfined Image Container -->
-        <div class="w-48 h-auto sm:w-80 shrink-0 flex items-center justify-center">
-            <!-- Actual Local Image (Uses relative path ./ and hides if missing) -->
-            <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
+    <div class="work-content">
+        <div class="work-tags">
+            <span class="tag">Narrative Design</span>
+            <span class="tag">GSAP</span>
+            <span class="tag">Gamification</span>
         </div>
-        
-        <!-- Text & Button Column -->
-        <div class="flex flex-col text-center sm:text-left items-center sm:items-start">
-            <h1 class="text-5xl sm:text-7xl font-black text-yellow-400 leading-tight drop-shadow-lg mb-4" style="-webkit-text-stroke:3px #111; text-shadow: 4px 4px 0px #111;">ALLY'S<br>ARCHERY</h1>
-            <p class="text-lg sm:text-xl font-bold text-gray-700 mb-8 max-w-sm leading-relaxed">
-                Drag <b>down</b> to pull the bow.<br>Release to fire!<br><span class="text-red-500">Don't let Pelicans escape!</span><br>Hit Hummingbirds for Power-Ups!
-            </p>
-            <button id="startBtn" class="btn">PLAY NOW 🎯</button>
+        <h3 class="work-title">Scope // Creep</h3>
+        <p class="work-desc">Protecting the perimeter is a soft skill. I built this high-tension dialogue simulator to train Project Managers in stakeholder negotiation. Use empathy, tactics, or aggression to manage pressure without burning bridges.</p>
+        <a href="scope-creep.html" class="work-link" target="_blank">
+            Play Prototype 
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+    </div>
+</article></article>
+
+            <article class="work-card">
+                <div class="work-image-container" style="background-color: rgba(74, 14, 23, 0.03);">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <line x1="50" y1="240" x2="350" y2="240" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <line x1="50" y1="160" x2="350" y2="160" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <line x1="50" y1="80" x2="350" y2="80" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <path d="M 60 240 C 160 240, 200 100, 340 80" fill="none" stroke="#C25934" stroke-width="6" stroke-linecap="round"/>
+                                <circle cx="60" cy="240" r="6" fill="#FDFBF7" stroke="#C25934" stroke-width="3"/>
+                                <circle cx="210" cy="145" r="8" fill="#FDFBF7" stroke="#4A0E17" stroke-width="4"/>
+                                <circle cx="340" cy="80" r="12" fill="#C25934"/>
+                                <path d="M 335 80 L 339 85 L 346 74" fill="none" stroke="#FDFBF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Strategy</span>
+                        <span class="tag">SaaS Adoption</span>
+                        <span class="tag">Storytelling</span>
+                    </div>
+                    <h3 class="work-title">Accelerating Adoption</h3>
+                    <p class="work-desc">Lawyers are busy and they don't have time for generic software tutorials. At Thomson Reuters, I helped turn standard training into practice-specific use cases. It is an onboarding ecosystem that respects the learner's schedule while actually showing how the tech solves their daily problems.</p>
+                    <a href="customer-success.html" class="work-link">
+                        Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="work-card">
+                <div class="work-image-container">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <rect x="40" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="40" y="40" width="40" height="6" rx="3" fill="#C25934"/>
+                                <rect x="220" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="220" y="40" width="120" height="6" rx="3" fill="#C25934"/>
+
+                                <rect x="40" y="80" width="320" height="130" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                                <line x1="70" y1="115" x2="330" y2="115" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="145" x2="280" y2="145" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="175" x2="310" y2="175" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+
+                                <rect x="190" y="110" width="80" height="10" rx="3" fill="#4A0E17"/>
+                                <rect x="120" y="170" width="60" height="10" rx="3" fill="#4A0E17"/>
+
+                                <rect x="260" y="240" width="100" height="28" rx="4" fill="#4A0E17"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Simulation Design</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">UI/UX Design</span>
+                    </div>
+                    <h3 class="work-title">AI Integration Training</h3>
+                    <p class="work-desc">Compliance training usually feels like a checklist. I built this prototype to let learners handle sensitive data in a safe, interactive environment. You can scrub prompts and watch your risk metrics shift in real time. It turns a mandatory rule into a decision-based simulation you can test to understand.</p>
+                    <a href="ai-scenario.html" class="work-link" target="_blank">
+                        View Prototype 
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="work-card">
+                <div class="work-image-container" style="background-color: rgba(194, 89, 52, 0.04);">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <path d="M 100 220 L 200 120 L 300 180" fill="none" stroke="#4A0E17" stroke-width="4" stroke-dasharray="8 8" opacity="0.5"/>
+                                <g transform="translate(200, 120)"><path d="M 0 -35 L 35 0 L 0 35 L -35 0 Z" fill="#C25934"/><circle cx="0" cy="0" r="10" fill="#FDFBF7"/></g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Blended Learning</span>
+                        <span class="tag">Instructional Strategy</span>
+                        <span class="tag">Game Design</span>
+                    </div>
+                    <h3 class="work-title">Leadership Elevated</h3>
+                    <p class="work-desc">I took a pile of fragmented training at Dallas College and transformed it into a cohesive journey. This blended experience uses workshops and a custom board game to help 250 managers actually lead. It replaces a standard overhaul with a high-impact, active program.</p>
+                    <a href="leadership-case-study.html" class="work-link">
+                        Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
         </div>
-        
+
+        <div class="video-callout">
+            <div class="video-text">
+                <h3>Looking for video samples?</h3>
+                <p>I also produce, direct, and edit multimedia learning content.</p>
+            </div>
+            <a href="https://www.youtube.com/@cynhenderson" target="_blank" class="yt-link">
+                Watch on YouTube
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <div class="medallion-divider white-to-cream">
+        <div class="medallion-line"></div>
+        <svg class="medallion-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+            <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+            <circle cx="50" cy="50" r="15" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+        </svg>
+        <div class="medallion-line"></div>
     </div>
-</div>
 
-<!-- Mode Select Screen -->
-<div id="modeSelectScreen" class="screen-overlay hidden">
-    <h2 class="text-4xl font-black text-gray-800 mb-1">Choose Mode</h2>
-    <p class="text-gray-500 font-bold mb-6 text-sm">Pick your challenge</p>
-    <div class="flex flex-col gap-4 w-full max-w-xs px-4">
-        <button id="modeStoryBtn" class="mode-card">
-            <span class="text-2xl font-black text-gray-900">⚔️ STORY</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
-        </button>
-        <button id="modeZenBtn" class="mode-card">
-            <span class="text-2xl font-black text-gray-900">🎯 ZEN</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · precision scoring</div>
-        </button>
-    </div>
-</div>
+    <section id="about">
+        <div class="about-container">
+            <h2>About Me</h2>
 
-<!-- Wave Transition -->
-<div id="waveTransition" class="screen-overlay hidden" style="background:rgba(17,17,17,0.85);pointer-events:none;">
-    <div class="text-5xl font-black text-yellow-400 drop-shadow-2xl" id="waveTransitionText" style="-webkit-text-stroke:2px #111;">WAVE 2 OF 3</div>
-    <div class="text-white font-bold mt-2 text-xl" id="waveSubText"></div>
-</div>
+            <div class="about-block">
+                <h3>The Philosophy</h3>
+                <p class="about-text">
+                    Adult learning shouldn’t be passive. When you blend behavioral science with digital design, you move beyond “click next to continue” and start building immersive, interactive challenges. I design experiences that respect the learner’s intelligence and their time, with every interaction focused on real competency and real business impact.
+                </p>
+            </div>
 
-<!-- Level Complete -->
-<div id="levelCompleteScreen" class="screen-overlay hidden">
-    <h2 class="text-5xl font-black text-gray-800 mb-2" id="levelCompleteTitle">LEVEL CLEARED!</h2>
-    <div class="text-6xl mb-4" id="starsDisplay">⭐⭐⭐</div>
-    <p class="text-xl font-bold text-gray-600 mb-6">Score: <span id="levelScore" class="text-4xl text-yellow-500" style="-webkit-text-stroke:1px #111;">0</span></p>
-    <button id="nextLevelBtn" class="btn">NEXT LEVEL ➡️</button>
-</div>
+            <div class="about-block">
+                <h3>The Skillset</h3>
+                <div class="skills-grid">
+                    <div class="skill-column">
+                        <h4>Instructional Strategy</h4>
+                        <ul class="skill-list">
+                            <li>Needs Analysis & Discovery</li>
+                            <li>Competency Modeling</li>
+                            <li>Behavioral Science</li>
+                            <li>Curriculum Architecture</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>Experience Design</h4>
+                        <ul class="skill-list">
+                            <li>Gamification Mechanics</li>
+                            <li>Scenario-Based Learning</li>
+                            <li>UI/UX Design</li>
+                            <li>Blended Learning Journeys</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>Technical Execution</h4>
+                        <ul class="skill-list">
+                            <li>Rapid Prototyping</li>
+                            <li>Front-End Development</li>
+                            <li>Web Animation</li>
+                            <li>Custom Tools & Interactions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="about-block">
+                <h3>The Human</h3>
+                <p class="about-text">
+                    Right now, I’m obsessed with using AI tools to build learning experiences from scratch. I’m writing code, designing interactions, and shipping prototypes I couldn’t have built alone two years ago. My dream is to build a learning game that feels less like training and more like a rogue‑lite.
+                </p>
+                <p class="about-text" style="margin-top: 1rem;">
+                    I love painting, reading, and Dallas life with a sumo fighter and a very fluffy cat.
+                </p>
+            </div>
 
-<!-- Game Over -->
-<div id="gameOverScreen" class="screen-overlay hidden">
-    <h2 class="text-6xl font-black text-red-500 mb-2 drop-shadow-md" id="gameOverTitle" style="-webkit-text-stroke:2px #111;">GAME OVER!</h2>
-    <p class="text-xl font-bold text-gray-700 mb-1">Final Score</p>
-    <p id="finalScore" class="text-5xl font-black text-yellow-500 mb-2" style="-webkit-text-stroke:2px #111;">0</p>
-    <div class="flex flex-col gap-3">
-        <button id="restartBtn" class="btn">PLAY AGAIN 🔄</button>
-        <button id="menuBtn" class="btn" style="background:#eee; font-size:1.1rem; padding:0.7rem 2rem;">MAIN MENU</button>
-    </div>
-</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <h2>Let's Connect</h2>
+            <p>Love talking to other learning nerds. ❤︎</p>
+
+            <a href="https://www.linkedin.com/in/cynhenderson" target="_blank" class="linkedin-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+                Find me on LinkedIn
+            </a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Cynthia. Designed and <span id="easter-egg-trigger" class="glitch-text">vibe-coded</span> with care.</p>
+        </div>
+    </footer>
 
 <script>
-// ===================== AUDIO =====================
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(type) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.connect(g); g.connect(audioCtx.destination);
-    const now = audioCtx.currentTime;
-    
-    if (type === 'shoot') {
-        osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
-        g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.15); osc.start(now); osc.stop(now + 0.15);
-    } else if (type === 'bonk') {
-        osc.type = 'square'; osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
-        g.gain.setValueAtTime(0.4, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1);
-    } else if (type === 'clink') {
-        osc.type = 'sine'; osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(1800, now + 0.05);
-        g.gain.setValueAtTime(0.4, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1);
-    } else if (type === 'powerup') {
-        osc.type = 'square'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(800, now + 0.2);
-        g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0, now + 0.4); osc.start(now); osc.stop(now + 0.4);
-    } else if (type === 'boss') {
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(40, now + 0.8);
-        g.gain.setValueAtTime(0.5, now); g.gain.linearRampToValueAtTime(0, now + 0.8); osc.start(now); osc.stop(now + 0.8);
-    } else if (type === 'hurt') {
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
-        g.gain.setValueAtTime(0.5, now); g.gain.linearRampToValueAtTime(0, now + 0.3); osc.start(now); osc.stop(now + 0.3);
-    }
-}
+        const trigger = document.getElementById('easter-egg-trigger');
+        let clickCount = 0;
 
-window.onload = function () {
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const body = document.getElementById('gameBody');
-    const flashOverlay = document.getElementById('flashOverlay');
+        if(trigger) {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                clickCount++;
 
-    const scoreDisp = document.getElementById('scoreDisplay');
-    const comboDisp = document.getElementById('comboDisplay');
-    const powerDisp = document.getElementById('powerupDisplay');
-    const storyPanel = document.getElementById('storyPanel');
-    const livesPanel = document.getElementById('livesPanel');
-    const livesDisp = document.getElementById('livesDisplay');
-    const levelLabel = document.getElementById('levelLabel');
-    const waveDisp = document.getElementById('waveDisplay');
-    const bossBar = document.getElementById('bossBar');
-    const bossBarFill = document.getElementById('bossBarFill');
-    const bossNameEl = document.getElementById('bossName');
-    
-    const startScreen = document.getElementById('startScreen');
-    const modeSelectScreen = document.getElementById('modeSelectScreen');
-    const waveTransition = document.getElementById('waveTransition');
-    const waveTransText = document.getElementById('waveTransitionText');
-    const waveSubText = document.getElementById('waveSubText');
-    const levelCompleteScreen = document.getElementById('levelCompleteScreen');
-    const gameOverScreen = document.getElementById('gameOverScreen');
+                if (clickCount === 1) {
+                    // Escalation warning
+                    trigger.innerText = "[ANOMALY DETECTED. CLICK AGAIN TO DIAGNOSE]";
+                    trigger.style.fontFamily = "'Space Mono', monospace";
+                    trigger.style.color = "var(--text-burgundy)";
+                    trigger.style.background = "var(--bg-cream)";
+                    trigger.style.fontWeight = "bold";
+                    trigger.style.borderBottom = "none";
+                    trigger.style.padding = "2px 8px";
+                } else if (clickCount === 2) {
+                    // Lock the screen so they can't scroll away
+                    document.body.style.overflow = 'hidden';
 
-    const GRAVITY = 0.65;
-    const MAX_DRAG = 200;
-    const POWER_SCALE = 0.32;
-    const DRAG = 0.985;
+                    // Build the clean overlay
+                    const overlay = document.createElement('div');
+                    overlay.id = 'glitch-overlay';
+                    overlay.innerHTML = `
+                        <div class="glitch-msg">> Suspending portfolio aesthetic...</div>
+                        <div class="glitch-msg" style="margin-top: 0.5rem; color: #FF3300;">> Routing to diagnostic server...</div>
+                        <div class="system-spinner"></div>
+                    `;
+                    document.body.appendChild(overlay);
 
-    const LEVEL_CONFIGS = [
-        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: false, wavy: false },
-        { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.4, clouds: false, wavy: false },
-        { name: 'Cloudy Grove',       bgTop: '#6EB5D3', bgBot: '#81C784', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 8,  birdSpeed: 1.2, spawnRate: 0.014, waveTransDuration: 2.5, bossType: 'pelicanking', armorChance: 0.5, clouds: true, wavy: false },
-        { name: 'Storm Summit',       bgTop: '#2C3E50', bgBot: '#1A252F', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 10, birdSpeed: 1.4, spawnRate: 0.016, waveTransDuration: 2.0, bossType: 'condor', armorChance: 0.6, clouds: false, wavy: true },
-        { name: 'Championship Arena', bgTop: '#7B5EA7', bgBot: '#9CCC65', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 12, birdSpeed: 1.7, spawnRate: 0.018, waveTransDuration: 2.0, bossType: 'champion', armorChance: 0.7, clouds: true, wavy: true },
-    ];
-    const BOSS_CONFIGS = {
-        owl:        { name: 'Giant Owl',        hp: 8,  radius: 65, color: '#8B7355', speed: 1.2 },
-        hawk:       { name: 'Speed Hawk',       hp: 6,  radius: 45, color: '#7B3F00', speed: 2.0 },
-        pelicanking:{ name: 'Pelican King',     hp: 10, radius: 70, color: '#FFFDE0', speed: 1.4 },
-        condor:     { name: 'Thunder Condor',   hp: 12, radius: 60, color: '#2c3e50', speed: 2.2, shield: true },
-        champion:   { name: 'Champion Bird',    hp: 15, radius: 55, color: '#FF6B6B', speed: 2.8 },
-    };
+                    // Fade it in smoothly
+                    setTimeout(() => {
+                        overlay.classList.add('active');
+                    }, 50);
 
-    let width, height;
-    let state = 'menu'; 
-    let mode = 'endless'; 
-    let score = 0;
-    let lives = 5;
-    let screenShake = 0;
-    let combo = 0, comboTimer = 0;
-    let activePowerup = 'none', powerupTimer = 0;
-    let currentLevel = 0, currentWave = 0, waveBirdsKilled = 0;
-    let pelicansSpawnedThisWave = 0; 
-    let waveTransTimer = 0, bossActive = false, bossEnemy = null;
-
-    let bow = { x: 0, y: 0 };
-    let dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 }, isAiming = false;
-    let arrows = [], enemies = [], projectiles = [], particles = [], floatingTexts = [], clouds = [];
-
-    function resize() {
-        width = window.innerWidth; height = window.innerHeight;
-        canvas.width = width; canvas.height = height;
-        bow.x = width / 2; bow.y = height - 60; 
-        initClouds();
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function initClouds() {
-        clouds = [];
-        for (let i = 0; i < 3; i++) {
-            clouds.push({ x: Math.random() * width, y: 50 + Math.random() * (height * 0.4), w: 120 + Math.random() * 100, h: 50 + Math.random() * 40, speed: 0.2 + Math.random() * 0.3 });
-        }
-    }
-
-    function triggerLifeLost() {
-        playSound('hurt'); lives--; livesDisp.textContent = lives; triggerShake(15);
-        flashOverlay.classList.remove('life-lost-flash'); void flashOverlay.offsetWidth; flashOverlay.classList.add('life-lost-flash');
-        spawnText(width / 2, height * 0.4, '-1 LIFE!', '#ff4757');
-        if (lives <= 0 && mode !== 'zen') endGame();
-    }
-
-    function drawBackground() {
-        let cfg = (mode === 'story') ? LEVEL_CONFIGS[currentLevel] : null;
-        let top = (mode === 'zen') ? '#D6EAF8' : (cfg ? cfg.bgTop : '#87CEEB');
-        let bot = (mode === 'zen') ? '#E8F8F5' : (cfg ? cfg.bgBot : '#A5D6A7');
-        let grad = ctx.createLinearGradient(0, 0, 0, height); grad.addColorStop(0, top); grad.addColorStop(1, bot);
-        ctx.fillStyle = grad; ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = (mode === 'zen') ? '#BDC3C7' : '#2E4053'; ctx.fillRect(0, height - 18, width, 18);
-        ctx.fillStyle = '#111'; ctx.fillRect(0, height - 6, width, 6);
-    }
-
-    function spawnStoryEnemy() {
-        if (bossActive || waveTransTimer > 0) return;
-        let lc = LEVEL_CONFIGS[currentLevel];
-        if (currentWave >= 3 || waveBirdsKilled >= lc.waveBirds || Math.random() > lc.spawnRate) return;
-
-        let birdPool = lc.birdTypes, type = 'robin';
-        if (birdPool.includes('hummingbird') && Math.random() < 0.10) type = 'hummingbird';
-        else if (birdPool.includes('pelican') && pelicansSpawnedThisWave < (currentLevel >= 2 ? 2 : 1) && Math.random() < 0.08) { type = 'pelican'; pelicansSpawnedThisWave++; }
-
-        let isLeft = Math.random() > 0.5, startX = isLeft ? -50 : width + 50, startY = 50 + Math.random() * (height * 0.35), dir = isLeft ? 1 : -1;
-        let radius = type === 'hummingbird' ? 12 : type === 'pelican' ? 32 : 22, hp = type === 'pelican' ? 2 : 1;
-        let hasArmor = (type === 'robin' && Math.random() < lc.armorChance);
-        let vx = dir * (type === 'hummingbird' ? lc.birdSpeed * 2.0 : type === 'pelican' ? lc.birdSpeed * 0.4 : lc.birdSpeed);
-
-        let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
-        let color = type === 'hummingbird' ? '#2ed573' : (type === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
-
-        enemies.push({ x: startX, y: startY, baseX: startX, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy });
-    }
-
-    function spawnBoss() {
-        let lc = LEVEL_CONFIGS[currentLevel], bc = BOSS_CONFIGS[lc.bossType];
-        let isLeft = Math.random() > 0.5, startX = isLeft ? -bc.radius * 2 : width + bc.radius * 2, startY = height * 0.28, dir = isLeft ? 1 : -1;
-        bossEnemy = { x: startX, y: startY, baseY: startY, vx: dir * bc.speed, vy: 0, radius: bc.radius, hp: bc.hp, maxHp: bc.hp, type: lc.bossType, color: bc.color, state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, phase: 1, isBoss: true, shield: bc.shield || false, attackTimer: 3.0, phaseTimer: 0 };
-        enemies.push(bossEnemy); bossActive = true; bossBar.classList.remove('hidden'); bossNameEl.textContent = bc.name; bossBarFill.style.width = '100%'; playSound('boss');
-        spawnText(width / 2, height * 0.15, `⚠️ ${bc.name.toUpperCase()}!`, '#ff4757');
-    }
-
-    function handleCollisions() {
-        for (let a = arrows.length - 1; a >= 0; a--) {
-            let arrow = arrows[a];
-            let tipR = arrow.isPlunger ? 65 : 6;
-            let tipCenter = arrow.isPlunger ? 35 : 22;
-            let tipX = arrow.x + Math.cos(arrow.angle) * tipCenter, tipY = arrow.y + Math.sin(arrow.angle) * tipCenter;
-
-            // Projectiles collision (Deflecting boss attacks)
-            for (let p = projectiles.length - 1; p >= 0; p--) {
-                let proj = projectiles[p];
-                if (Math.hypot(tipX - proj.x, tipY - proj.y) < proj.radius + tipR) {
-                    playSound('bonk'); projectiles.splice(p, 1); arrow.vy = -3; 
-                    score += 150; scoreDisp.textContent = score; 
-                    spawnText(proj.x, proj.y, 'DEFLECTED!', '#00d2ff'); 
-                    spawnParticles(proj.x, proj.y, '#00d2ff', 10);
-                    break;
+                    // Redirect to the Enneagram app after 2.2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'enneagram.html'; 
+                    }, 2200);
                 }
-            }
-
-            for (let e = enemies.length - 1; e >= 0; e--) {
-                let en = enemies[e]; if (en.state !== 'flying') continue;
-                let dist = Math.hypot(tipX - en.x, tipY - en.y); if (dist > en.radius + tipR) continue;
-
-                if (en.hasArmor) {
-                    if (arrow.isPlunger) { 
-                        en.hasArmor = false; playSound('clink'); spawnParticles(en.x, en.y, '#bdc3c7', 15); 
-                        spawnText(en.x, en.y - 30, 'ARMOR RIPPED!', '#F1C40F'); 
-                    } else { 
-                        en.hasArmor = false; playSound('clink'); arrow.vy = -5.5; 
-                        spawnParticles(en.x, en.y, '#bdc3c7', 10); spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); continue; 
-                    }
-                }
-
-                if (en.shield) { en.shield = false; arrow.vy = -5; spawnText(en.x, en.y - 30, 'SHIELD BROKEN!', '#00d2ff'); continue; }
-
-                playSound('bonk'); triggerShake(en.isBoss ? 8 : 12); en.damageFlash = 1.0; arrow.vy = -5.5; en.hp--;
-                let prec = (dist < (en.radius * 0.4 + (arrow.isPlunger ? 15 : 0))) ? 1.5 : 1;
-                if (prec > 1) spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
-
-                if (en.hp <= 0) {
-                    en.state = en.isBoss ? 'dead' : 'bonked'; if (!en.isBoss) waveBirdsKilled++;
-                    playSound('fall');
-                    combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
-                    let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : 2000) * prec * mult);
-                    score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
-                    
-                    if (mult > 1) { comboDisp.textContent = `x${mult} COMBO!`; comboDisp.classList.remove('hidden'); }
-                    
-                    // Instant Power-up Reward (Parachute replacement)
-                    if (en.type === 'hummingbird') {
-                        let t = ['heart', 'scatter', 'plunger', 'freeze'][Math.floor(Math.random() * 4)];
-                        if (t === 'heart') {
-                            lives++; livesDisp.textContent = lives; spawnText(en.x, en.y, '+1 LIFE!', '#ff4757');
-                        } else {
-                            activePowerup = t; powerupTimer = 10;
-                            powerDisp.textContent = t.toUpperCase() + " ACTIVE!"; powerDisp.classList.remove('hidden');
-                            spawnText(en.x, en.y, 'POWERUP!', '#F1C40F');
-                        }
-                        playSound('powerup'); spawnParticles(en.x, en.y, '#f1c40f', 15);
-                    }
-                    
-                    if (en.isBoss) {
-                        bossActive = false; bossBar.classList.add('hidden'); playSound('levelup');
-                        setTimeout(() => { state = 'levelComplete'; levelCompleteScreen.classList.remove('hidden'); document.getElementById('levelScore').textContent = score; }, 1200);
-                    }
-                }
-            }
-        }
-    }
-
-    function update(dt) {
-        if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
-        if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
-        if (waveTransTimer > 0) { waveTransTimer -= dt; if (waveTransTimer <= 0) { waveTransition.classList.add('hidden'); if (currentWave >= 3) spawnBoss(); } return; }
-
-        if (mode === 'story' && !bossActive) {
-            let lc = LEVEL_CONFIGS[currentLevel];
-            if (currentWave < 3 && waveBirdsKilled >= lc.waveBirds) {
-                currentWave++; waveBirdsKilled = 0; pelicansSpawnedThisWave = 0; enemies = []; arrows = [];
-                waveTransTimer = lc.waveTransDuration;
-                waveTransText.textContent = currentWave < 3 ? `WAVE ${currentWave + 1} OF 3` : `BOSS INCOMING!`;
-                waveSubText.textContent = currentWave >= 3 ? BOSS_CONFIGS[lc.bossType].name : "";
-                waveTransition.classList.remove('hidden'); updateHUD();
-            }
-        }
-
-        spawnStoryEnemy();
-        let speed = (activePowerup === 'freeze') ? 0.25 : 1.0;
-
-        if (bossActive && bossEnemy) {
-            updateBoss(bossEnemy, dt, speed);
-            bossBarFill.style.width = `${Math.max(0, (bossEnemy.hp / bossEnemy.maxHp) * 100)}%`;
-        }
-
-        clouds.forEach(c => { c.x += c.speed * speed; if (c.x > width + 50) c.x = -c.w; });
-
-        for (let i = arrows.length - 1; i >= 0; i--) {
-            let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; a.angle = Math.atan2(a.vy, a.vx);
-            if (a.y > height + 20 || a.x < -120 || a.x > width + 120) arrows.splice(i, 1);
-        }
-
-        for (let i = projectiles.length - 1; i >= 0; i--) {
-            let p = projectiles[i]; p.x += p.vx * speed; p.y += p.vy * speed; p.rotation += 0.05 * speed;
-            if (p.y > height + 20) { triggerLifeLost(); projectiles.splice(i, 1); }
-        }
-
-        for (let i = enemies.length - 1; i >= 0; i--) {
-            let e = enemies[i]; e.flapPhase += 0.2 * speed; if (e.damageFlash > 0) e.damageFlash -= dt * 3;
-            if (e.state === 'flying' && !e.isBoss) {
-                e.x += e.vx * speed;
-                if (e.wavy) e.y = e.baseY + Math.sin(e.x * 0.03) * 60;
-                else if (e.type === 'hummingbird') e.y = e.baseY + Math.sin(e.x * 0.05) * 38;
-                
-                if (e.x < -100 || e.x > width + 100) { 
-                    if (mode !== 'zen' && (e.type === 'pelican')) triggerLifeLost();
-                    enemies.splice(i, 1); 
-                }
-            } else if (e.state === 'bonked' || e.state === 'dead') { e.y -= 1.8; if (e.y < -100) enemies.splice(i, 1); }
-        }
-
-        for (let i = particles.length - 1; i >= 0; i--) { let p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += GRAVITY * 0.08; p.life -= 0.022; if (p.life <= 0) particles.splice(i, 1); }
-        for (let i = floatingTexts.length - 1; i >= 0; i--) { let ft = floatingTexts[i]; ft.y -= 1.1; ft.life -= 0.022; if (ft.life <= 0) floatingTexts.splice(i, 1); }
-        handleCollisions();
-    }
-
-    function updateBoss(boss, dt, speedMod) {
-        boss.flapPhase += 0.12 * speedMod; boss.phaseTimer += dt * speedMod; boss.attackTimer -= dt * speedMod;
-        
-        // Enrage Trigger
-        if (boss.hp <= boss.maxHp * 0.5 && boss.phase === 1) { 
-            boss.phase = 2; boss.vx *= 1.6; 
-            spawnText(boss.x, boss.y - 50, 'ENRAGED!', '#ff4757');
-            triggerShake(10);
-        }
-
-        // Condor Shield Regen
-        if (boss.type === 'condor' && !boss.shield) {
-            boss.shieldTimer = (boss.shieldTimer || 0) + dt * speedMod;
-            if (boss.shieldTimer > 4.0) {
-                boss.shield = true;
-                boss.shieldTimer = 0;
-                spawnText(boss.x, boss.y - 40, 'SHIELD RECHARGED!', '#00d2ff');
-            }
-        }
-
-        // Attack Phase
-        if (boss.attackTimer <= 0) {
-            boss.attackTimer = boss.phase === 2 ? 2.5 : 4.0;
-            projectiles.push({ x: boss.x, y: boss.y + boss.radius * 0.5, vx: (Math.random() - 0.5) * 1.5, vy: 1.2, radius: 18, type: boss.type, rotation: 0 });
-            spawnText(boss.x, boss.y - 45, 'INCOMING!', '#ff4757');
-        }
-        
-        boss.x += boss.vx * speedMod; boss.y = boss.baseY + Math.sin(boss.phaseTimer * 0.8) * 40;
-        if (boss.x < 80) boss.vx = Math.abs(boss.vx); if (boss.x > width - 80) boss.vx = -Math.abs(boss.vx);
-    }
-
-    function startGame(selectedMode, isNextLevel = false) {
-        mode = selectedMode; state = 'playing'; 
-        if (!isNextLevel) { score = 0; lives = 5; currentLevel = 0; }
-        currentWave = 0; waveBirdsKilled = 0;
-        arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
-        bossActive = false; bossEnemy = null; waveTransTimer = 0;
-        
-        startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden');
-        storyPanel.classList.toggle('hidden', mode !== 'story'); livesPanel.classList.toggle('hidden', mode === 'zen');
-        bossBar.classList.add('hidden'); waveTransition.classList.add('hidden');
-        
-        updateHUD(); if (mode === 'story') { waveTransTimer = 3; waveTransText.textContent = "LEVEL " + (currentLevel + 1); waveSubText.textContent = ""; waveTransition.classList.remove('hidden'); }
-        requestAnimationFrame(loop);
-    }
-
-    function endGame() {
-        state = 'gameover'; 
-        bossActive = false; bossBar.classList.add('hidden');
-        gameOverScreen.classList.remove('hidden'); 
-        document.getElementById('finalScore').textContent = score;
-    }
-
-    function updateHUD() {
-        if (mode === 'story') { levelLabel.textContent = `Level ${currentLevel + 1} -- ${LEVEL_CONFIGS[currentLevel].name}`; waveDisp.textContent = bossActive ? 'BOSS!' : `Wave ${currentWave + 1} / 3`; }
-        livesDisp.textContent = lives;
-    }
-
-    function drawAlly() {
-        ctx.save();
-        // Back Hair
-        ctx.fillStyle = '#2c1810'; ctx.beginPath(); ctx.arc(0, -35, 23, Math.PI, 0); ctx.lineTo(26, 8); ctx.lineTo(-26, 8); ctx.fill();
-        // Legs & Shoes
-        ctx.fillStyle = '#f1c27d'; ctx.fillRect(-12, -5, 8, 30); ctx.fillRect(4, -5, 8, 30); 
-        ctx.fillStyle = '#111'; ctx.fillRect(-15, 25, 12, 10); ctx.fillRect(3, 25, 12, 10); 
-        ctx.fillStyle = '#fff'; ctx.fillRect(-15, 31, 12, 4); ctx.fillRect(3, 31, 12, 4); ctx.fillRect(-11, 23, 6, 6); ctx.fillRect(7, 23, 6, 6); 
-        // Body
-        ctx.fillStyle = '#222'; ctx.beginPath(); ctx.roundRect(-16, -10, 15, 14, 2); ctx.roundRect(1, -10, 15, 14, 2); ctx.fill();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.fillStyle = '#222'; ctx.beginPath(); ctx.roundRect(-18, -35, 36, 28, 4); ctx.fill();
-        // Head & Face
-        ctx.fillStyle = '#f1c27d'; ctx.beginPath(); ctx.arc(0, -45, 18, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(-6, -45, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(6, -45, 2.5, 0, Math.PI * 2); ctx.fill();  
-        ctx.fillStyle = '#FF8A8A'; ctx.globalAlpha = 0.6; ctx.beginPath(); ctx.arc(-11, -41, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(11, -41, 3.5, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1.0;
-        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, -41, 5, 0, Math.PI); ctx.fill(); ctx.strokeStyle = '#111'; ctx.lineWidth = 1; ctx.stroke();
-        // Front Hair Sweep
-        ctx.fillStyle = '#2c1810'; ctx.beginPath(); ctx.moveTo(0, -63); ctx.quadraticCurveTo(-20, -63, -20, -40); ctx.quadraticCurveTo(-15, -35, -4, -50); ctx.moveTo(0, -63); ctx.quadraticCurveTo(20, -63, 20, -40); ctx.quadraticCurveTo(15, -35, 4, -50); ctx.fill();
-        // Relaxed Arms
-        ctx.strokeStyle = '#f1c27d'; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-16, -30); ctx.lineTo(-24, -18); ctx.lineTo(-14, -8); ctx.stroke(); ctx.beginPath(); ctx.moveTo(16, -30); ctx.lineTo(24, -18); ctx.lineTo(14, -8); ctx.stroke();
-        // Sleeves
-        ctx.strokeStyle = '#222'; ctx.lineWidth = 8; ctx.lineCap = 'butt'; ctx.beginPath(); ctx.moveTo(-16, -30); ctx.lineTo(-20, -24); ctx.stroke(); ctx.beginPath(); ctx.moveTo(16, -30); ctx.lineTo(20, -24); ctx.stroke();
-        ctx.restore(); 
-    }
-
-    function drawBowAndAim() {
-        ctx.save(); ctx.translate(bow.x, bow.y); drawAlly(); ctx.translate(0, -100);
-        let pull = 0, aimAngle = 0, dx = 0, dy = 0;
-        if (isAiming) {
-            dx = dragStart.x - dragCurrent.x; dy = dragStart.y - dragCurrent.y;
-            let dist = Math.min(Math.hypot(dx, dy), MAX_DRAG);
-            aimAngle = Math.atan2(dy, dx) + Math.PI / 2; pull = dist / MAX_DRAG * 50;
-            if (dy < 0) {
-                ctx.save(); ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                let sx = 0, sy = 0, svx = dx * POWER_SCALE, svy = dy * POWER_SCALE;
-                for (let i = 0; i < 15; i++) { svy += GRAVITY; svx *= DRAG; svy *= DRAG; sx += svx; sy += svy; if (i % 3 === 0) { ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill(); } }
-                ctx.restore();
-            }
-        }
-        ctx.save(); if (isAiming && dy < 0) ctx.rotate(aimAngle);
-        ctx.shadowColor = '#F1C40F'; ctx.shadowBlur = 15; ctx.strokeStyle = '#F1C40F'; ctx.lineWidth = 6; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.arc(0, 0, 40, Math.PI, 0); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 40, Math.PI + 0.2, 0 - 0.2); ctx.stroke();
-        ctx.shadowBlur = 5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-40, 0); ctx.lineTo(0, pull); ctx.lineTo(40, 0); ctx.stroke();
-        ctx.save(); ctx.translate(0, pull); ctx.strokeStyle = '#c8a87a'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-45); ctx.stroke();
-        
-        if (activePowerup === 'plunger') { 
-            ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.moveTo(-10, -45); ctx.lineTo(10, -45); ctx.lineTo(30, -80); ctx.lineTo(-30, -80); ctx.closePath(); ctx.fill(); 
-        } else { 
-            ctx.fillStyle = '#555'; ctx.beginPath(); ctx.moveTo(-5, -45); ctx.lineTo(5, -45); ctx.lineTo(0, -55); ctx.fill(); 
-        }
-        ctx.restore(); ctx.restore(); ctx.restore();
-    }
-
-    function drawBird(e) {
-        ctx.save();
-        ctx.translate(e.x, e.y); ctx.rotate(e.angle);
-        let fr = e.vx >= 0, d = fr ? 1 : -1, r = e.radius;
-        if (e.state === 'bonked') {
-            // Subtle Balloon String
-            ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, -r - 4); ctx.lineTo(0, -r - 25); ctx.stroke();
-            // Cute, non-distracting balloon
-            ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.ellipse(0, -r - 34, 7, 9, 0, 0, Math.PI * 2); ctx.fill();
-            // Balloon Tie
-            ctx.beginPath(); ctx.moveTo(-2, -r - 25); ctx.lineTo(2, -r - 25); ctx.lineTo(0, -r - 27); ctx.fill();
-        }
-        if (e.state === 'flying' && (e.type === 'pelican' || e.type === 'pelicanking')) {
-            let distFromEdge = fr ? (width - e.x) : e.x;
-            if (distFromEdge < 120) {
-                ctx.globalAlpha = 0.4 + 0.6 * Math.sin(Date.now() / 60);
-                ctx.fillStyle = '#ff4757'; ctx.font = "bold 30px Arial"; ctx.fillText("!", 0, -r - 10);
-            }
-        }
-        ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6;
-
-        if (e.isBoss) {
-            if (e.type === 'owl') {
-                ctx.fillStyle = e.state === 'bonked' ? '#e1b12c' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r, r*0.85, 0, 0, Math.PI*2); ctx.fill(); 
-                ctx.beginPath(); ctx.moveTo(-r*0.6, -r*0.6); ctx.lineTo(-r*0.8, -r*1.1); ctx.lineTo(-r*0.2, -r*0.7); ctx.fill(); ctx.beginPath(); ctx.moveTo(r*0.6, -r*0.6); ctx.lineTo(r*0.8, -r*1.1); ctx.lineTo(r*0.2, -r*0.7); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-r*0.35, -r*0.1, r*0.35, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(r*0.35, -r*0.1, r*0.35, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = e.phase === 2 ? '#ff4757' : '#f1c40f'; ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.1, r*0.15, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.1, r*0.15, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#d35400'; ctx.beginPath(); ctx.moveTo(-r*0.15, r*0.1); ctx.lineTo(r*0.15, r*0.1); ctx.lineTo(0, r*0.4); ctx.fill();
-            } else if (e.type === 'hawk') {
-                ctx.fillStyle = e.state === 'bonked' ? '#ff9f43' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r*1.2, r*0.6, 0, 0, Math.PI*2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(120,60,0,0.8)'; let wY = -Math.sin(e.flapPhase)*r*1.5; ctx.beginPath(); ctx.moveTo(-r*0.2, 0); ctx.lineTo(-r*0.8, wY); ctx.lineTo(r*0.4, 0); ctx.fill(); }
-                ctx.fillStyle = e.phase === 2 ? '#ff4757' : '#f1c40f'; ctx.beginPath(); ctx.arc(d*r*0.6, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.moveTo(d*r*0.9, -r*0.1); ctx.lineTo(d*r*1.4, r*0.1); ctx.lineTo(d*r*0.8, r*0.2); ctx.fill();
-            } else if (e.type === 'condor') {
-                if (e.shield) { ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, r*1.2 + Math.sin(Date.now()/100)*5, 0, Math.PI*2); ctx.stroke(); }
-                ctx.fillStyle = e.state === 'bonked' ? '#576574' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r, r*0.7, 0, 0, Math.PI*2); ctx.fill(); 
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(d*r*0.6, -r*0.3, r*0.4, r*0.3, 0, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#ff9ff3'; ctx.beginPath(); ctx.arc(d*r*0.9, -r*0.5, r*0.25, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.moveTo(d*r*1.1, -r*0.6); ctx.lineTo(d*r*1.5, -r*0.3); ctx.lineTo(d*r*1.0, -r*0.4); ctx.fill();
-            } else if (e.type === 'champion') {
-                ctx.shadowColor = '#F1C40F'; ctx.shadowBlur = 20; ctx.fillStyle = e.state === 'bonked' ? '#ff9f43' : e.color; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-                ctx.fillStyle = '#F1C40F'; ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.8); ctx.lineTo(-r*0.5, -r*1.4); ctx.lineTo(-r*0.1, -r*1.1); ctx.lineTo(0, -r*1.6); ctx.lineTo(r*0.1, -r*1.1); ctx.lineTo(r*0.5, -r*1.4); ctx.lineTo(r*0.4, -r*0.8); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(255,107,107,0.7)'; let wY = -Math.sin(e.flapPhase)*r*1.2; ctx.beginPath(); ctx.ellipse(0, wY, r*0.8, r*0.3, 0, 0, Math.PI*2); ctx.fill(); }
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(d*r*0.5, -r*0.2, r*0.1, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(d*r*0.8, 0); ctx.lineTo(d*r*1.3, 0); ctx.lineTo(d*r*0.8, r*0.3); ctx.fill();
-            } else if (e.type === 'pelicanking') {
-                ctx.fillStyle = e.state === 'bonked' ? '#ffe0e0' : '#fffacd'; ctx.beginPath(); ctx.ellipse(0, 2, r * 1.08, r, 0, 0, Math.PI * 2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(140,140,140,0.28)'; ctx.beginPath(); ctx.ellipse(0, -Math.sin(e.flapPhase)*4, r * 0.92, r * 0.28, 0, 0, Math.PI * 2); ctx.fill(); }
-                let hx = d * r * 0.82, hy = -r * 0.42; ctx.beginPath(); ctx.arc(hx, hy, r * 0.48, 0, Math.PI * 2); ctx.fill();
-                // Expanded King Beak
-                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.moveTo(hx+d*r*0.4, hy+1); ctx.quadraticCurveTo(hx+d*55, hy-4, hx+d*55, hy+8); ctx.quadraticCurveTo(hx+d*30, hy+30, hx+d*r*0.3, hy+10); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*3, hy-2, 3.5, 0, Math.PI*2); ctx.fill();
-            }
-        } else {
-            if (e.type === 'robin') {
-                ctx.globalAlpha = e.state === 'bonked' ? 0.6 : 1.0;
-                ctx.fillStyle = e.color; ctx.beginPath(); ctx.ellipse(0, 2, r * 1.15, r * 0.88, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(190,45,55,0.65)'; ctx.beginPath(); ctx.ellipse(d * r * 0.1, r * 0.38, r * 0.44, r * 0.36, 0, 0, Math.PI * 2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(170,55,75,0.38)'; ctx.beginPath(); ctx.ellipse(0, -Math.sin(e.flapPhase)*3.5, r * 0.88, r * 0.28, 0, 0, Math.PI * 2); ctx.fill(); }
-                let hx = d * r * 0.78, hy = -r * 0.34; ctx.fillStyle = e.color; ctx.beginPath(); ctx.arc(hx, hy, r * 0.5, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*2, hy-1, 2, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#feca57'; ctx.beginPath(); ctx.moveTo(hx+d*r*0.5, hy); ctx.lineTo(hx+d*9, hy+1.5); ctx.lineTo(hx+d*r*0.5, hy+5); ctx.fill();
-                if (e.hasArmor && e.state === 'flying') {
-                    ctx.fillStyle = '#bdc3c7'; ctx.beginPath(); ctx.arc(hx, hy-2, r*0.55, Math.PI, 0); ctx.lineTo(hx+r*0.55, hy+4); ctx.lineTo(hx-r*0.55, hy+4); ctx.fill();
-                    ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 2; ctx.stroke();
-                }
-                ctx.globalAlpha = 1.0;
-            } else if (e.type === 'pelican') {
-                ctx.fillStyle = e.state === 'bonked' ? '#ffe0e0' : e.color; ctx.beginPath(); ctx.ellipse(0, 2, r * 1.08, r, 0, 0, Math.PI * 2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(140,140,140,0.28)'; ctx.beginPath(); ctx.ellipse(0, -Math.sin(e.flapPhase)*4, r * 0.92, r * 0.28, 0, 0, Math.PI * 2); ctx.fill(); }
-                let hx = d * r * 0.82, hy = -r * 0.42; ctx.fillStyle = e.state === 'bonked' ? '#ffe0e0' : e.color; ctx.beginPath(); ctx.arc(hx, hy, r * 0.48, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*3, hy-2, 2.5, 0, Math.PI*2); ctx.fill();
-                // Expanded standard pelican beak
-                ctx.fillStyle = '#fca311'; ctx.beginPath(); ctx.moveTo(hx+d*r*0.4, hy+1); ctx.quadraticCurveTo(hx+d*45, hy-2, hx+d*45, hy+6); ctx.quadraticCurveTo(hx+d*20, hy+22, hx+d*r*0.3, hy+8); ctx.fill();
-            } else if (e.type === 'hummingbird') {
-                ctx.fillStyle = e.state === 'bonked' ? '#a8e6cf' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r * 1.7, r * 0.82, 0, 0, Math.PI * 2); ctx.fill();
-                let hx = d * r * 1.15, hy = -r * 0.22; ctx.beginPath(); ctx.arc(hx, hy, r * 0.6, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*2, hy-1, 1.5, 0, Math.PI*2); ctx.fill();
-                ctx.strokeStyle = '#feca57'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(hx+d*r*0.5, hy+0.5); ctx.lineTo(hx+d*r*2, hy+0.5); ctx.stroke();
-            }
-        }
-        if (e.damageFlash > 0) { ctx.globalAlpha = e.damageFlash * 0.5; ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.arc(0, 0, r * 1.1, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; }
-        ctx.globalAlpha = 1.0; ctx.restore();
-    }
-
-    function drawProjectile(p) {
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation);
-        let pulse = 1 + Math.sin(Date.now() / 150) * 0.2;
-        ctx.fillStyle = 'rgba(255, 71, 87, 0.3)'; ctx.beginPath(); ctx.arc(0, 0, p.radius * 1.5 * pulse, 0, Math.PI * 2); ctx.fill();
-        ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 4;
-        if (p.type === 'owl') {
-            ctx.fillStyle = '#8B7355'; ctx.beginPath(); ctx.ellipse(0, 0, 8, 22, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, 20); ctx.stroke();
-        } else if (p.type === 'hawk') {
-            ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.moveTo(-10, -15); ctx.quadraticCurveTo(20, 0, -10, 15); ctx.quadraticCurveTo(5, 0, -10, -15); ctx.fill();
-        } else if (p.type === 'pelicanking') {
-            ctx.fillStyle = '#3498db'; ctx.beginPath(); ctx.ellipse(0, 5, 15, 18, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.moveTo(-5, -12); ctx.lineTo(5, -12); ctx.lineTo(0, -18); ctx.fill();
-        } else if (p.type === 'condor') {
-            ctx.fillStyle = '#f9ca24'; ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-10, -5); ctx.lineTo(2, 5); ctx.lineTo(-2, 10); ctx.lineTo(10, -5); ctx.stroke();
-        } else if (p.type === 'champion') {
-            ctx.fillStyle = '#e84118'; ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fbc531'; ctx.beginPath(); ctx.arc(0, 2, 12, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.restore();
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height); ctx.save();
-        if (screenShake > 0) { ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake); screenShake *= 0.78; }
-        drawBackground();
-        if (activePowerup === 'freeze') { ctx.fillStyle = 'rgba(0, 210, 255, 0.15)'; ctx.fillRect(0, 0, width, height); ctx.strokeStyle = 'rgba(0, 210, 255, 0.3)'; ctx.lineWidth = 15; ctx.strokeRect(0, 0, width, height); }
-
-        particles.forEach(p => { ctx.save(); ctx.translate(p.x, p.y); ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
-        projectiles.forEach(drawProjectile);
-        enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
-        
-        if (LEVEL_CONFIGS[currentLevel].clouds) {
-            ctx.fillStyle = 'rgba(255,255,255,0.85)';
-            clouds.forEach(c => { 
-                ctx.beginPath(); 
-                // Overlapping circles to create volume for the clouds
-                ctx.arc(c.x, c.y, c.h, 0, Math.PI*2); 
-                ctx.arc(c.x + c.w * 0.35, c.y - c.h * 0.3, c.h * 1.1, 0, Math.PI*2); 
-                ctx.arc(c.x - c.w * 0.35, c.y - c.h * 0.2, c.h * 0.9, 0, Math.PI*2); 
-                ctx.arc(c.x + c.w * 0.7, c.y + c.h * 0.1, c.h * 0.7, 0, Math.PI*2); 
-                ctx.arc(c.x - c.w * 0.7, c.y + c.h * 0.2, c.h * 0.6, 0, Math.PI*2); 
-                ctx.fill(); 
             });
         }
-        
-        arrows.forEach(a => { 
-            ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.angle); 
-            ctx.fillStyle = '#555'; ctx.fillRect(-20,-2,40,4); 
-            if (a.isPlunger) {
-                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.moveTo(20, -10); ctx.lineTo(20, 10); ctx.lineTo(55, 30); ctx.lineTo(55, -30); ctx.closePath(); ctx.fill();
-            } else {
-                ctx.fillStyle = '#555'; ctx.beginPath(); ctx.moveTo(20, -5); ctx.lineTo(20, 5); ctx.lineTo(30, 0); ctx.closePath(); ctx.fill();
-            }
-            ctx.restore(); 
-        });
-        drawBowAndAim();
-        floatingTexts.forEach(ft => { ctx.save(); ctx.globalAlpha = ft.life; ctx.font = "bold 20px 'Segoe UI'"; ctx.fillStyle = ft.color; ctx.textAlign='center'; ctx.fillText(ft.text, ft.x, ft.y); ctx.restore(); });
-        ctx.restore();
-    }
-
-    function loop(timestamp) { if (state !== 'playing') return; let dt = Math.min((timestamp - lastTime) / 1000, 0.05); lastTime = timestamp; update(dt); draw(); requestAnimationFrame(loop); }
-    function getPos(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
-    function pointerDown(e) { if (state === 'playing') { isAiming = true; dragStart = getPos(e); dragCurrent = { ...dragStart }; } }
-    function pointerMove(e) { if (isAiming) { dragCurrent = getPos(e); e.preventDefault(); } }
-    function pointerUp() { if (isAiming) { isAiming = false; pointerUpFire(); } }
-    
-    function pointerUpFire() {
-        let dx = dragStart.x - dragCurrent.x, dy = dragStart.y - dragCurrent.y;
-        if (dy >= 0 || Math.hypot(dx, dy) < 10) return;
-        playSound('shoot'); 
-        
-        let speed = Math.hypot(dx * POWER_SCALE, dy * POWER_SCALE);
-        let angle = Math.atan2(dy, dx);
-        let isPlunger = activePowerup === 'plunger';
-
-        if (activePowerup === 'scatter') {
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle - 0.15)*speed, vy: Math.sin(angle - 0.15)*speed, angle: angle - 0.15, isPlunger });
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger });
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle + 0.15)*speed, vy: Math.sin(angle + 0.15)*speed, angle: angle + 0.15, isPlunger });
-        } else {
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger });
-        }
-    }
-
-    function spawnText(x, y, text, color) { floatingTexts.push({ x, y, text, color, life: 1.0 }); }
-    function spawnParticles(x, y, color, count) { for (let i=0; i<count; i++) particles.push({ x,y, vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8, color, life:1.0, size: Math.random()*4+2 }); }
-    function triggerShake(a) { screenShake = a; }
-
-    canvas.addEventListener('mousedown', pointerDown); canvas.addEventListener('mousemove', pointerMove); window.addEventListener('mouseup', pointerUp);
-    canvas.addEventListener('touchstart', pointerDown, {passive: false}); canvas.addEventListener('touchmove', pointerMove, {passive: false}); window.addEventListener('touchend', pointerUp);
-    
-    document.getElementById('startBtn').addEventListener('click', () => modeSelectScreen.classList.remove('hidden'));
-    document.getElementById('modeStoryBtn').addEventListener('click', () => startGame('story'));
-    document.getElementById('nextLevelBtn').addEventListener('click', () => { currentLevel++; if (currentLevel < 5) startGame('story', true); else { state='menu'; startScreen.classList.remove('hidden'); levelCompleteScreen.classList.add('hidden'); } });
-    document.getElementById('restartBtn').addEventListener('click', () => startGame(mode));
-    document.getElementById('menuBtn').addEventListener('click', () => { state='menu'; startScreen.classList.remove('hidden'); gameOverScreen.classList.add('hidden'); });
-
-    let lastTime = performance.now(); draw();
-};
-</script>
+    </script>
 </body>
+
 </html>
