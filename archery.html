@@ -110,21 +110,9 @@
     <div class="flex flex-col sm:flex-row items-center justify-center gap-8 px-4 max-w-4xl w-full">
         
         <!-- Unconfined Image Container -->
-        <div class="relative w-48 h-auto sm:w-80 shrink-0 flex items-center justify-center">
-            <!-- SVG Fallback Portrait (Shows instantly in preview if local image fails to load) -->
-            <svg class="w-full h-auto drop-shadow-2xl" viewBox="-35 -70 70 80" xmlns="http://www.w3.org/2000/svg">
-                <path d="M -23 -35 A 23 23 0 0 1 23 -35 L 26 8 L -26 8 Z" fill="#2c1810"/>
-                <rect x="-18" y="-35" width="36" height="35" rx="4" fill="#222"/>
-                <circle cx="0" cy="-45" r="18" fill="#f1c27d"/>
-                <circle cx="-6" cy="-45" r="2.5" fill="#111"/>
-                <circle cx="6" cy="-45" r="2.5" fill="#111"/>
-                <circle cx="-11" cy="-41" r="3.5" fill="#FF8A8A" opacity="0.6"/>
-                <circle cx="11" cy="-41" r="3.5" fill="#FF8A8A" opacity="0.6"/>
-                <path d="M -5 -41 A 5 5 0 0 0 5 -41 Z" fill="#fff" stroke="#111" stroke-width="1"/>
-                <path d="M 0 -63 Q -20 -63 -20 -40 Q -15 -35 -4 -50 M 0 -63 Q 20 -63 20 -40 Q 15 -35 4 -50" fill="#2c1810"/>
-            </svg>
+        <div class="w-48 h-auto sm:w-80 shrink-0 flex items-center justify-center">
             <!-- Actual Local Image (Uses relative path ./ and hides if missing) -->
-            <img src="./photos/ally.png" alt="Ally" class="absolute inset-0 w-full h-full object-contain z-10 drop-shadow-2xl" onerror="this.style.display='none'">
+            <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
         </div>
         
         <!-- Text & Button Column -->
@@ -284,7 +272,7 @@ window.onload = function () {
 
     function initClouds() {
         clouds = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             clouds.push({ x: Math.random() * width, y: 50 + Math.random() * (height * 0.4), w: 120 + Math.random() * 100, h: 50 + Math.random() * 40, speed: 0.2 + Math.random() * 0.3 });
         }
     }
