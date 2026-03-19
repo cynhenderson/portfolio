@@ -305,18 +305,18 @@ window.onload = function () {
     const DRAG = 0.985;
 
     const LEVEL_CONFIGS = [
-        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: true, wavy: false },
-        { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.4, clouds: true, wavy: false },
+        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: false, wavy: false },
+        { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.3, clouds: false, wavy: false },
         { name: 'Cloudy Grove',       bgTop: '#6EB5D3', bgBot: '#81C784', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 8,  birdSpeed: 1.2, spawnRate: 0.014, waveTransDuration: 2.5, bossType: 'pelicanking', armorChance: 0.5, clouds: true, wavy: false },
         { name: 'Storm Summit',       bgTop: '#2C3E50', bgBot: '#1A252F', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 10, birdSpeed: 1.4, spawnRate: 0.016, waveTransDuration: 2.0, bossType: 'condor', armorChance: 0.6, clouds: false, wavy: true },
         { name: 'Championship Arena', bgTop: '#7B5EA7', bgBot: '#9CCC65', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 12, birdSpeed: 1.7, spawnRate: 0.018, waveTransDuration: 2.0, bossType: 'champion', armorChance: 0.7, clouds: true, wavy: true },
     ];
     const BOSS_CONFIGS = {
-        owl:        { name: 'Giant Owl',        hp: 8,  radius: 65, color: '#8B7355', speed: 1.2 },
-        hawk:       { name: 'Speed Hawk',       hp: 6,  radius: 45, color: '#7B3F00', speed: 2.0 },
-        pelicanking:{ name: 'Pelican King',     hp: 10, radius: 70, color: '#FFFDE0', speed: 1.4 },
-        condor:     { name: 'Thunder Condor',   hp: 12, radius: 60, color: '#2c3e50', speed: 2.2, shield: true },
-        champion:   { name: 'El Luchador',      hp: 15, radius: 55, color: '#FF6B6B', speed: 2.8 },
+        owl:        { name: 'Giant Owl',        hp: 8,  radius: 65, color: '#8B7355', speed: 1.2, enrageMult: 1.6 },
+        hawk:       { name: 'Speed Hawk',       hp: 6,  radius: 45, color: '#7B3F00', speed: 2.0, enrageMult: 1.4 },
+        pelicanking:{ name: 'Pelican King',     hp: 10, radius: 70, color: '#FFFDE0', speed: 1.4, enrageMult: 1.5 },
+        condor:     { name: 'Thunder Condor',   hp: 12, radius: 60, color: '#2c3e50', speed: 2.2, shield: true, enrageMult: 1.3 },
+        champion:   { name: 'El Luchador',      hp: 15, radius: 55, color: '#FF6B6B', speed: 2.8, enrageMult: 1.15 },
     };
 
     let width, height;
@@ -406,9 +406,11 @@ window.onload = function () {
         if (birdPool.includes('hummingbird') && Math.random() < 0.10) { type = 'hummingbird'; }
         else if (birdPool.includes('pelican') && pelicansSpawnedThisWave < (currentLevel >= 2 ? 2 : 1) && Math.random() < 0.08) { type = 'pelican'; pelicansSpawnedThisWave++; }
         else if (mode === 'zen' && Math.random() < 0.04) { type = 'football'; }
+        else if (Math.random() < 0.02) { type = 'thor'; }
 
         let isLeft = Math.random() > 0.5, startX = isLeft ? -50 : width + 50, startY = 120 + Math.random() * (height * 0.30), dir = isLeft ? 1 : -1;
-        let radius = type === 'hummingbird' ? 12 : type === 'pelican' ? 32 : type === 'football' ? 22 : 22, hp = type === 'pelican' ? 2 : 1;
+        let radius = type === 'thor' ? 26 : (type === 'hummingbird' ? 12 : type === 'pelican' ? 32 : type === 'football' ? 22 : 22);
+        let hp = type === 'pelican' ? 2 : 1;
         let hasArmor = (type === 'robin' && Math.random() < lc.armorChance);
         let vx = dir * (type === 'hummingbird' ? lc.birdSpeed * 2.0 : type === 'pelican' ? lc.birdSpeed * 0.4 : lc.birdSpeed);
 
@@ -491,10 +493,17 @@ window.onload = function () {
                         if (en.type === 'football') {
                             playSound('powerup');
                             let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
-                            for (let c = 0; c < 40; c++) {
-                                spawnParticles(en.x, en.y, confettiColors[Math.floor(Math.random() * confettiColors.length)], 1);
-                            }
+                            for (let c = 0; c < 40; c++) spawnParticles(en.x, en.y, confettiColors[Math.floor(Math.random() * confettiColors.length)], 1);
                             spawnText(en.x, en.y - 40, 'TOUCHDOWN!', '#f1c40f');
+                        }
+
+                        if (en.type === 'thor') {
+                            playSound('powerup');
+                            spawnText(en.x, en.y - 20, 'FLUFFY SURPRISE!', '#fff');
+                            let confettiColors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#ffffff'];
+                            for (let c = 0; c < 40; c++) {
+                                spawnParticles(en.x, en.y, confettiColors[Math.floor(Math.random() * confettiColors.length)], 2);
+                            }
                         }
 
                         if (en.type === 'hummingbird') {
@@ -577,7 +586,12 @@ window.onload = function () {
             bossBarFill.style.width = `${Math.max(0, (bossEnemy.hp / bossEnemy.maxHp) * 100)}%`;
         }
 
-        clouds.forEach(c => { c.x += c.speed * speed; if (c.x > width + 50) c.x = -c.w; });
+        clouds.forEach(c => { 
+            c.x += c.speed * speed; 
+            if (c.x > width + 50) {
+                c.x = mode === 'zen' ? -c.w - (Math.random() * 3000 + 2000) : -c.w; 
+            } 
+        });
 
         for (let i = arrows.length - 1; i >= 0; i--) {
             let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; 
@@ -598,12 +612,22 @@ window.onload = function () {
                 if (e.wavy) e.y = e.baseY + Math.sin(e.x * 0.03) * 60;
                 else if (e.type === 'hummingbird') e.y = e.baseY + Math.sin(e.x * 0.05) * 38;
                 else if (e.type === 'football') e.y = e.baseY + Math.sin(e.x * 0.02) * 20; 
+                else if (e.type === 'thor') e.y = e.baseY + Math.sin(e.x * 0.03) * 15;
                 
                 if (e.x < -100 || e.x > width + 100) { 
                     if (mode !== 'zen' && (e.type === 'pelican')) triggerLifeLost();
                     enemies.splice(i, 1); 
                 }
-            } else if (e.state === 'bonked' || e.state === 'dead') { e.y -= 1.8; if (e.y < -100) enemies.splice(i, 1); }
+            } else if (e.state === 'bonked' || e.state === 'dead') { 
+                if (e.type === 'thor') {
+                    e.y += 1.5; 
+                    e.x += Math.sin(e.y * 0.05) * 1.5; 
+                    if (e.y > height + 100) enemies.splice(i, 1);
+                } else {
+                    e.y -= 1.8; 
+                    if (e.y < -100) enemies.splice(i, 1); 
+                }
+            }
         }
 
         for (let i = floatingTexts.length - 1; i >= 0; i--) { let ft = floatingTexts[i]; ft.y -= 1.1; ft.life -= 0.022; if (ft.life <= 0) floatingTexts.splice(i, 1); }
@@ -614,7 +638,9 @@ window.onload = function () {
         boss.flapPhase += 0.12 * speedMod; boss.phaseTimer += dt * speedMod; boss.attackTimer -= dt * speedMod;
         
         if (boss.hp <= boss.maxHp * 0.5 && boss.phase === 1) { 
-            boss.phase = 2; boss.vx *= 1.6; 
+            boss.phase = 2; 
+            let mult = BOSS_CONFIGS[boss.type].enrageMult || 1.5;
+            boss.vx *= mult; 
             spawnText(boss.x, boss.y - 50, 'ENRAGED!', '#ff4757');
             triggerShake(5);
         }
@@ -643,7 +669,12 @@ window.onload = function () {
         if (!isNextLevel) { 
             score = 0; lives = 5; currentLevel = 0; arrowsFired = 0; arrowsHit = 0; 
             playMusic();
-            if (mode === 'zen') zenTime = 0; 
+            if (mode === 'zen') {
+                zenTime = 0;
+                clouds.forEach((c, i) => c.x = -c.w - (Math.random() * 2000 + i * 2500));
+            } else {
+                initClouds();
+            }
         }
         currentWave = 0; waveBirdsKilled = 0;
         arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
@@ -1044,6 +1075,63 @@ window.onload = function () {
                 for(let i=-6; i<=6; i+=4) { 
                     ctx.beginPath(); ctx.moveTo(i, -r*0.7); ctx.lineTo(i, -r*0.5); ctx.stroke(); 
                 }
+            } else if (e.type === 'thor') {
+                let isSurprised = e.state === 'bonked';
+                
+                // Tiny absurd wings
+                ctx.fillStyle = '#f5f6fa';
+                let wingFlap = e.state === 'flying' ? Math.sin(e.flapPhase * 3) * 15 : -15;
+                
+                ctx.save(); ctx.translate(-r*0.8, -r*0.2); ctx.rotate(wingFlap * 0.05);
+                ctx.beginPath(); ctx.ellipse(-8, 0, 12, 6, 0, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
+                
+                ctx.save(); ctx.translate(r*0.8, -r*0.2); ctx.rotate(-wingFlap * 0.05);
+                ctx.beginPath(); ctx.ellipse(8, 0, 12, 6, 0, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
+
+                // Fluffy Persian body
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.arc(-r*0.5, -r*0.4, r*0.7, 0, Math.PI * 2);
+                ctx.arc(r*0.5, -r*0.4, r*0.7, 0, Math.PI * 2);
+                ctx.arc(-r*0.6, r*0.4, r*0.6, 0, Math.PI * 2);
+                ctx.arc(r*0.6, r*0.4, r*0.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pointy little ears
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.7); ctx.lineTo(-r*0.8, -r*1.1); ctx.lineTo(-r*0.8, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.7); ctx.lineTo(r*0.8, -r*1.1); ctx.lineTo(r*0.8, -r*0.4); ctx.fill();
+                
+                ctx.fillStyle = '#ffcccc'; // Pink inner ears
+                ctx.beginPath(); ctx.moveTo(-r*0.5, -r*0.6); ctx.lineTo(-r*0.7, -r*0.9); ctx.lineTo(-r*0.7, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.5, -r*0.6); ctx.lineTo(r*0.7, -r*0.9); ctx.lineTo(r*0.7, -r*0.4); ctx.fill();
+
+                if (isSurprised) {
+                    // Surprised Face (Wide eyes, O mouth)
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(-r*0.3, -r*0.1, 4.5, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.3, -r*0.1, 4.5, 0, Math.PI*2); ctx.fill();
+                    
+                    ctx.fillStyle = '#ffb8b8';
+                    ctx.beginPath(); ctx.ellipse(0, r*0.2, 5, 8, 0, 0, Math.PI*2); ctx.fill();
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.5; ctx.stroke();
+                } else {
+                    // Grumpy/Unimpressed Face
+                    ctx.fillStyle = '#111';
+                    ctx.fillRect(-r*0.45, -r*0.15, r*0.35, 3); // Squinty eyes
+                    ctx.fillRect(r*0.1, -r*0.15, r*0.35, 3);
+                    
+                    // Pink nose
+                    ctx.fillStyle = '#ffb8b8';
+                    ctx.beginPath(); ctx.moveTo(-3, r*0.1); ctx.lineTo(3, r*0.1); ctx.lineTo(0, r*0.18); ctx.fill();
+                    
+                    // Grumpy mouth
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.moveTo(-6, r*0.25); ctx.quadraticCurveTo(0, r*0.2, 6, r*0.25); ctx.stroke();
+                }
             }
         }
         if (e.damageFlash > 0) { ctx.globalAlpha = e.damageFlash * 0.5; ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.arc(0, 0, r * 1.1, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; }
@@ -1113,10 +1201,7 @@ window.onload = function () {
         
         if (state === 'victory') { ctx.restore(); return; } // Freeze the rest of drawing if we won
         
-        projectiles.forEach(drawProjectile);
-        enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
-        
-        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive) {
+        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive && waveTransTimer <= 0) {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             clouds.forEach(c => { 
                 ctx.beginPath(); 
@@ -1128,6 +1213,9 @@ window.onload = function () {
                 ctx.fill(); 
             });
         }
+        
+        projectiles.forEach(drawProjectile);
+        enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
         
         arrows.forEach(a => { 
             ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.angle); 
