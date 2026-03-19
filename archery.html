@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="preload" href="/photos/ally.png" as="image">
 
     <style>
         body, html {
@@ -612,7 +613,13 @@ window.onload = function () {
                         if (en.type === 'target') {
                             targetsHit++; challengeTotalTargetsHit++;
                             if (mode === 'challenge') scoreDisp.textContent = targetsToHit - targetsHit;
-                            playSound('powerup'); spawnParticles(en.x, en.y, '#e74c3c', 15);
+                            playSound('powerup'); 
+                            
+                            // SHATTERING EFFECT
+                            spawnParticles(en.x, en.y, '#e74c3c', 12);
+                            spawnParticles(en.x, en.y, '#ffffff', 10);
+                            spawnParticles(en.x, en.y, '#f1c40f', 6);
+                            
                         } else { playSound('fall'); }
 
                         combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
@@ -652,6 +659,11 @@ window.onload = function () {
                                 if (currentLevel === 4) { state = 'victory'; gameWonScreen.classList.remove('hidden'); document.getElementById('winScore').textContent = score;
                                 } else { state = 'levelComplete'; levelCompleteScreen.classList.remove('hidden'); document.getElementById('levelScore').textContent = score; }
                             }, 1200);
+                        }
+                        
+                        // DELETE TARGET IMMEDIATELY (Prevents floating down)
+                        if (en.type === 'target') {
+                            enemies.splice(e, 1);
                         }
                     }
                     break;
@@ -773,7 +785,7 @@ window.onload = function () {
                     }
                 }
             } else if (e.state === 'bonked' || e.state === 'dead') { 
-                if (e.type === 'thor' || e.type === 'target') {
+                if (e.type === 'thor') {
                     e.y += 1.5; e.x += Math.sin(e.y * 0.05) * 1.5; 
                     if (e.y > height + 100) enemies.splice(i, 1);
                 } else {
