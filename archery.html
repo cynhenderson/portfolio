@@ -85,7 +85,7 @@
         </div>
         <div class="hud-panel text-center zen hidden" id="zenPanel">
             <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
-            <div class="text-xl font-black text-gray-800" id="accuracyDisplay">0%</div>
+            <div class="text-xl font-black text-gray-800" id="accuracyDisplay">100%</div>
         </div>
     </div>
     
@@ -97,8 +97,8 @@
     <button id="zenBackBtn" class="hidden absolute bottom-4 right-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto" style="background:#fff;color:#111;">&#8592; Done</button>
 </div>
 
-<!-- Boss HP Bar -->
-<div id="bossBar" class="hidden absolute top-1 left-1/2 -translate-x-1/2 z-40" style="width:min(320px,80vw)">
+<!-- Boss HP Bar: Moved to top-20 to avoid HUD overlap -->
+<div id="bossBar" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40" style="width:min(320px,80vw)">
     <div class="text-center text-sm font-black text-white drop-shadow mb-0.5" id="bossName" style="text-shadow:0 2px 4px #000">Giant Owl</div>
     <div class="h-6 border-4 border-black overflow-hidden" style="background:rgba(100,0,0,0.8);">
         <div id="bossBarFill" class="h-full transition-all duration-150" style="width:100%;background:linear-gradient(90deg,#ff4757,#ff6b81);"></div>
@@ -108,14 +108,9 @@
 <!-- Start Screen -->
 <div id="startScreen" class="screen-overlay">
     <div class="flex flex-col sm:flex-row items-center justify-center gap-8 px-4 max-w-4xl w-full">
-        
-        <!-- Unconfined Image Container -->
         <div class="w-48 h-auto sm:w-80 shrink-0 flex items-center justify-center">
-            <!-- Actual Local Image (Uses relative path ./ and hides if missing) -->
-            <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
+            <img src="./photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
         </div>
-        
-        <!-- Text & Button Column -->
         <div class="flex flex-col text-center sm:text-left items-center sm:items-start">
             <h1 class="text-5xl sm:text-7xl font-black text-yellow-400 leading-tight drop-shadow-lg mb-4" style="-webkit-text-stroke:3px #111; text-shadow: 4px 4px 0px #111;">ALLY'S<br>ARCHERY</h1>
             <p class="text-lg sm:text-xl font-bold text-gray-700 mb-8 max-w-sm leading-relaxed">
@@ -123,7 +118,6 @@
             </p>
             <button id="startBtn" class="btn">PLAY NOW 🎯</button>
         </div>
-        
     </div>
 </div>
 
@@ -138,7 +132,7 @@
         </button>
         <button id="modeZenBtn" class="mode-card">
             <span class="text-2xl font-black text-gray-900">🎯 ZEN</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · precision scoring</div>
+            <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · endless scoring</div>
         </button>
     </div>
 </div>
@@ -210,6 +204,8 @@ window.onload = function () {
     const powerDisp = document.getElementById('powerupDisplay');
     const storyPanel = document.getElementById('storyPanel');
     const livesPanel = document.getElementById('livesPanel');
+    const zenPanel = document.getElementById('zenPanel');
+    const accuracyDisp = document.getElementById('accuracyDisplay');
     const livesDisp = document.getElementById('livesDisplay');
     const levelLabel = document.getElementById('levelLabel');
     const waveDisp = document.getElementById('waveDisplay');
@@ -224,6 +220,7 @@ window.onload = function () {
     const waveSubText = document.getElementById('waveSubText');
     const levelCompleteScreen = document.getElementById('levelCompleteScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
+    const zenBackBtn = document.getElementById('zenBackBtn');
 
     const GRAVITY = 0.65;
     const MAX_DRAG = 200;
@@ -247,7 +244,7 @@ window.onload = function () {
 
     let width, height;
     let state = 'menu'; 
-    let mode = 'endless'; 
+    let mode = 'story'; 
     let score = 0;
     let lives = 5;
     let screenShake = 0;
@@ -256,6 +253,7 @@ window.onload = function () {
     let currentLevel = 0, currentWave = 0, waveBirdsKilled = 0;
     let pelicansSpawnedThisWave = 0; 
     let waveTransTimer = 0, bossActive = false, bossEnemy = null;
+    let arrowsFired = 0, arrowsHit = 0;
 
     let bow = { x: 0, y: 0 };
     let dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 }, isAiming = false;
@@ -294,10 +292,21 @@ window.onload = function () {
         ctx.fillStyle = '#111'; ctx.fillRect(0, height - 6, width, 6);
     }
 
+    function updateAccuracy() {
+        if (arrowsFired > 0) {
+            let acc = Math.round((arrowsHit / arrowsFired) * 100);
+            accuracyDisp.textContent = acc + '%';
+        }
+    }
+
     function spawnStoryEnemy() {
         if (bossActive || waveTransTimer > 0) return;
-        let lc = LEVEL_CONFIGS[currentLevel];
-        if (currentWave >= 3 || waveBirdsKilled >= lc.waveBirds || Math.random() > lc.spawnRate) return;
+        
+        // Zen Mode Spawning Override (No Waves, No Pelicans, Endless Robins/Hummingbirds)
+        let lc = mode === 'zen' ? { birdTypes: ['robin', 'hummingbird'], spawnRate: 0.02, birdSpeed: 1.0, armorChance: 0.1, wavy: false } : LEVEL_CONFIGS[currentLevel];
+        
+        if (mode === 'story' && (currentWave >= 3 || waveBirdsKilled >= lc.waveBirds)) return;
+        if (Math.random() > lc.spawnRate) return;
 
         let birdPool = lc.birdTypes, type = 'robin';
         if (birdPool.includes('hummingbird') && Math.random() < 0.10) type = 'hummingbird';
@@ -334,6 +343,7 @@ window.onload = function () {
                 let proj = projectiles[p];
                 if (Math.hypot(tipX - proj.x, tipY - proj.y) < proj.radius + tipR) {
                     playSound('bonk'); projectiles.splice(p, 1); arrow.vy = -3; 
+                    arrow.rotV = (Math.random() - 0.5) * 0.5; // Tumbling effect
                     score += 150; scoreDisp.textContent = score; 
                     spawnText(proj.x, proj.y, 'DEFLECTED!', '#00d2ff'); 
                     spawnParticles(proj.x, proj.y, '#00d2ff', 10);
@@ -343,49 +353,68 @@ window.onload = function () {
 
             for (let e = enemies.length - 1; e >= 0; e--) {
                 let en = enemies[e]; if (en.state !== 'flying') continue;
+                
+                // MULTI-HIT BUG FIX: Check if this specific arrow already hit this specific enemy
+                if (arrow.hitTargets && arrow.hitTargets.has(en)) continue;
+
                 let dist = Math.hypot(tipX - en.x, tipY - en.y); if (dist > en.radius + tipR) continue;
+
+                // Mark the target as hit so it isn't hit again next frame
+                arrow.hitTargets.add(en);
+                let isDeflected = false;
 
                 if (en.hasArmor) {
                     if (arrow.isPlunger) { 
                         en.hasArmor = false; playSound('clink'); spawnParticles(en.x, en.y, '#bdc3c7', 15); 
                         spawnText(en.x, en.y - 30, 'ARMOR RIPPED!', '#F1C40F'); 
                     } else { 
-                        en.hasArmor = false; playSound('clink'); arrow.vy = -5.5; 
+                        en.hasArmor = false; playSound('clink'); 
+                        arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; isDeflected = true; 
                         spawnParticles(en.x, en.y, '#bdc3c7', 10); spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); continue; 
                     }
                 }
 
-                if (en.shield) { en.shield = false; arrow.vy = -5; spawnText(en.x, en.y - 30, 'SHIELD BROKEN!', '#00d2ff'); continue; }
+                if (en.shield) { 
+                    en.shield = false; arrow.vy = -5; arrow.rotV = (Math.random() - 0.5) * 0.8; isDeflected = true; 
+                    spawnText(en.x, en.y - 30, 'SHIELD BROKEN!', '#00d2ff'); continue; 
+                }
 
-                playSound('bonk'); triggerShake(en.isBoss ? 8 : 12); en.damageFlash = 1.0; arrow.vy = -5.5; en.hp--;
-                let prec = (dist < (en.radius * 0.4 + (arrow.isPlunger ? 15 : 0))) ? 1.5 : 1;
-                if (prec > 1) spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
+                // Normal hit
+                if (!isDeflected) {
+                    arrowsHit++; updateAccuracy();
+                    playSound('bonk'); triggerShake(en.isBoss ? 8 : 12); en.damageFlash = 1.0; 
+                    arrow.vy = -3; arrow.vx *= 0.5; arrow.rotV = (Math.random() - 0.5) * 0.4; // Tumble slightly on hit
+                    en.hp--;
+                    
+                    let prec = (dist < (en.radius * 0.4 + (arrow.isPlunger ? 15 : 0))) ? 1.5 : 1;
+                    if (prec > 1) spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
 
-                if (en.hp <= 0) {
-                    en.state = en.isBoss ? 'dead' : 'bonked'; if (!en.isBoss) waveBirdsKilled++;
-                    playSound('fall');
-                    combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
-                    let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : 2000) * prec * mult);
-                    score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
-                    
-                    if (mult > 1) { comboDisp.textContent = `x${mult} COMBO!`; comboDisp.classList.remove('hidden'); }
-                    
-                    // Instant Power-up Reward (Parachute replacement)
-                    if (en.type === 'hummingbird') {
-                        let t = ['heart', 'scatter', 'plunger', 'freeze'][Math.floor(Math.random() * 4)];
-                        if (t === 'heart') {
-                            lives++; livesDisp.textContent = lives; spawnText(en.x, en.y, '+1 LIFE!', '#ff4757');
-                        } else {
-                            activePowerup = t; powerupTimer = 10;
-                            powerDisp.textContent = t.toUpperCase() + " ACTIVE!"; powerDisp.classList.remove('hidden');
-                            spawnText(en.x, en.y, 'POWERUP!', '#F1C40F');
+                    if (en.hp <= 0) {
+                        en.state = en.isBoss ? 'dead' : 'bonked'; if (!en.isBoss) waveBirdsKilled++;
+                        playSound('fall');
+                        combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
+                        let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : 2000) * prec * mult);
+                        score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
+                        
+                        if (mult > 1) { comboDisp.textContent = `x${mult} COMBO!`; comboDisp.classList.remove('hidden'); }
+                        
+                        // Instant Power-up Reward
+                        if (en.type === 'hummingbird') {
+                            let t = ['heart', 'scatter', 'plunger', 'freeze'][Math.floor(Math.random() * 4)];
+                            if (t === 'heart') {
+                                lives++; livesDisp.textContent = lives; spawnText(en.x, en.y, '+1 LIFE!', '#ff4757');
+                            } else {
+                                activePowerup = t; powerupTimer = 10;
+                                powerDisp.textContent = t.toUpperCase() + " ACTIVE!"; powerDisp.classList.remove('hidden');
+                                spawnText(en.x, en.y, 'POWERUP!', '#F1C40F');
+                            }
+                            playSound('powerup'); spawnParticles(en.x, en.y, '#f1c40f', 15);
                         }
-                        playSound('powerup'); spawnParticles(en.x, en.y, '#f1c40f', 15);
-                    }
-                    
-                    if (en.isBoss) {
-                        bossActive = false; bossBar.classList.add('hidden'); playSound('levelup');
-                        setTimeout(() => { state = 'levelComplete'; levelCompleteScreen.classList.remove('hidden'); document.getElementById('levelScore').textContent = score; }, 1200);
+                        
+                        if (en.isBoss) {
+                            bossActive = false; bossBar.classList.add('hidden'); playSound('levelup');
+                            setTimeout(() => { state = 'levelComplete'; levelCompleteScreen.classList.remove('hidden'); document.getElementById('levelScore').textContent = score; }, 1200);
+                        }
                     }
                 }
             }
@@ -419,8 +448,14 @@ window.onload = function () {
         clouds.forEach(c => { c.x += c.speed * speed; if (c.x > width + 50) c.x = -c.w; });
 
         for (let i = arrows.length - 1; i >= 0; i--) {
-            let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; a.angle = Math.atan2(a.vy, a.vx);
-            if (a.y > height + 20 || a.x < -120 || a.x > width + 120) arrows.splice(i, 1);
+            let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; 
+            
+            // Tumbling physics
+            if (a.rotV) a.angle += a.rotV;
+            else a.angle = Math.atan2(a.vy, a.vx);
+            
+            // OFF-SCREEN FIX: Include a high ceiling (-400) so arrows shot straight up despawn instead of falling back down seconds later
+            if (a.y > height + 20 || a.y < -400 || a.x < -120 || a.x > width + 120) arrows.splice(i, 1);
         }
 
         for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -480,16 +515,24 @@ window.onload = function () {
 
     function startGame(selectedMode, isNextLevel = false) {
         mode = selectedMode; state = 'playing'; 
-        if (!isNextLevel) { score = 0; lives = 5; currentLevel = 0; }
+        if (!isNextLevel) { score = 0; lives = 5; currentLevel = 0; arrowsFired = 0; arrowsHit = 0; }
         currentWave = 0; waveBirdsKilled = 0;
         arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
         bossActive = false; bossEnemy = null; waveTransTimer = 0;
         
         startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden');
-        storyPanel.classList.toggle('hidden', mode !== 'story'); livesPanel.classList.toggle('hidden', mode === 'zen');
+        storyPanel.classList.toggle('hidden', mode !== 'story'); 
+        livesPanel.classList.toggle('hidden', mode === 'zen');
+        zenPanel.classList.toggle('hidden', mode !== 'zen');
+        zenBackBtn.classList.toggle('hidden', mode !== 'zen');
         bossBar.classList.add('hidden'); waveTransition.classList.add('hidden');
         
+        if (mode === 'zen') document.getElementById('accuracyDisplay').textContent = '100%';
+
         updateHUD(); if (mode === 'story') { waveTransTimer = 3; waveTransText.textContent = "LEVEL " + (currentLevel + 1); waveSubText.textContent = ""; waveTransition.classList.remove('hidden'); }
+        
+        // Reset the delta timer to prevent a massive jump on frame 1
+        lastTime = performance.now();
         requestAnimationFrame(loop);
     }
 
@@ -702,7 +745,15 @@ window.onload = function () {
         ctx.restore();
     }
 
-    function loop(timestamp) { if (state !== 'playing') return; let dt = Math.min((timestamp - lastTime) / 1000, 0.05); lastTime = timestamp; update(dt); draw(); requestAnimationFrame(loop); }
+    function loop(timestamp) { 
+        if (state !== 'playing') return; 
+        let dt = Math.min((timestamp - lastTime) / 1000, 0.05); 
+        lastTime = timestamp; 
+        update(dt); 
+        draw(); 
+        requestAnimationFrame(loop); 
+    }
+    
     function getPos(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
     function pointerDown(e) { if (state === 'playing') { isAiming = true; dragStart = getPos(e); dragCurrent = { ...dragStart }; } }
     function pointerMove(e) { if (isAiming) { dragCurrent = getPos(e); e.preventDefault(); } }
@@ -712,18 +763,23 @@ window.onload = function () {
         let dx = dragStart.x - dragCurrent.x, dy = dragStart.y - dragCurrent.y;
         if (dy >= 0 || Math.hypot(dx, dy) < 10) return;
         playSound('shoot'); 
+        triggerShake(3); // Small screen bump on release
         
         let speed = Math.hypot(dx * POWER_SCALE, dy * POWER_SCALE);
         let angle = Math.atan2(dy, dx);
         let isPlunger = activePowerup === 'plunger';
 
+        // Add a Set for hit targets to each arrow
         if (activePowerup === 'scatter') {
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle - 0.15)*speed, vy: Math.sin(angle - 0.15)*speed, angle: angle - 0.15, isPlunger });
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger });
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle + 0.15)*speed, vy: Math.sin(angle + 0.15)*speed, angle: angle + 0.15, isPlunger });
+            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle - 0.15)*speed, vy: Math.sin(angle - 0.15)*speed, angle: angle - 0.15, isPlunger, hitTargets: new Set() });
+            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger, hitTargets: new Set() });
+            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle + 0.15)*speed, vy: Math.sin(angle + 0.15)*speed, angle: angle + 0.15, isPlunger, hitTargets: new Set() });
+            arrowsFired += 3;
         } else {
-            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger });
+            arrows.push({ x: bow.x, y: bow.y-100, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, angle, isPlunger, hitTargets: new Set() });
+            arrowsFired += 1;
         }
+        updateAccuracy();
     }
 
     function spawnText(x, y, text, color) { floatingTexts.push({ x, y, text, color, life: 1.0 }); }
@@ -735,6 +791,8 @@ window.onload = function () {
     
     document.getElementById('startBtn').addEventListener('click', () => modeSelectScreen.classList.remove('hidden'));
     document.getElementById('modeStoryBtn').addEventListener('click', () => startGame('story'));
+    document.getElementById('modeZenBtn').addEventListener('click', () => startGame('zen')); // Wired up Zen Mode
+    document.getElementById('zenBackBtn').addEventListener('click', () => { state='menu'; startScreen.classList.remove('hidden'); }); // Wired up Zen back button
     document.getElementById('nextLevelBtn').addEventListener('click', () => { currentLevel++; if (currentLevel < 5) startGame('story', true); else { state='menu'; startScreen.classList.remove('hidden'); levelCompleteScreen.classList.add('hidden'); } });
     document.getElementById('restartBtn').addEventListener('click', () => startGame(mode));
     document.getElementById('menuBtn').addEventListener('click', () => { state='menu'; startScreen.classList.remove('hidden'); gameOverScreen.classList.add('hidden'); });
