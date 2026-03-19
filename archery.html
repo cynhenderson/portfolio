@@ -23,7 +23,7 @@
             overflow: hidden;
             font-family: 'Nunito', sans-serif;
             touch-action: none;
-            background-color: #87CEEB;
+            background-color: #111827; /* Dark background for desktop viewport framing */
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
@@ -89,128 +89,143 @@
         }
     </style>
 </head>
-<body id="gameBody">
+<body id="gameBody" class="flex justify-center items-center h-screen w-screen">
 
-<div id="flashOverlay"></div>
-<canvas id="gameCanvas"></canvas>
+<div id="gameContainer" class="relative w-full max-w-[450px] h-full sm:h-[90vh] sm:max-h-[850px] sm:rounded-2xl overflow-hidden sm:shadow-2xl bg-[#87CEEB]">
 
-<div class="ui-layer" id="uiLayer">
-    <div class="flex justify-between items-start gap-2" id="topHud">
-        <div class="hud-panel text-center" id="scorePanel">
-            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide" id="scoreLabel">Score</div>
-            <div class="text-2xl ui-text-light" id="scoreDisplay" style="color: #f59e0b;">0</div>
-        </div>
-        <div class="hud-panel text-center hidden flex flex-col justify-center" id="storyPanel">
-            <div class="text-xl text-gray-800 mt-1 ui-text-dark" id="waveDisplay">Wave 1/3</div>
-        </div>
-        <div class="hud-panel text-center hidden relative" id="timerPanel">
-            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Time Left</div>
-            <div class="text-xl font-black text-blue-500 transition-all duration-300 ease-out inline-block" id="timerDisplay">30.0</div>
-        </div>
-        <div class="hud-panel text-center hidden" id="livesPanel">
-            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Lives</div>
-            <div class="text-xl font-black text-red-500" id="livesDisplay">5</div>
-        </div>
-        <div class="hud-panel text-center zen hidden" id="zenPanel">
-            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
-            <div class="text-xl ui-text-dark" id="accuracyDisplay">100%</div>
-        </div>
-    </div>
-    
-    <div class="absolute top-20 right-4 flex flex-col items-end gap-2 pointer-events-none z-50 text-right">
-        <div id="comboDisplay" class="hidden text-4xl select-none ui-text-light" style="color:#F1C40F;"></div>
-        <div id="powerupDisplay" class="hidden bg-yellow-400 text-black font-black py-1 px-3 rounded-lg border-2 border-black shadow-md text-sm animate-pulse">POWERUP ACTIVE!</div>
-    </div>
-    
-    <button id="zenBackBtn" class="hidden absolute bottom-4 right-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto shadow-md" style="background:#fff;color:#111;">&#8592; Done</button>
-    <button id="challengeEndBtn" class="hidden absolute bottom-4 left-4 font-black text-sm px-4 py-2 rounded border-2 border-black pointer-events-auto shadow-md" style="background:#ff4757;color:#fff;">END RUN &#9209;</button>
-</div>
+    <div id="flashOverlay"></div>
+    <canvas id="gameCanvas"></canvas>
 
-<div id="bossBar" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40 text-center" style="width:min(320px,80vw)">
-    <div class="text-xl text-white mb-0.5 ui-text-light" id="bossName">Giant Owl</div>
-    <div class="h-6 border-4 border-black overflow-hidden" style="background:rgba(100,0,0,0.8);">
-        <div id="bossBarFill" class="h-full transition-all duration-150" style="width:100%;background:linear-gradient(90deg,#ff4757,#ff6b81);"></div>
-    </div>
-</div>
-
-<div id="startScreen" class="screen-overlay">
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-8 px-4 max-w-4xl w-full">
-        <div class="w-48 h-auto sm:w-80 shrink-0 flex items-center justify-center">
-            <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
+    <div class="ui-layer" id="uiLayer">
+        <div class="flex justify-between items-start gap-2" id="topHud">
+            <div class="hud-panel text-center" id="scorePanel">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide" id="scoreLabel">Score</div>
+                <div class="text-2xl ui-text-light" id="scoreDisplay" style="color: #f59e0b;">0</div>
+            </div>
+            <div class="hud-panel text-center hidden flex flex-col justify-center" id="storyPanel">
+                <div class="text-xl text-gray-800 mt-1 ui-text-dark" id="waveDisplay">Wave 1/3</div>
+            </div>
+            <div class="hud-panel text-center hidden relative" id="timerPanel">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Time Left</div>
+                <div class="text-xl font-black text-blue-500 transition-all duration-300 ease-out inline-block" id="timerDisplay">30.0</div>
+            </div>
+            <div class="hud-panel text-center hidden" id="livesPanel">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Lives</div>
+                <div class="text-xl font-black text-red-500" id="livesDisplay">5</div>
+            </div>
+            <div class="hud-panel text-center zen hidden" id="zenPanel">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
+                <div class="text-xl ui-text-dark" id="accuracyDisplay">100%</div>
+            </div>
         </div>
-        <div class="flex flex-col text-center sm:text-left items-center sm:items-start">
-            <h1 class="text-6xl sm:text-8xl text-yellow-400 leading-tight mb-4 title-massive">ALLY'S<br>ARCHERY</h1>
-            <p class="text-lg sm:text-xl font-bold text-gray-700 mb-8 max-w-sm leading-relaxed">
-                Drag <b>down</b> to pull the bow.<br>Release to fire!<br><span class="text-red-500">Don't let Pelicans escape!</span><br>Hit Hummingbirds for Power-Ups!
-            </p>
-            <button id="startBtn" class="btn">PLAY NOW 🎯</button>
+        
+        <div class="absolute top-20 right-4 flex flex-col items-end gap-2 pointer-events-none z-50 text-right">
+            <div id="comboDisplay" class="hidden text-4xl select-none ui-text-light" style="color:#F1C40F;"></div>
+            <div id="powerupDisplay" class="hidden bg-yellow-400 text-black font-black py-1 px-3 rounded-lg border-2 border-black shadow-md text-sm animate-pulse">POWERUP ACTIVE!</div>
         </div>
-    </div>
-</div>
-
-<div id="modeSelectScreen" class="screen-overlay hidden">
-    <div class="text-center mb-6">
-        <h2 class="text-5xl text-gray-800 mb-2 ui-text-dark">Choose Mode</h2>
-        <p class="text-gray-500 font-bold text-sm">Pick your challenge</p>
-    </div>
-    <div class="flex flex-col gap-4 w-full max-w-xs px-4">
-        <button id="modeStoryBtn" class="mode-card">
-            <span class="text-3xl ui-text-dark">⚔️ STORY</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
-        </button>
-        <button id="modeChallengeBtn" class="mode-card">
-            <span class="text-3xl ui-text-dark">⏱️ CHALLENGE</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">clear targets · dodge obstacles · strict timer</div>
-        </button>
-        <button id="modeZenBtn" class="mode-card">
-            <span class="text-3xl ui-text-dark">🧘 ZEN</span>
-            <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · endless scoring</div>
+        
+        <button id="exitRunBtn" class="hidden absolute bottom-4 left-4 text-2xl w-14 h-14 rounded-full border-[3px] border-black pointer-events-auto flex items-center justify-center transition-all active:translate-y-1" style="background:#F1C40F; color:#111; box-shadow:0 4px 0px #111;">
+            &#x21A9;&#xFE0F;
         </button>
     </div>
-</div>
 
-<div id="waveTransition" class="screen-overlay hidden" style="background:rgba(44, 62, 80, 0.95); pointer-events:none;">
-    <div class="flex flex-col items-center justify-center text-center">
-        <div class="text-6xl md:text-8xl text-yellow-400 title-massive" id="waveTransitionText">WAVE 2 OF 3</div>
-        <div class="text-white font-bold mt-4 text-2xl md:text-3xl" id="waveSubText"></div>
-    </div>
-</div>
-
-<div id="levelCompleteScreen" class="screen-overlay hidden">
-    <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-6xl text-gray-800 mb-2 title-massive" style="color: #facc15;">LEVEL CLEARED!</h2>
-        <div class="text-6xl mb-4" id="starsDisplay">⭐⭐⭐</div>
-        <p class="text-xl font-bold text-gray-600 mb-6">Score: <span id="levelScore" class="text-4xl ui-text-dark">0</span></p>
-        <button id="nextLevelBtn" class="btn">NEXT LEVEL ➡️</button>
-    </div>
-</div>
-
-<div id="gameWonScreen" class="screen-overlay hidden" style="background:transparent; pointer-events:none; z-index: 50;">
-    <div class="flex flex-col items-center justify-center text-center w-full max-w-lg px-4" style="pointer-events:none;">
-        <div class="text-[100px] leading-none mb-4">🏆</div>
-        <h2 class="text-5xl sm:text-7xl text-yellow-400 mb-4 title-massive">CHAMPION!</h2>
-        <p class="text-xl font-bold text-gray-300 mb-2">Final Score</p>
-        <p id="winScore" class="text-6xl sm:text-8xl text-yellow-500 mb-8 title-massive">0</p>
-        <div class="flex flex-col gap-4 w-full px-8" style="pointer-events:auto;">
-            <button id="winRestartBtn" class="btn w-full">PLAY AGAIN 🔄</button>
-            <button id="winMenuBtn" class="btn w-full" style="background:#eee; font-size:1.1rem;">MAIN MENU</button>
+    <div id="bossBar" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40 text-center" style="width:min(320px,80vw)">
+        <div class="text-xl text-white mb-0.5 ui-text-light" id="bossName">Giant Owl</div>
+        <div class="h-6 border-4 border-black overflow-hidden" style="background:rgba(100,0,0,0.8);">
+            <div id="bossBarFill" class="h-full transition-all duration-150" style="width:100%;background:linear-gradient(90deg,#ff4757,#ff6b81);"></div>
         </div>
     </div>
-</div>
 
-<div id="gameOverScreen" class="screen-overlay hidden">
-    <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-7xl text-red-500 mb-2 title-massive">GAME OVER!</h2>
-        <p class="text-xl font-bold text-gray-700 mb-1" id="gameOverLabel">Final Score</p>
-        <p id="finalScore" class="text-6xl text-yellow-500 mb-6 title-massive">0</p>
-        <div class="flex flex-col gap-3">
-            <button id="restartBtn" class="btn">PLAY AGAIN 🔄</button>
-            <button id="menuBtn" class="btn" style="background:#eee; font-size:1.1rem; padding:0.7rem 2rem;">MAIN MENU</button>
+    <div id="startScreen" class="screen-overlay">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-8 px-4 w-full">
+            <div class="w-48 h-auto shrink-0 flex items-center justify-center">
+                <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
+            </div>
+            <div class="flex flex-col text-center items-center">
+                <h1 class="text-6xl text-yellow-400 leading-tight mb-4 title-massive">ALLY'S<br>ARCHERY</h1>
+                <p class="text-lg font-bold text-gray-700 mb-8 leading-relaxed">
+                    Drag <b>down</b> to pull the bow.<br>Release to fire!<br><span class="text-red-500">Don't let Pelicans escape!</span><br>Hit Hummingbirds for Power-Ups!
+                </p>
+                <button id="startBtn" class="btn">PLAY NOW 🎯</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
+    <div id="modeSelectScreen" class="screen-overlay hidden">
+        <div class="text-center mb-6">
+            <h2 class="text-5xl text-gray-800 mb-2 ui-text-dark">Choose Mode</h2>
+            <p class="text-gray-500 font-bold text-sm">Pick your challenge</p>
+        </div>
+        <div class="flex flex-col gap-4 w-full max-w-xs px-4">
+            <button id="modeStoryBtn" class="mode-card">
+                <span class="text-3xl ui-text-dark">⚔️ STORY</span>
+                <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
+            </button>
+            <button id="modeChallengeBtn" class="mode-card">
+                <span class="text-3xl ui-text-dark">⏱️ CHALLENGE</span>
+                <div class="text-sm text-gray-600 mt-1 font-semibold">clear targets · dodge obstacles · strict timer</div>
+            </button>
+            <button id="modeZenBtn" class="mode-card">
+                <span class="text-3xl ui-text-dark">🧘 ZEN</span>
+                <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · endless scoring</div>
+            </button>
+        </div>
+    </div>
+
+    <div id="waveTransition" class="screen-overlay hidden" style="background:rgba(44, 62, 80, 0.95); pointer-events:none;">
+        <div class="flex flex-col items-center justify-center text-center">
+            <div class="text-6xl md:text-8xl text-yellow-400 title-massive" id="waveTransitionText">WAVE 2 OF 3</div>
+            <div class="text-white font-bold mt-4 text-2xl md:text-3xl" id="waveSubText"></div>
+        </div>
+    </div>
+
+    <div id="levelCompleteScreen" class="screen-overlay hidden">
+        <div class="flex flex-col items-center justify-center text-center">
+            <h2 class="text-6xl text-gray-800 mb-2 title-massive" style="color: #facc15;">LEVEL CLEARED!</h2>
+            <div class="text-6xl mb-4" id="starsDisplay">⭐⭐⭐</div>
+            <p class="text-xl font-bold text-gray-600 mb-6">Score: <span id="levelScore" class="text-4xl ui-text-dark">0</span></p>
+            <button id="nextLevelBtn" class="btn">NEXT LEVEL ➡️</button>
+        </div>
+    </div>
+
+    <div id="zenCompleteScreen" class="screen-overlay hidden">
+        <div class="flex flex-col items-center justify-center text-center">
+            <h2 class="text-5xl text-gray-800 mb-2 title-massive" style="color: #4ade80;">ZEN COMPLETE</h2>
+            <p class="text-xl font-bold text-gray-600 mb-2 mt-4">Final Score</p>
+            <p id="zenFinalScore" class="text-6xl text-yellow-500 mb-6 title-massive">0</p>
+            <div class="hud-panel mb-8 text-center" style="border-color: #4ade80;">
+                <div class="text-[12px] font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
+                <div class="text-3xl ui-text-dark" id="zenFinalAccuracy">100%</div>
+            </div>
+            <button id="zenMenuBtn" class="btn">MAIN MENU</button>
+        </div>
+    </div>
+
+    <div id="gameWonScreen" class="screen-overlay hidden" style="background:transparent; pointer-events:none; z-index: 50;">
+        <div class="flex flex-col items-center justify-center text-center w-full max-w-lg px-4" style="pointer-events:none;">
+            <div class="text-[100px] leading-none mb-4">🏆</div>
+            <h2 class="text-5xl sm:text-7xl text-yellow-400 mb-4 title-massive">CHAMPION!</h2>
+            <p class="text-xl font-bold text-gray-300 mb-2">Final Score</p>
+            <p id="winScore" class="text-6xl sm:text-8xl text-yellow-500 mb-8 title-massive">0</p>
+            <div class="flex flex-col gap-4 w-full px-8" style="pointer-events:auto;">
+                <button id="winRestartBtn" class="btn w-full">PLAY AGAIN 🔄</button>
+                <button id="winMenuBtn" class="btn w-full" style="background:#eee; font-size:1.1rem;">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameOverScreen" class="screen-overlay hidden">
+        <div class="flex flex-col items-center justify-center text-center">
+            <h2 class="text-7xl text-red-500 mb-2 title-massive">GAME OVER!</h2>
+            <p class="text-xl font-bold text-gray-700 mb-1" id="gameOverLabel">Final Score</p>
+            <p id="finalScore" class="text-6xl text-yellow-500 mb-6 title-massive">0</p>
+            <div class="flex flex-col gap-3">
+                <button id="restartBtn" class="btn">PLAY AGAIN 🔄</button>
+                <button id="menuBtn" class="btn" style="background:#eee; font-size:1.1rem; padding:0.7rem 2rem;">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+</div> <script>
 // ===================== AUDIO =====================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -271,6 +286,7 @@ window.onload = function () {
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const flashOverlay = document.getElementById('flashOverlay');
+    const gameContainer = document.getElementById('gameContainer');
 
     const scoreDisp = document.getElementById('scoreDisplay');
     const scoreLabel = document.getElementById('scoreLabel');
@@ -304,8 +320,8 @@ window.onload = function () {
     const gameWonScreen = document.getElementById('gameWonScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const gameOverLabel = document.getElementById('gameOverLabel');
-    const zenBackBtn = document.getElementById('zenBackBtn');
-    const challengeEndBtn = document.getElementById('challengeEndBtn');
+    const exitRunBtn = document.getElementById('exitRunBtn');
+    const zenCompleteScreen = document.getElementById('zenCompleteScreen');
 
     // Music Setup
     const playlist = [
@@ -369,9 +385,13 @@ window.onload = function () {
     let arrows = [], enemies = [], projectiles = [], particles = [], floatingTexts = [], clouds = [];
 
     function resize() {
-        width = window.innerWidth; height = window.innerHeight;
-        canvas.width = width; canvas.height = height;
-        bow.x = width / 2; bow.y = height - 60; 
+        // Tie rendering to the new wrapper box instead of the full screen width/height
+        width = gameContainer.clientWidth; 
+        height = gameContainer.clientHeight;
+        canvas.width = width; 
+        canvas.height = height;
+        bow.x = width / 2; 
+        bow.y = height - 60; 
         initClouds();
     }
     window.addEventListener('resize', resize);
@@ -434,7 +454,6 @@ window.onload = function () {
         if (arrowsFired > 0) { accuracyDisp.textContent = Math.round((arrowsHit / arrowsFired) * 100) + '%'; }
     }
 
-    // --- NEW CHALLENGE MODE LOGIC ---
     function getChallengeConfig(level) {
         let numTargets = 3; let numObstacles = 0; let speedMod = 0; let wavy = false;
 
@@ -572,7 +591,6 @@ window.onload = function () {
 
                 arrow.hitTargets.add(en);
 
-                // Challenge mode Character obstacles act as bouncy walls
                 if (mode === 'challenge' && en.isObstacle) {
                     playSound('clink'); 
                     arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; arrow.deflected = true; 
@@ -615,7 +633,6 @@ window.onload = function () {
                             if (mode === 'challenge') scoreDisp.textContent = targetsToHit - targetsHit;
                             playSound('powerup'); 
                             
-                            // SHATTERING EFFECT
                             spawnParticles(en.x, en.y, '#e74c3c', 12);
                             spawnParticles(en.x, en.y, '#ffffff', 10);
                             spawnParticles(en.x, en.y, '#f1c40f', 6);
@@ -661,7 +678,6 @@ window.onload = function () {
                             }, 1200);
                         }
                         
-                        // DELETE TARGET IMMEDIATELY (Prevents floating down)
                         if (en.type === 'target') {
                             enemies.splice(e, 1);
                         }
@@ -676,11 +692,9 @@ window.onload = function () {
         challengeLevel++;
         let config = getChallengeConfig(challengeLevel);
         
-        // STRICT RESET TIMER 
         challengeTime = config.calculatedTime;
         timerDisp.textContent = challengeTime.toFixed(1);
         
-        // Visual pop for the new fresh clock
         timerDisp.style.color = '#2ed573';
         timerDisp.style.transform = 'scale(1.3)';
         setTimeout(() => {
@@ -709,7 +723,6 @@ window.onload = function () {
         if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
         
-        // PAUSE GAMEPLAY DURING WAVE TRANSITION
         if (waveTransTimer > 0) { 
             waveTransTimer -= dt; 
             if (waveTransTimer <= 0) { 
@@ -717,7 +730,7 @@ window.onload = function () {
                 if (mode === 'story' && currentWave >= 3) spawnBoss(); 
                 if (mode === 'challenge') spawnChallengeWave();
             } 
-            return; // Time does not tick down while this is active
+            return; 
         }
 
         if (mode === 'challenge') {
@@ -751,7 +764,8 @@ window.onload = function () {
 
         clouds.forEach(c => { 
             c.x += c.speed * speed; 
-            if (c.x > width + 50) { c.x = (mode === 'zen' || mode === 'challenge') ? -c.w - (Math.random() * 3000 + 2000) : -c.w; } 
+            // CLOUD FIX: Waits until cloud is entirely offscreen
+            if (c.x > width + c.w + 50) { c.x = (mode === 'zen' || mode === 'challenge') ? -c.w - (Math.random() * 3000 + 2000) : -c.w; } 
         });
 
         for (let i = arrows.length - 1; i >= 0; i--) {
@@ -834,14 +848,16 @@ window.onload = function () {
         arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
         bossActive = false; bossEnemy = null; waveTransTimer = 0;
         
-        startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden'); gameWonScreen.classList.add('hidden');
+        startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden'); gameWonScreen.classList.add('hidden'); zenCompleteScreen.classList.add('hidden');
         
         timerPanel.classList.toggle('hidden', mode !== 'challenge'); 
         storyPanel.classList.toggle('hidden', mode === 'challenge' || mode === 'zen'); 
         livesPanel.classList.toggle('hidden', mode === 'zen' || mode === 'challenge');
         zenPanel.classList.toggle('hidden', mode !== 'zen');
-        zenBackBtn.classList.toggle('hidden', mode !== 'zen');
-        challengeEndBtn.classList.toggle('hidden', mode !== 'challenge');
+        
+        // Show unified exit button only on Zen and Challenge modes
+        exitRunBtn.classList.toggle('hidden', mode === 'story');
+        
         bossBar.classList.add('hidden'); waveTransition.classList.add('hidden');
         
         if (mode === 'zen') document.getElementById('accuracyDisplay').textContent = '100%';
@@ -857,7 +873,7 @@ window.onload = function () {
             
             let config = getChallengeConfig(1);
             targetsToHit = config.numTargets;
-            challengeTime = config.calculatedTime; // Init strict timer
+            challengeTime = config.calculatedTime;
             
             scoreDisp.textContent = targetsToHit;
             timerDisp.textContent = challengeTime.toFixed(1);
@@ -877,8 +893,7 @@ window.onload = function () {
         state = 'gameover'; 
         bossActive = false; bossBar.classList.add('hidden');
         gameOverScreen.classList.remove('hidden'); 
-        zenBackBtn.classList.add('hidden');
-        challengeEndBtn.classList.add('hidden');
+        exitRunBtn.classList.add('hidden');
         
         if (mode === 'challenge') {
             gameOverLabel.textContent = `Level ${challengeLevel} - Targets Hit`;
@@ -1203,7 +1218,16 @@ window.onload = function () {
         let dt = Math.min((timestamp - lastTime) / 1000, 0.05); lastTime = timestamp; update(dt); draw(); requestAnimationFrame(loop); 
     }
     
-    function getPos(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
+    function getPos(e) { 
+        // Must tie interaction to the canvas bounds now that it's in a wrapper
+        let rect = canvas.getBoundingClientRect();
+        if (e.touches) {
+            return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+        } else {
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+    }
+
     function pointerDown(e) { let pos = getPos(e); if (state === 'playing') { isAiming = true; dragStart = pos; dragCurrent = { ...dragStart }; } }
     function pointerMove(e) { if (isAiming) { dragCurrent = getPos(e); e.preventDefault(); } }
     function pointerUp() { if (isAiming) { isAiming = false; pointerUpFire(); } }
@@ -1241,9 +1265,27 @@ window.onload = function () {
     document.getElementById('modeChallengeBtn').addEventListener('click', () => { unlockAudio(); startGame('challenge'); });
     document.getElementById('modeZenBtn').addEventListener('click', () => { unlockAudio(); startGame('zen'); }); 
     
-    document.getElementById('zenBackBtn').addEventListener('click', () => { state='menu'; startScreen.classList.remove('hidden'); stopMusic(); }); 
-    document.getElementById('challengeEndBtn').addEventListener('click', () => { endGame(); });
+    // THE UNIFIED EXIT BUTTON LOGIC
+    exitRunBtn.addEventListener('click', () => { 
+        if (mode === 'zen') {
+            state = 'gameover'; // Pause loop
+            document.getElementById('zenFinalScore').textContent = score;
+            document.getElementById('zenFinalAccuracy').textContent = accuracyDisp.textContent;
+            zenCompleteScreen.classList.remove('hidden');
+            exitRunBtn.classList.add('hidden');
+        } else if (mode === 'challenge') {
+            endGame(); 
+        }
+    });
     
+    // NEW ZEN MENU BUTTON
+    document.getElementById('zenMenuBtn').addEventListener('click', () => { 
+        state = 'menu'; 
+        zenCompleteScreen.classList.add('hidden'); 
+        startScreen.classList.remove('hidden'); 
+        stopMusic(); 
+    });
+
     document.getElementById('nextLevelBtn').addEventListener('click', () => { 
         currentLevel++; 
         if (currentLevel < 5) { startGame('story', true); } else { state='menu'; startScreen.classList.remove('hidden'); levelCompleteScreen.classList.add('hidden'); stopMusic(); } 
