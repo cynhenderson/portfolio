@@ -14,7 +14,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
 
     <style>
         body, html {
@@ -26,18 +26,27 @@
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
-        /* The Universal Punchy Font Class */
-        .text-punchy {
-            font-family: 'Righteous', display;
-            letter-spacing: 1px;
+        /* 1. Only for massive, bright text (Start Screen, Game Over, Win) */
+        .title-massive {
+            font-family: 'Bangers', display;
+            letter-spacing: 2px;
             -webkit-text-stroke: 2px #111;
             text-shadow: 4px 4px 0px #111;
         }
-        .text-punchy-sm {
-            font-family: 'Righteous', display;
+
+        /* 2. For dark UI elements (Mode Select, Zen Panel) - Flat & Clean */
+        .ui-text-dark {
+            font-family: 'Bangers', display; 
+            color: #1f2937;
             letter-spacing: 1px;
-            -webkit-text-stroke: 1.5px #111;
-            text-shadow: 2px 2px 0px #111;
+        }
+
+        /* 3. For light UI elements (Score, Wave transitions) - Subtle Shadow Only */
+        .ui-text-light {
+            font-family: 'Bangers', display;
+            color: #facc15;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.8);
         }
 
         .ui-layer {
@@ -98,23 +107,23 @@
     <div class="flex justify-between items-start gap-2" id="topHud">
         <div class="hud-panel text-center" id="scorePanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Score</div>
-            <div class="text-xl text-yellow-500 text-punchy-sm" id="scoreDisplay">0</div>
+            <div class="text-2xl ui-text-light" id="scoreDisplay" style="color: #f59e0b;">0</div>
         </div>
         <div class="hud-panel text-center hidden flex flex-col justify-center" id="storyPanel">
-            <div class="text-base text-gray-800 mt-1 text-punchy-sm" id="waveDisplay">Wave 1/3</div>
+            <div class="text-xl text-gray-800 mt-1 ui-text-dark" id="waveDisplay">Wave 1/3</div>
         </div>
         <div class="hud-panel text-center hidden" id="livesPanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Lives</div>
-            <div class="text-lg font-black text-red-500" id="livesDisplay">5</div>
+            <div class="text-xl font-black text-red-500" id="livesDisplay">5</div>
         </div>
         <div class="hud-panel text-center zen hidden" id="zenPanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Accuracy</div>
-            <div class="text-lg text-gray-800 text-punchy-sm" id="accuracyDisplay">100%</div>
+            <div class="text-xl ui-text-dark" id="accuracyDisplay">100%</div>
         </div>
     </div>
     
     <div class="absolute top-20 right-4 flex flex-col items-end gap-2 pointer-events-none z-50 text-right">
-        <div id="comboDisplay" class="hidden text-3xl text-yellow-400 select-none text-punchy"></div>
+        <div id="comboDisplay" class="hidden text-4xl select-none ui-text-light" style="color:#F1C40F;"></div>
         <div id="powerupDisplay" class="hidden bg-yellow-400 text-black font-black py-1 px-3 rounded-lg border-2 border-black shadow-md text-sm animate-pulse">POWERUP ACTIVE!</div>
     </div>
     
@@ -122,7 +131,7 @@
 </div>
 
 <div id="bossBar" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-40 text-center" style="width:min(320px,80vw)">
-    <div class="text-sm text-white mb-0.5 text-punchy-sm" id="bossName">Giant Owl</div>
+    <div class="text-xl text-white mb-0.5 ui-text-light" id="bossName">Giant Owl</div>
     <div class="h-6 border-4 border-black overflow-hidden" style="background:rgba(100,0,0,0.8);">
         <div id="bossBarFill" class="h-full transition-all duration-150" style="width:100%;background:linear-gradient(90deg,#ff4757,#ff6b81);"></div>
     </div>
@@ -134,7 +143,7 @@
             <img src="/photos/ally.png" alt="Ally" class="w-full h-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'">
         </div>
         <div class="flex flex-col text-center sm:text-left items-center sm:items-start">
-            <h1 class="text-5xl sm:text-7xl text-yellow-400 leading-tight mb-4 text-punchy">ALLY'S<br>ARCHERY</h1>
+            <h1 class="text-6xl sm:text-8xl text-yellow-400 leading-tight mb-4 title-massive">ALLY'S<br>ARCHERY</h1>
             <p class="text-lg sm:text-xl font-bold text-gray-700 mb-8 max-w-sm leading-relaxed">
                 Drag <b>down</b> to pull the bow.<br>Release to fire!<br><span class="text-red-500">Don't let Pelicans escape!</span><br>Hit Hummingbirds for Power-Ups!
             </p>
@@ -145,16 +154,16 @@
 
 <div id="modeSelectScreen" class="screen-overlay hidden">
     <div class="text-center mb-6">
-        <h2 class="text-4xl text-gray-800 text-punchy mb-2">Choose Mode</h2>
+        <h2 class="text-5xl text-gray-800 mb-2 ui-text-dark">Choose Mode</h2>
         <p class="text-gray-500 font-bold text-sm">Pick your challenge</p>
     </div>
     <div class="flex flex-col gap-4 w-full max-w-xs px-4">
         <button id="modeStoryBtn" class="mode-card">
-            <span class="text-2xl text-gray-900 text-punchy-sm" style="text-shadow: 2px 2px 0px #555;">⚔️ STORY</span>
+            <span class="text-3xl ui-text-dark">⚔️ STORY</span>
             <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
         </button>
         <button id="modeZenBtn" class="mode-card">
-            <span class="text-2xl text-gray-900 text-punchy-sm" style="text-shadow: 2px 2px 0px #555;">🎯 ZEN</span>
+            <span class="text-3xl ui-text-dark">🎯 ZEN</span>
             <div class="text-sm text-gray-600 mt-1 font-semibold">no pressure · endless scoring</div>
         </button>
     </div>
@@ -162,16 +171,16 @@
 
 <div id="waveTransition" class="screen-overlay hidden" style="background:rgba(44, 62, 80, 0.95); pointer-events:none;">
     <div class="flex flex-col items-center justify-center text-center">
-        <div class="text-5xl md:text-7xl text-yellow-400 text-punchy" id="waveTransitionText">WAVE 2 OF 3</div>
+        <div class="text-6xl md:text-8xl text-yellow-400 title-massive" id="waveTransitionText">WAVE 2 OF 3</div>
         <div class="text-white font-bold mt-4 text-2xl md:text-3xl" id="waveSubText"></div>
     </div>
 </div>
 
 <div id="levelCompleteScreen" class="screen-overlay hidden">
     <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-5xl text-gray-800 mb-2 text-punchy" id="levelCompleteTitle">LEVEL CLEARED!</h2>
+        <h2 class="text-6xl text-gray-800 mb-2 title-massive" style="color: #facc15;">LEVEL CLEARED!</h2>
         <div class="text-6xl mb-4" id="starsDisplay">⭐⭐⭐</div>
-        <p class="text-xl font-bold text-gray-600 mb-6">Score: <span id="levelScore" class="text-4xl text-yellow-500 text-punchy-sm">0</span></p>
+        <p class="text-xl font-bold text-gray-600 mb-6">Score: <span id="levelScore" class="text-4xl ui-text-dark">0</span></p>
         <button id="nextLevelBtn" class="btn">NEXT LEVEL ➡️</button>
     </div>
 </div>
@@ -179,9 +188,9 @@
 <div id="gameWonScreen" class="screen-overlay hidden" style="background:rgba(11, 15, 25, 0.95); pointer-events:none; z-index: 50;">
     <div class="flex flex-col items-center justify-center text-center w-full max-w-lg px-4" style="pointer-events:none;">
         <div class="text-[100px] leading-none mb-4">🏆</div>
-        <h2 class="text-4xl sm:text-6xl text-yellow-400 mb-4 text-punchy">CHAMPION ARCHER!</h2>
+        <h2 class="text-5xl sm:text-7xl text-yellow-400 mb-4 title-massive">CHAMPION!</h2>
         <p class="text-xl font-bold text-gray-300 mb-2">Final Score</p>
-        <p id="winScore" class="text-6xl sm:text-7xl text-yellow-500 mb-8 text-punchy">0</p>
+        <p id="winScore" class="text-6xl sm:text-8xl text-yellow-500 mb-8 title-massive">0</p>
         <p class="text-sm font-bold text-gray-800 mb-8 animate-pulse bg-white px-6 py-3 rounded-full shadow-lg border-2 border-gray-300">✨ Tap anywhere for Fireworks! ✨</p>
         <div class="flex flex-col gap-4 w-full px-8" style="pointer-events:auto;">
             <button id="winRestartBtn" class="btn w-full">PLAY AGAIN 🔄</button>
@@ -192,9 +201,9 @@
 
 <div id="gameOverScreen" class="screen-overlay hidden">
     <div class="flex flex-col items-center justify-center text-center">
-        <h2 class="text-6xl text-red-500 mb-2 text-punchy" id="gameOverTitle">GAME OVER!</h2>
+        <h2 class="text-7xl text-red-500 mb-2 title-massive">GAME OVER!</h2>
         <p class="text-xl font-bold text-gray-700 mb-1">Final Score</p>
-        <p id="finalScore" class="text-5xl text-yellow-500 mb-6 text-punchy">0</p>
+        <p id="finalScore" class="text-6xl text-yellow-500 mb-6 title-massive">0</p>
         <div class="flex flex-col gap-3">
             <button id="restartBtn" class="btn">PLAY AGAIN 🔄</button>
             <button id="menuBtn" class="btn" style="background:#eee; font-size:1.1rem; padding:0.7rem 2rem;">MAIN MENU</button>
@@ -811,9 +820,12 @@ window.onload = function () {
             let distFromEdge = fr ? (width - e.x) : e.x;
             if (distFromEdge < 120) {
                 ctx.globalAlpha = 0.4 + 0.6 * Math.sin(Date.now() / 60);
-                ctx.font = "30px 'Righteous'";
-                ctx.lineWidth = 4; ctx.strokeStyle = '#111'; ctx.strokeText("!", 0, -r - 10);
-                ctx.fillStyle = '#ff4757'; ctx.fillText("!", 0, -r - 10);
+                ctx.font = "30px 'Bangers'";
+                ctx.fillStyle = '#ff4757'; 
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+                ctx.fillText("!", 0, -r - 10);
             }
         }
         ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6;
@@ -1120,85 +1132,75 @@ window.onload = function () {
             } else if (e.type === 'thor') {
                 let isSurprised = e.state === 'bonked';
                 
-                // Tiny absurd wings
+                // Tiny wings so he can fly
                 ctx.fillStyle = '#f5f6fa';
                 let wingFlap = e.state === 'flying' ? Math.sin(e.flapPhase * 3) * 15 : -15;
-                
-                ctx.save(); ctx.translate(-r*0.8, -r*0.2); ctx.rotate(wingFlap * 0.05);
-                ctx.beginPath(); ctx.ellipse(-8, 0, 12, 6, 0, 0, Math.PI*2); ctx.fill();
-                ctx.restore();
-                
-                ctx.save(); ctx.translate(r*0.8, -r*0.2); ctx.rotate(-wingFlap * 0.05);
-                ctx.beginPath(); ctx.ellipse(8, 0, 12, 6, 0, 0, Math.PI*2); ctx.fill();
-                ctx.restore();
+                ctx.save(); ctx.translate(-r*0.7, -r*0.2); ctx.rotate(wingFlap * 0.05);
+                ctx.beginPath(); ctx.ellipse(-8, 0, 10, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
+                ctx.save(); ctx.translate(r*0.7, -r*0.2); ctx.rotate(-wingFlap * 0.05);
+                ctx.beginPath(); ctx.ellipse(8, 0, 10, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
 
-                // Pointy ears with soft grey outline
+                // Proper pointy ears
                 ctx.fillStyle = '#ffffff';
-                ctx.strokeStyle = '#dcdde1';
-                ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.moveTo(-r*0.2, -r*0.6); ctx.lineTo(-r*0.6, -r*1.3); ctx.lineTo(-r*0.9, -r*0.3); ctx.closePath(); ctx.fill(); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(r*0.2, -r*0.6); ctx.lineTo(r*0.6, -r*1.3); ctx.lineTo(r*0.9, -r*0.3); ctx.closePath(); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.5); ctx.lineTo(-r*0.7, -r*1.1); ctx.lineTo(-r*0.1, -r*0.7); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.5); ctx.lineTo(r*0.7, -r*1.1); ctx.lineTo(r*0.1, -r*0.7); ctx.fill();
                 
-                // Pink inner ears
+                // Inner pink ears
                 ctx.fillStyle = '#ffcccc'; 
-                ctx.beginPath(); ctx.moveTo(-r*0.35, -r*0.7); ctx.lineTo(-r*0.55, -r*1.1); ctx.lineTo(-r*0.75, -r*0.4); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.35, -r*0.7); ctx.lineTo(r*0.55, -r*1.1); ctx.lineTo(r*0.75, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.6); ctx.lineTo(-r*0.6, -r*0.95); ctx.lineTo(-r*0.2, -r*0.7); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.6); ctx.lineTo(r*0.6, -r*0.95); ctx.lineTo(r*0.2, -r*0.7); ctx.fill();
 
-                // Fluffy white body
+                // Base Head/Body (slightly flattened oval)
                 ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(0, 0, r, 0, Math.PI * 2);
-                ctx.arc(-r*0.5, -r*0.4, r*0.7, 0, Math.PI * 2);
-                ctx.arc(r*0.5, -r*0.4, r*0.7, 0, Math.PI * 2);
-                ctx.arc(-r*0.6, r*0.4, r*0.6, 0, Math.PI * 2);
-                ctx.arc(r*0.6, r*0.4, r*0.6, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Whisker pads / Muzzle
-                ctx.strokeStyle = '#e1e1e1';
-                ctx.lineWidth = 1.5;
-                ctx.beginPath(); ctx.arc(-r*0.15, r*0.15, r*0.2, 0, Math.PI); ctx.stroke();
-                ctx.beginPath(); ctx.arc(r*0.15, r*0.15, r*0.2, 0, Math.PI); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(0, 0, r*0.95, r*0.85, 0, 0, Math.PI*2); ctx.fill();
+                
+                // Fluffy tufts around cheeks and neck
+                ctx.beginPath(); ctx.moveTo(-r*0.8, -r*0.2); ctx.lineTo(-r*1.1, 0); ctx.lineTo(-r*0.8, r*0.3); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.8, -r*0.2); ctx.lineTo(r*1.1, 0); ctx.lineTo(r*0.8, r*0.3); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-r*0.5, r*0.6); ctx.lineTo(-r*0.6, r*1.0); ctx.lineTo(-r*0.1, r*0.8); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.5, r*0.6); ctx.lineTo(r*0.6, r*1.0); ctx.lineTo(r*0.1, r*0.8); ctx.fill();
 
                 if (isSurprised) {
-                    // Wide surprised eyes
-                    ctx.fillStyle = '#74b9ff'; // Blueish eyes
-                    ctx.beginPath(); ctx.arc(-r*0.3, -r*0.1, 5, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.3, -r*0.1, 5, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#111'; // Pupils
-                    ctx.beginPath(); ctx.arc(-r*0.3, -r*0.1, 2, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.3, -r*0.1, 2, 0, Math.PI*2); ctx.fill();
-                    
-                    ctx.fillStyle = '#ffb8b8';
-                    ctx.beginPath(); ctx.ellipse(0, r*0.25, 4, 7, 0, 0, Math.PI*2); ctx.fill();
-                } else {
-                    // Grumpy, hooded blue eyes
-                    ctx.fillStyle = '#74b9ff'; 
-                    ctx.beginPath(); ctx.arc(-r*0.3, -r*0.05, 4, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.3, -r*0.05, 4, 0, Math.PI*2); ctx.fill();
-                    
-                    // Dark pupils
                     ctx.fillStyle = '#111';
-                    ctx.beginPath(); ctx.arc(-r*0.3, -r*0.05, 1.5, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.3, -r*0.05, 1.5, 0, Math.PI*2); ctx.fill();
-
-                    // Heavy white eyelids covering the top half of the eye
+                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 4, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.25, 0, 4, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#ffb8b8';
+                    ctx.beginPath(); ctx.ellipse(0, r*0.2, 4, 6, 0, 0, Math.PI*2); ctx.fill();
+                } else {
+                    // Hooded grey/blue eyes from photo
+                    ctx.fillStyle = '#74b9ff';
+                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 5, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.25, 0, 5, 0, Math.PI*2); ctx.fill();
+                    
+                    // Pupils
+                    ctx.fillStyle = '#111';
+                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.25, 0, 2, 0, Math.PI*2); ctx.fill();
+                    
+                    // Heavy white eyelids
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(-r*0.5, -r*0.2, r*0.4, r*0.15);
-                    ctx.fillRect(r*0.1, -r*0.2, r*0.4, r*0.15);
+                    ctx.fillRect(-r*0.5, -r*0.2, r*0.4, r*0.2);
+                    ctx.fillRect(r*0.1, -r*0.2, r*0.4, r*0.2);
                     
                     // Angry eyebrow crease
-                    ctx.strokeStyle = '#e1e1e1'; ctx.lineWidth = 1;
-                    ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.1); ctx.lineTo(-r*0.2, -r*0.05); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.1); ctx.lineTo(r*0.2, -r*0.05); ctx.stroke();
+                    ctx.strokeStyle = '#dcdde1'; ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.1); ctx.lineTo(-r*0.15, 0); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.1); ctx.lineTo(r*0.15, 0); ctx.stroke();
                     
                     // Pink nose
-                    ctx.fillStyle = '#ffb8b8';
-                    ctx.beginPath(); ctx.moveTo(-3, r*0.08); ctx.lineTo(3, r*0.08); ctx.lineTo(0, r*0.15); ctx.fill();
+                    ctx.fillStyle = '#c08484'; 
+                    ctx.beginPath(); ctx.moveTo(-4, r*0.2); ctx.lineTo(4, r*0.2); ctx.lineTo(0, r*0.28); ctx.fill();
                     
                     // Grumpy mouth
-                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.5;
-                    ctx.beginPath(); ctx.moveTo(-5, r*0.22); ctx.quadraticCurveTo(0, r*0.18, 5, r*0.22); ctx.stroke();
+                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(-6, r*0.35); ctx.quadraticCurveTo(0, r*0.3, 6, r*0.35); ctx.stroke();
+
+                    // Whiskers
+                    ctx.strokeStyle = '#e1e1e1'; ctx.lineWidth = 0.5;
+                    ctx.beginPath(); ctx.moveTo(-r*0.3, r*0.25); ctx.lineTo(-r*0.8, r*0.2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(-r*0.3, r*0.3); ctx.lineTo(-r*0.8, r*0.35); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(r*0.3, r*0.25); ctx.lineTo(r*0.8, r*0.2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(r*0.3, r*0.3); ctx.lineTo(r*0.8, r*0.35); ctx.stroke();
                 }
             }
         }
@@ -1300,11 +1302,15 @@ window.onload = function () {
         floatingTexts.forEach(ft => { 
             ctx.save(); 
             ctx.globalAlpha = ft.life; 
-            ctx.font = "900 22px 'Righteous'"; 
+            ctx.font = "24px 'Bangers'"; 
             ctx.textAlign = 'center'; 
-            ctx.lineWidth = 4; 
-            ctx.strokeStyle = '#111';
-            ctx.strokeText(ft.text, ft.x, ft.y);
+            
+            // Clean drop shadow, NO stroke
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 2;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
             ctx.fillStyle = ft.color; 
             ctx.fillText(ft.text, ft.x, ft.y); 
             ctx.restore(); 
