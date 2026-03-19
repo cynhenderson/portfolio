@@ -185,13 +185,12 @@
     </div>
 </div>
 
-<div id="gameWonScreen" class="screen-overlay hidden" style="background:rgba(11, 15, 25, 0.95); pointer-events:none; z-index: 50;">
+<div id="gameWonScreen" class="screen-overlay hidden" style="background:transparent; pointer-events:none; z-index: 50;">
     <div class="flex flex-col items-center justify-center text-center w-full max-w-lg px-4" style="pointer-events:none;">
         <div class="text-[100px] leading-none mb-4">🏆</div>
         <h2 class="text-5xl sm:text-7xl text-yellow-400 mb-4 title-massive">CHAMPION!</h2>
         <p class="text-xl font-bold text-gray-300 mb-2">Final Score</p>
         <p id="winScore" class="text-6xl sm:text-8xl text-yellow-500 mb-8 title-massive">0</p>
-        <p class="text-sm font-bold text-gray-800 mb-8 animate-pulse bg-white px-6 py-3 rounded-full shadow-lg border-2 border-gray-300">✨ Tap anywhere for Fireworks! ✨</p>
         <div class="flex flex-col gap-4 w-full px-8" style="pointer-events:auto;">
             <button id="winRestartBtn" class="btn w-full">PLAY AGAIN 🔄</button>
             <button id="winMenuBtn" class="btn w-full" style="background:#eee; font-size:1.1rem;">MAIN MENU</button>
@@ -249,7 +248,7 @@ function playSound(type) {
     }
 }
 
-// Color blender for Zen & Victory Mode
+// Color blender for Zen
 function lerpColor(a, b, amount) { 
     const ah = parseInt(a.replace(/#/g, ''), 16),
         ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
@@ -382,6 +381,21 @@ window.onload = function () {
         }
     }
 
+    function spawnFirework(x, y) {
+        playSound('powerup');
+        let explosionColors = ['#ff4757', '#2ed573', '#1e90ff', '#f1c40f', '#ff7f50', '#a29bfe', '#ffffff'];
+        let color = explosionColors[Math.floor(Math.random() * explosionColors.length)];
+        for (let c = 0; c < 60; c++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = Math.random() * 12 + 2;
+            particles.push({
+                x: x, y: y,
+                vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                color: color, life: 1.5 + Math.random(), size: Math.random() * 5 + 2, isFirework: true
+            });
+        }
+    }
+
     function triggerLifeLost() {
         playSound('hurt'); lives--; livesDisp.textContent = lives; triggerShake(6);
         flashOverlay.classList.remove('life-lost-flash'); void flashOverlay.offsetWidth; flashOverlay.classList.add('life-lost-flash');
@@ -390,13 +404,20 @@ window.onload = function () {
     }
 
     function drawBackground() {
+        if (state === 'victory') {
+            ctx.fillStyle = '#0b0f19'; // Dark night sky for fireworks
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#1e293b'; ctx.fillRect(0, height - 18, width, 18);
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, height - 6, width, 6);
+            return;
+        }
+
         let top, bot;
-        if (mode === 'zen' || state === 'victory') {
+        if (mode === 'zen') {
             let cycle = zenTime % (ZEN_PALETTES.length - 1); 
             let index = Math.floor(cycle);
             let nextIndex = index + 1;
             let blend = cycle - index;
-            
             top = lerpColor(ZEN_PALETTES[index].top, ZEN_PALETTES[nextIndex].top, blend);
             bot = lerpColor(ZEN_PALETTES[index].bot, ZEN_PALETTES[nextIndex].bot, blend);
         } else {
@@ -411,7 +432,7 @@ window.onload = function () {
         ctx.fillStyle = grad; 
         ctx.fillRect(0, 0, width, height);
         
-        ctx.fillStyle = (mode === 'zen' || state === 'victory') ? '#BDC3C7' : '#2E4053'; 
+        ctx.fillStyle = (mode === 'zen') ? '#BDC3C7' : '#2E4053'; 
         ctx.fillRect(0, height - 18, width, 18);
         ctx.fillStyle = '#111'; 
         ctx.fillRect(0, height - 6, width, 6);
@@ -556,26 +577,6 @@ window.onload = function () {
                                     state = 'victory';
                                     gameWonScreen.classList.remove('hidden');
                                     document.getElementById('winScore').textContent = score;
-                                    
-                                    // Trigger Initial Firework Burst automatically
-                                    let explosionColors = ['#ff4757', '#2ed573', '#1e90ff', '#f1c40f', '#ff7f50', '#a29bfe', '#ffffff'];
-                                    for (let bursts = 0; bursts < 5; bursts++) {
-                                        setTimeout(() => {
-                                            playSound('bonk');
-                                            let bx = width * 0.2 + Math.random() * (width * 0.6);
-                                            let by = height * 0.1 + Math.random() * (height * 0.4);
-                                            let color = explosionColors[Math.floor(Math.random() * explosionColors.length)];
-                                            for (let c = 0; c < 60; c++) {
-                                                let angle = Math.random() * Math.PI * 2;
-                                                let speed = Math.random() * 10 + 2;
-                                                particles.push({
-                                                    x: bx, y: by,
-                                                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-                                                    color: color, life: 1.5 + Math.random(), size: Math.random() * 5 + 2, isFirework: true
-                                                });
-                                            }
-                                        }, bursts * 300);
-                                    }
                                 } else {
                                     state = 'levelComplete'; 
                                     levelCompleteScreen.classList.remove('hidden'); 
@@ -592,7 +593,7 @@ window.onload = function () {
     function update(dt) {
         if (mode === 'zen' || state === 'victory') zenTime += dt * 0.03; 
 
-        // Always update particles (even during victory screen)
+        // Always update particles
         for (let i = particles.length - 1; i >= 0; i--) { 
             let p = particles[i]; 
             p.x += p.vx; 
@@ -612,8 +613,13 @@ window.onload = function () {
             if (p.life <= 0) particles.splice(i, 1); 
         }
 
-        // Freeze all other game updates if we have won
-        if (state === 'victory') return; 
+        if (state === 'victory') { 
+            // Automatic Fireworks!
+            if (Math.random() < 0.02) { 
+                spawnFirework(width * 0.1 + Math.random() * (width * 0.8), height * 0.1 + Math.random() * (height * 0.5));
+            }
+            return; 
+        } 
 
         if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
@@ -921,7 +927,7 @@ window.onload = function () {
                     ctx.fillStyle = '#1e272e';
                     let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.4;
                     ctx.save();
-                    ctx.translate(d * -r*0.2, -r*0.1);
+                    ctx.translate(d * -r*0.1, -r*0.1);
                     ctx.scale(d, 1);
                     ctx.rotate(flapAngle);
                     ctx.beginPath(); ctx.ellipse(-r*0.4, 0, r*0.6, r*0.3, Math.PI/6, 0, Math.PI*2); ctx.fill();
@@ -1142,13 +1148,13 @@ window.onload = function () {
 
                 // Proper pointy ears
                 ctx.fillStyle = '#ffffff';
-                ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.5); ctx.lineTo(-r*0.7, -r*1.1); ctx.lineTo(-r*0.1, -r*0.7); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.5); ctx.lineTo(r*0.7, -r*1.1); ctx.lineTo(r*0.1, -r*0.7); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-r*0.2, -r*0.6); ctx.lineTo(-r*0.5, -r*1.0); ctx.lineTo(-r*0.8, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.2, -r*0.6); ctx.lineTo(r*0.5, -r*1.0); ctx.lineTo(r*0.8, -r*0.4); ctx.fill();
                 
                 // Inner pink ears
                 ctx.fillStyle = '#ffcccc'; 
-                ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.6); ctx.lineTo(-r*0.6, -r*0.95); ctx.lineTo(-r*0.2, -r*0.7); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.6); ctx.lineTo(r*0.6, -r*0.95); ctx.lineTo(r*0.2, -r*0.7); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-r*0.25, -r*0.65); ctx.lineTo(-r*0.45, -r*0.9); ctx.lineTo(-r*0.65, -r*0.5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.25, -r*0.65); ctx.lineTo(r*0.45, -r*0.9); ctx.lineTo(r*0.65, -r*0.5); ctx.fill();
 
                 // Base Head/Body (slightly flattened oval)
                 ctx.fillStyle = '#ffffff';
@@ -1264,14 +1270,20 @@ window.onload = function () {
     function draw() {
         ctx.clearRect(0, 0, width, height); ctx.save();
         if (screenShake > 0) { ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake); screenShake *= 0.78; }
+        
         drawBackground();
+        
         if (activePowerup === 'freeze') { ctx.fillStyle = 'rgba(0, 210, 255, 0.15)'; ctx.fillRect(0, 0, width, height); ctx.strokeStyle = 'rgba(0, 210, 255, 0.3)'; ctx.lineWidth = 15; ctx.strokeRect(0, 0, width, height); }
 
         particles.forEach(p => { ctx.save(); ctx.translate(p.x, p.y); ctx.globalAlpha = p.life > 1 ? 1 : p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
         
-        if (state === 'victory') { ctx.restore(); return; } // Freeze the rest of drawing if we won
+        if (state === 'victory') { ctx.restore(); return; } 
         
-        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive && waveTransTimer <= 0) {
+        projectiles.forEach(drawProjectile);
+        enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
+
+        let isBossDying = enemies.some(e => e.isBoss && (e.state === 'dead' || e.state === 'bonked'));
+        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             clouds.forEach(c => { 
                 ctx.beginPath(); 
@@ -1284,9 +1296,6 @@ window.onload = function () {
             });
         }
         
-        projectiles.forEach(drawProjectile);
-        enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
-        
         arrows.forEach(a => { 
             ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.angle); 
             ctx.fillStyle = '#555'; ctx.fillRect(-20,-2,40,4); 
@@ -1297,6 +1306,7 @@ window.onload = function () {
             }
             ctx.restore(); 
         });
+        
         drawBowAndAim();
         
         floatingTexts.forEach(ft => { 
@@ -1305,7 +1315,6 @@ window.onload = function () {
             ctx.font = "24px 'Bangers'"; 
             ctx.textAlign = 'center'; 
             
-            // Clean drop shadow, NO stroke
             ctx.shadowColor = 'rgba(0,0,0,0.8)';
             ctx.shadowBlur = 2;
             ctx.shadowOffsetX = 2;
@@ -1315,6 +1324,7 @@ window.onload = function () {
             ctx.fillText(ft.text, ft.x, ft.y); 
             ctx.restore(); 
         });
+        
         ctx.restore();
     }
 
@@ -1333,22 +1343,7 @@ window.onload = function () {
         let pos = getPos(e);
         if (state === 'playing') { 
             isAiming = true; dragStart = pos; dragCurrent = { ...dragStart }; 
-        } else if (state === 'victory') {
-            // Interactive Firework Burst
-            playSound('bonk');
-            let explosionColors = ['#ff4757', '#2ed573', '#1e90ff', '#f1c40f', '#ff7f50', '#a29bfe', '#ffffff'];
-            let color = explosionColors[Math.floor(Math.random() * explosionColors.length)];
-            
-            for (let c = 0; c < 60; c++) {
-                let angle = Math.random() * Math.PI * 2;
-                let speed = Math.random() * 12 + 2;
-                particles.push({
-                    x: pos.x, y: pos.y,
-                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-                    color: color, life: 1.5 + Math.random(), size: Math.random() * 5 + 2, isFirework: true
-                });
-            }
-        }
+        } 
     }
     
     function pointerMove(e) { if (isAiming) { dragCurrent = getPos(e); e.preventDefault(); } }
