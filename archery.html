@@ -172,7 +172,7 @@ function unlockAudio() {
 }
 
 function playSound(type) {
-    if (audioCtx.state === 'suspended') return; // Handled by unlockAudio
+    if (audioCtx.state === 'suspended') return;
     const osc = audioCtx.createOscillator();
     const g = audioCtx.createGain();
     osc.connect(g); g.connect(audioCtx.destination);
@@ -693,16 +693,83 @@ window.onload = function () {
 
         if (e.isBoss) {
             if (e.type === 'owl') {
-                ctx.fillStyle = e.state === 'bonked' ? '#e1b12c' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r, r*0.85, 0, 0, Math.PI*2); ctx.fill(); 
-                ctx.beginPath(); ctx.moveTo(-r*0.6, -r*0.6); ctx.lineTo(-r*0.8, -r*1.1); ctx.lineTo(-r*0.2, -r*0.7); ctx.fill(); ctx.beginPath(); ctx.moveTo(r*0.6, -r*0.6); ctx.lineTo(r*0.8, -r*1.1); ctx.lineTo(r*0.2, -r*0.7); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-r*0.35, -r*0.1, r*0.35, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(r*0.35, -r*0.1, r*0.35, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = e.phase === 2 ? '#ff4757' : '#f1c40f'; ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.1, r*0.15, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.1, r*0.15, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#d35400'; ctx.beginPath(); ctx.moveTo(-r*0.15, r*0.1); ctx.lineTo(r*0.15, r*0.1); ctx.lineTo(0, r*0.4); ctx.fill();
+                let baseColor = e.state === 'bonked' ? '#e1b12c' : e.color;
+                
+                if (e.state === 'flying') {
+                    ctx.fillStyle = '#5c4033'; 
+                    let wingY = -Math.sin(e.flapPhase * 2) * r * 0.4; 
+                    ctx.beginPath(); ctx.ellipse(-r*0.8, wingY, r*0.4, r*0.2, Math.PI/4, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.ellipse(r*0.8, wingY, r*0.4, r*0.2, -Math.PI/4, 0, Math.PI*2); ctx.fill();
+                }
+                
+                ctx.fillStyle = baseColor;
+                ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
+                
+                ctx.fillStyle = '#d2b48c'; 
+                ctx.beginPath(); ctx.arc(0, r*0.2, r*0.75, 0, Math.PI*2); ctx.fill();
+                
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(-r*0.35, -r*0.2, r*0.35, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.35, -r*0.2, r*0.35, 0, Math.PI*2); ctx.fill();
+                
+                ctx.fillStyle = '#111';
+                ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.2, r*0.1, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.2, r*0.1, 0, Math.PI*2); ctx.fill();
+                
+                ctx.fillStyle = baseColor;
+                if (e.phase === 2) {
+                    ctx.beginPath(); ctx.moveTo(-r*0.7, -r*0.5); ctx.lineTo(-r*0.1, -r*0.1); ctx.lineTo(-r*0.7, -r*0.3); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(r*0.7, -r*0.5); ctx.lineTo(r*0.1, -r*0.1); ctx.lineTo(r*0.7, -r*0.3); ctx.fill();
+                    ctx.fillStyle = '#ff4757';
+                    ctx.beginPath(); ctx.arc(-r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.35 + d*5, -r*0.2, r*0.06, 0, Math.PI*2); ctx.fill();
+                } else {
+                    ctx.beginPath(); ctx.rect(-r*0.75, -r*0.6, r*1.5, r*0.4); ctx.fill();
+                }
+                
+                ctx.fillStyle = '#d35400';
+                ctx.beginPath(); ctx.moveTo(-r*0.1, r*0.05); ctx.lineTo(r*0.1, r*0.05); ctx.lineTo(0, r*0.25); ctx.fill();
+                
             } else if (e.type === 'hawk') {
-                ctx.fillStyle = e.state === 'bonked' ? '#ff9f43' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r*1.2, r*0.6, 0, 0, Math.PI*2); ctx.fill();
-                if (e.state === 'flying') { ctx.fillStyle = 'rgba(120,60,0,0.8)'; let wY = -Math.sin(e.flapPhase)*r*1.5; ctx.beginPath(); ctx.moveTo(-r*0.2, 0); ctx.lineTo(-r*0.8, wY); ctx.lineTo(r*0.4, 0); ctx.fill(); }
-                ctx.fillStyle = e.phase === 2 ? '#ff4757' : '#f1c40f'; ctx.beginPath(); ctx.arc(d*r*0.6, -r*0.2, r*0.15, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#111'; ctx.beginPath(); ctx.moveTo(d*r*0.9, -r*0.1); ctx.lineTo(d*r*1.4, r*0.1); ctx.lineTo(d*r*0.8, r*0.2); ctx.fill();
+                let baseColor = e.state === 'bonked' ? '#ff9f43' : e.color;
+                
+                ctx.fillStyle = baseColor;
+                ctx.beginPath(); ctx.ellipse(0, 0, r*1.2, r*0.75, d * 0.2, 0, Math.PI*2); ctx.fill();
+                
+                if (e.state === 'flying') {
+                    ctx.fillStyle = '#5c2a00';
+                    let flapAngle = Math.sin(e.flapPhase * 2.5) * 0.5;
+                    ctx.save();
+                    ctx.translate(-r*0.2, -r*0.3);
+                    ctx.rotate(flapAngle * d);
+                    ctx.beginPath(); ctx.moveTo(0,0); ctx.quadraticCurveTo(-r*0.8, -r*0.8, -r*1.2, -r*0.2); ctx.quadraticCurveTo(-r*0.6, 0, 0, r*0.2); ctx.fill();
+                    ctx.restore();
+                }
+
+                ctx.fillStyle = '#f5f6fa';
+                ctx.beginPath(); ctx.ellipse(d*r*0.2, r*0.2, r*0.8, r*0.4, d * 0.2, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = '#2f3640'; 
+                ctx.beginPath(); ctx.ellipse(d*r*0.6, -r*0.25, r*0.45, r*0.25, d * -0.1, 0, Math.PI*2); ctx.fill();
+                
+                if (e.phase === 2) {
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(d*r*0.45, -r*0.25, r*0.12, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.75, -r*0.25, r*0.12, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#e84118'; 
+                    ctx.beginPath(); ctx.arc(d*r*0.45 + d*2, -r*0.25, r*0.05, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(d*r*0.75 + d*2, -r*0.25, r*0.05, 0, Math.PI*2); ctx.fill();
+                } else {
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(d*r*0.35, -r*0.25); ctx.lineTo(d*r*0.55, -r*0.20); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(d*r*0.65, -r*0.20); ctx.lineTo(d*r*0.85, -r*0.25); ctx.stroke();
+                }
+
+                ctx.fillStyle = '#fbc531';
+                ctx.beginPath(); ctx.moveTo(d*r*0.85, -r*0.05); ctx.lineTo(d*r*1.2, r*0.05); ctx.lineTo(d*r*0.75, r*0.15); ctx.fill();
+                
             } else if (e.type === 'condor') {
                 if (e.shield) { ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, r*1.2 + Math.sin(Date.now()/100)*5, 0, Math.PI*2); ctx.stroke(); }
                 ctx.fillStyle = e.state === 'bonked' ? '#576574' : e.color; ctx.beginPath(); ctx.ellipse(0, 0, r, r*0.7, 0, 0, Math.PI*2); ctx.fill(); 
@@ -747,18 +814,16 @@ window.onload = function () {
                 let hx = d * r * 1.15, hy = -r * 0.22; ctx.beginPath(); ctx.arc(hx, hy, r * 0.6, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(hx+d*2, hy-1, 1.5, 0, Math.PI*2); ctx.fill();
                 ctx.strokeStyle = '#feca57'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(hx+d*r*0.5, hy+0.5); ctx.lineTo(hx+d*r*2, hy+0.5); ctx.stroke();
-} else if (e.type === 'football') {
+            } else if (e.type === 'football') {
                 ctx.fillStyle = '#8B4513';
                 ctx.beginPath(); ctx.ellipse(0, 0, r * 1.4, r * 0.8, 0, 0, Math.PI * 2); ctx.fill();
-                
-                // Just the white laces at the top
-                ctx.strokeStyle = '#FFF'; 
-                ctx.lineWidth = 2; 
+                ctx.strokeStyle = '#FFF'; ctx.lineWidth = 2; 
                 ctx.beginPath(); ctx.moveTo(-10, -r*0.6); ctx.lineTo(10, -r*0.6); ctx.stroke();
                 for(let i=-6; i<=6; i+=4) { 
                     ctx.beginPath(); ctx.moveTo(i, -r*0.7); ctx.lineTo(i, -r*0.5); ctx.stroke(); 
                 }
             }
+        }
         if (e.damageFlash > 0) { ctx.globalAlpha = e.damageFlash * 0.5; ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.arc(0, 0, r * 1.1, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; }
         ctx.globalAlpha = 1.0; ctx.restore();
     }
@@ -768,10 +833,22 @@ window.onload = function () {
         let pulse = 1 + Math.sin(Date.now() / 150) * 0.2;
         ctx.fillStyle = 'rgba(255, 71, 87, 0.3)'; ctx.beginPath(); ctx.arc(0, 0, p.radius * 1.5 * pulse, 0, Math.PI * 2); ctx.fill();
         ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 4;
+        
         if (p.type === 'owl') {
             ctx.fillStyle = '#8B7355'; ctx.beginPath(); ctx.ellipse(0, 0, 8, 22, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#3e2723'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, 20); ctx.stroke();
         } else if (p.type === 'hawk') {
-            ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.moveTo(-10, -15); ctx.quadraticCurveTo(20, 0, -10, 15); ctx.quadraticCurveTo(5, 0, -10, -15); ctx.fill();
+            // Spinning Superhero Boomerang
+            ctx.fillStyle = '#3498db'; 
+            ctx.beginPath(); 
+            ctx.moveTo(-15, -10); 
+            ctx.quadraticCurveTo(0, 0, 15, -10); 
+            ctx.lineTo(12, -2); 
+            ctx.quadraticCurveTo(0, 8, -12, -2); 
+            ctx.closePath(); 
+            ctx.fill();
+            // Yellow Star Center
+            ctx.fillStyle = '#f1c40f';
+            ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI*2); ctx.fill();
         } else if (p.type === 'pelicanking') {
             ctx.fillStyle = '#3498db'; ctx.beginPath(); ctx.ellipse(0, 5, 15, 18, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.moveTo(-5, -12); ctx.lineTo(5, -12); ctx.lineTo(0, -18); ctx.fill();
         } else if (p.type === 'condor') {
