@@ -26,7 +26,6 @@
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
-        /* 1. Only for massive, bright text (Start Screen, Game Over, Win) */
         .title-massive {
             font-family: 'Bangers', display;
             letter-spacing: 2px;
@@ -34,14 +33,12 @@
             text-shadow: 4px 4px 0px #111;
         }
 
-        /* 2. For dark UI elements (Mode Select, Zen Panel) - Flat & Clean */
         .ui-text-dark {
             font-family: 'Bangers', display; 
             color: #1f2937;
             letter-spacing: 1px;
         }
 
-        /* 3. For light UI elements (Score, Wave transitions) - Subtle Shadow Only */
         .ui-text-light {
             font-family: 'Bangers', display;
             color: #facc15;
@@ -80,14 +77,7 @@
         }
         .mode-card:active { transform: translateY(4px); box-shadow: 0 2px 0px #222; }
         .hidden { display: none !important; }
-        .shake { animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both; }
         .life-lost-flash { animation: flashRed 0.5s ease-out; }
-        @keyframes shake {
-            10%,90% { transform: translate3d(-2px,2px,0); }
-            20%,80% { transform: translate3d(4px,-2px,0); }
-            30%,50%,70% { transform: translate3d(-5px,3px,0); }
-            40%,60% { transform: translate3d(5px,-3px,0); }
-        }
         @keyframes flashRed {
             0% { background-color: rgba(255,0,0,0.4); }
             100% { background-color: transparent; }
@@ -111,6 +101,10 @@
         </div>
         <div class="hud-panel text-center hidden flex flex-col justify-center" id="storyPanel">
             <div class="text-xl text-gray-800 mt-1 ui-text-dark" id="waveDisplay">Wave 1/3</div>
+        </div>
+        <div class="hud-panel text-center hidden" id="timerPanel">
+            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Time Left</div>
+            <div class="text-xl font-black text-blue-500" id="timerDisplay">30.0</div>
         </div>
         <div class="hud-panel text-center hidden" id="livesPanel">
             <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Lives</div>
@@ -161,6 +155,10 @@
         <button id="modeStoryBtn" class="mode-card">
             <span class="text-3xl ui-text-dark">⚔️ STORY</span>
             <div class="text-sm text-gray-600 mt-1 font-semibold">5 levels · boss battles · dodge escapes</div>
+        </button>
+        <button id="modeChallengeBtn" class="mode-card">
+            <span class="text-3xl ui-text-dark">⏱️ CHALLENGE</span>
+            <div class="text-sm text-gray-600 mt-1 font-semibold">beat the clock · hit targets · avoid obstacles</div>
         </button>
         <button id="modeZenBtn" class="mode-card">
             <span class="text-3xl ui-text-dark">🎯 ZEN</span>
@@ -236,7 +234,7 @@ function playSound(type) {
     } else if (type === 'clink') {
         osc.type = 'sine'; osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(1800, now + 0.05);
         g.gain.setValueAtTime(0.4, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1);
-    } else if (type === 'powerup') {
+    } else if (type === 'powerup' || type === 'levelup') {
         osc.type = 'square'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(800, now + 0.2);
         g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0, now + 0.4); osc.start(now); osc.stop(now + 0.4);
     } else if (type === 'boss') {
@@ -263,10 +261,10 @@ function lerpColor(a, b, amount) {
 // Time and Palettes
 let zenTime = 0;
 const ZEN_PALETTES = [
-    { top: '#87CEEB', bot: '#A5D6A7' }, // Morning
-    { top: '#FF9A9E', bot: '#FECFEF' }, // Sunset
-    { top: '#2C3E50', bot: '#3498DB' }, // Night
-    { top: '#87CEEB', bot: '#A5D6A7' }  // Loop to morning
+    { top: '#87CEEB', bot: '#A5D6A7' }, 
+    { top: '#FF9A9E', bot: '#FECFEF' }, 
+    { top: '#2C3E50', bot: '#3498DB' }, 
+    { top: '#87CEEB', bot: '#A5D6A7' }  
 ];
 
 window.onload = function () {
@@ -288,6 +286,14 @@ window.onload = function () {
     const bossBarFill = document.getElementById('bossBarFill');
     const bossNameEl = document.getElementById('bossName');
     
+    // Challenge Mode Variables
+    let challengeTime = 30.0;
+    let challengeLevel = 1;
+    let targetsToHit = 5;
+    let targetsHit = 0;
+    const timerDisp = document.getElementById('timerDisplay');
+    const timerPanel = document.getElementById('timerPanel');
+
     const startScreen = document.getElementById('startScreen');
     const modeSelectScreen = document.getElementById('modeSelectScreen');
     const waveTransition = document.getElementById('waveTransition');
@@ -400,12 +406,12 @@ window.onload = function () {
         playSound('hurt'); lives--; livesDisp.textContent = lives; triggerShake(6);
         flashOverlay.classList.remove('life-lost-flash'); void flashOverlay.offsetWidth; flashOverlay.classList.add('life-lost-flash');
         spawnText(width / 2, height * 0.4, '-1 LIFE!', '#ff4757');
-        if (lives <= 0 && mode !== 'zen') endGame();
+        if (lives <= 0 && mode !== 'zen' && mode !== 'challenge') endGame();
     }
 
     function drawBackground() {
         if (state === 'victory') {
-            ctx.fillStyle = '#0b0f19'; // Dark night sky for fireworks
+            ctx.fillStyle = '#0b0f19'; 
             ctx.fillRect(0, 0, width, height);
             ctx.fillStyle = '#1e293b'; ctx.fillRect(0, height - 18, width, 18);
             ctx.fillStyle = '#0f172a'; ctx.fillRect(0, height - 6, width, 6);
@@ -413,7 +419,7 @@ window.onload = function () {
         }
 
         let top, bot;
-        if (mode === 'zen') {
+        if (mode === 'zen' || mode === 'challenge') {
             let cycle = zenTime % (ZEN_PALETTES.length - 1); 
             let index = Math.floor(cycle);
             let nextIndex = index + 1;
@@ -432,7 +438,7 @@ window.onload = function () {
         ctx.fillStyle = grad; 
         ctx.fillRect(0, 0, width, height);
         
-        ctx.fillStyle = (mode === 'zen') ? '#BDC3C7' : '#2E4053'; 
+        ctx.fillStyle = (mode === 'zen' || mode === 'challenge') ? '#BDC3C7' : '#2E4053'; 
         ctx.fillRect(0, height - 18, width, 18);
         ctx.fillStyle = '#111'; 
         ctx.fillRect(0, height - 6, width, 6);
@@ -447,6 +453,28 @@ window.onload = function () {
 
     function spawnStoryEnemy() {
         if (bossActive || waveTransTimer > 0) return;
+
+        if (mode === 'challenge') {
+            if (Math.random() > 0.02 + (challengeLevel * 0.005)) return; 
+            
+            let isObstacle = Math.random() < 0.4; 
+            let type = isObstacle ? ['robin', 'pelican', 'thor', 'football'][Math.floor(Math.random()*4)] : 'target';
+            
+            let isLeft = Math.random() > 0.5;
+            let startX = isLeft ? -50 : width + 50;
+            let startY = 100 + Math.random() * (height * 0.4);
+            let dir = isLeft ? 1 : -1;
+            
+            let speed = 1.5 + (challengeLevel * 0.3); 
+            let radius = type === 'target' ? 25 : (type === 'thor' ? 26 : type === 'pelican' ? 32 : 22);
+            
+            enemies.push({ 
+                x: startX, y: startY, baseY: startY, radius, hp: 1, maxHp: 1, vx: dir * speed, 
+                type: type, color: '#fff', state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, 
+                damageFlash: 0, isBoss: false, hasArmor: isObstacle, wavy: isObstacle 
+            });
+            return;
+        }
         
         let lc = mode === 'zen' ? { birdTypes: ['robin', 'hummingbird', 'pelican'], spawnRate: 0.02, birdSpeed: 1.0, armorChance: 0.1, wavy: false } : LEVEL_CONFIGS[currentLevel];
         
@@ -468,7 +496,7 @@ window.onload = function () {
         let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
         let color = type === 'hummingbird' ? '#2ed573' : (type === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
 
-        enemies.push({ x: startX, y: startY, baseX: startX, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy });
+        enemies.push({ x: startX, y: startY, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy });
     }
 
     function spawnBoss() {
@@ -512,9 +540,15 @@ window.onload = function () {
                         en.hasArmor = false; playSound('clink'); spawnParticles(en.x, en.y, '#bdc3c7', 15); 
                         spawnText(en.x, en.y - 30, 'ARMOR RIPPED!', '#F1C40F'); 
                     } else { 
-                        en.hasArmor = false; playSound('clink'); 
-                        arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; isDeflected = true; 
-                        spawnParticles(en.x, en.y, '#bdc3c7', 10); spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); continue; 
+                        if (mode === 'challenge') {
+                            playSound('clink'); 
+                            arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; isDeflected = true; 
+                            spawnParticles(en.x, en.y, '#bdc3c7', 10); spawnText(en.x, en.y - 30, 'BLOCKED!', '#bdc3c7'); continue; 
+                        } else {
+                            en.hasArmor = false; playSound('clink'); 
+                            arrow.vy = -5.5; arrow.rotV = (Math.random() - 0.5) * 0.8; isDeflected = true; 
+                            spawnParticles(en.x, en.y, '#bdc3c7', 10); spawnText(en.x, en.y - 30, 'ARMOR BROKE!', '#bdc3c7'); continue; 
+                        }
                     }
                 }
 
@@ -530,13 +564,22 @@ window.onload = function () {
                     en.hp--;
                     
                     let prec = (dist < (en.radius * 0.4 + (arrow.isPlunger ? 15 : 0))) ? 1.5 : 1;
-                    if (prec > 1) spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
+                    if (prec > 1 && en.type !== 'target') spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
 
                     if (en.hp <= 0) {
-                        en.state = en.isBoss ? 'dead' : 'bonked'; if (!en.isBoss) waveBirdsKilled++;
-                        playSound('fall');
+                        en.state = en.isBoss ? 'dead' : 'bonked'; 
+                        if (!en.isBoss && en.type !== 'target' && mode !== 'challenge') waveBirdsKilled++;
+                        
+                        if (en.type === 'target') {
+                            targetsHit++; 
+                            playSound('powerup');
+                            spawnParticles(en.x, en.y, '#e74c3c', 15);
+                        } else {
+                            playSound('fall');
+                        }
+
                         combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
-                        let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : en.type === 'football' ? 1000 : 2000) * prec * mult);
+                        let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : en.type === 'target' ? 200 : en.type === 'football' ? 1000 : 2000) * prec * mult);
                         score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
                         
                         if (mult > 1) { comboDisp.textContent = `x${mult} COMBO!`; comboDisp.classList.remove('hidden'); }
@@ -573,7 +616,7 @@ window.onload = function () {
                         if (en.isBoss) {
                             bossActive = false; bossBar.classList.add('hidden'); playSound('levelup');
                             setTimeout(() => { 
-                                if (currentLevel === 4) { // Final Level Victory!
+                                if (currentLevel === 4) { 
                                     state = 'victory';
                                     gameWonScreen.classList.remove('hidden');
                                     document.getElementById('winScore').textContent = score;
@@ -591,39 +634,61 @@ window.onload = function () {
     }
 
     function update(dt) {
-        if (mode === 'zen' || state === 'victory') zenTime += dt * 0.03; 
+        if (mode === 'zen' || mode === 'challenge' || state === 'victory') zenTime += dt * 0.03; 
 
         // Always update particles
         for (let i = particles.length - 1; i >= 0; i--) { 
             let p = particles[i]; 
             p.x += p.vx; 
             p.y += p.vy; 
-            
-            if (p.isFirework) {
-                // Fireworks slow down quickly (air resistance) and fall slowly
-                p.vx *= 0.92; 
-                p.vy *= 0.92; 
-                p.vy += GRAVITY * 0.04; 
-            } else {
-                // Normal particles
-                p.vy += GRAVITY * 0.08; 
-            }
-            
+            if (p.isFirework) { p.vx *= 0.92; p.vy *= 0.92; p.vy += GRAVITY * 0.04; } else { p.vy += GRAVITY * 0.08; }
             p.life -= dt * (p.isFirework ? 1.0 : 0.8); 
             if (p.life <= 0) particles.splice(i, 1); 
         }
 
         if (state === 'victory') { 
-            // Automatic Fireworks!
-            if (Math.random() < 0.02) { 
-                spawnFirework(width * 0.1 + Math.random() * (width * 0.8), height * 0.1 + Math.random() * (height * 0.5));
-            }
+            if (Math.random() < 0.02) { spawnFirework(width * 0.1 + Math.random() * (width * 0.8), height * 0.1 + Math.random() * (height * 0.5)); }
             return; 
         } 
 
         if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
-        if (waveTransTimer > 0) { waveTransTimer -= dt; if (waveTransTimer <= 0) { waveTransition.classList.add('hidden'); if (currentWave >= 3) spawnBoss(); } return; }
+        
+        // ---- CRITICAL FIX: The Wave Transition forces the game to pause completely until it fades ----
+        if (waveTransTimer > 0) { 
+            waveTransTimer -= dt; 
+            if (waveTransTimer <= 0) { 
+                waveTransition.classList.add('hidden'); 
+                if (mode === 'story' && currentWave >= 3) spawnBoss(); 
+            } 
+            return; // Exit update early so nothing else spawns or moves!
+        }
+
+        // ---- CRITICAL FIX: The Challenge timer only ticks down when the screen is NOT transitioning ----
+        if (mode === 'challenge') {
+            challengeTime -= dt;
+            timerDisp.textContent = Math.max(0, challengeTime).toFixed(1);
+            
+            if (challengeTime <= 0) {
+                endGame();
+                return;
+            }
+            
+            if (targetsHit >= targetsToHit) {
+                challengeLevel++;
+                targetsHit = 0;
+                targetsToHit += 2; 
+                challengeTime += 15.0; 
+                score += 1000; scoreDisp.textContent = score;
+                enemies = []; arrows = [];
+                waveTransTimer = 2.0;
+                waveTransText.textContent = `LEVEL ${challengeLevel}`;
+                waveSubText.textContent = `HIT ${targetsToHit} TARGETS!`;
+                waveTransition.classList.remove('hidden');
+                playSound('levelup');
+                return;
+            }
+        }
 
         if (mode === 'story' && !bossActive) {
             let lc = LEVEL_CONFIGS[currentLevel];
@@ -646,15 +711,12 @@ window.onload = function () {
 
         clouds.forEach(c => { 
             c.x += c.speed * speed; 
-            if (c.x > width + 50) {
-                c.x = mode === 'zen' ? -c.w - (Math.random() * 3000 + 2000) : -c.w; 
-            } 
+            if (c.x > width + 50) { c.x = (mode === 'zen' || mode === 'challenge') ? -c.w - (Math.random() * 3000 + 2000) : -c.w; } 
         });
 
         for (let i = arrows.length - 1; i >= 0; i--) {
             let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; 
-            if (a.rotV) a.angle += a.rotV;
-            else a.angle = Math.atan2(a.vy, a.vx);
+            if (a.rotV) a.angle += a.rotV; else a.angle = Math.atan2(a.vy, a.vx);
             if (a.y > height + 20 || a.y < -400 || a.x < -120 || a.x > width + 120) arrows.splice(i, 1);
         }
 
@@ -671,15 +733,15 @@ window.onload = function () {
                 else if (e.type === 'hummingbird') e.y = e.baseY + Math.sin(e.x * 0.05) * 38;
                 else if (e.type === 'football') e.y = e.baseY + Math.sin(e.x * 0.02) * 20; 
                 else if (e.type === 'thor') e.y = e.baseY + Math.sin(e.x * 0.03) * 15;
+                else if (e.type === 'target' && challengeLevel >= 3) e.y = e.baseY + Math.sin(e.x * 0.04) * (challengeLevel * 5); 
                 
                 if (e.x < -100 || e.x > width + 100) { 
-                    if (mode !== 'zen' && (e.type === 'pelican')) triggerLifeLost();
+                    if (mode === 'story' && e.type === 'pelican') triggerLifeLost();
                     enemies.splice(i, 1); 
                 }
             } else if (e.state === 'bonked' || e.state === 'dead') { 
-                if (e.type === 'thor') {
-                    e.y += 1.5; 
-                    e.x += Math.sin(e.y * 0.05) * 1.5; 
+                if (e.type === 'thor' || e.type === 'target') {
+                    e.y += 1.5; e.x += Math.sin(e.y * 0.05) * 1.5; 
                     if (e.y > height + 100) enemies.splice(i, 1);
                 } else {
                     e.y -= 1.8; 
@@ -727,7 +789,7 @@ window.onload = function () {
         if (!isNextLevel) { 
             score = 0; lives = 5; currentLevel = 0; arrowsFired = 0; arrowsHit = 0; 
             playMusic();
-            if (mode === 'zen') {
+            if (mode === 'zen' || mode === 'challenge') {
                 zenTime = 0;
                 clouds.forEach((c, i) => c.x = -c.w - (Math.random() * 2000 + i * 2500));
             } else {
@@ -739,15 +801,25 @@ window.onload = function () {
         bossActive = false; bossEnemy = null; waveTransTimer = 0;
         
         startScreen.classList.add('hidden'); modeSelectScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); levelCompleteScreen.classList.add('hidden'); gameWonScreen.classList.add('hidden');
-        storyPanel.classList.toggle('hidden', mode !== 'story'); 
-        livesPanel.classList.toggle('hidden', mode === 'zen');
+        
+        timerPanel.classList.toggle('hidden', mode !== 'challenge');
+        storyPanel.classList.toggle('hidden', mode === 'challenge' || mode === 'zen'); 
+        livesPanel.classList.toggle('hidden', mode === 'zen' || mode === 'challenge');
         zenPanel.classList.toggle('hidden', mode !== 'zen');
         zenBackBtn.classList.toggle('hidden', mode !== 'zen');
         bossBar.classList.add('hidden'); waveTransition.classList.add('hidden');
         
         if (mode === 'zen') document.getElementById('accuracyDisplay').textContent = '100%';
 
-        updateHUD(); if (mode === 'story') { waveTransTimer = 3; waveTransText.textContent = "LEVEL " + (currentLevel + 1); waveSubText.textContent = ""; waveTransition.classList.remove('hidden'); }
+        updateHUD(); 
+        
+        if (mode === 'story') { 
+            waveTransTimer = 3; waveTransText.textContent = "LEVEL " + (currentLevel + 1); waveSubText.textContent = ""; waveTransition.classList.remove('hidden'); 
+        } else if (mode === 'challenge') {
+            challengeTime = 30.0; challengeLevel = 1; targetsHit = 0; targetsToHit = 5;
+            timerDisp.textContent = challengeTime.toFixed(1);
+            waveTransTimer = 2.0; waveTransText.textContent = "CHALLENGE 1"; waveSubText.textContent = "HIT 5 TARGETS!"; waveTransition.classList.remove('hidden');
+        }
         
         lastTime = performance.now();
         requestAnimationFrame(loop);
@@ -817,12 +889,12 @@ window.onload = function () {
         ctx.save();
         ctx.translate(e.x, e.y); ctx.rotate(e.angle);
         let fr = e.vx >= 0, d = fr ? 1 : -1, r = e.radius;
-        if (e.state === 'bonked') {
+        if (e.state === 'bonked' && e.type !== 'target') {
             ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, -r - 4); ctx.lineTo(0, -r - 25); ctx.stroke();
             ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.ellipse(0, -r - 34, 7, 9, 0, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.moveTo(-2, -r - 25); ctx.lineTo(2, -r - 25); ctx.lineTo(0, -r - 27); ctx.fill();
         }
-        if (e.state === 'flying' && (e.type === 'pelican' || e.type === 'pelicanking')) {
+        if (e.state === 'flying' && (e.type === 'pelican' || e.type === 'pelicanking') && mode === 'story') {
             let distFromEdge = fr ? (width - e.x) : e.x;
             if (distFromEdge < 120) {
                 ctx.globalAlpha = 0.4 + 0.6 * Math.sin(Date.now() / 60);
@@ -1135,79 +1207,57 @@ window.onload = function () {
                 for(let i=-6; i<=6; i+=4) { 
                     ctx.beginPath(); ctx.moveTo(i, -r*0.7); ctx.lineTo(i, -r*0.5); ctx.stroke(); 
                 }
+            } else if (e.type === 'target') {
+                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#fff';    ctx.beginPath(); ctx.arc(0, 0, r*0.7, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.arc(0, 0, r*0.4, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.arc(0, 0, r*0.15, 0, Math.PI*2); ctx.fill();
             } else if (e.type === 'thor') {
                 let isSurprised = e.state === 'bonked';
                 
-                // Tiny wings so he can fly
-                ctx.fillStyle = '#f5f6fa';
-                let wingFlap = e.state === 'flying' ? Math.sin(e.flapPhase * 3) * 15 : -15;
-                ctx.save(); ctx.translate(-r*0.7, -r*0.2); ctx.rotate(wingFlap * 0.05);
-                ctx.beginPath(); ctx.ellipse(-8, 0, 10, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
-                ctx.save(); ctx.translate(r*0.7, -r*0.2); ctx.rotate(-wingFlap * 0.05);
-                ctx.beginPath(); ctx.ellipse(8, 0, 10, 5, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
-
-                // Proper pointy ears
                 ctx.fillStyle = '#ffffff';
-                ctx.beginPath(); ctx.moveTo(-r*0.2, -r*0.6); ctx.lineTo(-r*0.5, -r*1.0); ctx.lineTo(-r*0.8, -r*0.4); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.2, -r*0.6); ctx.lineTo(r*0.5, -r*1.0); ctx.lineTo(r*0.8, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-r*0.5, 0, r*0.45, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.5, 0, r*0.45, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-r*0.4, r*0.4, r*0.4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.4, r*0.4, r*0.4, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath(); ctx.moveTo(-r*0.2, -r*0.7); ctx.lineTo(-r*0.6, -r*1.3); ctx.lineTo(-r*0.8, -r*0.4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.2, -r*0.7); ctx.lineTo(r*0.6, -r*1.3); ctx.lineTo(r*0.8, -r*0.4); ctx.fill();
                 
-                // Inner pink ears
                 ctx.fillStyle = '#ffcccc'; 
-                ctx.beginPath(); ctx.moveTo(-r*0.25, -r*0.65); ctx.lineTo(-r*0.45, -r*0.9); ctx.lineTo(-r*0.65, -r*0.5); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.25, -r*0.65); ctx.lineTo(r*0.45, -r*0.9); ctx.lineTo(r*0.65, -r*0.5); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(-r*0.3, -r*0.75); ctx.lineTo(-r*0.55, -r*1.1); ctx.lineTo(-r*0.65, -r*0.55); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(r*0.3, -r*0.75); ctx.lineTo(r*0.55, -r*1.1); ctx.lineTo(r*0.65, -r*0.55); ctx.fill();
 
-                // Base Head/Body (slightly flattened oval)
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath(); ctx.ellipse(0, 0, r*0.95, r*0.85, 0, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#f5f6fa';
+                let pawFlap = e.state === 'flying' ? Math.sin(e.flapPhase * 4) * 6 : 0;
+                ctx.beginPath(); ctx.ellipse(-r*0.5, r*0.6 + pawFlap, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.ellipse(r*0.5, r*0.6 - pawFlap, r*0.25, r*0.15, 0, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = isSurprised ? '#111' : '#74b9ff';
+                let eyeY = isSurprised ? -r*0.1 : -r*0.05;
+                ctx.beginPath(); ctx.arc(-r*0.3, eyeY, r*0.22, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(r*0.3, eyeY, r*0.22, 0, Math.PI*2); ctx.fill();
                 
-                // Fluffy tufts around cheeks and neck
-                ctx.beginPath(); ctx.moveTo(-r*0.8, -r*0.2); ctx.lineTo(-r*1.1, 0); ctx.lineTo(-r*0.8, r*0.3); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.8, -r*0.2); ctx.lineTo(r*1.1, 0); ctx.lineTo(r*0.8, r*0.3); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(-r*0.5, r*0.6); ctx.lineTo(-r*0.6, r*1.0); ctx.lineTo(-r*0.1, r*0.8); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(r*0.5, r*0.6); ctx.lineTo(r*0.6, r*1.0); ctx.lineTo(r*0.1, r*0.8); ctx.fill();
-
                 if (isSurprised) {
-                    ctx.fillStyle = '#111';
-                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 4, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.25, 0, 4, 0, Math.PI*2); ctx.fill();
                     ctx.fillStyle = '#ffb8b8';
                     ctx.beginPath(); ctx.ellipse(0, r*0.2, 4, 6, 0, 0, Math.PI*2); ctx.fill();
                 } else {
-                    // Hooded grey/blue eyes from photo
-                    ctx.fillStyle = '#74b9ff';
-                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 5, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.25, 0, 5, 0, Math.PI*2); ctx.fill();
-                    
-                    // Pupils
                     ctx.fillStyle = '#111';
-                    ctx.beginPath(); ctx.arc(-r*0.25, 0, 2, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(r*0.25, 0, 2, 0, Math.PI*2); ctx.fill();
-                    
-                    // Heavy white eyelids
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(-r*0.5, -r*0.2, r*0.4, r*0.2);
-                    ctx.fillRect(r*0.1, -r*0.2, r*0.4, r*0.2);
-                    
-                    // Angry eyebrow crease
-                    ctx.strokeStyle = '#dcdde1'; ctx.lineWidth = 1.5;
-                    ctx.beginPath(); ctx.moveTo(-r*0.4, -r*0.1); ctx.lineTo(-r*0.15, 0); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(r*0.4, -r*0.1); ctx.lineTo(r*0.15, 0); ctx.stroke();
-                    
-                    // Pink nose
-                    ctx.fillStyle = '#c08484'; 
-                    ctx.beginPath(); ctx.moveTo(-4, r*0.2); ctx.lineTo(4, r*0.2); ctx.lineTo(0, r*0.28); ctx.fill();
-                    
-                    // Grumpy mouth
-                    ctx.strokeStyle = '#111'; ctx.lineWidth = 1;
-                    ctx.beginPath(); ctx.moveTo(-6, r*0.35); ctx.quadraticCurveTo(0, r*0.3, 6, r*0.35); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(-r*0.3, eyeY, r*0.14, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.3, eyeY, r*0.14, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(-r*0.35, eyeY-r*0.06, r*0.07, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(r*0.25, eyeY-r*0.06, r*0.07, 0, Math.PI*2); ctx.fill();
 
-                    // Whiskers
-                    ctx.strokeStyle = '#e1e1e1'; ctx.lineWidth = 0.5;
-                    ctx.beginPath(); ctx.moveTo(-r*0.3, r*0.25); ctx.lineTo(-r*0.8, r*0.2); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(-r*0.3, r*0.3); ctx.lineTo(-r*0.8, r*0.35); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(r*0.3, r*0.25); ctx.lineTo(r*0.8, r*0.2); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(r*0.3, r*0.3); ctx.lineTo(r*0.8, r*0.35); ctx.stroke();
+                    ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.arc(-r*0.12, r*0.2, r*0.12, 0, Math.PI); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(r*0.12, r*0.2, r*0.12, 0, Math.PI); ctx.stroke();
                 }
+
+                ctx.fillStyle = '#ff9ff3';
+                ctx.beginPath(); ctx.arc(0, r*0.12, r*0.08, 0, Math.PI*2); ctx.fill();
             }
         }
         if (e.damageFlash > 0) { ctx.globalAlpha = e.damageFlash * 0.5; ctx.fillStyle = '#ff4757'; ctx.beginPath(); ctx.arc(0, 0, r * 1.1, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; }
@@ -1280,10 +1330,11 @@ window.onload = function () {
         if (state === 'victory') { ctx.restore(); return; } 
         
         projectiles.forEach(drawProjectile);
+        
         enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
 
         let isBossDying = enemies.some(e => e.isBoss && (e.state === 'dead' || e.state === 'bonked'));
-        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
+        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen' || mode === 'challenge') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             clouds.forEach(c => { 
                 ctx.beginPath(); 
@@ -1380,6 +1431,7 @@ window.onload = function () {
     
     document.getElementById('startBtn').addEventListener('click', () => { unlockAudio(); modeSelectScreen.classList.remove('hidden'); });
     document.getElementById('modeStoryBtn').addEventListener('click', () => { unlockAudio(); startGame('story'); });
+    document.getElementById('modeChallengeBtn').addEventListener('click', () => { unlockAudio(); startGame('challenge'); });
     document.getElementById('modeZenBtn').addEventListener('click', () => { unlockAudio(); startGame('zen'); }); 
     
     document.getElementById('zenBackBtn').addEventListener('click', () => { 
