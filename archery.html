@@ -391,7 +391,10 @@ window.onload = function () {
         canvas.height = height;
         bow.x = width / 2; 
         bow.y = height - 60; 
-        initClouds();
+        // Only initialize clouds if we are not in Zen or Challenge mode (they handle their own clouds)
+        if (mode !== 'zen' && mode !== 'challenge') {
+            initClouds();
+        }
     }
     window.addEventListener('resize', resize);
     resize();
@@ -453,38 +456,37 @@ window.onload = function () {
         if (arrowsFired > 0) { accuracyDisp.textContent = Math.round((arrowsHit / arrowsFired) * 100) + '%'; }
     }
 
-    // UPDATED 9-PHASE CHALLENGE PROGRESSION
     function getChallengeConfig(level) {
-        let numTargets = 3, numObstacles = 0, speedMod = 0, wavy = false;
+        let numTargets = 3, numObstacles = 0, targetSpeedMod = 0, obsSpeedMod = 0, wavy = false;
 
-        if (level === 1)      { numTargets = 3; speedMod = 0; numObstacles = 0; }
-        else if (level === 2) { numTargets = 5; speedMod = 0; numObstacles = 0; }
-        else if (level === 3) { numTargets = 8; speedMod = 0; numObstacles = 0; }
-        else if (level === 4) { numTargets = 3; speedMod = 0.8; numObstacles = 0; }
-        else if (level === 5) { numTargets = 5; speedMod = 0.8; numObstacles = 0; }
-        else if (level === 6) { numTargets = 8; speedMod = 0.8; numObstacles = 0; }
-        else if (level === 7) { numTargets = 3; speedMod = 0; numObstacles = 2; }
-        else if (level === 8) { numTargets = 5; speedMod = 0; numObstacles = 3; }
-        else if (level === 9) { numTargets = 8; speedMod = 0; numObstacles = 4; }
+        if (level === 1)      { numTargets = 3; targetSpeedMod = 0; numObstacles = 0; }
+        else if (level === 2) { numTargets = 5; targetSpeedMod = 0; numObstacles = 0; }
+        else if (level === 3) { numTargets = 8; targetSpeedMod = 0; numObstacles = 0; }
+        else if (level === 4) { numTargets = 3; targetSpeedMod = 0.8; numObstacles = 0; }
+        else if (level === 5) { numTargets = 5; targetSpeedMod = 0.8; numObstacles = 0; }
+        else if (level === 6) { numTargets = 8; targetSpeedMod = 0.8; numObstacles = 0; }
+        else if (level === 7) { numTargets = 3; targetSpeedMod = 0; numObstacles = 2; obsSpeedMod = 0.8; }
+        else if (level === 8) { numTargets = 5; targetSpeedMod = 0; numObstacles = 3; obsSpeedMod = 0.8; }
+        else if (level === 9) { numTargets = 8; targetSpeedMod = 0; numObstacles = 4; obsSpeedMod = 0.8; }
         else { 
             numTargets = Math.min(12, 4 + Math.floor((level - 10) / 2)); 
             numObstacles = Math.min(8, 3 + Math.floor((level - 10) / 2));
-            speedMod = 1.0 + (level - 10) * 0.15; 
+            targetSpeedMod = 1.0 + (level - 10) * 0.15; 
+            obsSpeedMod = 1.0 + (level - 10) * 0.15; 
             wavy = level >= 12;
         }
 
-        let isMoving = speedMod > 0;
+        let isMoving = targetSpeedMod > 0 || obsSpeedMod > 0;
         let timeMultiplier = level < 10 ? 1.0 : Math.max(0.60, 1.0 - ((level - 9) * 0.03)); 
-        let targetTime = (isMoving ? 3.0 : 2.2) * timeMultiplier;
+        let targetTime = (targetSpeedMod > 0 ? 3.0 : 2.2) * timeMultiplier;
         let obstacleTime = 1.0 * timeMultiplier;
         let baseTime = 3.0; 
 
         let calculatedTime = baseTime + (numTargets * targetTime) + (numObstacles * obstacleTime);
 
-        return { numTargets, numObstacles, speedMod, wavy, calculatedTime };
+        return { numTargets, numObstacles, targetSpeedMod, obsSpeedMod, wavy, calculatedTime };
     }
 
-    // BULLETPROOF SPAWN POSITIONING TO PREVENT FREEZING
     function spawnChallengeWave() {
         enemies = [];
         targetsHit = 0;
@@ -515,7 +517,7 @@ window.onload = function () {
         for(let i=0; i<config.numTargets; i++) {
             let r = 25; 
             let pos = getSpawnPos(r);
-            let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
+            let vx = config.targetSpeedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.targetSpeedMod) : 0;
             enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, isZenBoss: false, hasArmor: false, wavy: false, bounces: true, isObstacle: false });
         }
 
@@ -526,14 +528,13 @@ window.onload = function () {
             let oType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
             let r = oType === 'thor' ? 26 : (oType === 'hummingbird' ? 12 : oType === 'pelican' ? 32 : oType === 'football' ? 22 : 22);
             let pos = getSpawnPos(r);
-            let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
+            let vx = config.obsSpeedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.obsSpeedMod) : 0;
             let color = oType === 'hummingbird' ? '#2ed573' : (oType === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
             
             enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: oType, color: color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, isZenBoss: false, hasArmor: false, wavy: config.wavy, bounces: true, isObstacle: true });
         }
     }
 
-    // ZEN PINATA BOSSES FULLY INTEGRATED
     function spawnStoryEnemy() {
         if (bossActive || waveTransTimer > 0 || mode === 'challenge') return;
         
@@ -925,10 +926,14 @@ window.onload = function () {
             playMusic();
             if (mode === 'zen') {
                 zenTime = 0; 
-                clouds = [{ x: width + 100, y: 100 + Math.random() * (height * 0.2), w: 150, h: 60, speed: 0.05 }];
+                // Zen mode handles its own single cloud initialization if it's empty
+                if (clouds.length === 0) clouds = [{ x: width + 100, y: 100 + Math.random() * (height * 0.2), w: 150, h: 60, speed: 0.05 }];
             } else if (mode === 'challenge') {
-                zenTime = 0; initClouds();
-            } else { initClouds(); }
+                zenTime = 0; 
+                clouds = []; // Explicitly clear clouds for challenge mode
+            } else { 
+                initClouds(); 
+            }
         }
         currentWave = 0; waveBirdsKilled = 0; activePowerup = 'none';
         arrows = []; enemies = []; projectiles = []; particles = []; floatingTexts = [];
@@ -1274,7 +1279,7 @@ window.onload = function () {
         enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
 
         let isBossDying = enemies.some(e => e.isBoss && (e.state === 'dead' || e.state === 'bonked'));
-        if ((LEVEL_CONFIGS[currentLevel]?.clouds || mode === 'zen' || mode === 'challenge') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
+        if ((LEVEL_CONFIGS[currentLevel]?.clouds || mode === 'zen') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             clouds.forEach(c => { 
                 ctx.beginPath(); ctx.arc(c.x, c.y, c.h, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.35, c.y - c.h * 0.3, c.h * 1.1, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.35, c.y - c.h * 0.2, c.h * 0.9, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.7, c.y + c.h * 0.1, c.h * 0.7, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.7, c.y + c.h * 0.2, c.h * 0.6, 0, Math.PI*2); ctx.fill(); 
