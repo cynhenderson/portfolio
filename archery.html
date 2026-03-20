@@ -353,7 +353,7 @@ window.onload = function () {
     const DRAG = 0.985;
 
     const LEVEL_CONFIGS = [
-        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: false, wavy: false },
+        { name: 'Sunny Meadow',       bgTop: '#87CEEB', bgBot: '#A5D6A7', birdTypes: ['robin', 'pelican'],                          waveBirds: 4,  birdSpeed: 0.8, spawnRate: 0.010, waveTransDuration: 3.0, bossType: 'owl', armorChance: 0, clouds: true, wavy: false },
         { name: 'Armored Outpost',    bgTop: '#E67E22', bgBot: '#F1C40F', birdTypes: ['robin','hummingbird', 'pelican'],             waveBirds: 6,  birdSpeed: 1.0, spawnRate: 0.012, waveTransDuration: 2.5, bossType: 'hawk', armorChance: 0.3, clouds: false, wavy: false },
         { name: 'Cloudy Grove',       bgTop: '#6EB5D3', bgBot: '#81C784', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 8,  birdSpeed: 1.2, spawnRate: 0.014, waveTransDuration: 2.5, bossType: 'pelicanking', armorChance: 0.5, clouds: true, wavy: false },
         { name: 'Storm Summit',       bgTop: '#2C3E50', bgBot: '#1A252F', birdTypes: ['robin','hummingbird','pelican'],             waveBirds: 10, birdSpeed: 1.4, spawnRate: 0.016, waveTransDuration: 2.0, bossType: 'condor', armorChance: 0.6, clouds: false, wavy: true },
@@ -391,7 +391,7 @@ window.onload = function () {
         canvas.height = height;
         bow.x = width / 2; 
         bow.y = height - 60; 
-        initClouds();
+        if (state !== 'playing') initClouds();
     }
     window.addEventListener('resize', resize);
     resize();
@@ -430,7 +430,13 @@ window.onload = function () {
         }
 
         let top, bot;
-        if (mode === 'zen' || mode === 'challenge') {
+        if (mode === 'zen') {
+            let cycle = (score % 30000) / 10000;
+            let index = Math.floor(cycle);
+            let blend = cycle - index;
+            top = lerpColor(ZEN_PALETTES[index].top, ZEN_PALETTES[index + 1].top, blend);
+            bot = lerpColor(ZEN_PALETTES[index].bot, ZEN_PALETTES[index + 1].bot, blend);
+        } else if (mode === 'challenge') {
             let cycle = zenTime % (ZEN_PALETTES.length - 1); 
             let index = Math.floor(cycle);
             let blend = cycle - index;
@@ -454,25 +460,29 @@ window.onload = function () {
     }
 
     function getChallengeConfig(level) {
-        let numTargets = 3; let numObstacles = 0; let speedMod = 0; let wavy = false;
+        let numTargets = 3, numObstacles = 0, speedMod = 0, wavy = false;
 
-        if (level === 1) { numTargets = 3; speedMod = 0; }
-        else if (level === 2) { numTargets = 5; speedMod = 0; }
-        else if (level === 3) { numTargets = 5; speedMod = 1.0; }
-        else if (level === 4) { numTargets = 6; speedMod = 1.5; numObstacles = 1; }
-        else if (level === 5) { numTargets = 6; speedMod = 2.0; numObstacles = 2; }
+        if (level === 1)      { numTargets = 3; speedMod = 0; numObstacles = 0; }
+        else if (level === 2) { numTargets = 5; speedMod = 0; numObstacles = 0; }
+        else if (level === 3) { numTargets = 8; speedMod = 0; numObstacles = 0; }
+        else if (level === 4) { numTargets = 3; speedMod = 0.8; numObstacles = 0; }
+        else if (level === 5) { numTargets = 5; speedMod = 0.8; numObstacles = 0; }
+        else if (level === 6) { numTargets = 8; speedMod = 0.8; numObstacles = 0; }
+        else if (level === 7) { numTargets = 3; speedMod = 0; numObstacles = 2; }
+        else if (level === 8) { numTargets = 5; speedMod = 0; numObstacles = 3; }
+        else if (level === 9) { numTargets = 8; speedMod = 0; numObstacles = 4; }
         else { 
-            numTargets = Math.min(8, 6 + Math.floor((level - 5) / 2)); 
-            speedMod = 2.0 + (level - 5) * 0.2; 
-            numObstacles = Math.min(4, 2 + Math.floor((level - 4) / 2));
-            wavy = level > 6;
+            numTargets = Math.min(12, 4 + Math.floor((level - 10) / 2)); 
+            numObstacles = Math.min(8, 3 + Math.floor((level - 10) / 2));
+            speedMod = 1.0 + (level - 10) * 0.15; 
+            wavy = level >= 12;
         }
 
         let isMoving = speedMod > 0;
-        let targetTime = isMoving ? 3.5 : 2.5;
-        let obstacleTime = 1.5;
+        let timeMultiplier = level < 10 ? 1.0 : Math.max(0.60, 1.0 - ((level - 9) * 0.03)); 
+        let targetTime = (isMoving ? 3.0 : 2.2) * timeMultiplier;
+        let obstacleTime = 1.0 * timeMultiplier;
         let baseTime = 3.0; 
-
         let calculatedTime = baseTime + (numTargets * targetTime) + (numObstacles * obstacleTime);
 
         return { numTargets, numObstacles, speedMod, wavy, calculatedTime };
@@ -507,7 +517,7 @@ window.onload = function () {
             let r = 25; 
             let pos = getSpawnPos(r);
             let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
-            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, hasArmor: false, wavy: false, bounces: true, isObstacle: false });
+            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, isZenBoss: false, hasArmor: false, wavy: false, bounces: true, isObstacle: false });
         }
 
         let obstacleTypes = ['robin', 'pelican', 'hummingbird', 'thor', 'football'];
@@ -520,40 +530,75 @@ window.onload = function () {
             let vx = config.speedMod > 0 ? (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * config.speedMod) : 0;
             let color = oType === 'hummingbird' ? '#2ed573' : (oType === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
             
-            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: oType, color: color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor: false, wavy: config.wavy, bounces: true, isObstacle: true });
+            enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: oType, color: color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, isZenBoss: false, hasArmor: false, wavy: config.wavy, bounces: true, isObstacle: true });
         }
     }
 
     function spawnStoryEnemy() {
         if (bossActive || waveTransTimer > 0 || mode === 'challenge') return;
         
-        let lc = mode === 'zen' ? { birdTypes: ['robin', 'hummingbird', 'pelican'], spawnRate: 0.02, birdSpeed: 1.0, armorChance: 0.1, wavy: false } : LEVEL_CONFIGS[currentLevel];
-        
-        if (mode === 'story' && (currentWave >= 3 || waveBirdsKilled >= lc.waveBirds)) return;
-        if (Math.random() > lc.spawnRate) return;
+        let birdPool, spawnRate, birdSpeed, armorChance, wavy;
+        let lc = LEVEL_CONFIGS[currentLevel] || {};
 
-        let birdPool = lc.birdTypes, type = 'robin';
+        if (mode === 'zen') {
+            let cycleScore = score % 30000;
+            if (cycleScore < 5000) {
+                spawnRate = 0.005; birdSpeed = 0.6; birdPool = ['robin']; wavy = false; armorChance = 0;
+            } else if (cycleScore < 15000) {
+                spawnRate = 0.012; birdSpeed = 0.8; birdPool = ['robin', 'hummingbird']; wavy = true; armorChance = 0;
+            } else {
+                spawnRate = 0.018; birdSpeed = 1.0; birdPool = ['robin', 'hummingbird', 'pelican']; wavy = true; armorChance = 0;
+            }
+
+            if (Math.random() > spawnRate) return;
+
+            // Zen Piñata Boss Chance
+            if (Math.random() < 0.01) { 
+                let bossTypes = ['owl', 'hawk', 'pelicanking', 'condor', 'champion'];
+                let bType = bossTypes[Math.floor(Math.random() * bossTypes.length)];
+                let bc = BOSS_CONFIGS[bType];
+                let isLeft = Math.random() > 0.5;
+                let startX = isLeft ? -bc.radius * 2 : width + bc.radius * 2;
+                let startY = 120 + Math.random() * (height * 0.30);
+                let dir = isLeft ? 1 : -1;
+                enemies.push({ 
+                    x: startX, y: startY, baseY: startY, radius: bc.radius, 
+                    hp: 2, maxHp: 2, vx: dir * birdSpeed * 0.6, type: bType, color: bc.color, 
+                    state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, phase: 1,
+                    isBoss: false, isZenBoss: true, hasArmor: false, wavy: true, bounces: false, isObstacle: false 
+                });
+                return;
+            }
+        } else {
+            if (currentWave >= 3 || waveBirdsKilled >= lc.waveBirds) return;
+            spawnRate = lc.spawnRate; birdSpeed = lc.birdSpeed; birdPool = lc.birdTypes; 
+            armorChance = lc.armorChance; wavy = lc.wavy;
+            if (Math.random() > spawnRate) return;
+        }
+
+        let type = 'robin';
         if (birdPool.includes('hummingbird') && Math.random() < 0.10) { type = 'hummingbird'; }
-        else if (birdPool.includes('pelican') && pelicansSpawnedThisWave < (currentLevel >= 2 ? 2 : 1) && Math.random() < 0.08) { type = 'pelican'; pelicansSpawnedThisWave++; }
+        else if (birdPool.includes('pelican') && mode !== 'zen' && pelicansSpawnedThisWave < (currentLevel >= 2 ? 2 : 1) && Math.random() < 0.08) { type = 'pelican'; pelicansSpawnedThisWave++; }
+        else if (birdPool.includes('pelican') && mode === 'zen' && Math.random() < 0.08) { type = 'pelican'; }
         else if (mode === 'zen' && Math.random() < 0.04) { type = 'football'; }
         else if (Math.random() < 0.02) { type = 'thor'; }
 
         let isLeft = Math.random() > 0.5, startX = isLeft ? -50 : width + 50, startY = 120 + Math.random() * (height * 0.30), dir = isLeft ? 1 : -1;
         let radius = type === 'thor' ? 26 : (type === 'hummingbird' ? 12 : type === 'pelican' ? 32 : type === 'football' ? 22 : 22);
         let hp = type === 'pelican' ? 2 : 1;
-        let hasArmor = (type === 'robin' && Math.random() < lc.armorChance);
-        let vx = dir * (type === 'hummingbird' ? lc.birdSpeed * 2.0 : type === 'pelican' ? lc.birdSpeed * 0.4 : lc.birdSpeed);
+        let hasArmor = (type === 'robin' && Math.random() < armorChance);
+        let vx = dir * (type === 'hummingbird' ? birdSpeed * 2.0 : type === 'pelican' ? birdSpeed * 0.4 : birdSpeed);
 
         let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
         let color = type === 'hummingbird' ? '#2ed573' : (type === 'robin' ? robinColors[Math.floor(Math.random() * robinColors.length)] : '#f0f0f0');
 
-        enemies.push({ x: startX, y: startY, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, hasArmor, wavy: lc.wavy, bounces: false, isObstacle: false });
+        enemies.push({ x: startX, y: startY, baseY: startY, radius, hp, maxHp: hp, vx, type, color, state: 'flying', angle: 0, flapPhase: Math.random() * Math.PI * 2, damageFlash: 0, isBoss: false, isZenBoss: false, hasArmor, wavy: wavy, bounces: false, isObstacle: false });
     }
 
     function spawnBoss() {
         let lc = LEVEL_CONFIGS[currentLevel], bc = BOSS_CONFIGS[lc.bossType];
         let isLeft = Math.random() > 0.5, startX = isLeft ? -bc.radius * 2 : width + bc.radius * 2, startY = Math.max(150, height * 0.28), dir = isLeft ? 1 : -1;
-        bossEnemy = { x: startX, y: startY, baseY: startY, vx: dir * bc.speed, vy: 0, radius: bc.radius, hp: bc.hp, maxHp: bc.hp, type: lc.bossType, color: bc.color, state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, phase: 1, isBoss: true, shield: bc.shield || false, attackTimer: 3.0, phaseTimer: 0, bounces: false };
+        bossEnemy = { x: startX, y: startY, baseY: startY, vx: dir * bc.speed, vy: 0, radius: bc.radius, hp: bc.hp, maxHp: bc.hp, type: lc.bossType, color: bc.color, state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, phase: 1, isBoss: true, isZenBoss: false, shield: bc.shield || false, attackTimer: 3.0, phaseTimer: 0, bounces: false };
         enemies.push(bossEnemy); bossActive = true; bossBar.classList.remove('hidden'); bossNameEl.textContent = bc.name; bossBarFill.style.width = '100%'; playSound('boss');
         spawnText(width / 2, height * 0.15, `⚠️ ${bc.name.toUpperCase()}!`, '#ff4757');
     }
@@ -613,7 +658,7 @@ window.onload = function () {
                     break; 
                 } else {
                     arrowsHit++; updateAccuracy();
-                    playSound('bonk'); triggerShake(en.isBoss ? 4 : 5); en.damageFlash = 1.0; 
+                    playSound('bonk'); triggerShake(en.isBoss || en.isZenBoss ? 4 : 5); en.damageFlash = 1.0; 
                     arrow.vy = -3; arrow.vx *= 0.5; arrow.rotV = (Math.random() - 0.5) * 0.4; arrow.deflected = true; 
                     en.hp--;
                     
@@ -621,8 +666,8 @@ window.onload = function () {
                     if (prec > 1 && en.type !== 'target') spawnText(en.x, en.y - 25, 'BULLSEYE!', '#F1C40F');
 
                     if (en.hp <= 0) {
-                        en.state = en.isBoss ? 'dead' : 'bonked'; 
-                        if (!en.isBoss && en.type !== 'target' && mode !== 'challenge') waveBirdsKilled++;
+                        en.state = (en.isBoss || en.isZenBoss) ? 'dead' : 'bonked'; 
+                        if (!en.isBoss && !en.isZenBoss && en.type !== 'target' && mode !== 'challenge') waveBirdsKilled++;
                         
                         if (en.type === 'target') {
                             targetsHit++; challengeTotalTargetsHit++;
@@ -633,31 +678,46 @@ window.onload = function () {
                             spawnParticles(en.x, en.y, '#ffffff', 10);
                             spawnParticles(en.x, en.y, '#f1c40f', 6);
                             
-                        } else { playSound('fall'); }
+                        } else if (!en.isZenBoss) { 
+                            playSound('fall'); 
+                        }
 
-                        // NEW COMBO LOGIC SPLIT
-                        combo++; 
-                        
-                        if (mode !== 'zen') comboTimer = 2.5; 
-                        
-                        let mult = mode === 'zen' ? 
-                            (1 + Math.floor(combo / 5)) : 
-                            (combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1); 
-                        
-                        let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : en.type === 'target' ? 200 : en.type === 'football' ? 1000 : 2000) * prec * mult);
-                        
-                        if (mode !== 'challenge') {
-                            score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
+                        if (en.isZenBoss) {
+                            spawnFirework(en.x, en.y);
+                            spawnText(en.x, en.y - 40, 'ZEN MASTER!', '#f1c40f');
                             
-                            if (mode === 'zen' && combo > 1) {
+                            let t = ['scatter', 'freeze'][Math.floor(Math.random() * 2)];
+                            activePowerup = t; powerupTimer = 10; powerDisp.textContent = t.toUpperCase() + " ACTIVE!"; powerDisp.classList.remove('hidden');
+                            
+                            combo++;
+                            let mult = 1 + Math.floor(combo / 5);
+                            if (combo > 1) {
                                 comboDisp.textContent = `${combo} HITS (x${mult})`; 
                                 comboDisp.classList.remove('hidden');
-                            } else if (mult > 1) { 
-                                comboDisp.textContent = `x${mult} COMBO!`; 
-                                comboDisp.classList.remove('hidden'); 
                             }
                         } else {
-                            if (mult > 1) { comboDisp.textContent = `NICE!`; comboDisp.classList.remove('hidden'); }
+                            combo++; 
+                            if (mode !== 'zen') comboTimer = 2.5; 
+                            
+                            let mult = mode === 'zen' ? 
+                                (1 + Math.floor(combo / 5)) : 
+                                (combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1); 
+                            
+                            let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : en.type === 'target' ? 200 : en.type === 'football' ? 1000 : 2000) * prec * mult);
+                            
+                            if (mode !== 'challenge') {
+                                score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
+                                
+                                if (mode === 'zen' && combo > 1) {
+                                    comboDisp.textContent = `${combo} HITS (x${mult})`; 
+                                    comboDisp.classList.remove('hidden');
+                                } else if (mult > 1) { 
+                                    comboDisp.textContent = `x${mult} COMBO!`; 
+                                    comboDisp.classList.remove('hidden'); 
+                                }
+                            } else {
+                                if (mult > 1) { comboDisp.textContent = `NICE!`; comboDisp.classList.remove('hidden'); }
+                            }
                         }
                         
                         if (en.type === 'football' && mode !== 'challenge') {
@@ -731,7 +791,6 @@ window.onload = function () {
 
         if (state === 'victory') { if (Math.random() < 0.02) { spawnFirework(width * 0.1 + Math.random() * (width * 0.8), height * 0.1 + Math.random() * (height * 0.5)); } return; } 
 
-        // UPDATED COMBO DECAY LOGIC
         if (combo > 0 && mode !== 'zen') { 
             comboTimer -= dt; 
             if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } 
@@ -787,7 +846,6 @@ window.onload = function () {
             let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; 
             if (a.rotV) a.angle += a.rotV; else a.angle = Math.atan2(a.vy, a.vx);
             
-            // NEW ZEN MISS LOGIC
             if (a.y > height + 20 || a.y < -400 || a.x < -120 || a.x > width + 120) {
                 if (mode === 'zen' && a.hitTargets.size === 0 && combo > 0) {
                     combo = 0; 
@@ -818,7 +876,7 @@ window.onload = function () {
                     if (e.x < e.radius) { e.x = e.radius; e.vx *= -1; }
                     else if (e.x > width - e.radius) { e.x = width - e.radius; e.vx *= -1; }
                 } else {
-                    if (e.x < -100 || e.x > width + 100) { 
+                    if (e.x < -200 || e.x > width + 200) { 
                         if (mode === 'story' && e.type === 'pelican') triggerLifeLost();
                         enemies.splice(i, 1); 
                     }
@@ -865,8 +923,11 @@ window.onload = function () {
         if (!isNextLevel) { 
             score = 0; lives = 5; currentLevel = 0; arrowsFired = 0; arrowsHit = 0; 
             playMusic();
-            if (mode === 'zen' || mode === 'challenge') {
-                zenTime = 0; clouds.forEach((c, i) => c.x = -c.w - (Math.random() * 2000 + i * 2500));
+            if (mode === 'zen') {
+                zenTime = 0; 
+                clouds = [{ x: width + 100, y: 100 + Math.random() * (height * 0.2), w: 150, h: 60, speed: 0.05 }];
+            } else if (mode === 'challenge') {
+                zenTime = 0; initClouds();
             } else { initClouds(); }
         }
         currentWave = 0; waveBirdsKilled = 0; activePowerup = 'none';
@@ -1000,7 +1061,7 @@ window.onload = function () {
         }
         ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6;
 
-        if (e.isBoss) {
+        if (e.isBoss || e.isZenBoss) {
              if (e.type === 'owl') {
                 let baseColor = e.state === 'bonked' ? '#e1b12c' : e.color;
                 if (e.state === 'flying') {
@@ -1206,20 +1267,20 @@ window.onload = function () {
         drawBackground();
         if (activePowerup === 'freeze') { ctx.fillStyle = 'rgba(0, 210, 255, 0.15)'; ctx.fillRect(0, 0, width, height); ctx.strokeStyle = 'rgba(0, 210, 255, 0.3)'; ctx.lineWidth = 15; ctx.strokeRect(0, 0, width, height); }
 
+        let isBossDying = enemies.some(e => e.isBoss && (e.state === 'dead' || e.state === 'bonked'));
+        if ((LEVEL_CONFIGS[currentLevel]?.clouds || mode === 'zen' || mode === 'challenge') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            clouds.forEach(c => { 
+                ctx.beginPath(); ctx.arc(c.x, c.y, c.h, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.35, c.y - c.h * 0.3, c.h * 1.1, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.35, c.y - c.h * 0.2, c.h * 0.9, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.7, c.y + c.h * 0.1, c.h * 0.7, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.7, c.y + c.h * 0.2, c.h * 0.6, 0, Math.PI*2); ctx.fill(); 
+            });
+        }
+
         particles.forEach(p => { ctx.save(); ctx.translate(p.x, p.y); ctx.globalAlpha = p.life > 1 ? 1 : p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(0,0,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
         
         if (state === 'victory') { ctx.restore(); return; } 
         projectiles.forEach(drawProjectile);
         enemies.sort((a,b)=>a.state==='bonked'?-1:1).forEach(drawBird);
 
-        let isBossDying = enemies.some(e => e.isBoss && (e.state === 'dead' || e.state === 'bonked'));
-        if ((LEVEL_CONFIGS[currentLevel].clouds || mode === 'zen' || mode === 'challenge') && !bossActive && waveTransTimer <= 0 && !isBossDying) {
-            ctx.fillStyle = 'rgba(255,255,255,0.85)';
-            clouds.forEach(c => { 
-                ctx.beginPath(); ctx.arc(c.x, c.y, c.h, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.35, c.y - c.h * 0.3, c.h * 1.1, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.35, c.y - c.h * 0.2, c.h * 0.9, 0, Math.PI*2); ctx.arc(c.x + c.w * 0.7, c.y + c.h * 0.1, c.h * 0.7, 0, Math.PI*2); ctx.arc(c.x - c.w * 0.7, c.y + c.h * 0.2, c.h * 0.6, 0, Math.PI*2); ctx.fill(); 
-            });
-        }
-        
         arrows.forEach(a => { 
             ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.angle); ctx.fillStyle = '#555'; ctx.fillRect(-20,-2,40,4); 
             if (a.isPlunger) { ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.moveTo(20, -10); ctx.lineTo(20, 10); ctx.lineTo(55, 30); ctx.lineTo(55, -30); ctx.closePath(); ctx.fill();
