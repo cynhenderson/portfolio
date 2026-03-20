@@ -23,7 +23,7 @@
             overflow: hidden;
             font-family: 'Nunito', sans-serif;
             touch-action: none;
-            background-color: #111827; /* Dark background for desktop viewport framing */
+            background-color: #111827;
         }
         #gameCanvas { display: block; width: 100%; height: 100%; }
         
@@ -225,7 +225,9 @@
             </div>
         </div>
     </div>
-</div> <script>
+</div>
+
+<script>
 // ===================== AUDIO =====================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -302,7 +304,6 @@ window.onload = function () {
     const bossBarFill = document.getElementById('bossBarFill');
     const bossNameEl = document.getElementById('bossName');
     
-    // Challenge Mode Variables
     let challengeTime = 30.0;
     let challengeLevel = 1;
     let challengeTotalTargetsHit = 0;
@@ -323,7 +324,6 @@ window.onload = function () {
     const exitRunBtn = document.getElementById('exitRunBtn');
     const zenCompleteScreen = document.getElementById('zenCompleteScreen');
 
-    // Music Setup
     const playlist = [
         'sounds/see-you-again.mp3',
         'sounds/all-the-stars.mp3',
@@ -385,7 +385,6 @@ window.onload = function () {
     let arrows = [], enemies = [], projectiles = [], particles = [], floatingTexts = [], clouds = [];
 
     function resize() {
-        // Tie rendering to the new wrapper box instead of the full screen width/height
         width = gameContainer.clientWidth; 
         height = gameContainer.clientHeight;
         canvas.width = width; 
@@ -472,7 +471,7 @@ window.onload = function () {
         let isMoving = speedMod > 0;
         let targetTime = isMoving ? 3.5 : 2.5;
         let obstacleTime = 1.5;
-        let baseTime = 3.0; // Small buffer just to aim the first shot
+        let baseTime = 3.0; 
 
         let calculatedTime = baseTime + (numTargets * targetTime) + (numObstacles * obstacleTime);
 
@@ -489,7 +488,6 @@ window.onload = function () {
         
         let spawnedPositions = [];
         
-        // Helper to find spaced-out locations
         function getSpawnPos(r) {
             let x, y;
             for(let i=0; i<50; i++) {
@@ -505,7 +503,6 @@ window.onload = function () {
             return {x, y};
         }
 
-        // Spawn Targets
         for(let i=0; i<config.numTargets; i++) {
             let r = 25; 
             let pos = getSpawnPos(r);
@@ -513,7 +510,6 @@ window.onload = function () {
             enemies.push({ x: pos.x, y: pos.y, baseY: pos.y, radius: r, hp: 1, maxHp: 1, vx, type: 'target', color: '#fff', state: 'flying', angle: 0, flapPhase: 0, damageFlash: 0, isBoss: false, hasArmor: false, wavy: false, bounces: true, isObstacle: false });
         }
 
-        // Spawn Character Obstacles
         let obstacleTypes = ['robin', 'pelican', 'hummingbird', 'thor', 'football'];
         let robinColors = ['#ff6b81', '#1e90ff', '#2ed573', '#ffa502', '#9b59b6', '#ff4757', '#00d2ff', '#f368e0'];
         
@@ -639,12 +635,27 @@ window.onload = function () {
                             
                         } else { playSound('fall'); }
 
-                        combo++; comboTimer = 2.5; let mult = combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1;
+                        // NEW COMBO LOGIC SPLIT
+                        combo++; 
+                        
+                        if (mode !== 'zen') comboTimer = 2.5; 
+                        
+                        let mult = mode === 'zen' ? 
+                            (1 + Math.floor(combo / 5)) : 
+                            (combo >= 10 ? 4 : combo >= 6 ? 3 : combo >= 3 ? 2 : 1); 
+                        
                         let pts = Math.round((en.type === 'robin' ? 100 : en.type === 'pelican' ? 300 : en.type === 'hummingbird' ? 500 : en.type === 'target' ? 200 : en.type === 'football' ? 1000 : 2000) * prec * mult);
                         
                         if (mode !== 'challenge') {
                             score += pts; scoreDisp.textContent = score; spawnText(en.x, en.y, `+${pts}`, '#fff');
-                            if (mult > 1) { comboDisp.textContent = `x${mult} COMBO!`; comboDisp.classList.remove('hidden'); }
+                            
+                            if (mode === 'zen' && combo > 1) {
+                                comboDisp.textContent = `${combo} HITS (x${mult})`; 
+                                comboDisp.classList.remove('hidden');
+                            } else if (mult > 1) { 
+                                comboDisp.textContent = `x${mult} COMBO!`; 
+                                comboDisp.classList.remove('hidden'); 
+                            }
                         } else {
                             if (mult > 1) { comboDisp.textContent = `NICE!`; comboDisp.classList.remove('hidden'); }
                         }
@@ -720,7 +731,12 @@ window.onload = function () {
 
         if (state === 'victory') { if (Math.random() < 0.02) { spawnFirework(width * 0.1 + Math.random() * (width * 0.8), height * 0.1 + Math.random() * (height * 0.5)); } return; } 
 
-        if (combo > 0) { comboTimer -= dt; if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } }
+        // UPDATED COMBO DECAY LOGIC
+        if (combo > 0 && mode !== 'zen') { 
+            comboTimer -= dt; 
+            if (comboTimer <= 0) { combo = 0; comboDisp.classList.add('hidden'); } 
+        }
+        
         if (activePowerup !== 'none') { powerupTimer -= dt; if (powerupTimer <= 0) { activePowerup = 'none'; powerDisp.classList.add('hidden'); } }
         
         if (waveTransTimer > 0) { 
@@ -764,14 +780,23 @@ window.onload = function () {
 
         clouds.forEach(c => { 
             c.x += c.speed * speed; 
-            // CLOUD FIX: Waits until cloud is entirely offscreen
             if (c.x > width + c.w + 50) { c.x = (mode === 'zen' || mode === 'challenge') ? -c.w - (Math.random() * 3000 + 2000) : -c.w; } 
         });
 
         for (let i = arrows.length - 1; i >= 0; i--) {
             let a = arrows[i]; a.vy += GRAVITY; a.vx *= DRAG; a.vy *= DRAG; a.x += a.vx; a.y += a.vy; 
             if (a.rotV) a.angle += a.rotV; else a.angle = Math.atan2(a.vy, a.vx);
-            if (a.y > height + 20 || a.y < -400 || a.x < -120 || a.x > width + 120) arrows.splice(i, 1);
+            
+            // NEW ZEN MISS LOGIC
+            if (a.y > height + 20 || a.y < -400 || a.x < -120 || a.x > width + 120) {
+                if (mode === 'zen' && a.hitTargets.size === 0 && combo > 0) {
+                    combo = 0; 
+                    comboDisp.classList.add('hidden');
+                    spawnText(width/2, height * 0.2, 'COMBO LOST!', '#e74c3c');
+                    triggerShake(3);
+                }
+                arrows.splice(i, 1);
+            }
         }
 
         for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -855,7 +880,6 @@ window.onload = function () {
         livesPanel.classList.toggle('hidden', mode === 'zen' || mode === 'challenge');
         zenPanel.classList.toggle('hidden', mode !== 'zen');
         
-        // Show unified exit button only on Zen and Challenge modes
         exitRunBtn.classList.toggle('hidden', mode === 'story');
         
         bossBar.classList.add('hidden'); waveTransition.classList.add('hidden');
@@ -1219,7 +1243,6 @@ window.onload = function () {
     }
     
     function getPos(e) { 
-        // Must tie interaction to the canvas bounds now that it's in a wrapper
         let rect = canvas.getBoundingClientRect();
         if (e.touches) {
             return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
@@ -1265,10 +1288,9 @@ window.onload = function () {
     document.getElementById('modeChallengeBtn').addEventListener('click', () => { unlockAudio(); startGame('challenge'); });
     document.getElementById('modeZenBtn').addEventListener('click', () => { unlockAudio(); startGame('zen'); }); 
     
-    // THE UNIFIED EXIT BUTTON LOGIC
     exitRunBtn.addEventListener('click', () => { 
         if (mode === 'zen') {
-            state = 'gameover'; // Pause loop
+            state = 'gameover'; 
             document.getElementById('zenFinalScore').textContent = score;
             document.getElementById('zenFinalAccuracy').textContent = accuracyDisp.textContent;
             zenCompleteScreen.classList.remove('hidden');
@@ -1278,7 +1300,6 @@ window.onload = function () {
         }
     });
     
-    // NEW ZEN MENU BUTTON
     document.getElementById('zenMenuBtn').addEventListener('click', () => { 
         state = 'menu'; 
         zenCompleteScreen.classList.add('hidden'); 
