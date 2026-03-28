@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Oscar's Fever Dream</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Press Start 2P', monospace;
+      image-rendering: pixelated;
+    }
+
+    /* =====================
+       PANELS
+    ===================== */
+    .panel {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .panel.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .panel.cut { transition: none; }
+
+    /* -- Start Screen -- */
+    #start-screen {
+      background: #0a1128;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      z-index: 90;
+      text-align: center;
+    }
+    #start-screen h1 {
+      color: #ff6a00;
+      font-size: clamp(1.5rem, 7vw, 2.5rem);
+      line-height: 1.5;
+      text-shadow: 4px 4px 0 #000;
+      letter-spacing: 0.05em;
+    }
+    #start-screen .insert-coin {
+      color: #00e5ff;
+      font-size: clamp(0.6rem, 3vw, 1rem);
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+      animation: blink 1.2s step-end infinite;
+      cursor: pointer;
+    }
+
+    /* -- Panel 1: Alley -- */
+    #p1-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: center 55%;
+      /* FIX: Match animation to the 8s panel duration */
+      animation: kenburns 8s ease-in-out forwards;
+    }
+
+    #p1-lamp {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: radial-gradient(ellipse at 85% 0%, rgba(255,180,80,0.45) 0%, transparent 70%);
+      animation: flicker 2.5s infinite;
+      pointer-events: none;
+      mix-blend-mode: screen; 
+    }
+
+    #p1-fade {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+
+    @keyframes kenburns {
+      from { transform: scale(1.05) translateY(0px); }
+      to   { transform: scale(1.3) translateY(-22px); }
+    }
+
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.1; }
+      40% { opacity: 0.6; } 
+    }
+
+    /* -- Panel 2: Grind -- */
+    #panel2 { background: #000; }
+    #p2-sprite {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+    #p2-saturday {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(1.4rem, 6.5vw, 2.5rem);
+      color: rgba(220, 225, 235, 0.7);
+      text-shadow: none;
+      letter-spacing: 0.15em;
+      padding-left: 0.15em; 
+      pointer-events: none;
+      text-align: center;
+    }
+    #p2-fightnight {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(2.5rem, 12vw, 4rem);
+      color: #ff6a00;
+      text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 0 0 40px rgba(255,106,0,0.8);
+      text-align: center;
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+    }
+
+    /* -- Panel 3: 3AM -- */
+    #panel3 { background: #000; }
+    #p3-bg, #p3-shift {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+    }
+
+    /* -- Panel 4: Eyes -- */
+    #panel4 { background: #000; }
+    #p4-closed, #p4-open {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+    }
+    #p4-scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 4px
+      );
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* =====================
+       GAME WRAPPER
+    ===================== */
+    #game-wrapper {
+      position: absolute;
+      inset: 0;
+      display: none;
+      transform-origin: 50.2% 51%;
+    }
+    #game-wrapper.active { display: block; }
+
+    #screen {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 5;
+    }
+    #screen-bg {
+      position: absolute;
+      inset: 0;
+      background: #0a1128;
+    }
+
+    #hud {
+      position: absolute;
+      top: 3%;
+      left: 3%;
+      width: 94%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 5;
+    }
+    #lives { display: flex; gap: 3px; align-items: center; }
+    .heart { width: 22px; height: 22px; object-fit: contain; image-rendering: pixelated; }
+    #score { color: #00e5ff; font-size: clamp(0.5rem, 2vw, 0.7rem); text-shadow: 0 0 8px #00e5ff; }
+
+    #timer-wrap {
+      position: absolute;
+      bottom: 3%;
+      left: 3%;
+      width: 94%;
+      height: 8px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid rgba(0,229,255,0.35);
+      z-index: 5;
+    }
+    #timer-bar {
+      height: 100%;
+      width: 100%;
+      background: #ff6a00;
+      box-shadow: 0 0 6px #ff6a00;
+      transition: width linear;
+    }
+
+    #game-content {
+      position: absolute;
+      top: 13%;
+      left: 0;
+      width: 100%;
+      bottom: 13%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 5;
+      overflow: hidden;
+    }
+    #oscar-img {
+      position: absolute;
+      height: 88%;
+      bottom: 0;
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 1;
+    }
+    
+    #bowl-container {
+      position: absolute;
+      width: 55%;
+      bottom: 25%; 
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    #chanko-img {
+      width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    #cabinet-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* =====================
+       UI OVERLAYS
+    ===================== */
+    #stamp {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(2rem, 8vw, 3rem);
+      color: #ff6a00;
+      text-align: center;
+      text-shadow: 3px 3px 0 #000;
+      z-index: 25;
+      pointer-events: none;
+      white-space: pre-wrap;
+      line-height: 1.3;
+    }
+    #flash {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+      transition: opacity 0.05s;
+    }
+
+    #loading {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.5s;
+    }
+    #loading span {
+      color: #00e5ff;
+      font-size: clamp(0.45rem, 2.2vw, 0.8rem);
+      text-shadow: 0 0 10px #00e5ff;
+      letter-spacing: 0.2em;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    .end-screen {
+      position: absolute;
+      inset: 0;
+      background: #0a1128;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 50;
+      text-align: center;
+      padding: 2.5rem;
+    }
+    .end-screen.active { display: flex; }
+    .end-screen h1 {
+      font-size: clamp(1.2rem, 5.5vw, 1.8rem);
+      line-height: 1.8;
+    }
+    .end-screen .sub {
+      font-size: clamp(0.4rem, 1.8vw, 0.6rem);
+      letter-spacing: 0.1em;
+    }
+    .end-screen .hint {
+      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
+      color: #fff;
+      animation: blink 1s step-end infinite;
+      margin-top: 0.5rem;
+    }
+    #demo-complete h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+    #demo-complete .sub { color: #ff6a00; }
+    #gameover-screen h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+    #gameover-screen .sub { color: #ff6a00; }
+
+    /* SHAKE */
+    @keyframes shake-sm {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-4px); }
+      40%,80% { transform: translateX(4px); }
+    }
+    @keyframes shake-lg {
+      0%,100% { transform: translateX(0); }
+      15%,45%,75% { transform: translateX(-8px); }
+      30%,60%,90% { transform: translateX(8px); }
+    }
+    .shake-sm { animation: shake-sm 0.15s ease-in-out; }
+    .shake-lg { animation: shake-lg 0.22s ease-in-out; }
+    @keyframes shake-xl {
+      0%,100% { transform: translate(0,0); }
+      10%,50%,90% { transform: translate(-14px,-3px); }
+      20%,60% { transform: translate(14px,3px); }
+      30%,70% { transform: translate(-10px,2px); }
+      40%,80% { transform: translate(10px,-2px); }
+    }
+    .shake-xl { animation: shake-xl 0.35s ease-in-out; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <audio id="bgm-track" src="intro-music.m4a" preload="auto"></audio>
+
+  <div id="loading"><span>DREAMING...</span></div>
+  
+  <div id="start-screen" class="panel">
+    <h1>OSCAR'S<br>FEVER DREAM</h1>
+    <div class="insert-coin">TAP TO START</div>
+  </div>
+
+  <div id="panel1" class="panel">
+    <img id="p1-bg" src="01-poster-bg.png" alt="">
+    <div id="p1-lamp"></div>
+    <div id="p1-fade"></div>
+  </div>
+
+  <div id="panel2" class="panel cut">
+    <img id="p2-sprite" src="oscar-sumo.png" alt="">
+    <div id="p2-saturday">SATURDAY</div>
+    <div id="p2-fightnight">FIGHT<br>NIGHT</div>
+  </div>
+
+  <div id="panel3" class="panel cut">
+    <img id="p3-bg" src="night.png" alt="">
+    <img id="p3-shift" src="night-shift.png" alt="">
+  </div>
+
+  <div id="panel4" class="panel cut">
+    <img id="p4-closed" src="night-close-up.png" alt="">
+    <img id="p4-open" src="night-eyes-open.png" alt="">
+    <div id="p4-scanlines"></div>
+  </div>
+
+  <div id="game-wrapper">
+    <div id="screen">
+      <div id="screen-bg"></div>
+      <div id="hud">
+        <div id="lives">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+        </div>
+        <div id="score">000</div>
+      </div>
+      <div id="game-content">
+        <div id="bowl-container">
+          <img id="chanko-img" src="chanko.png" alt="">
+        </div>
+        <img id="oscar-img" src="mouth-open.png" alt="">
+      </div>
+      <div id="timer-wrap">
+        <div id="timer-bar"></div>
+      </div>
+    </div>
+    <img id="cabinet-img" src="arcade-cabinet.png" alt="">
+  </div>
+
+  <div id="stamp"></div>
+  <div id="flash"></div>
+
+  <div id="demo-complete" class="end-screen">
+    <h1>DEMO<br>COMPLETE</h1>
+    <div class="sub">SCORE: <span id="final-score">000</span></div>
+    <div class="hint">TAP TO RESTART</div>
+  </div>
+
+  <div id="gameover-screen" class="end-screen">
+    <h1>WAKE<br>UP</h1>
+    <div class="sub">SCORE: <span id="go-score">000</span></div>
+    <div class="hint">TAP TO RESTART</div>
+  </div>
+
+</div>
+<script>
+// ===================================================
+//  AUDIO ENGINE
+// ===================================================
+const AudioEngine = {
+  ctx: null,
+  init: function() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AudioContext();
+  },
+  resume: function() {
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  },
+  
+  playGlitchSting: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(100, t);
+    for(let i=1; i<5; i++) {
+       osc.frequency.setValueAtTime(Math.random() * 2000 + 200, t + (i*0.03));
+    }
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.15);
+  },
+
+  playSlam: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(100, t);
+    osc.frequency.exponentialRampToValueAtTime(10, t + 0.4);
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.4);
+  },
+
+  playCoin: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(880, t); 
+    osc.frequency.setValueAtTime(1760, t + 0.08); 
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.2);
+  },
+
+  playChomp: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.05); 
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05); 
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.05);
+  },
+
+  playWin: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(523.25, t); 
+    osc.frequency.setValueAtTime(659.25, t + 0.1); 
+    osc.frequency.setValueAtTime(783.99, t + 0.2); 
+    osc.frequency.setValueAtTime(1046.50, t + 0.3); 
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.setValueAtTime(0.1, t + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.6);
+  },
+
+  playLose: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.5); 
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.5);
+  }
+};
+
+// ===================================================
+//  STATE & TIMERS
+// ===================================================
+let S = 'LOADING';
+let score = 0;
+let lives = 4;
+let tapCount = 0;
+let gameTimer = null;
+let introTimeouts = [];
+let glitchId = null;
+
+const app           = document.getElementById('app');
+const loading       = document.getElementById('loading');
+const startScreenEl = document.getElementById('start-screen');
+const bgmTrack      = document.getElementById('bgm-track');
+const panel1        = document.getElementById('panel1');
+const panel2        = document.getElementById('panel2');
+const panel3        = document.getElementById('panel3');
+const panel4        = document.getElementById('panel4');
+const gameWrap      = document.getElementById('game-wrapper');
+const stamp         = document.getElementById('stamp');
+const flashEl       = document.getElementById('flash');
+const demoEl        = document.getElementById('demo-complete');
+const gameoverEl    = document.getElementById('gameover-screen');
+
+function schedule(fn, delay) {
+  introTimeouts.push(setTimeout(fn, delay));
+}
+
+// ===================================================
+//  PRELOAD
+// ===================================================
+const ASSETS = [
+  '01-poster-bg.png','oscar-sumo.png','night.png','night-shift.png',
+  'night-close-up.png','night-eyes-open.png','arcade-cabinet.png',
+  'chanko.png','mouth-open.png','mouth-stuffed.png',
+  'heart-full.png','heart-empty.png'
+];
+
+Promise.all(ASSETS.map(src => new Promise(r => {
+  const img = new Image();
+  img.onload = img.onerror = r;
+  img.src = src;
+}))).then(() => {
+  loading.style.opacity = '0';
+  setTimeout(() => { 
+    loading.style.display = 'none'; 
+    AudioEngine.init();
+    startScreenEl.classList.add('active');
+    const bootGame = (e) => {
+      if (e) e.preventDefault();
+      AudioEngine.resume();
+      AudioEngine.playCoin(); 
+      bgmTrack.currentTime = 0;
+      bgmTrack.play().catch(err => console.log(err));
+      startScreenEl.classList.remove('active');
+      startScreenEl.removeEventListener('touchstart', bootGame);
+      startScreenEl.removeEventListener('mousedown', bootGame);
+      intro1(); 
+    };
+    startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
+    startScreenEl.addEventListener('mousedown', bootGame);
+  }, 500);
+});
+
+// ===================================================
+//  UTILS
+// ===================================================
+function showPanel(el) {
+  [panel1, panel2, panel3, panel4].forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+function doFlash(color, ms) {
+  flashEl.style.background = color;
+  flashEl.style.opacity = '1';
+  schedule(() => { flashEl.style.opacity = '0'; }, ms);
+}
+function shake(level) {
+  const cls = level === 'xl' ? 'shake-xl' : level ? 'shake-lg' : 'shake-sm';
+  app.classList.remove('shake-sm', 'shake-lg', 'shake-xl');
+  void app.offsetWidth;
+  app.classList.add(cls);
+  app.addEventListener('animationend', () => app.classList.remove(cls), { once: true });
+}
+function stampShow(text, color, sizeCss, bg) {
+  stamp.textContent     = text;
+  stamp.style.color     = color;
+  stamp.style.fontSize  = sizeCss;
+  stamp.style.background = bg || 'transparent';
+  stamp.style.opacity   = '0';
+  stamp.style.transform = 'scale(2.2)';
+  stamp.style.transition = 'none';
+  stamp.style.display   = 'flex';
+  void stamp.offsetWidth;
+  stamp.style.transition = 'transform 0.06s steps(1), opacity 0.04s';
+  stamp.style.transform = 'scale(1)';
+  stamp.style.opacity   = '1';
+  shake(false);
+}
+function stampHide() { stamp.style.display = 'none'; }
+function setScore() { document.getElementById('score').textContent = String(score).padStart(3, '0'); }
+function setHearts() {
+  document.querySelectorAll('.heart').forEach((h, i) => {
+    h.src = i < lives ? 'heart-full.png' : 'heart-empty.png';
+  });
+}
+
+// ===================================================
+//  INTRO
+// ===================================================
+function intro1() {
+  S = 'INTRO_1';
+  showPanel(panel1);
+  schedule(() => {
+    document.getElementById('p1-fade').style.opacity = '1';
+    schedule(intro2, 500); 
+  }, 7500);
+}
+
+function intro2() {
+  S = 'INTRO_2';
+  showPanel(panel2);
+  const sprite     = document.getElementById('p2-sprite');
+  const saturday   = document.getElementById('p2-saturday');
+  const fightnight = document.getElementById('p2-fightnight');
+  [sprite, saturday, fightnight].forEach(el => { el.style.display = 'none'; });
+  sprite.style.filter = 'none';
+  sprite.style.display = 'block';
+  sprite.style.transition = 'none';
+  sprite.style.transformOrigin = 'center 13%';
+  sprite.style.transform = 'scale(1)';
+  void sprite.offsetWidth;
+  sprite.style.transition = 'transform 3.0s ease-in';
+  sprite.style.transform = 'scale(1.7)';
+  schedule(() => {
+    sprite.style.transition = 'none';
+    sprite.style.transformOrigin = 'center center';
+    sprite.style.transform = 'scale(2.8) translateY(16%)';
+    sprite.style.filter = 'brightness(1.4) saturate(4) hue-rotate(-25deg) contrast(1.6)';
+    shake(false);
+  }, 3000);
+  schedule(() => { sprite.style.display = 'none'; }, 3200);
+  schedule(() => {
+    sprite.style.display = 'block';
+    sprite.style.transition = 'none';
+    sprite.style.transformOrigin = 'center center';
+    sprite.style.transform = 'scale(1.3) scaleX(-1)';
+    sprite.style.filter = 'invert(1)';
+    shake(true);
+    AudioEngine.playGlitchSting(); 
+    schedule(() => { sprite.style.display = 'none'; }, 200);
+  }, 3500);
+  schedule(() => {
+    saturday.style.display = 'flex';
+    saturday.style.opacity = '0';
+    saturday.style.transform = 'scale(1.8)';
+    saturday.style.transition = 'none';
+    void saturday.offsetWidth;
+    saturday.style.transition = 'transform 0.15s ease-in, opacity 0.15s linear';
+    saturday.style.opacity = '1';
+    saturday.style.transform = 'scale(1)';
+  }, 4000);
+  schedule(() => {
+    saturday.style.opacity = '0.2';
+    saturday.style.filter = 'blur(2px)';
+    fightnight.style.display = 'flex';
+    fightnight.style.opacity = '0';
+    fightnight.style.transform = 'scale(3)';
+    fightnight.style.transition = 'none';
+    void fightnight.offsetWidth;
+    fightnight.style.transition = 'transform 0.08s ease-in, opacity 0.05s linear';
+    fightnight.style.opacity = '1';
+    fightnight.style.transform = 'scale(1)';
+    shake('xl');
+    doFlash('rgba(255,106,0,0.4)', 150);
+    AudioEngine.playSlam(); 
+  }, 6000);
+  schedule(() => {
+    [sprite, saturday, fightnight].forEach(el => { el.style.display = 'none'; });
+    intro3();
+  }, 8000);
+}
+
+function intro3() {
+  S = 'INTRO_3';
+  showPanel(panel3);
+  const bg = document.getElementById('p3-bg');
+  const shift = document.getElementById('p3-shift');
+  bg.style.transition = 'none';
+  shift.style.transition = 'none';
+  bg.style.opacity = shift.style.opacity = '0';
+  bg.style.transform = 'scale(1.05)';
+  shift.style.transform = 'scale(1.05)';
+  schedule(() => {
+    bg.style.transition = 'opacity 0.8s ease-in-out, transform 3s ease-out';
+    bg.style.opacity = '1';
+    bg.style.transform = 'scale(1)';
+  }, 500);
+  schedule(() => {
+    bg.style.transition = 'none';
+    bg.style.opacity = '0';
+    schedule(() => {
+      shift.style.transition = 'none';
+      shift.style.opacity = '1';
+      shift.style.transform = 'scale(1)';
+    }, 80);
+  }, 3500);
+  schedule(() => {
+    shift.style.opacity = '0';
+    schedule(intro4, 100);
+  }, 4900);
+}
+
+function intro4() {
+  S = 'INTRO_4';
+  showPanel(panel4);
+  const closed = document.getElementById('p4-closed');
+  const open = document.getElementById('p4-open');
+  const scanlines = document.getElementById('p4-scanlines');
+  closed.style.transition = 'none';
+  closed.style.opacity = '0';
+  schedule(() => {
+    closed.style.transition = 'opacity 0.3s';
+    closed.style.opacity = '1';
+  }, 300);
+  schedule(() => {
+    closed.style.transition = 'none';
+    closed.style.opacity = '0';
+    open.style.opacity = '1';
+    scanlines.style.opacity = '1';
+    glitchId = setInterval(() => {
+      const x = (Math.random() - 0.5) * 26;
+      const y = (Math.random() - 0.5) * 6;
+      const h = Math.random() * 200;
+      open.style.transform = `translate(${x}px, ${y}px)`;
+      open.style.filter = `hue-rotate(${h}deg)`;
+    }, 50);
+    ['#00e5ff','#ff6a00','#00e5ff','#ff6a00','#00e5ff','#ff6a00'].forEach((c, i) => {
+      schedule(() => doFlash(c, 60), i * 220);
+    });
+  }, 2000);
+  schedule(() => {
+    clearInterval(glitchId);
+    open.style.transform = '';
+    open.style.filter = '';
+    scanlines.style.opacity = '0';
+    doFlash('#ffffff', 300);
+  }, 3300);
+  schedule(() => {
+    panel4.classList.remove('active');
+    initGame();
+  }, 3500);
+}
+
+// ===================================================
+//  GAME
+// ===================================================
+function initGame() {
+  S = 'GAME_INIT';
+  gameWrap.classList.add('active');
+  score = 0;
+  lives = 4;
+  setScore();
+  setHearts();
+  const cabinet = document.getElementById('cabinet-img');
+  cabinet.style.transition = 'none';
+  cabinet.style.transform = 'scale(1)';
+  cabinet.style.opacity = '1';
+  setTimeout(() => {
+    cabinet.style.transition = 'transform 1.5s ease-in, opacity 0.5s ease-out 1s';
+    cabinet.style.transform = 'scale(4.5)';
+    cabinet.style.opacity = '0';
+    setTimeout(preGame, 1600);
+  }, 2000);
+}
+
+function preGame() {
+  S = 'PRE_GAME';
+  AudioEngine.playCoin(); 
+  stampShow('TAP FAST!', '#ff6a00', 'clamp(2rem, 8vw, 3rem)', '#0a1128');
+  setTimeout(() => {
+    stampHide();
+    play();
+  }, 1500);
+}
+
+function play() {
+  S = 'PLAYING';
+  tapCount = 0;
+  const oscar = document.getElementById('oscar-img');
+  const timerBar = document.getElementById('timer-bar');
+  const chanko = document.getElementById('chanko-img');
+  oscar.src = 'mouth-open.png';
+  chanko.style.clipPath = 'inset(0% 0% 0% 0%)';
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  const DURATION = 5000;
+  const TARGET = 15;
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${DURATION}ms linear`;
+    timerBar.style.width = '0%';
+  });
+  gameTimer = setTimeout(() => {
+    if (S === 'PLAYING') onLose();
+  }, DURATION);
+  function onTap(e) {
+    e.preventDefault();
+    if (S !== 'PLAYING') return;
+    tapCount++;
+    AudioEngine.playChomp(); 
+    oscar.src = 'mouth-stuffed.png';
+    setTimeout(() => { if (S === 'PLAYING') oscar.src = 'mouth-open.png'; }, 100);
+    const pct = Math.min(tapCount / TARGET, 1);
+    chanko.style.clipPath = `inset(${pct * 48}% 0% 0% 0%)`;
+    shake(false);
+    if (tapCount >= TARGET) onWin();
+  }
+  app.addEventListener('touchstart', onTap, { passive: false });
+  app.addEventListener('mousedown', onTap);
+  app._tap = onTap;
+}
+
+function cleanupTap() {
+  clearTimeout(gameTimer);
+  if (app._tap) {
+    app.removeEventListener('touchstart', app._tap);
+    app.removeEventListener('mousedown', app._tap);
+    app._tap = null;
+  }
+}
+function onWin() {
+  S = 'WIN';
+  cleanupTap();
+  score++;
+  setScore();
+  document.getElementById('oscar-img').src = 'mouth-stuffed.png';
+  AudioEngine.playWin(); 
+  stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
+  setTimeout(() => {
+    stampHide();
+    showDemoComplete();
+  }, 600);
+}
+function onLose() {
+  S = 'LOSE';
+  cleanupTap();
+  lives--;
+  setHearts();
+  AudioEngine.playLose(); 
+  doFlash('rgba(255,0,0,0.5)', 200);
+  shake(true);
+  stampShow('✗', '#ff0000', 'clamp(3rem, 14vw, 5rem)');
+  setTimeout(() => {
+    stampHide();
+    if (lives <= 0) {
+      showGameOver();
+    } else {
+      document.getElementById('oscar-img').src = 'mouth-open.png';
+      document.getElementById('chanko-img').style.clipPath = 'inset(0% 0% 0% 0%)';
+      preGame();
+    }
+  }, 700);
+}
+function showDemoComplete() {
+  document.getElementById('final-score').textContent = String(score).padStart(3, '0');
+  demoEl.classList.add('active');
+  const tap = e => { e.preventDefault(); restart(); };
+  demoEl.addEventListener('touchstart', tap, { once: true, passive: false });
+  demoEl.addEventListener('mousedown',  tap, { once: true });
+}
+function showGameOver() {
+  document.getElementById('go-score').textContent = String(score).padStart(3, '0');
+  gameoverEl.classList.add('active');
+  const tap = e => { e.preventDefault(); restart(); };
+  gameoverEl.addEventListener('touchstart', tap, { once: true, passive: false });
+  gameoverEl.addEventListener('mousedown',  tap, { once: true });
+}
+function restart() {
+  demoEl.classList.remove('active');
+  gameoverEl.classList.remove('active');
+  score = 0;
+  lives = 4;
+  setScore();
+  setHearts();
+  document.getElementById('oscar-img').src = 'mouth-open.png';
+  document.getElementById('chanko-img').style.clipPath = 'inset(0% 0% 0% 0%)';
+  preGame();
+}
+</script>
+</body>
+</html>
