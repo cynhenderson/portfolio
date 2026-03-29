@@ -1450,6 +1450,13 @@ Promise.all([
     startScreenEl.classList.add('active');
     const bootGame = (e) => {
       if (e) e.preventDefault();
+      
+      // DIAGNOSTIC: If the buffer is null, the file didn't load properly from the server!
+      if (!AudioEngine.bgmBuffer) {
+        console.error("BGM Buffer is empty! The mp3 file is likely returning a 404 or corrupted.");
+        alert("Audio failed to load! Check the developer console.");
+      }
+
       AudioEngine.playCoin();
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
@@ -1460,6 +1467,7 @@ Promise.all([
       AudioEngine.playBGM();
       intro1();
     };
+
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
   }, 500);
