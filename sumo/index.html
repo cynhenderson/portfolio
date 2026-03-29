@@ -513,7 +513,6 @@
       image-rendering: pixelated;
       z-index: 3;
       top: -60%;
-      filter: hue-rotate(140deg) saturate(1.5) brightness(0.85);
     }
     #throw-feedback {
       position: absolute;
@@ -552,15 +551,15 @@
       height: 70%;
       bottom: 0;
       left: 50%;
-      transform-origin: bottom center; 
+      transform-origin: center center;
       transform: translateX(-50%);
       object-fit: contain;
       image-rendering: pixelated;
       z-index: 2;
-      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    #dodge-oscar.dodge-left { transform: translateX(-120%) rotate(-8deg); }
-    #dodge-oscar.dodge-right { transform: translateX(20%) rotate(8deg); }
+    #dodge-oscar.dodge-left  { transform: translateX(-70%) scaleX(-0.55) rotate(8deg); }
+    #dodge-oscar.dodge-right { transform: translateX(-30%) scaleX(0.55) rotate(8deg); }
 
     /* -- Safe Zone Telegraph Glow -- */
     #dodge-telegraph {
@@ -596,22 +595,22 @@
 
     .ghost-hand {
       position: absolute;
-      width: 32%;
+      width: 22%;
       top: -50%;
       opacity: 0;
       object-fit: contain;
       image-rendering: pixelated;
       z-index: 3;
     }
-    .ghost-hand.hand-left { left: 8%; }
-    .ghost-hand.hand-right { right: 8%; }
+    .ghost-hand.hand-left { left: -2%; }
+    .ghost-hand.hand-right { right: -2%; }
 
     .ghost-hand.winding-up {
       top: -30%;
       opacity: 1;
     }
     .ghost-hand.slamming {
-      top: 25%;
+      top: 35%;
       opacity: 1;
       transition-timing-function: ease-in;
     }
@@ -1523,7 +1522,9 @@ function cleanupShiko() {
 //  GAME 3: THE THROW (Reflex Tap)
 // ===================================================
 let throwRAF = null;
+let throwRound = 0; // 0 = round 1, 1 = round 2
 function setupThrow() {
+  throwRound = 0;
   const container = document.getElementById('throw-container');
   const oscar = document.getElementById('throw-oscar');
   const opponent = document.getElementById('throw-opponent');
@@ -1535,6 +1536,28 @@ function setupThrow() {
   opponent.style.top = '-60%';
   opponent.style.opacity = '1';
   opponent.style.transform = 'translateX(-50%)';
+  opponent.style.width = '70%';
+  opponent.style.filter = 'hue-rotate(140deg) saturate(1.5) brightness(0.85)';
+  opponent.className = '';
+  feedback.style.display = 'none';
+  feedback.style.opacity = '0';
+
+  zoneGlow.style.animation = 'zone-pulse 0.8s ease-in-out infinite alternate';
+}
+
+function setupThrowRound2() {
+  const oscar = document.getElementById('throw-oscar');
+  const opponent = document.getElementById('throw-opponent');
+  const zoneGlow = document.getElementById('throw-zone-glow');
+  const feedback = document.getElementById('throw-feedback');
+
+  oscar.src = 'oscar-neutral.png';
+  opponent.style.top = '-60%';
+  opponent.style.opacity = '1';
+  opponent.style.transform = 'translateX(-50%)';
+  opponent.style.width = '52%';
+  // Red-orange tint for round 2
+  opponent.style.filter = 'hue-rotate(320deg) saturate(2) brightness(0.9)';
   opponent.className = '';
   feedback.style.display = 'none';
   feedback.style.opacity = '0';
@@ -1550,7 +1573,8 @@ function playThrow() {
   const zone = document.getElementById('throw-zone');
   const feedback = document.getElementById('throw-feedback');
 
-  const FALL_DURATION = 1800; 
+  // Round 1 is slower/bigger, round 2 is faster/smaller
+  const FALL_DURATION = throwRound === 0 ? 1800 : 1200;
   const PRE_DELAY = 600 + Math.random() * 800;
   timerBar.style.transition = 'none';
   timerBar.style.width = '100%';
@@ -1597,9 +1621,30 @@ function playThrow() {
       AudioEngine.playThrow();
       shake('xl');
       doFlash('rgba(0,229,255,0.4)', 150);
-
       opponent.className = 'opponent-flung';
-      setTimeout(onWin, 600);
+
+      if (throwRound === 0) {
+        // Beat round 1 -- brief celebration then launch round 2
+        if (throwRAF) { cancelAnimationFrame(throwRAF); throwRAF = null; }
+        clearTimeout(gameTimer);
+        app.removeEventListener('touchstart', onTap);
+        app.removeEventListener('mousedown', onTap);
+        app._throwTap = null;
+
+        setTimeout(() => {
+          AudioEngine.playCoin();
+          stampShow('ROUND 2!', '#ff6a00', 'clamp(1.8rem, 7vw, 2.8rem)');
+          setTimeout(() => {
+            stampHide();
+            throwRound = 1;
+            setupThrowRound2();
+            playThrow();
+          }, 900);
+        }, 650);
+      } else {
+        // Beat round 2 -- full win
+        setTimeout(onWin, 600);
+      }
     } else {
       AudioEngine.playWhiff();
       shake(false);
@@ -1627,12 +1672,15 @@ function cleanupThrow() {
     app.removeEventListener('mousedown', app._throwTap);
     app._throwTap = null;
   }
+  throwRound = 0;
   const opponent = document.getElementById('throw-opponent');
   if (opponent) {
     opponent.className = '';
     opponent.style.top = '-60%';
     opponent.style.opacity = '1';
     opponent.style.transform = 'translateX(-50%)';
+    opponent.style.width = '70%';
+    opponent.style.filter = 'hue-rotate(140deg) saturate(1.5) brightness(0.85)';
   }
   document.getElementById('throw-container').style.display = 'none';
 }
@@ -1698,11 +1746,13 @@ function playDodge() {
     swipeHandled = true;
     if (direction === 'left') {
       playerSide = 'left';
-      oscar.src = 'oscar-shiko.png'; 
+      oscar.src = 'oscar-throw.png';
+      oscar.style.transform = '';
       oscar.className = 'dodge-left';
     } else {
       playerSide = 'right';
-      oscar.src = 'oscar-shiko-right.png'; 
+      oscar.src = 'oscar-throw.png';
+      oscar.style.transform = '';
       oscar.className = 'dodge-right';
     }
   }
