@@ -1447,27 +1447,25 @@ Promise.all([
   loading.style.opacity = '0';
   setTimeout(() => {
     loading.style.display = 'none';
-    startScreenEl.classList.add('active');
-    const bootGame = (e) => {
+    startScreenEl.classList.add('const bootGame = (e) => {
   if (e) e.preventDefault();
 
-  // 1. Wake the audio context and WAIT for it before playing
-  const resumePromise = (AudioEngine.ctx.state === 'suspended')
-    ? AudioEngine.ctx.resume()
-    : Promise.resolve();
+  // Wake context
+  if (AudioEngine.ctx.state === 'suspended') {
+    AudioEngine.ctx.resume();
+  }
 
-  resumePromise.then(() => {
-    AudioEngine.playCoin();
-    AudioEngine.playBGM();
-  });
+  // Start BGM immediately — don't wait on the promise
+  AudioEngine.playCoin();
+  AudioEngine.playBGM();
 
-  // 2. Kick off visuals immediately (no need to wait)
   startScreenEl.classList.remove('active');
   startScreenEl.removeEventListener('touchstart', bootGame);
   startScreenEl.removeEventListener('mousedown', bootGame);
 
   intro1();
 };
+
 
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
