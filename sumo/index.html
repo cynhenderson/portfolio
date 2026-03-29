@@ -1451,22 +1451,23 @@ Promise.all([
     const bootGame = (e) => {
       if (e) e.preventDefault();
       
-      // DIAGNOSTIC: If the buffer is null, the file didn't load properly from the server!
-      if (!AudioEngine.bgmBuffer) {
-        console.error("BGM Buffer is empty! The mp3 file is likely returning a 404 or corrupted.");
-        alert("Audio failed to load! Check the developer console.");
+      // 1. Force the audio context to wake up immediately
+      if (AudioEngine.ctx.state === 'suspended') {
+        AudioEngine.ctx.resume();
       }
 
+      // 2. Play the pre-decoded Web Audio buffer (ZERO latency)
       AudioEngine.playCoin();
+      AudioEngine.playBGM(); 
+
+      // 3. Kick off the visuals instantly
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
       startScreenEl.removeEventListener('mousedown', bootGame);
       
-      // Trigger the resume, but don't wait for the promise!
-      AudioEngine.ctx.resume();
-      AudioEngine.playBGM();
       intro1();
     };
+
 
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
