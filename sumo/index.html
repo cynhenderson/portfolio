@@ -632,6 +632,188 @@
       letter-spacing: 0.1em;
     }
 
+    /* =====================
+       BELLY DEFLECTION (Bounce)
+    ===================== */
+    #bounce-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+    }
+    #bounce-oscar {
+      position: absolute;
+      height: 80%;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+    }
+    #bounce-oscar.inflated {
+      transform: translateX(-50%) scaleY(1.05) scaleX(1.08);
+    }
+    #bounce-zone {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 15%;
+      top: 50%;
+      border-top: 3px solid rgba(0, 255, 100, 0.7);
+      border-bottom: 3px solid rgba(0, 255, 100, 0.7);
+      background: rgba(0, 255, 100, 0.08);
+      z-index: 1;
+      pointer-events: none;
+    }
+    #bounce-zone-glow {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 15%;
+      top: 50%;
+      background: rgba(0, 255, 100, 0.15);
+      z-index: 1;
+      pointer-events: none;
+      animation: bounce-zone-pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes bounce-zone-pulse {
+      from { opacity: 0.2; }
+      to   { opacity: 0.8; }
+    }
+
+    .falling-obj {
+      position: absolute;
+      width: 32%;
+      aspect-ratio: 1 / 1;
+      display: block;
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 3;
+      top: -20%;
+    }
+    /* -- BELLY BOUNCE ARCS -- */
+    @keyframes obj-bounce-left {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      40%  { transform: translate(-45vw, -35vh) rotate(-180deg) scale(1.2); opacity: 1; }
+      100% { transform: translate(-80vw, 20vh) rotate(-540deg) scale(0.5); opacity: 0; }
+    }
+    @keyframes obj-bounce-right {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      40%  { transform: translate(45vw, -35vh) rotate(180deg) scale(1.2); opacity: 1; }
+      100% { transform: translate(80vw, 20vh) rotate(540deg) scale(0.5); opacity: 0; }
+    }
+    .obj-bounced-left {
+      animation: obj-bounce-left 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards !important;
+    }
+    .obj-bounced-right {
+      animation: obj-bounce-right 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards !important;
+    }
+    @keyframes obj-crash {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.5; transform: rotate(15deg); }
+      100% { opacity: 0; }
+    }
+    .obj-crashed {
+      animation: obj-crash 0.3s ease-out forwards !important;
+    }
+    #bounce-counter {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(0,229,255,0.6);
+      font-size: clamp(0.4rem, 1.8vw, 0.55rem);
+      z-index: 4;
+      pointer-events: none;
+      letter-spacing: 0.1em;
+    }
+
+    /* =====================
+       MAWASHI CRISIS (Wrap)
+    ===================== */
+    #wrap-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+    }
+    #wrap-oscar {
+      position: absolute;
+      height: 80%;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+    }
+    #wrap-spotlight {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%);
+    }
+    #wrap-progress-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -45%);
+      width: 70%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      z-index: 4;
+      pointer-events: none;
+    }
+    #wrap-progress-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    #wrap-progress-ring .ring-bg {
+      fill: none;
+      stroke: rgba(0,229,255,0.15);
+      stroke-width: 4;
+    }
+    #wrap-progress-ring .ring-fill {
+      fill: none;
+      stroke: #00e5ff;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      filter: drop-shadow(0 0 6px rgba(0,229,255,0.6));
+      transition: stroke-dashoffset 0.1s ease-out;
+    }
+    #wrap-hint {
+      position: absolute;
+      top: 14%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(0,229,255,0.5);
+      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
+      z-index: 5;
+      pointer-events: none;
+      letter-spacing: 0.1em;
+      text-align: center;
+    }
+    @keyframes spin-hint {
+      0%   { transform: translateX(-50%) rotate(0deg); }
+      100% { transform: translateX(-50%) rotate(360deg); }
+    }
+    #wrap-spin-icon {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.4;
+      animation: spin-hint 1.5s linear infinite;
+    }
+
     /* SHAKE */
     @keyframes shake-sm {
       0%,100% { transform: translateX(0); }
@@ -653,6 +835,63 @@
       40%,80% { transform: translate(10px,-2px); }
     }
     .shake-xl { animation: shake-xl 0.35s ease-in-out; }
+
+    /* =====================
+       SALT THE DEMON (Boss)
+    ===================== */
+    #salt-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+      background: linear-gradient(to top, #1a0000 0%, #000 50%);
+    }
+    #demon-health-bg {
+      position: absolute;
+      top: 6%;
+      left: 10%;
+      width: 80%;
+      height: 12px;
+      background: #330000;
+      border: 2px solid #ff0000;
+      z-index: 5;
+    }
+    #demon-health-bar {
+      height: 100%;
+      width: 100%;
+      background: #ff4444;
+      box-shadow: 0 0 8px #ff4444;
+      transition: width 0.1s linear;
+    }
+    #demon-sprite {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+      transition: filter 0.1s;
+    }
+    .salt-particle {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      box-shadow: 0 0 6px #fff, 0 0 12px rgba(0, 229, 255, 0.8);
+      border-radius: 50%;
+      z-index: 4;
+      pointer-events: none;
+      animation: salt-fly 0.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+    @keyframes salt-fly {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(var(--spread-x), -75vh) scale(1.5); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -736,6 +975,29 @@
           <img class="ghost-hand hand-left" id="dodge-hand-left" src="ghost-hand-left.png" alt="">
           <img class="ghost-hand hand-right" id="dodge-hand-right" src="ghost-hand-right.png" alt="">
           <div id="dodge-wave-counter"></div>
+        </div>
+        <div id="bounce-container">
+          <img id="bounce-oscar" src="oscar-neutral.png" alt="">
+          <div id="bounce-zone"></div>
+          <div id="bounce-zone-glow"></div>
+          <img id="bounce-obj" class="falling-obj" src="falling-ball.png" alt="">
+          <div id="bounce-counter"></div>
+        </div>
+        <div id="wrap-container">
+          <img id="wrap-oscar" src="oscar-unwrapped.png" alt="">
+          <div id="wrap-spotlight"></div>
+          <div id="wrap-progress-ring">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-bg" cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" cx="50" cy="50" r="45"/>
+            </svg>
+          </div>
+          <div id="wrap-hint">SPIN!</div>
+          <div id="wrap-spin-icon">↻</div>
+        </div>
+        <div id="salt-container">
+          <div id="demon-health-bg"><div id="demon-health-bar"></div></div>
+          <img id="demon-sprite" src="keg-demon.png" alt="">
         </div>
       </div>
       <div id="timer-wrap">
@@ -967,6 +1229,136 @@ const AudioEngine = {
     gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
     osc2.connect(gain2); gain2.connect(this.ctx.destination);
     osc2.start(t + 0.05); osc2.stop(t + 0.25);
+  },
+
+  playBoing: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    // Rubbery sine sweep up
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, t);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(400, t + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(600, t + 0.25);
+    gain.gain.setValueAtTime(0.25, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.3);
+    // Rubber pop overtone
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(300, t);
+    osc2.frequency.exponentialRampToValueAtTime(1200, t + 0.06);
+    gain2.gain.setValueAtTime(0.1, t);
+    gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc2.connect(gain2); gain2.connect(this.ctx.destination);
+    osc2.start(t); osc2.stop(t + 0.15);
+  },
+
+  playCrash: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    // Low thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, t);
+    osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.3);
+    // Noise crackle
+    const bufferSize = this.ctx.sampleRate * 0.15;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.15, t);
+    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    noise.connect(nGain); nGain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + 0.15);
+  },
+
+  playSwish: function(speed) {
+    // speed: 0.0 to 1.0, controls pitch and shortness
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const dur = 0.12 - (speed || 0) * 0.05;
+    const freq = 1200 + (speed || 0) * 2000;
+    const bufferSize = Math.floor(this.ctx.sampleRate * dur);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(freq, t);
+    filter.frequency.exponentialRampToValueAtTime(freq * 0.3, t + dur);
+    filter.Q.value = 2;
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + dur);
+  },
+
+  playSizzle: function() {
+    if (!this.ctx) return;
+    const bufferSize = this.ctx.sampleRate * 0.15;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 4000;
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    gain.gain.setValueAtTime(0.3, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+    noise.start(t);
+  },
+
+  demonOsc: null,
+  playDemonRumble: function() {
+    if (!this.ctx) return;
+    this.stopDemonRumble();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 45;
+    gain.gain.value = 0.25;
+
+    const lfo = this.ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 3;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 15;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(); lfo.start();
+    this.demonOsc = { osc, lfo, gain };
+  },
+
+  stopDemonRumble: function() {
+    if (this.demonOsc && this.ctx) {
+      const t = this.ctx.currentTime;
+      this.demonOsc.gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+      setTimeout(() => {
+        try { this.demonOsc.osc.stop(); this.demonOsc.lfo.stop(); } catch(e){}
+        this.demonOsc = null;
+      }, 150);
+    }
   }
 };
 
@@ -1009,7 +1401,9 @@ const ASSETS = [
   'heart-full.png','heart-empty.png',
   'oscar-shiko.png','oscar-shiko-right.png','oscar-shiko-wobble.png','oscar-neutral.png',
   'opponent.png','oscar-throw.png',
-  'ghost-hand-left.png','ghost-hand-right.png'
+  'ghost-hand-left.png','ghost-hand-right.png',
+  'oscar-inflated.png','falling-ball.png','falling-tire.png','falling-fish.png',
+  'oscar-unwrapped.png','oscar-wrapping-1.png','oscar-wrapping-2.png'
 ];
 
 Promise.all(ASSETS.map(src => new Promise(r => {
@@ -1235,6 +1629,9 @@ const GAME_SEQUENCE = [
   { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
   { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
   { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
+  { verb: 'BOUNCE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
+  { verb: 'WRAP!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
+  { verb: 'PURIFY!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
 ];
 let currentGame = 0;
 
@@ -1892,6 +2289,532 @@ function cleanupDodge() {
 }
 
 // ===================================================
+//  GAME 5: BELLY DEFLECTION (Bounce)
+// ===================================================
+const BOUNCE_OBJECTS = ['falling-fish.png', 'falling-tire.png', 'falling-ball.png'];
+let bounceRAF = null;
+let bounceTimeouts = [];
+
+function setupBounce() {
+  const container = document.getElementById('bounce-container');
+  const oscar = document.getElementById('bounce-oscar');
+  const obj = document.getElementById('bounce-obj');
+  const counter = document.getElementById('bounce-counter');
+
+  container.style.display = 'block';
+  oscar.src = 'oscar-neutral.png';
+  oscar.className = '';
+  obj.style.top = '-20%';
+  obj.style.opacity = '0';
+  obj.className = 'falling-obj';
+  counter.textContent = '';
+}
+
+function playBounce() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const oscar = document.getElementById('bounce-oscar');
+  const obj = document.getElementById('bounce-obj');
+  const counter = document.getElementById('bounce-counter');
+  const container = document.getElementById('bounce-container');
+
+  const TOTAL_OBJECTS = 3;
+  const TOTAL_TIME = 10000;
+  let currentObj = 0;
+  let bounced = 0;
+  let canTap = false;
+  let tapped = false;
+  let fallStart = null;
+  let falling = false;
+
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
+    timerBar.style.width = '0%';
+  });
+
+  counter.textContent = `${bounced}/${TOTAL_OBJECTS}`;
+
+  const objOrder = BOUNCE_OBJECTS.slice(0, TOTAL_OBJECTS);
+
+  function launchObject() {
+    if (S !== 'PLAYING') return;
+    if (currentObj >= TOTAL_OBJECTS) {
+      if (bounced >= TOTAL_OBJECTS) { onWin(); } else { onLose(); }
+      return;
+    }
+
+    // Reset state for this object
+    canTap = true;
+    tapped = false;
+    falling = true;
+
+    // Pick random X position (20%-80% of container width)
+    const xPct = 20 + Math.random() * 60;
+    obj.style.left = xPct + '%';
+    obj.style.transform = 'translateX(-50%)';
+    obj.src = objOrder[currentObj];
+    obj.className = 'falling-obj';
+    obj.style.top = '-20%';
+    obj.style.opacity = '1';
+
+    // Fall speed increases with each object
+    const fallDurations = [2200, 1400, 900];
+    const fallDuration = fallDurations[currentObj] ?? 900;
+    fallStart = performance.now();
+
+    function tick(now) {
+      if (S !== 'PLAYING' || tapped) return;
+      const elapsed = now - fallStart;
+      const progress = Math.min(elapsed / fallDuration, 1);
+      // Fall from -20% to 95%
+      const topPct = -20 + (progress * 115);
+      obj.style.top = topPct + '%';
+
+      if (progress >= 1) {
+        // Missed it
+        canTap = false;
+        AudioEngine.playCrash();
+        shake(true);
+        doFlash('rgba(255,0,0,0.35)', 150);
+        obj.className = 'falling-obj obj-crashed';
+        onLose();
+        return;
+      }
+      bounceRAF = requestAnimationFrame(tick);
+    }
+    bounceRAF = requestAnimationFrame(tick);
+  }
+
+  function onTap(e) {
+    e.preventDefault();
+    if (S !== 'PLAYING' || !canTap || tapped || !falling) return;
+
+    // Check if object is inside the visual bounce zone
+    const objRect = obj.getBoundingClientRect();
+    const zoneRect = document.getElementById('bounce-zone').getBoundingClientRect();
+    const objBottom = objRect.bottom;
+    const objCenter = objRect.top + objRect.height / 2;
+    const hitBuffer = 25;
+
+    if (objBottom >= (zoneRect.top - hitBuffer) && objCenter <= (zoneRect.bottom + hitBuffer)) {
+      // HIT!
+      tapped = true;
+      canTap = false;
+      if (bounceRAF) { cancelAnimationFrame(bounceRAF); bounceRAF = null; }
+
+      bounced++;
+      counter.textContent = `${bounced}/${TOTAL_OBJECTS}`;
+
+      // Inflate Oscar
+      oscar.src = 'oscar-inflated.png';
+      oscar.className = 'inflated';
+      AudioEngine.playBoing();
+      shake(false);
+      doFlash('rgba(0,229,255,0.2)', 100);
+
+      // Bounce the object away in a random direction!
+      const bounceLeft = Math.random() > 0.5;
+      obj.className = `falling-obj ${bounceLeft ? 'obj-bounced-left' : 'obj-bounced-right'}`;
+
+      bounceTimeouts.push(setTimeout(() => {
+        // Deflate Oscar
+        oscar.src = 'oscar-neutral.png';
+        oscar.className = '';
+        obj.style.opacity = '0';
+        obj.className = 'falling-obj';
+
+        currentObj++;
+        if (currentObj >= TOTAL_OBJECTS) {
+          bounceTimeouts.push(setTimeout(() => {
+            if (bounced >= TOTAL_OBJECTS) { onWin(); } else { onLose(); }
+          }, 200));
+        } else {
+          // Pause then launch next
+          bounceTimeouts.push(setTimeout(launchObject, 500));
+        }
+      }, 500));
+    } else {
+      // Too early or too late -- just a whiff, but don't end the round
+      AudioEngine.playWhiff();
+    }
+  }
+
+  app.addEventListener('touchstart', onTap, { passive: false });
+  app.addEventListener('mousedown', onTap);
+  app._bounceTap = onTap;
+
+  // Start first object after a short delay
+  bounceTimeouts.push(setTimeout(launchObject, 600));
+}
+
+function cleanupBounce() {
+  if (bounceRAF) { cancelAnimationFrame(bounceRAF); bounceRAF = null; }
+  bounceTimeouts.forEach(t => clearTimeout(t));
+  bounceTimeouts = [];
+  clearTimeout(gameTimer);
+  if (app._bounceTap) {
+    app.removeEventListener('touchstart', app._bounceTap);
+    app.removeEventListener('mousedown', app._bounceTap);
+    app._bounceTap = null;
+  }
+  document.getElementById('bounce-container').style.display = 'none';
+}
+
+// ===================================================
+//  GAME 6: MAWASHI CRISIS (Wrap)
+// ===================================================
+let wrapRAF = null;
+let wrapTimeouts = [];
+
+const WRAP_SPRITES = [
+  'oscar-unwrapped.png',
+  'oscar-wrapping-1.png',
+  'oscar-wrapping-2.png',
+  'oscar-neutral.png'
+];
+
+function setupWrap() {
+  const container = document.getElementById('wrap-container');
+  const oscar = document.getElementById('wrap-oscar');
+  const spotlight = document.getElementById('wrap-spotlight');
+  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
+  const hint = document.getElementById('wrap-hint');
+  const spinIcon = document.getElementById('wrap-spin-icon');
+
+  container.style.display = 'block';
+  oscar.src = 'oscar-unwrapped.png';
+  spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%)';
+  ringFill.style.strokeDashoffset = '283';
+  hint.style.opacity = '1';
+  spinIcon.style.opacity = '0.4';
+}
+
+function playWrap() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const oscar = document.getElementById('wrap-oscar');
+  const spotlight = document.getElementById('wrap-spotlight');
+  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
+  const hint = document.getElementById('wrap-hint');
+  const spinIcon = document.getElementById('wrap-spin-icon');
+
+  const TOTAL_TIME = 10000;
+  const ROTATIONS_NEEDED = 5;       // full 360° rotations to win
+  const TOTAL_ANGLE = ROTATIONS_NEEDED * Math.PI * 2;
+  let cumulativeAngle = 0;
+  let lastAngle = null;
+  let lastSwishTime = 0;
+  let currentSpriteIndex = 0;
+  let startTime = performance.now();
+
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
+    timerBar.style.width = '0%';
+  });
+
+  // Get Oscar's center for angle calculation
+  function getOscarCenter() {
+    const rect = oscar.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height * 0.4  // belly area
+    };
+  }
+
+  function updateProgress() {
+    const progress = Math.min(cumulativeAngle / TOTAL_ANGLE, 1);
+
+    // Update progress ring (283 is the circumference of r=45 circle)
+    ringFill.style.strokeDashoffset = String(283 - (progress * 283));
+
+    // Update sprite based on progress thresholds
+    let newIndex;
+    if (progress < 0.25) newIndex = 0;
+    else if (progress < 0.55) newIndex = 1;
+    else if (progress < 0.85) newIndex = 2;
+    else newIndex = 3;
+
+    if (newIndex !== currentSpriteIndex) {
+      currentSpriteIndex = newIndex;
+      oscar.src = WRAP_SPRITES[newIndex];
+      AudioEngine.playCoin();
+      shake(false);
+    }
+
+    // Update spotlight: shrinks transparent area as time passes AND expands as you progress
+    // Spotlight closes with time, but progress "fights" it open
+    const elapsed = performance.now() - startTime;
+    const timePressure = (elapsed / TOTAL_TIME);       // 0 to 1
+    const spotlightSize = Math.max(8, 60 - (timePressure * 55) + (progress * 20));
+    const spotlightEdge = Math.min(90, spotlightSize + 20);
+    spotlight.style.background = `radial-gradient(circle at 50% 55%, transparent ${spotlightSize}%, rgba(0,0,0,0.95) ${spotlightEdge}%)`;
+
+    // Play swish sound with increasing pitch
+    const now = performance.now();
+    if (now - lastSwishTime > 80) {
+      AudioEngine.playSwish(progress);
+      lastSwishTime = now;
+    }
+
+    // Fade out hint after first progress
+    if (progress > 0.05) {
+      hint.style.opacity = '0';
+      spinIcon.style.opacity = '0';
+    }
+
+    // WIN!
+    if (progress >= 1) {
+      S = 'WIN_ANIM';
+      // Flash the ring green
+      ringFill.style.stroke = '#00ff88';
+      ringFill.style.filter = 'drop-shadow(0 0 12px rgba(0,255,136,0.8))';
+      doFlash('rgba(0,255,136,0.3)', 200);
+      // Open spotlight fully
+      spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 80%, rgba(0,0,0,0.3) 100%)';
+      wrapTimeouts.push(setTimeout(onWin, 400));
+      return;
+    }
+  }
+
+  function onTouchStart(e) {
+    if (S !== 'PLAYING') return;
+    if (e.cancelable) e.preventDefault();
+    const touch = e.touches ? e.touches[0] : e;
+    const center = getOscarCenter();
+    lastAngle = Math.atan2(touch.clientY - center.y, touch.clientX - center.x);
+  }
+
+  function onTouchMove(e) {
+    if (S !== 'PLAYING' || lastAngle === null) return;
+    if (e.cancelable) e.preventDefault();
+    const touch = e.touches ? e.touches[0] : e;
+    const center = getOscarCenter();
+    const currentAngle = Math.atan2(touch.clientY - center.y, touch.clientX - center.x);
+
+    let delta = currentAngle - lastAngle;
+
+    // Handle angle wrapping at ±π boundary
+    if (delta > Math.PI) delta -= Math.PI * 2;
+    if (delta < -Math.PI) delta += Math.PI * 2;
+
+    // Accept rotation in either direction (absolute value)
+    cumulativeAngle += Math.abs(delta);
+    lastAngle = currentAngle;
+
+    updateProgress();
+  }
+
+  function onTouchEnd(e) {
+    if (e.cancelable) e.preventDefault();
+    lastAngle = null;
+  }
+
+  app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchmove', onTouchMove, { passive: false });
+  app.addEventListener('touchend', onTouchEnd, { passive: false });
+  app.addEventListener('mousedown', onTouchStart);
+  app.addEventListener('mousemove', onTouchMove);
+  app.addEventListener('mouseup', onTouchEnd);
+  app.addEventListener('mouseleave', onTouchEnd);
+
+  app._wrapHandlers = { onTouchStart, onTouchMove, onTouchEnd };
+
+  // Time-out loss
+  wrapTimeouts.push(setTimeout(() => {
+    if (S === 'PLAYING') {
+      // Spotlight slams shut
+      spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 0%, rgba(0,0,0,0.98) 5%)';
+      doFlash('rgba(255,0,0,0.4)', 200);
+      wrapTimeouts.push(setTimeout(onLose, 300));
+    }
+  }, TOTAL_TIME));
+
+  // Tick loop for spotlight pressure (updates even without touch)
+  function pressureTick() {
+    if (S !== 'PLAYING') return;
+    const elapsed = performance.now() - startTime;
+    const timePressure = elapsed / TOTAL_TIME;
+    const progress = Math.min(cumulativeAngle / TOTAL_ANGLE, 1);
+    const spotlightSize = Math.max(8, 60 - (timePressure * 55) + (progress * 20));
+    const spotlightEdge = Math.min(90, spotlightSize + 20);
+    spotlight.style.background = `radial-gradient(circle at 50% 55%, transparent ${spotlightSize}%, rgba(0,0,0,0.95) ${spotlightEdge}%)`;
+    wrapRAF = requestAnimationFrame(pressureTick);
+  }
+  wrapRAF = requestAnimationFrame(pressureTick);
+}
+
+function cleanupWrap() {
+  if (wrapRAF) { cancelAnimationFrame(wrapRAF); wrapRAF = null; }
+  wrapTimeouts.forEach(t => clearTimeout(t));
+  wrapTimeouts = [];
+
+  if (app._wrapHandlers) {
+    app.removeEventListener('touchstart', app._wrapHandlers.onTouchStart);
+    app.removeEventListener('touchmove', app._wrapHandlers.onTouchMove);
+    app.removeEventListener('touchend', app._wrapHandlers.onTouchEnd);
+    app.removeEventListener('mousedown', app._wrapHandlers.onTouchStart);
+    app.removeEventListener('mousemove', app._wrapHandlers.onTouchMove);
+    app.removeEventListener('mouseup', app._wrapHandlers.onTouchEnd);
+    app.removeEventListener('mouseleave', app._wrapHandlers.onTouchEnd);
+    app._wrapHandlers = null;
+  }
+
+  // Reset ring visuals
+  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
+  if (ringFill) {
+    ringFill.style.stroke = '#00e5ff';
+    ringFill.style.filter = 'drop-shadow(0 0 6px rgba(0,229,255,0.6))';
+  }
+
+  document.getElementById('wrap-container').style.display = 'none';
+}
+
+// ===================================================
+//  GAME 7: SALT THE DEMON (Boss Flick)
+// ===================================================
+let saltTimeouts = [];
+
+function setupSalt() {
+  const container = document.getElementById('salt-container');
+  const demon = document.getElementById('demon-sprite');
+  const healthBar = document.getElementById('demon-health-bar');
+
+  container.style.display = 'block';
+  demon.style.filter = 'none';
+  demon.style.top = '100%';
+  healthBar.style.width = '100%';
+
+  requestAnimationFrame(() => {
+    demon.style.transition = 'top 1s ease-out';
+    demon.style.top = '15%';
+  });
+
+  AudioEngine.playDemonRumble();
+}
+
+function playSalt() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const container = document.getElementById('salt-container');
+  const demon = document.getElementById('demon-sprite');
+  const healthBar = document.getElementById('demon-health-bar');
+
+  const TOTAL_TIME = 6000;
+  const HITS_NEEDED = 6;
+  let currentHits = 0;
+  let touchStartY = null;
+
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
+    timerBar.style.width = '0%';
+  });
+
+  gameTimer = setTimeout(() => {
+    if (S === 'PLAYING') onLose();
+  }, TOTAL_TIME);
+
+  function createSaltBurst() {
+    const count = Math.floor(Math.random() * 5) + 8;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'salt-particle';
+      const spread = (Math.random() - 0.5) * 200;
+      p.style.setProperty('--spread-x', `${spread}px`);
+      p.style.animationDelay = `${Math.random() * 0.05}s`;
+      container.appendChild(p);
+      setTimeout(() => p.remove(), 450);
+    }
+  }
+
+  function handleSwipeUp() {
+    if (S !== 'PLAYING') return;
+
+    AudioEngine.playSwish(0.8);
+    createSaltBurst();
+
+    saltTimeouts.push(setTimeout(() => {
+      if (S !== 'PLAYING') return;
+      currentHits++;
+
+      AudioEngine.playSizzle();
+      shake('sm');
+      demon.style.filter = 'brightness(3) saturate(0)';
+
+      const hpPct = Math.max(0, 1 - (currentHits / HITS_NEEDED));
+      healthBar.style.width = `${hpPct * 100}%`;
+
+      saltTimeouts.push(setTimeout(() => {
+        if (demon) demon.style.filter = 'none';
+      }, 100));
+
+      if (currentHits >= HITS_NEEDED) {
+        S = 'WIN_ANIM';
+        clearTimeout(gameTimer);
+        AudioEngine.playCrash();
+        shake('xl');
+        doFlash('#ffffff', 300);
+        demon.style.transition = 'top 0.5s ease-in, filter 0.5s';
+        demon.style.top = '120%';
+        demon.style.filter = 'brightness(0)';
+
+        saltTimeouts.push(setTimeout(onWin, 600));
+      }
+    }, 200));
+  }
+
+  function onTouchStart(e) {
+    if (e.cancelable) e.preventDefault();
+    if (S !== 'PLAYING') return;
+    const touch = e.touches ? e.touches[0] : e;
+    touchStartY = touch.clientY;
+  }
+
+  function onTouchEnd(e) {
+    if (e.cancelable) e.preventDefault();
+    if (S !== 'PLAYING' || touchStartY === null) return;
+
+    const touch = e.changedTouches ? e.changedTouches[0] : e;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (deltaY < -40) {
+      handleSwipeUp();
+    }
+    touchStartY = null;
+  }
+
+  app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchend', onTouchEnd, { passive: false });
+  app.addEventListener('mousedown', onTouchStart);
+  app.addEventListener('mouseup', onTouchEnd);
+
+  app._saltHandlers = { onTouchStart, onTouchEnd };
+}
+
+function cleanupSalt() {
+  clearTimeout(gameTimer);
+  saltTimeouts.forEach(t => clearTimeout(t));
+  saltTimeouts = [];
+  AudioEngine.stopDemonRumble();
+
+  if (app._saltHandlers) {
+    app.removeEventListener('touchstart', app._saltHandlers.onTouchStart);
+    app.removeEventListener('touchend', app._saltHandlers.onTouchEnd);
+    app.removeEventListener('mousedown', app._saltHandlers.onTouchStart);
+    app.removeEventListener('mouseup', app._saltHandlers.onTouchEnd);
+    app._saltHandlers = null;
+  }
+
+  document.querySelectorAll('.salt-particle').forEach(p => p.remove());
+  document.getElementById('salt-container').style.display = 'none';
+}
+
+// ===================================================
 //  END SCREENS
 // ===================================================
 function showDemoComplete() {
@@ -1916,6 +2839,9 @@ function restart() {
   document.getElementById('shiko-container').style.display = 'none';
   document.getElementById('throw-container').style.display = 'none';
   document.getElementById('dodge-container').style.display = 'none';
+  document.getElementById('bounce-container').style.display = 'none';
+  document.getElementById('wrap-container').style.display = 'none';
+  document.getElementById('salt-container').style.display = 'none';
   score = 0;
   lives = 4;
   currentGame = 0;
