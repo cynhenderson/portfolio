@@ -1359,6 +1359,26 @@ const AudioEngine = {
         this.demonOsc = null;
       }, 150);
     }
+  },
+
+  bgmBuffer: null,
+  bgmSource: null,
+  loadBGM: function(url) {
+    if (!this.ctx) return;
+    fetch(url)
+      .then(r => r.arrayBuffer())
+      .then(ab => this.ctx.decodeAudioData(ab, buf => { this.bgmBuffer = buf; }))
+      .catch(err => console.log('BGM load error:', err));
+  },
+  playBGM: function() {
+    if (!this.ctx || !this.bgmBuffer) return false;
+    if (this.bgmSource) { try { this.bgmSource.stop(); } catch(e){} }
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.bgmBuffer;
+    src.connect(this.ctx.destination);
+    src.start(0);
+    this.bgmSource = src;
+    return true;
   }
 };
 
@@ -1415,13 +1435,16 @@ Promise.all(ASSETS.map(src => new Promise(r => {
   setTimeout(() => { 
     loading.style.display = 'none'; 
     AudioEngine.init();
+    AudioEngine.loadBGM('intro-music.mp3');
     startScreenEl.classList.add('active');
     const bootGame = (e) => {
       if (e) e.preventDefault();
       AudioEngine.resume();
       AudioEngine.playCoin(); 
-      bgmTrack.currentTime = 0;
-      bgmTrack.play().catch(err => console.log(err));
+      if (!AudioEngine.playBGM()) {
+        bgmTrack.currentTime = 0;
+        bgmTrack.play().catch(err => console.log(err));
+      }
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
       startScreenEl.removeEventListener('mousedown', bootGame);
