@@ -1262,10 +1262,10 @@ function showVerbScreen(gameIndex) {
   S = 'PRE_GAME';
   const game = GAME_SEQUENCE[gameIndex];
   AudioEngine.playCoin();
-  game.setup();
   stampShow(game.verb, '#ff6a00', 'clamp(2rem, 8vw, 3rem)', '#0a1128');
   setTimeout(() => {
     stampHide();
+    game.setup();
     game.play();
   }, 1500);
 }
@@ -1452,11 +1452,7 @@ function playShiko() {
 
     if (elapsed >= DURATION) {
       S = 'WIN_ANIM';
-      oscarImg.src = 'oscar-neutral.png'; 
-      shake('xl');
-      AudioEngine.playSlam();
-      doFlash('#ffffff', 200);
-      setTimeout(onWin, 500); 
+      setTimeout(onWin, 100);
       return;
     }
 
