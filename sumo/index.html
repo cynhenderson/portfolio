@@ -78,7 +78,6 @@
       height: 100%;
       object-fit: cover;
       transform-origin: center 55%;
-      /* FIX: Match animation to the 8s panel duration */
       animation: kenburns 8s ease-in-out forwards;
     }
 
@@ -253,10 +252,17 @@
       z-index: 5;
       overflow: hidden;
     }
+    #chanko-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
     #oscar-img {
       position: absolute;
       height: 88%;
       bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
       object-fit: contain;
       image-rendering: pixelated;
       z-index: 1;
@@ -265,7 +271,9 @@
     #bowl-container {
       position: absolute;
       width: 55%;
-      bottom: 25%; 
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 2;
       display: flex;
       align-items: flex-end;
@@ -369,6 +377,253 @@
     #gameover-screen h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
     #gameover-screen .sub { color: #ff6a00; }
 
+    /* =====================
+       SHIKO STOMP (Balance Meter)
+    ===================== */
+    #shiko-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+    #shiko-oscar {
+      position: absolute;
+      height: 75%;
+      bottom: 18%;
+      left: 50%;
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 1;
+    }
+    #balance-meter {
+      position: absolute;
+      bottom: 5%;
+      left: 8%;
+      width: 84%;
+      height: 28px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    #meter-track {
+      position: relative;
+      width: 100%;
+      height: 14px;
+      border: 2px solid rgba(0,229,255,0.5);
+      background: transparent;
+      overflow: hidden;
+    }
+    #meter-zone-left {
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      width: 30%;
+      background: rgba(255, 0, 0, 0.35);
+    }
+    #meter-zone-right {
+      position: absolute;
+      top: 0; bottom: 0; right: 0;
+      width: 30%;
+      background: rgba(255, 0, 0, 0.35);
+    }
+    #meter-zone-center {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 30%; right: 30%;
+      background: rgba(0, 255, 100, 0.25);
+      box-shadow: inset 0 0 8px rgba(0,255,100,0.3);
+    }
+    #meter-needle {
+      position: absolute;
+      top: -2px; bottom: -2px;
+      width: 4px;
+      background: #fff;
+      box-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    #stable-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid rgba(0,229,255,0.25);
+    }
+    #stable-bar {
+      height: 100%;
+      width: 0%;
+      background: #00ff88;
+      box-shadow: 0 0 6px #00ff88;
+      transition: none;
+    }
+
+    /* =====================
+       THROW GAME
+    ===================== */
+    #throw-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+    }
+    #throw-oscar {
+      position: absolute;
+      height: 80%;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+    }
+    #throw-zone {
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      height: 10%; 
+      top: 65%;    
+      border-top: 3px solid rgba(0, 229, 255, 0.7);
+      border-bottom: 3px solid rgba(0, 229, 255, 0.7);
+      background: rgba(0, 229, 255, 0.08);
+      z-index: 1;
+      pointer-events: none;
+    }
+    #throw-zone-glow {
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      height: 10%; 
+      top: 65%;    
+      background: rgba(0, 229, 255, 0.15);
+      z-index: 1;
+      pointer-events: none;
+      animation: zone-pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes zone-pulse {
+      from { opacity: 0.4; }
+      to   { opacity: 1; }
+    }
+    #throw-opponent {
+      position: absolute;
+      width: 70%;
+      left: 50%;
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 3;
+      top: -60%;
+      filter: hue-rotate(140deg) saturate(1.5) brightness(0.85); 
+    }
+    #throw-feedback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(1rem, 4vw, 1.5rem);
+      color: #ff6a00;
+      text-shadow: 2px 2px 0 #000;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+    }
+    @keyframes opponent-flung {
+      0%   { transform: translateX(-50%) rotate(0deg); opacity: 1; }
+      30%  { transform: translateX(60%) rotate(40deg) scale(0.9); opacity: 1; }
+      100% { transform: translateX(180%) rotate(120deg) scale(0.4); opacity: 0; }
+    }
+    .opponent-flung {
+      animation: opponent-flung 0.6s ease-in forwards !important;
+    }
+
+    /* =====================
+       TSUPPARI DODGE
+    ===================== */
+    #dodge-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+    }
+    
+    /* -- Oscar's Wider Dodge -- */
+    #dodge-oscar {
+      position: absolute;
+      height: 70%;
+      bottom: 0;
+      left: 50%;
+      transform-origin: bottom center; 
+      transform: translateX(-50%);
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    #dodge-oscar.dodge-left {
+      transform: translateX(-120%) rotate(-8deg); /* Throw WAY left */
+    }
+    #dodge-oscar.dodge-right {
+      transform: translateX(20%) rotate(8deg);   /* Throw WAY right */
+    }
+
+    /* -- The Floor Telegraph Glow -- */
+    #dodge-telegraph {
+      position: absolute;
+      bottom: 0;
+      width: 50%;
+      height: 35%;
+      background: radial-gradient(ellipse at center bottom, rgba(255,106,0,0.6) 0%, transparent 70%);
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-in;
+    }
+    #dodge-telegraph.tele-left { left: 0; }
+    #dodge-telegraph.tele-right { right: 0; left: auto; }
+
+    /* -- The Ghost Hands -- */
+    .ghost-hand {
+      position: absolute;
+      width: 32%; /* Reduced for better clearance! */
+      top: -50%;
+      opacity: 0;
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 3;
+    }
+    .ghost-hand.hand-left { left: 8%; }
+    .ghost-hand.hand-right { right: 8%; }
+
+    .ghost-hand.winding-up {
+      top: -30%;
+      opacity: 1;
+      /* Transition controlled by JS to sync with timers perfectly */
+    }
+    .ghost-hand.slamming {
+      top: 25%;
+      opacity: 1;
+      /* Speed controlled by JS */
+      transition-timing-function: ease-in; 
+    }
+    .ghost-hand.withdrawing {
+      top: -50%;
+      opacity: 0;
+      transition: top 0.3s ease-out, opacity 0.2s ease-out;
+    }
+
+    #dodge-wave-counter {
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(0,229,255,0.6);
+      font-size: clamp(0.4rem, 1.8vw, 0.55rem);
+      z-index: 4;
+      pointer-events: none;
+      letter-spacing: 0.1em;
+    }
+
     /* SHAKE */
     @keyframes shake-sm {
       0%,100% { transform: translateX(0); }
@@ -440,10 +695,40 @@
         <div id="score">000</div>
       </div>
       <div id="game-content">
-        <div id="bowl-container">
-          <img id="chanko-img" src="chanko.png" alt="">
+        <div id="chanko-container">
+          <div id="bowl-container">
+            <img id="chanko-img" src="chanko.png" alt="">
+          </div>
+          <img id="oscar-img" src="mouth-open.png" alt="">
         </div>
-        <img id="oscar-img" src="mouth-open.png" alt="">
+        <div id="shiko-container">
+          <img id="shiko-oscar" src="oscar-shiko.png" alt="">
+          <div id="balance-meter">
+            <div id="meter-track">
+              <div id="meter-zone-left"></div>
+              <div id="meter-zone-center"></div>
+              <div id="meter-zone-right"></div>
+              <div id="meter-needle"></div>
+            </div>
+            <div id="stable-bar-track">
+              <div id="stable-bar"></div>
+            </div>
+          </div>
+        </div>
+        <div id="throw-container">
+          <img id="throw-oscar" src="oscar-neutral.png" alt="">
+          <div id="throw-zone"></div>
+          <div id="throw-zone-glow"></div>
+          <img id="throw-opponent" src="opponent.png" alt="">
+          <div id="throw-feedback"></div>
+        </div>
+        <div id="dodge-container">
+          <img id="dodge-oscar" src="oscar-neutral.png" alt="">
+          <div id="dodge-telegraph"></div>
+          <img class="ghost-hand hand-left" id="dodge-hand-left" src="ghost-hand-left.png" alt="">
+          <img class="ghost-hand hand-right" id="dodge-hand-right" src="ghost-hand-right.png" alt="">
+          <div id="dodge-wave-counter"></div>
+        </div>
       </div>
       <div id="timer-wrap">
         <div id="timer-bar"></div>
@@ -571,6 +856,107 @@ const AudioEngine = {
     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
     osc.connect(gain); gain.connect(this.ctx.destination);
     osc.start(t); osc.stop(t + 0.5);
+  },
+
+  playWobble: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(220, t);
+    osc.frequency.setValueAtTime(180, t + 0.04);
+    osc.frequency.setValueAtTime(240, t + 0.08);
+    osc.frequency.setValueAtTime(160, t + 0.12);
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.15);
+  },
+
+  playThrow: function() {
+    if (!this.ctx) return;
+    const noise = this.ctx.createOscillator();
+    const nGain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    noise.type = 'sawtooth';
+    noise.frequency.setValueAtTime(200, t);
+    noise.frequency.exponentialRampToValueAtTime(800, t + 0.1);
+    noise.frequency.exponentialRampToValueAtTime(100, t + 0.3);
+    nGain.gain.setValueAtTime(0.2, t);
+    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    noise.connect(nGain); nGain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + 0.3);
+    const thud = this.ctx.createOscillator();
+    const tGain = this.ctx.createGain();
+    thud.type = 'sine';
+    thud.frequency.setValueAtTime(80, t + 0.12);
+    thud.frequency.exponentialRampToValueAtTime(30, t + 0.4);
+    tGain.gain.setValueAtTime(0, t);
+    tGain.gain.setValueAtTime(0.4, t + 0.12);
+    tGain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+    thud.connect(tGain); tGain.connect(this.ctx.destination);
+    thud.start(t); thud.stop(t + 0.4);
+  },
+
+  playWhiff: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.15);
+  },
+
+  playWhoosh: function() {
+    if (!this.ctx) return;
+    const bufferSize = this.ctx.sampleRate * 0.25;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    const t = this.ctx.currentTime;
+    filter.frequency.setValueAtTime(2000, t);
+    filter.frequency.exponentialRampToValueAtTime(400, t + 0.2);
+    filter.Q.value = 1.5;
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + 0.25);
+  },
+
+  playBonk: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, t);
+    osc.frequency.exponentialRampToValueAtTime(60, t + 0.15);
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.2);
+    
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(300, t + 0.05);
+    osc2.frequency.setValueAtTime(500, t + 0.1);
+    osc2.frequency.setValueAtTime(250, t + 0.15);
+    gain2.gain.setValueAtTime(0.08, t + 0.05);
+    gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+    osc2.connect(gain2); gain2.connect(this.ctx.destination);
+    osc2.start(t + 0.05); osc2.stop(t + 0.25);
   }
 };
 
@@ -610,7 +996,10 @@ const ASSETS = [
   '01-poster-bg.png','oscar-sumo.png','night.png','night-shift.png',
   'night-close-up.png','night-eyes-open.png','arcade-cabinet.png',
   'chanko.png','mouth-open.png','mouth-stuffed.png',
-  'heart-full.png','heart-empty.png'
+  'heart-full.png','heart-empty.png',
+  'oscar-shiko.png','oscar-shiko-right.png','oscar-shiko-wobble.png','oscar-neutral.png',
+  'opponent.png','oscar-throw.png',
+  'ghost-hand-left.png','ghost-hand-right.png'
 ];
 
 Promise.all(ASSETS.map(src => new Promise(r => {
@@ -829,13 +1218,22 @@ function intro4() {
 }
 
 // ===================================================
-//  GAME
+//  GAME SEQUENCING
 // ===================================================
+const GAME_SEQUENCE = [
+  { verb: 'TAP FAST!', setup: setupChanko,  play: playChanko,  cleanup: cleanupChanko },
+  { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
+  { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
+  { verb: 'SWERVE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
+];
+let currentGame = 0;
+
 function initGame() {
   S = 'GAME_INIT';
   gameWrap.classList.add('active');
   score = 0;
   lives = 4;
+  currentGame = 0;
   setScore();
   setHearts();
   const cabinet = document.getElementById('cabinet-img');
@@ -846,28 +1244,79 @@ function initGame() {
     cabinet.style.transition = 'transform 1.5s ease-in, opacity 0.5s ease-out 1s';
     cabinet.style.transform = 'scale(4.5)';
     cabinet.style.opacity = '0';
-    setTimeout(preGame, 1600);
+    setTimeout(() => showVerbScreen(currentGame), 1600);
   }, 2000);
 }
 
-function preGame() {
+function showVerbScreen(gameIndex) {
   S = 'PRE_GAME';
-  AudioEngine.playCoin(); 
-  stampShow('TAP FAST!', '#ff6a00', 'clamp(2rem, 8vw, 3rem)', '#0a1128');
+  const game = GAME_SEQUENCE[gameIndex];
+  AudioEngine.playCoin();
+  game.setup();
+  stampShow(game.verb, '#ff6a00', 'clamp(2rem, 8vw, 3rem)', '#0a1128');
   setTimeout(() => {
     stampHide();
-    play();
+    game.play();
   }, 1500);
 }
 
-function play() {
+function onWin() {
+  S = 'WIN';
+  const game = GAME_SEQUENCE[currentGame];
+  game.cleanup();
+  score++;
+  setScore();
+  AudioEngine.playWin();
+  stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
+  setTimeout(() => {
+    stampHide();
+    currentGame++;
+    if (currentGame >= GAME_SEQUENCE.length) {
+      showDemoComplete();
+    } else {
+      showVerbScreen(currentGame);
+    }
+  }, 600);
+}
+
+function onLose() {
+  S = 'LOSE';
+  const game = GAME_SEQUENCE[currentGame];
+  game.cleanup();
+  lives--;
+  setHearts();
+  AudioEngine.playLose();
+  doFlash('rgba(255,0,0,0.5)', 200);
+  shake(true);
+  stampShow('✗', '#ff0000', 'clamp(3rem, 14vw, 5rem)');
+  setTimeout(() => {
+    stampHide();
+    if (lives <= 0) {
+      showGameOver();
+    } else {
+      showVerbScreen(currentGame);
+    }
+  }, 700);
+}
+
+// ===================================================
+//  GAME 1: CHANKO EATING
+// ===================================================
+function setupChanko() {
+  const container = document.getElementById('chanko-container');
+  const oscar = document.getElementById('oscar-img');
+  const chanko = document.getElementById('chanko-img');
+  container.style.display = 'block';
+  oscar.src = 'mouth-open.png';
+  chanko.style.clipPath = 'inset(0% 0% 0% 0%)';
+}
+
+function playChanko() {
   S = 'PLAYING';
   tapCount = 0;
   const oscar = document.getElementById('oscar-img');
   const timerBar = document.getElementById('timer-bar');
   const chanko = document.getElementById('chanko-img');
-  oscar.src = 'mouth-open.png';
-  chanko.style.clipPath = 'inset(0% 0% 0% 0%)';
   timerBar.style.transition = 'none';
   timerBar.style.width = '100%';
   const DURATION = 5000;
@@ -883,7 +1332,7 @@ function play() {
     e.preventDefault();
     if (S !== 'PLAYING') return;
     tapCount++;
-    AudioEngine.playChomp(); 
+    AudioEngine.playChomp();
     oscar.src = 'mouth-stuffed.png';
     setTimeout(() => { if (S === 'PLAYING') oscar.src = 'mouth-open.png'; }, 100);
     const pct = Math.min(tapCount / TARGET, 1);
@@ -896,47 +1345,527 @@ function play() {
   app._tap = onTap;
 }
 
-function cleanupTap() {
+function cleanupChanko() {
   clearTimeout(gameTimer);
   if (app._tap) {
     app.removeEventListener('touchstart', app._tap);
     app.removeEventListener('mousedown', app._tap);
     app._tap = null;
   }
+  document.getElementById('chanko-container').style.display = 'none';
 }
-function onWin() {
-  S = 'WIN';
-  cleanupTap();
-  score++;
-  setScore();
-  document.getElementById('oscar-img').src = 'mouth-stuffed.png';
-  AudioEngine.playWin(); 
-  stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
-  setTimeout(() => {
-    stampHide();
-    showDemoComplete();
-  }, 600);
+
+// ===================================================
+//  GAME 2: SHIKO STOMP (Sweet Spot Slider)
+// ===================================================
+let shikoRAF = null;
+
+function setupShiko() {
+  const container = document.getElementById('shiko-container');
+  const oscarImg = document.getElementById('shiko-oscar');
+  const stableBar = document.getElementById('stable-bar');
+  const needle = document.getElementById('meter-needle');
+  const centerZone = document.getElementById('meter-zone-center');
+
+  document.getElementById('meter-zone-left').style.display = 'none';
+  document.getElementById('meter-zone-right').style.display = 'none';
+  
+  centerZone.style.right = 'auto'; 
+  centerZone.style.width = '30%';  
+  centerZone.style.left = '35%';   
+
+  container.style.display = 'block';
+  oscarImg.src = 'oscar-shiko.png'; 
+  
+  stableBar.style.width = '0%';
+  stableBar.style.background = '#ff0000';
+  stableBar.style.boxShadow = '0 0 6px #ff0000';
+  
+  needle.style.left = '50%';
 }
-function onLose() {
-  S = 'LOSE';
-  cleanupTap();
-  lives--;
-  setHearts();
-  AudioEngine.playLose(); 
-  doFlash('rgba(255,0,0,0.5)', 200);
-  shake(true);
-  stampShow('✗', '#ff0000', 'clamp(3rem, 14vw, 5rem)');
-  setTimeout(() => {
-    stampHide();
-    if (lives <= 0) {
-      showGameOver();
-    } else {
-      document.getElementById('oscar-img').src = 'mouth-open.png';
-      document.getElementById('chanko-img').style.clipPath = 'inset(0% 0% 0% 0%)';
-      preGame();
+
+function playShiko() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const oscarImg = document.getElementById('shiko-oscar');
+  const needle = document.getElementById('meter-needle');
+  const stableBar = document.getElementById('stable-bar');
+  const centerZone = document.getElementById('meter-zone-center');
+  const track = document.getElementById('meter-track');
+
+  const DURATION = 5000;
+  const MAX_FAIL_TIME = 1200; 
+  const ZONE_WIDTH = 0.3; 
+
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${DURATION}ms linear`;
+    timerBar.style.width = '0%';
+  });
+
+  let playerPos = 0.5; 
+  let targetPos = 0.5; 
+  let failTime = 0;
+
+  function updateNeedlePos(clientX) {
+    if (S !== 'PLAYING') return;
+    const rect = track.getBoundingClientRect();
+    let x = (clientX - rect.left) / rect.width;
+    playerPos = Math.max(0, Math.min(1, x)); 
+    needle.style.left = (playerPos * 100) + '%';
+  }
+
+  function onMove(e) {
+    e.preventDefault();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    updateNeedlePos(clientX);
+  }
+
+  function onDown(e) {
+    if (S !== 'PLAYING') return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    updateNeedlePos(clientX);
+  }
+
+  app.addEventListener('touchmove', onMove, { passive: false });
+  app.addEventListener('mousemove', onMove);
+  app.addEventListener('touchstart', onDown, { passive: false });
+  app.addEventListener('mousedown', onDown);
+  
+  app._shikoMove = onMove;
+  app._shikoDown = onDown;
+
+  let startTime = performance.now();
+  let lastFrame = startTime;
+  let lastWobbleTime = 0;
+
+  function tick(now) {
+    if (S !== 'PLAYING') return;
+    const dt = Math.min(now - lastFrame, 50) / 1000;
+    lastFrame = now;
+    const elapsed = now - startTime;
+
+    if (elapsed >= DURATION) {
+      S = 'WIN_ANIM'; 
+      oscarImg.src = 'oscar-neutral.png'; 
+      shake('xl');
+      AudioEngine.playSlam();
+      doFlash('#ffffff', 200);
+      setTimeout(onWin, 500); 
+      return;
     }
-  }, 700);
+
+    const speed = 0.6 + (elapsed / DURATION) * 1.0; 
+    const t = elapsed * 0.001 * speed;
+    
+    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.0) * 0.25) + (Math.cos(t * Math.PI * 1.6) * 0.15);
+    targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
+    
+    centerZone.style.left = ((targetPos - ZONE_WIDTH/2) * 100) + '%';
+
+    const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
+
+    if (inZone) {
+      failTime = Math.max(0, failTime - dt * 2500); 
+      oscarImg.src = 'oscar-shiko.png';
+      
+      centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
+      centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
+      needle.style.background = '#fff';
+      needle.style.boxShadow = '0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5)';
+    } else {
+      failTime += dt * 1000;
+      oscarImg.src = 'oscar-shiko-wobble.png';
+      
+      centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
+      centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
+      needle.style.background = '#ff4444';
+      needle.style.boxShadow = '0 0 8px #ff4444, 0 0 16px rgba(255,68,68,0.5)';
+
+      if (now - lastWobbleTime > 300) {
+        AudioEngine.playWobble();
+        lastWobbleTime = now;
+      }
+    }
+
+    const failPct = Math.min(failTime / MAX_FAIL_TIME, 1);
+    stableBar.style.width = (failPct * 100) + '%';
+
+    if (failPct >= 1) {
+      onLose();
+      return;
+    }
+
+    shikoRAF = requestAnimationFrame(tick);
+  }
+
+  shikoRAF = requestAnimationFrame(tick);
 }
+
+function cleanupShiko() {
+  if (shikoRAF) { cancelAnimationFrame(shikoRAF); shikoRAF = null; }
+  
+  if (app._shikoMove) {
+    app.removeEventListener('touchmove', app._shikoMove);
+    app.removeEventListener('mousemove', app._shikoMove);
+    app._shikoMove = null;
+  }
+  if (app._shikoDown) {
+    app.removeEventListener('touchstart', app._shikoDown);
+    app.removeEventListener('mousedown', app._shikoDown);
+    app._shikoDown = null;
+  }
+  document.getElementById('shiko-container').style.display = 'none';
+}
+
+// ===================================================
+//  GAME 3: THE THROW (Reflex Tap)
+// ===================================================
+let throwRAF = null;
+
+function setupThrow() {
+  const container = document.getElementById('throw-container');
+  const oscar = document.getElementById('throw-oscar');
+  const opponent = document.getElementById('throw-opponent');
+  const zoneGlow = document.getElementById('throw-zone-glow');
+  const feedback = document.getElementById('throw-feedback');
+
+  container.style.display = 'block';
+  oscar.src = 'oscar-neutral.png';
+  opponent.style.top = '-60%';
+  opponent.style.opacity = '1';
+  opponent.style.transform = 'translateX(-50%)';
+  opponent.className = '';
+  feedback.style.display = 'none';
+  feedback.style.opacity = '0';
+
+  zoneGlow.style.animation = 'zone-pulse 0.8s ease-in-out infinite alternate';
+}
+
+function playThrow() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const oscar = document.getElementById('throw-oscar');
+  const opponent = document.getElementById('throw-opponent');
+  const zone = document.getElementById('throw-zone');
+  const feedback = document.getElementById('throw-feedback');
+
+  const FALL_DURATION = 1800; 
+  const PRE_DELAY = 600 + Math.random() * 800; 
+
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+
+  let fallStart = null;
+  let tapped = false;
+  let falling = false;
+
+  function startFall() {
+    falling = true;
+    fallStart = performance.now();
+
+    requestAnimationFrame(() => {
+      timerBar.style.transition = `width ${FALL_DURATION}ms linear`;
+      timerBar.style.width = '0%';
+    });
+
+    function tick(now) {
+      if (S !== 'PLAYING' || tapped) return;
+      const elapsed = now - fallStart;
+      const progress = Math.min(elapsed / FALL_DURATION, 1);
+
+      const topPct = -60 + (progress * 170);
+      opponent.style.top = topPct + '%';
+
+      if (progress >= 1) {
+        onLose();
+        return;
+      }
+      throwRAF = requestAnimationFrame(tick);
+    }
+    throwRAF = requestAnimationFrame(tick);
+  }
+
+  gameTimer = setTimeout(startFall, PRE_DELAY);
+
+  function onTap(e) {
+    e.preventDefault();
+    if (S !== 'PLAYING' || tapped || !falling) return;
+    tapped = true;
+
+    // Grab exact pixel coordinates of the elements on screen
+    const oppRect = opponent.getBoundingClientRect();
+    const zoneRect = zone.getBoundingClientRect();
+
+    // The "feet" are the bottom of the opponent's image boundary.
+    const feetY = oppRect.bottom - (oppRect.height * 0.05);
+
+    // Give a slightly forgiving hitbox around the zone
+    const hitBuffer = 15; // 15 pixels of forgiveness
+
+    if (feetY >= (zoneRect.top - hitBuffer) && feetY <= (zoneRect.bottom + hitBuffer)) {
+      // HIT!
+      oscar.src = 'oscar-throw.png';
+      AudioEngine.playThrow();
+      shake('xl');
+      doFlash('rgba(0,229,255,0.4)', 150);
+
+      opponent.className = 'opponent-flung';
+      setTimeout(onWin, 600);
+    } else {
+      // MISS!
+      AudioEngine.playWhiff();
+      shake(false);
+
+      // Check if feet were above the top of the zone (Early) or below the bottom (Late)
+      feedback.textContent = feetY < zoneRect.top ? 'TOO EARLY!' : 'TOO LATE!';
+      feedback.style.display = 'flex';
+      feedback.style.opacity = '1';
+      feedback.style.color = '#ff4444';
+
+      setTimeout(() => {
+        feedback.style.opacity = '0';
+        onLose();
+      }, 400);
+    }
+  }
+
+  app.addEventListener('touchstart', onTap, { passive: false });
+  app.addEventListener('mousedown', onTap);
+  app._throwTap = onTap;
+}
+
+function cleanupThrow() {
+  if (throwRAF) { cancelAnimationFrame(throwRAF); throwRAF = null; }
+  clearTimeout(gameTimer);
+  if (app._throwTap) {
+    app.removeEventListener('touchstart', app._throwTap);
+    app.removeEventListener('mousedown', app._throwTap);
+    app._throwTap = null;
+  }
+  const opponent = document.getElementById('throw-opponent');
+  if (opponent) {
+    opponent.className = '';
+    opponent.style.top = '-60%';
+    opponent.style.opacity = '1';
+    opponent.style.transform = 'translateX(-50%)';
+  }
+  document.getElementById('throw-container').style.display = 'none';
+}
+
+// ===================================================
+//  GAME 4: TSUPPARI DODGE (Swipe to Dodge)
+// ===================================================
+let dodgeTimeouts = [];
+
+function setupDodge() {
+  const container = document.getElementById('dodge-container');
+  const oscar = document.getElementById('dodge-oscar');
+  const handL = document.getElementById('dodge-hand-left');
+  const handR = document.getElementById('dodge-hand-right');
+  const waveCounter = document.getElementById('dodge-wave-counter');
+
+  container.style.display = 'block';
+  oscar.src = 'oscar-neutral.png';
+  oscar.className = '';
+  oscar.style.transform = 'translateX(-50%)';
+  
+  handL.className = 'ghost-hand hand-left';
+  handL.style.cssText = ''; 
+  
+  handR.className = 'ghost-hand hand-right';
+  handR.style.cssText = ''; 
+  
+  waveCounter.textContent = '';
+}
+
+function playDodge() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  const oscar = document.getElementById('dodge-oscar');
+  const handL = document.getElementById('dodge-hand-left');
+  const handR = document.getElementById('dodge-hand-right');
+  const waveCounter = document.getElementById('dodge-wave-counter');
+
+  const TOTAL_WAVES = 5;
+  const DODGES_NEEDED = 3; 
+  let currentWave = 0;
+  let dodgesHit = 0;
+  let dodgesMissed = 0;
+  let playerSide = 'center'; 
+  let canDodge = false;
+  let swipeHandled = false;
+
+  const TOTAL_TIME = 8000;
+  timerBar.style.transition = 'none';
+  timerBar.style.width = '100%';
+  requestAnimationFrame(() => {
+    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
+    timerBar.style.width = '0%';
+  });
+
+  waveCounter.textContent = `${dodgesHit}/${DODGES_NEEDED}`;
+
+  let touchStartX = null;
+  let touchStartY = null;
+
+  function handleDodge(direction) {
+    if (S !== 'PLAYING' || !canDodge || swipeHandled) return;
+    swipeHandled = true;
+    
+    if (direction === 'left') {
+      playerSide = 'left';
+      oscar.src = 'oscar-shiko.png'; 
+      oscar.className = 'dodge-left';
+    } else {
+      playerSide = 'right';
+      oscar.src = 'oscar-shiko-right.png'; 
+      oscar.className = 'dodge-right';
+    }
+  }
+
+  function onTouchStart(e) {
+    e.preventDefault();
+    if (S !== 'PLAYING') return;
+    const touch = e.touches ? e.touches[0] : e;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }
+
+  function onTouchEnd(e) {
+    e.preventDefault();
+    if (touchStartX === null) return;
+    const touch = e.changedTouches ? e.changedTouches[0] : e;
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+    touchStartX = null;
+
+    if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
+    handleDodge(dx < 0 ? 'left' : 'right');
+  }
+
+  function onTap(e) {
+    e.preventDefault();
+    const touch = e.touches ? e.touches[0] : e;
+    const rect = app.getBoundingClientRect();
+    const x = (touch.clientX - rect.left) / rect.width;
+    handleDodge(x < 0.5 ? 'left' : 'right');
+  }
+
+  app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchend', onTouchEnd, { passive: false });
+  app.addEventListener('mousedown', onTap);
+  app._dodgeTouchStart = onTouchStart;
+  app._dodgeTouchEnd = onTouchEnd;
+  app._dodgeTap = onTap;
+
+  function launchWave() {
+    if (S !== 'PLAYING') return;
+    if (currentWave >= TOTAL_WAVES) {
+      if (dodgesHit >= DODGES_NEEDED) { onWin(); } else { onLose(); }
+      return;
+    }
+
+    canDodge = true;
+    swipeHandled = false;
+    playerSide = 'center';
+    oscar.src = 'oscar-neutral.png';
+    oscar.className = '';
+    oscar.style.transform = 'translateX(-50%)';
+
+    const side = Math.random() < 0.5 ? 'left' : 'right';
+    const hand = side === 'left' ? handL : handR;
+    const otherHand = side === 'left' ? handR : handL;
+    const telegraph = document.getElementById('dodge-telegraph');
+
+    // Reset hands
+    otherHand.className = 'ghost-hand ' + (side === 'left' ? 'hand-right' : 'hand-left');
+    
+    // Generous Difficulty Curve Math
+    const windUpTime = Math.max(360, 600 - currentWave * 60);
+    const slamSpeed = Math.max(230, 350 - currentWave * 30);
+    const pauseTime = Math.max(300, 600 - currentWave * 75);
+
+    // 1. Show the glow and start the wind up
+    telegraph.className = side === 'left' ? 'tele-left' : 'tele-right';
+    telegraph.style.opacity = '1';
+
+    // Sync CSS transition to JS timers
+    hand.style.transitionProperty = 'top, opacity';
+    hand.style.transitionDuration = `${windUpTime}ms, 0.1s`;
+    hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' winding-up';
+
+    dodgeTimeouts.push(setTimeout(() => {
+      if (S !== 'PLAYING') return;
+      
+      // 2. Turn off glow and slam
+      telegraph.style.opacity = '0';
+      hand.style.transitionDuration = `${slamSpeed}ms, 0.1s`;
+      hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' slamming';
+      AudioEngine.playWhoosh();
+
+      dodgeTimeouts.push(setTimeout(() => {
+        if (S !== 'PLAYING') return;
+        canDodge = false;
+
+        const correctDodge = side === 'left' ? 'right' : 'left';
+
+        if (playerSide === correctDodge) {
+          dodgesHit++;
+          AudioEngine.playCoin();
+          shake(false);
+        } else {
+          dodgesMissed++;
+          AudioEngine.playBonk();
+          shake(true);
+          doFlash('rgba(255,0,0,0.35)', 150);
+        }
+
+        waveCounter.textContent = `${dodgesHit}/${DODGES_NEEDED}`;
+        
+        hand.style.transitionProperty = '';
+        hand.style.transitionDuration = '';
+        hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' withdrawing';
+
+        currentWave++;
+
+        dodgeTimeouts.push(setTimeout(() => {
+          oscar.src = 'oscar-neutral.png';
+          oscar.className = '';
+          oscar.style.transform = 'translateX(-50%)';
+          dodgeTimeouts.push(setTimeout(launchWave, 100)); 
+        }, pauseTime));
+
+      }, slamSpeed));
+
+    }, windUpTime));
+  }
+
+  dodgeTimeouts.push(setTimeout(launchWave, 400));
+}
+
+function cleanupDodge() {
+  dodgeTimeouts.forEach(t => clearTimeout(t));
+  dodgeTimeouts = [];
+  if (app._dodgeTouchStart) {
+    app.removeEventListener('touchstart', app._dodgeTouchStart);
+    app._dodgeTouchStart = null;
+  }
+  if (app._dodgeTouchEnd) {
+    app.removeEventListener('touchend', app._dodgeTouchEnd);
+    app._dodgeTouchEnd = null;
+  }
+  if (app._dodgeTap) {
+    app.removeEventListener('mousedown', app._dodgeTap);
+    app._dodgeTap = null;
+  }
+  document.getElementById('dodge-container').style.display = 'none';
+}
+
+// ===================================================
+//  END SCREENS
+// ===================================================
 function showDemoComplete() {
   document.getElementById('final-score').textContent = String(score).padStart(3, '0');
   demoEl.classList.add('active');
@@ -954,13 +1883,17 @@ function showGameOver() {
 function restart() {
   demoEl.classList.remove('active');
   gameoverEl.classList.remove('active');
+  // Hide all game containers
+  document.getElementById('chanko-container').style.display = 'none';
+  document.getElementById('shiko-container').style.display = 'none';
+  document.getElementById('throw-container').style.display = 'none';
+  document.getElementById('dodge-container').style.display = 'none';
   score = 0;
   lives = 4;
+  currentGame = 0;
   setScore();
   setHearts();
-  document.getElementById('oscar-img').src = 'mouth-open.png';
-  document.getElementById('chanko-img').style.clipPath = 'inset(0% 0% 0% 0%)';
-  preGame();
+  showVerbScreen(currentGame);
 }
 </script>
 </body>
