@@ -1449,25 +1449,25 @@ Promise.all([
     loading.style.display = 'none';
     startScreenEl.classList.add('active');
     const bootGame = (e) => {
-      if (e) e.preventDefault();
-      
-      // 1. Force the audio context to wake up immediately
-      if (AudioEngine.ctx.state === 'suspended') {
-        AudioEngine.ctx.resume();
-      }
+  if (e) e.preventDefault();
 
-      // 2. Play the pre-decoded Web Audio buffer (ZERO latency)
-      AudioEngine.playCoin();
-      AudioEngine.playBGM(); 
+  // 1. Wake the audio context and WAIT for it before playing
+  const resumePromise = (AudioEngine.ctx.state === 'suspended')
+    ? AudioEngine.ctx.resume()
+    : Promise.resolve();
 
-      // 3. Kick off the visuals instantly
-      startScreenEl.classList.remove('active');
-      startScreenEl.removeEventListener('touchstart', bootGame);
-      startScreenEl.removeEventListener('mousedown', bootGame);
-      
-      intro1();
-    };
+  resumePromise.then(() => {
+    AudioEngine.playCoin();
+    AudioEngine.playBGM();
+  });
 
+  // 2. Kick off visuals immediately (no need to wait)
+  startScreenEl.classList.remove('active');
+  startScreenEl.removeEventListener('touchstart', bootGame);
+  startScreenEl.removeEventListener('mousedown', bootGame);
+
+  intro1();
+};
 
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
