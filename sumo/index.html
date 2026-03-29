@@ -88,7 +88,7 @@
       background: radial-gradient(ellipse at 85% 0%, rgba(255,180,80,0.45) 0%, transparent 70%);
       animation: flicker 2.5s infinite;
       pointer-events: none;
-      mix-blend-mode: screen; 
+      mix-blend-mode: screen;
     }
 
     #p1-fade {
@@ -481,7 +481,7 @@
       position: absolute;
       left: 5%;
       right: 5%;
-      height: 10%; 
+      height: 10%;
       top: 65%;    
       border-top: 3px solid rgba(0, 229, 255, 0.7);
       border-bottom: 3px solid rgba(0, 229, 255, 0.7);
@@ -513,7 +513,7 @@
       image-rendering: pixelated;
       z-index: 3;
       top: -60%;
-      filter: hue-rotate(140deg) saturate(1.5) brightness(0.85); 
+      filter: hue-rotate(140deg) saturate(1.5) brightness(0.85);
     }
     #throw-feedback {
       position: absolute;
@@ -538,7 +538,7 @@
     }
 
     /* =====================
-       TSUPPARI DODGE
+       TSUPPARI DODGE (Swipe to Safety)
     ===================== */
     #dodge-container {
       position: absolute;
@@ -547,7 +547,6 @@
       overflow: hidden;
     }
     
-    /* -- Oscar's Wider Dodge -- */
     #dodge-oscar {
       position: absolute;
       height: 70%;
@@ -560,32 +559,44 @@
       z-index: 2;
       transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    #dodge-oscar.dodge-left {
-      transform: translateX(-120%) rotate(-8deg); /* Throw WAY left */
-    }
-    #dodge-oscar.dodge-right {
-      transform: translateX(20%) rotate(8deg);   /* Throw WAY right */
-    }
+    #dodge-oscar.dodge-left { transform: translateX(-120%) rotate(-8deg); }
+    #dodge-oscar.dodge-right { transform: translateX(20%) rotate(8deg); }
 
-    /* -- The Floor Telegraph Glow -- */
+    /* -- Safe Zone Telegraph Glow -- */
     #dodge-telegraph {
       position: absolute;
       bottom: 0;
       width: 50%;
       height: 35%;
-      background: radial-gradient(ellipse at center bottom, rgba(255,106,0,0.6) 0%, transparent 70%);
+      background: radial-gradient(ellipse at center bottom, rgba(0, 255, 100, 0.5) 0%, transparent 70%);
       z-index: 1;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease-in;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(2rem, 8vw, 3rem);
+      color: rgba(0, 255, 100, 0.9);
+      text-shadow: 0 0 15px rgba(0, 255, 100, 1);
     }
     #dodge-telegraph.tele-left { left: 0; }
+    #dodge-telegraph.tele-left::after { content: '««'; animation: pulse-arrow-left 0.5s infinite alternate; }
     #dodge-telegraph.tele-right { right: 0; left: auto; }
+    #dodge-telegraph.tele-right::after { content: '»»'; animation: pulse-arrow-right 0.5s infinite alternate; }
 
-    /* -- The Ghost Hands -- */
+    @keyframes pulse-arrow-left {
+      from { transform: translateX(10px); opacity: 0.4; }
+      to { transform: translateX(-5px); opacity: 1; }
+    }
+    @keyframes pulse-arrow-right {
+      from { transform: translateX(-10px); opacity: 0.4; }
+      to { transform: translateX(5px); opacity: 1; }
+    }
+
     .ghost-hand {
       position: absolute;
-      width: 32%; /* Reduced for better clearance! */
+      width: 32%;
       top: -50%;
       opacity: 0;
       object-fit: contain;
@@ -598,13 +609,11 @@
     .ghost-hand.winding-up {
       top: -30%;
       opacity: 1;
-      /* Transition controlled by JS to sync with timers perfectly */
     }
     .ghost-hand.slamming {
       top: 25%;
       opacity: 1;
-      /* Speed controlled by JS */
-      transition-timing-function: ease-in; 
+      transition-timing-function: ease-in;
     }
     .ghost-hand.withdrawing {
       top: -50%;
@@ -834,7 +843,7 @@ const AudioEngine = {
     const t = this.ctx.currentTime;
     osc.type = 'square';
     osc.frequency.setValueAtTime(523.25, t); 
-    osc.frequency.setValueAtTime(659.25, t + 0.1); 
+    osc.frequency.setValueAtTime(659.25, t + 0.1);
     osc.frequency.setValueAtTime(783.99, t + 0.2); 
     osc.frequency.setValueAtTime(1046.50, t + 0.3); 
     gain.gain.setValueAtTime(0.1, t);
@@ -909,7 +918,8 @@ const AudioEngine = {
     osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
     gain.gain.setValueAtTime(0.1, t);
     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
     osc.start(t); osc.stop(t + 0.15);
   },
 
@@ -944,7 +954,8 @@ const AudioEngine = {
     osc.frequency.exponentialRampToValueAtTime(60, t + 0.15);
     gain.gain.setValueAtTime(0.4, t);
     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
     osc.start(t); osc.stop(t + 0.2);
     
     const osc2 = this.ctx.createOscillator();
@@ -1224,7 +1235,7 @@ const GAME_SEQUENCE = [
   { verb: 'TAP FAST!', setup: setupChanko,  play: playChanko,  cleanup: cleanupChanko },
   { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
   { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
-  { verb: 'SWERVE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
+  { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
 ];
 let currentGame = 0;
 
@@ -1359,7 +1370,6 @@ function cleanupChanko() {
 //  GAME 2: SHIKO STOMP (Sweet Spot Slider)
 // ===================================================
 let shikoRAF = null;
-
 function setupShiko() {
   const container = document.getElementById('shiko-container');
   const oscarImg = document.getElementById('shiko-oscar');
@@ -1372,15 +1382,13 @@ function setupShiko() {
   
   centerZone.style.right = 'auto'; 
   centerZone.style.width = '30%';  
-  centerZone.style.left = '35%';   
-
+  centerZone.style.left = '35%';
   container.style.display = 'block';
   oscarImg.src = 'oscar-shiko.png'; 
   
   stableBar.style.width = '0%';
   stableBar.style.background = '#ff0000';
   stableBar.style.boxShadow = '0 0 6px #ff0000';
-  
   needle.style.left = '50%';
 }
 
@@ -1403,11 +1411,9 @@ function playShiko() {
     timerBar.style.transition = `width ${DURATION}ms linear`;
     timerBar.style.width = '0%';
   });
-
   let playerPos = 0.5; 
   let targetPos = 0.5; 
   let failTime = 0;
-
   function updateNeedlePos(clientX) {
     if (S !== 'PLAYING') return;
     const rect = track.getBoundingClientRect();
@@ -1439,7 +1445,6 @@ function playShiko() {
   let startTime = performance.now();
   let lastFrame = startTime;
   let lastWobbleTime = 0;
-
   function tick(now) {
     if (S !== 'PLAYING') return;
     const dt = Math.min(now - lastFrame, 50) / 1000;
@@ -1447,7 +1452,7 @@ function playShiko() {
     const elapsed = now - startTime;
 
     if (elapsed >= DURATION) {
-      S = 'WIN_ANIM'; 
+      S = 'WIN_ANIM';
       oscarImg.src = 'oscar-neutral.png'; 
       shake('xl');
       AudioEngine.playSlam();
@@ -1456,20 +1461,17 @@ function playShiko() {
       return;
     }
 
-    const speed = 0.6 + (elapsed / DURATION) * 1.0; 
+    const speed = 0.6 + (elapsed / DURATION) * 1.0;
     const t = elapsed * 0.001 * speed;
     
     let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.0) * 0.25) + (Math.cos(t * Math.PI * 1.6) * 0.15);
     targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
     
     centerZone.style.left = ((targetPos - ZONE_WIDTH/2) * 100) + '%';
-
     const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
-
     if (inZone) {
       failTime = Math.max(0, failTime - dt * 2500); 
       oscarImg.src = 'oscar-shiko.png';
-      
       centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
       needle.style.background = '#fff';
@@ -1477,12 +1479,10 @@ function playShiko() {
     } else {
       failTime += dt * 1000;
       oscarImg.src = 'oscar-shiko-wobble.png';
-      
       centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
       needle.style.background = '#ff4444';
       needle.style.boxShadow = '0 0 8px #ff4444, 0 0 16px rgba(255,68,68,0.5)';
-
       if (now - lastWobbleTime > 300) {
         AudioEngine.playWobble();
         lastWobbleTime = now;
@@ -1523,7 +1523,6 @@ function cleanupShiko() {
 //  GAME 3: THE THROW (Reflex Tap)
 // ===================================================
 let throwRAF = null;
-
 function setupThrow() {
   const container = document.getElementById('throw-container');
   const oscar = document.getElementById('throw-oscar');
@@ -1552,32 +1551,26 @@ function playThrow() {
   const feedback = document.getElementById('throw-feedback');
 
   const FALL_DURATION = 1800; 
-  const PRE_DELAY = 600 + Math.random() * 800; 
-
+  const PRE_DELAY = 600 + Math.random() * 800;
   timerBar.style.transition = 'none';
   timerBar.style.width = '100%';
 
   let fallStart = null;
   let tapped = false;
   let falling = false;
-
   function startFall() {
     falling = true;
     fallStart = performance.now();
-
     requestAnimationFrame(() => {
       timerBar.style.transition = `width ${FALL_DURATION}ms linear`;
       timerBar.style.width = '0%';
     });
-
     function tick(now) {
       if (S !== 'PLAYING' || tapped) return;
       const elapsed = now - fallStart;
       const progress = Math.min(elapsed / FALL_DURATION, 1);
-
       const topPct = -60 + (progress * 170);
       opponent.style.top = topPct + '%';
-
       if (progress >= 1) {
         onLose();
         return;
@@ -1593,19 +1586,13 @@ function playThrow() {
     e.preventDefault();
     if (S !== 'PLAYING' || tapped || !falling) return;
     tapped = true;
-
-    // Grab exact pixel coordinates of the elements on screen
     const oppRect = opponent.getBoundingClientRect();
     const zoneRect = zone.getBoundingClientRect();
 
-    // The "feet" are the bottom of the opponent's image boundary.
     const feetY = oppRect.bottom - (oppRect.height * 0.05);
-
-    // Give a slightly forgiving hitbox around the zone
-    const hitBuffer = 15; // 15 pixels of forgiveness
+    const hitBuffer = 15;
 
     if (feetY >= (zoneRect.top - hitBuffer) && feetY <= (zoneRect.bottom + hitBuffer)) {
-      // HIT!
       oscar.src = 'oscar-throw.png';
       AudioEngine.playThrow();
       shake('xl');
@@ -1614,16 +1601,12 @@ function playThrow() {
       opponent.className = 'opponent-flung';
       setTimeout(onWin, 600);
     } else {
-      // MISS!
       AudioEngine.playWhiff();
       shake(false);
-
-      // Check if feet were above the top of the zone (Early) or below the bottom (Late)
       feedback.textContent = feetY < zoneRect.top ? 'TOO EARLY!' : 'TOO LATE!';
       feedback.style.display = 'flex';
       feedback.style.opacity = '1';
       feedback.style.color = '#ff4444';
-
       setTimeout(() => {
         feedback.style.opacity = '0';
         onLose();
@@ -1655,7 +1638,7 @@ function cleanupThrow() {
 }
 
 // ===================================================
-//  GAME 4: TSUPPARI DODGE (Swipe to Dodge)
+//  GAME 4: TSUPPARI DODGE (Swipe to Safety)
 // ===================================================
 let dodgeTimeouts = [];
 
@@ -1665,6 +1648,7 @@ function setupDodge() {
   const handL = document.getElementById('dodge-hand-left');
   const handR = document.getElementById('dodge-hand-right');
   const waveCounter = document.getElementById('dodge-wave-counter');
+  const telegraph = document.getElementById('dodge-telegraph');
 
   container.style.display = 'block';
   oscar.src = 'oscar-neutral.png';
@@ -1678,6 +1662,7 @@ function setupDodge() {
   handR.style.cssText = ''; 
   
   waveCounter.textContent = '';
+  telegraph.style.opacity = '0';
 }
 
 function playDodge() {
@@ -1687,7 +1672,6 @@ function playDodge() {
   const handL = document.getElementById('dodge-hand-left');
   const handR = document.getElementById('dodge-hand-right');
   const waveCounter = document.getElementById('dodge-wave-counter');
-
   const TOTAL_WAVES = 5;
   const DODGES_NEEDED = 3; 
   let currentWave = 0;
@@ -1704,7 +1688,6 @@ function playDodge() {
     timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
     timerBar.style.width = '0%';
   });
-
   waveCounter.textContent = `${dodgesHit}/${DODGES_NEEDED}`;
 
   let touchStartX = null;
@@ -1713,7 +1696,6 @@ function playDodge() {
   function handleDodge(direction) {
     if (S !== 'PLAYING' || !canDodge || swipeHandled) return;
     swipeHandled = true;
-    
     if (direction === 'left') {
       playerSide = 'left';
       oscar.src = 'oscar-shiko.png'; 
@@ -1726,39 +1708,44 @@ function playDodge() {
   }
 
   function onTouchStart(e) {
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     if (S !== 'PLAYING') return;
     const touch = e.touches ? e.touches[0] : e;
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
   }
 
-  function onTouchEnd(e) {
-    e.preventDefault();
-    if (touchStartX === null) return;
-    const touch = e.changedTouches ? e.changedTouches[0] : e;
+  // Active swiping to make the trigger instantaneous 
+  function onTouchMove(e) {
+    if (S !== 'PLAYING' || touchStartX === null || swipeHandled) return;
+    if (e.cancelable) e.preventDefault();
+    
+    const touch = e.touches ? e.touches[0] : e;
     const dx = touch.clientX - touchStartX;
     const dy = touch.clientY - touchStartY;
-    touchStartX = null;
 
-    if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
-    handleDodge(dx < 0 ? 'left' : 'right');
+    // Trigger swipe the moment they cross the 30px threshold
+    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
+      handleDodge(dx < 0 ? 'left' : 'right');
+    }
   }
 
-  function onTap(e) {
-    e.preventDefault();
-    const touch = e.touches ? e.touches[0] : e;
-    const rect = app.getBoundingClientRect();
-    const x = (touch.clientX - rect.left) / rect.width;
-    handleDodge(x < 0.5 ? 'left' : 'right');
+  function onTouchEnd(e) {
+    if (e.cancelable) e.preventDefault();
+    touchStartX = null;
+    touchStartY = null;
   }
 
   app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchmove', onTouchMove, { passive: false });
   app.addEventListener('touchend', onTouchEnd, { passive: false });
-  app.addEventListener('mousedown', onTap);
-  app._dodgeTouchStart = onTouchStart;
-  app._dodgeTouchEnd = onTouchEnd;
-  app._dodgeTap = onTap;
+  
+  app.addEventListener('mousedown', onTouchStart);
+  app.addEventListener('mousemove', onTouchMove);
+  app.addEventListener('mouseup', onTouchEnd);
+  app.addEventListener('mouseleave', onTouchEnd);
+
+  app._dodgeHandlers = { onTouchStart, onTouchMove, onTouchEnd };
 
   function launchWave() {
     if (S !== 'PLAYING') return;
@@ -1774,32 +1761,30 @@ function playDodge() {
     oscar.className = '';
     oscar.style.transform = 'translateX(-50%)';
 
-    const side = Math.random() < 0.5 ? 'left' : 'right';
+    const side = Math.random() < 0.5 ? 'left' : 'right'; // Threat side
     const hand = side === 'left' ? handL : handR;
     const otherHand = side === 'left' ? handR : handL;
     const telegraph = document.getElementById('dodge-telegraph');
-
-    // Reset hands
-    otherHand.className = 'ghost-hand ' + (side === 'left' ? 'hand-right' : 'hand-left');
     
-    // Generous Difficulty Curve Math
+    // We want the player to swipe to the safe side
+    const safeSide = side === 'left' ? 'right' : 'left';
+
+    otherHand.className = 'ghost-hand ' + (side === 'left' ? 'hand-right' : 'hand-left');
     const windUpTime = Math.max(360, 600 - currentWave * 60);
     const slamSpeed = Math.max(230, 350 - currentWave * 30);
     const pauseTime = Math.max(300, 600 - currentWave * 75);
 
-    // 1. Show the glow and start the wind up
-    telegraph.className = side === 'left' ? 'tele-left' : 'tele-right';
+    // Show the neon green safe zone + arrows on the side they need to jump to!
+    telegraph.className = safeSide === 'left' ? 'tele-left' : 'tele-right';
     telegraph.style.opacity = '1';
 
-    // Sync CSS transition to JS timers
     hand.style.transitionProperty = 'top, opacity';
     hand.style.transitionDuration = `${windUpTime}ms, 0.1s`;
     hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' winding-up';
-
+    
     dodgeTimeouts.push(setTimeout(() => {
       if (S !== 'PLAYING') return;
       
-      // 2. Turn off glow and slam
       telegraph.style.opacity = '0';
       hand.style.transitionDuration = `${slamSpeed}ms, 0.1s`;
       hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' slamming';
@@ -1807,11 +1792,10 @@ function playDodge() {
 
       dodgeTimeouts.push(setTimeout(() => {
         if (S !== 'PLAYING') return;
+       
         canDodge = false;
 
-        const correctDodge = side === 'left' ? 'right' : 'left';
-
-        if (playerSide === correctDodge) {
+        if (playerSide === safeSide) {
           dodgesHit++;
           AudioEngine.playCoin();
           shake(false);
@@ -1836,7 +1820,6 @@ function playDodge() {
           oscar.style.transform = 'translateX(-50%)';
           dodgeTimeouts.push(setTimeout(launchWave, 100)); 
         }, pauseTime));
-
       }, slamSpeed));
 
     }, windUpTime));
@@ -1848,17 +1831,16 @@ function playDodge() {
 function cleanupDodge() {
   dodgeTimeouts.forEach(t => clearTimeout(t));
   dodgeTimeouts = [];
-  if (app._dodgeTouchStart) {
-    app.removeEventListener('touchstart', app._dodgeTouchStart);
-    app._dodgeTouchStart = null;
-  }
-  if (app._dodgeTouchEnd) {
-    app.removeEventListener('touchend', app._dodgeTouchEnd);
-    app._dodgeTouchEnd = null;
-  }
-  if (app._dodgeTap) {
-    app.removeEventListener('mousedown', app._dodgeTap);
-    app._dodgeTap = null;
+  
+  if (app._dodgeHandlers) {
+    app.removeEventListener('touchstart', app._dodgeHandlers.onTouchStart);
+    app.removeEventListener('touchmove', app._dodgeHandlers.onTouchMove);
+    app.removeEventListener('touchend', app._dodgeHandlers.onTouchEnd);
+    app.removeEventListener('mousedown', app._dodgeHandlers.onTouchStart);
+    app.removeEventListener('mousemove', app._dodgeHandlers.onTouchMove);
+    app.removeEventListener('mouseup', app._dodgeHandlers.onTouchEnd);
+    app.removeEventListener('mouseleave', app._dodgeHandlers.onTouchEnd);
+    app._dodgeHandlers = null;
   }
   document.getElementById('dodge-container').style.display = 'none';
 }
