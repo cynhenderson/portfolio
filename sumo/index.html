@@ -1364,10 +1364,10 @@ const AudioEngine = {
   bgmBuffer: null,
   bgmSource: null,
   loadBGM: function(url) {
-    if (!this.ctx) return;
-    fetch(url)
+    if (!this.ctx) return Promise.resolve();
+    return fetch(url)
       .then(r => r.arrayBuffer())
-      .then(ab => this.ctx.decodeAudioData(ab, buf => { this.bgmBuffer = buf; }))
+      .then(ab => new Promise((res, rej) => this.ctx.decodeAudioData(ab, buf => { this.bgmBuffer = buf; res(); }, rej)))
       .catch(err => console.log('BGM load error:', err));
   },
   playBGM: function() {
@@ -1423,32 +1423,43 @@ const ASSETS = [
   'opponent.png','oscar-throw.png',
   'ghost-hand-left.png','ghost-hand-right.png',
   'oscar-inflated.png','falling-ball.png','falling-tire.png','falling-fish.png',
-  'oscar-unwrapped.png','oscar-wrapping-1.png','oscar-wrapping-2.png'
+  'oscar-unwrapped.png','oscar-wrapping-1.png','oscar-wrapping-2.png',
+  'keg-demon.png'
 ];
 
-Promise.all(ASSETS.map(src => new Promise(r => {
-  const img = new Image();
-  img.onload = img.onerror = r;
-  img.src = src;
-}))).then(() => {
+// Hold Image object references at module scope so the browser can't evict
+// them from memory cache after the preload promise resolves
+const _imageCache = [];
+
+// Init audio context early -- suspended on mobile until gesture, but
+// decodeAudioData works on a suspended context so BGM decodes during preload
+AudioEngine.init();
+
+Promise.all([
+  ...ASSETS.map(src => new Promise(r => {
+    const img = new Image();
+    _imageCache.push(img);
+    img.onload = img.onerror = r;
+    img.src = src;
+  })),
+  AudioEngine.loadBGM('intro-music.mp3')
+]).then(() => {
   loading.style.opacity = '0';
-  setTimeout(() => { 
-    loading.style.display = 'none'; 
-    AudioEngine.init();
-    AudioEngine.loadBGM('intro-music.mp3');
+  setTimeout(() => {
+    loading.style.display = 'none';
     startScreenEl.classList.add('active');
     const bootGame = (e) => {
       if (e) e.preventDefault();
-      AudioEngine.resume();
-      AudioEngine.playCoin(); 
-      if (!AudioEngine.playBGM()) {
-        bgmTrack.currentTime = 0;
-        bgmTrack.play().catch(err => console.log(err));
-      }
+      AudioEngine.playCoin();
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
       startScreenEl.removeEventListener('mousedown', bootGame);
-      intro1(); 
+      // resume() is async -- chain BGM and intro off it so they
+      // start in the same microtask, perfectly in sync
+      AudioEngine.ctx.resume().then(() => {
+        AudioEngine.playBGM();
+        intro1();
+      });
     };
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
