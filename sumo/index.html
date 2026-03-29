@@ -1454,12 +1454,11 @@ Promise.all([
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
       startScreenEl.removeEventListener('mousedown', bootGame);
-      // resume() is async -- chain BGM and intro off it so they
-      // start in the same microtask, perfectly in sync
-      AudioEngine.ctx.resume().then(() => {
-        AudioEngine.playBGM();
-        intro1();
-      });
+      
+      // Trigger the resume, but don't wait for the promise!
+      AudioEngine.ctx.resume();
+      AudioEngine.playBGM();
+      intro1();
     };
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
