@@ -1581,7 +1581,45 @@ playHyoshigi: function() {
     osc.connect(gain); gain.connect(this.ctx.destination);
     osc.start(t); osc.stop(t + 0.5);
   },
-// --- OUTRO SYNTHESIS ---
+
+  playDemonDeath: function() {
+    // A wailing, pitch-dropping screech for the demon's defeat
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 1.0); 
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.0);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 1.0);
+  },
+
+  playGlassShatter: function() {
+     // High-frequency noise burst for the arcade cabinet glass breaking
+     if (!this.ctx) return;
+     const t = this.ctx.currentTime;
+     const bufferSize = this.ctx.sampleRate * 0.4;
+     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+     const data = buffer.getChannelData(0);
+     for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+     
+     const noise = this.ctx.createBufferSource();
+     noise.buffer = buffer;
+     
+     const filter = this.ctx.createBiquadFilter();
+     filter.type = 'highpass';
+     filter.frequency.value = 6000; // Very crispy, bright noise
+
+     const gain = this.ctx.createGain();
+     gain.gain.setValueAtTime(0.8, t);
+     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+
+     noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+     noise.start(t);
+  },
 
   playTaiko: function() {
     if (!this.ctx) return;
@@ -1762,6 +1800,69 @@ playSizzle: function(pitchMultiplier = 1) {
         try { this.demonOsc.osc.stop(); this.demonOsc.lfo.stop(); } catch(e){}
         this.demonOsc = null;
       }, 150);
+    }
+  },
+
+heartbeatTimer: null,
+
+  playHeartbeat: function(totalDurationMs) {
+    if (!this.ctx) return;
+    this.stopHeartbeat(); // Ensure no overlapping loops
+    
+    const startTime = performance.now();
+    
+    const beat = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      
+      // The "Lub" (Deep and heavy)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(55, t);
+      osc1.frequency.exponentialRampToValueAtTime(35, t + 0.1);
+      gain1.gain.setValueAtTime(0, t);
+      gain1.gain.linearRampToValueAtTime(0.8, t + 0.02); // Quick attack
+      gain1.gain.exponentialRampToValueAtTime(0.01, t + 0.15); // Quick decay
+      osc1.connect(gain1); gain1.connect(this.ctx.destination);
+      osc1.start(t); osc1.stop(t + 0.15);
+
+      // The "Dub" (Slightly higher, slightly quieter, offset by 150ms)
+      const osc2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(65, t + 0.15);
+      osc2.frequency.exponentialRampToValueAtTime(40, t + 0.25);
+      gain2.gain.setValueAtTime(0, t + 0.15);
+      gain2.gain.linearRampToValueAtTime(0.6, t + 0.17);
+      gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+      osc2.connect(gain2); gain2.connect(this.ctx.destination);
+      osc2.start(t + 0.15); osc2.stop(t + 0.3);
+      
+      // Visual feedback: Make the Yokozuna pulse to the beat
+      const bossSprite = document.getElementById('boss-sprite');
+      if (bossSprite && bossSprite.className !== 'boss-charge') {
+          bossSprite.classList.add('boss-beat-pulse');
+          setTimeout(() => bossSprite.classList.remove('boss-beat-pulse'), 150);
+      }
+
+      // Calculate the next delay based on how close we are to the trigger
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / totalDurationMs, 1); // 0 to 1
+      
+      // Starts at a resting 1000ms gap, shrinks to a panicked 280ms gap
+      const nextDelay = 1000 - (progress * 720); 
+
+      this.heartbeatTimer = setTimeout(beat, nextDelay);
+    };
+    
+    beat(); // Start the first beat immediately
+  },
+
+  stopHeartbeat: function() {
+    if (this.heartbeatTimer) {
+      clearTimeout(this.heartbeatTimer);
+      this.heartbeatTimer = null;
     }
   },
 
@@ -3042,14 +3143,12 @@ function setupWrap() {
   const oscar = document.getElementById('wrap-oscar');
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const hint = document.getElementById('wrap-hint');
   const orbit = document.getElementById('wrap-orbit');
 
   container.style.display = 'block';
   oscar.src = 'oscar-unwrapped.png';
   spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%)';
   ringFill.style.strokeDashoffset = '283';
-  hint.style.opacity = '1';
   orbit.style.opacity = '1';
 }
 
@@ -3059,7 +3158,6 @@ function playWrap() {
   const oscar = document.getElementById('wrap-oscar');
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const hint = document.getElementById('wrap-hint');
   const orbit = document.getElementById('wrap-orbit');
 
   const TOTAL_TIME = 10000;
@@ -3123,7 +3221,6 @@ function playWrap() {
 
     // Fade out hint and orbit dot after first bit of progress
     if (progress > 0.05) {
-      hint.style.opacity = '0';
       orbit.style.opacity = '0';
     }
 
@@ -3320,7 +3417,7 @@ function playSalt() {
       if (currentHits >= HITS_NEEDED) {
         S = 'WIN_ANIM';
         clearTimeout(gameTimer);
-        AudioEngine.playCrash();
+        AudioEngine.playDemonDeath();
         shake('xl');
         doFlash('#ffffff', 300);
         demon.style.transition = 'top 0.5s ease-in, filter 0.5s';
@@ -3427,7 +3524,7 @@ function playBoss() {
   // Random wait time between 3 and 7 seconds
   const waitTime = 3000 + Math.random() * 4000;
 
-  AudioEngine.playDemonRumble();
+  AudioEngine.playHeartbeat(waitTime);
   // Slight slow zoom to build tension
   sprite.style.transition = `transform ${waitTime}ms linear`;
   sprite.style.transform = 'translateX(-50%) scale(1.15)';
@@ -3436,8 +3533,8 @@ function playBoss() {
   const triggerTimeout = setTimeout(() => {
     if (S !== 'PLAYING') return;
     standoffPhase = 'NOW';
-    AudioEngine.stopDemonRumble();
-    AudioEngine.playGlitchSting(); 
+    AudioEngine.stopHeartbeat();
+    AudioEngine.playHyoshigi(); 
     
     doBossFlash('#ff0000', 100);
     // Explicit instruction instead of "NOW!"
@@ -3467,8 +3564,8 @@ function fail(reason) {
     bossTimeouts.forEach(t => clearTimeout(t));
     bossTimeouts = [];
 
-    AudioEngine.stopDemonRumble();
-    AudioEngine.playBonk();
+    AudioEngine.stopHeartbeat();
+    AudioEngine.playDeathSlam();
     
     // The violent jump scare penalty
     sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; 
@@ -3496,7 +3593,7 @@ function fail(reason) {
     stampHide();
 
     // 1. FREEZE TIME
-    AudioEngine.stopDemonRumble();
+    AudioEngine.stopHeartbeat();
     sprite.src = 'boss-stunned.png';
     
     // 2. ZOOM OUT THE SCREEN
@@ -3512,7 +3609,7 @@ function fail(reason) {
 
 // 4. SHATTER
     bossTimeouts.push(setTimeout(() => {
-      AudioEngine.playCrash(); 
+      AudioEngine.playGlassShatter(); 
       shake('xl');
       doBossFlash('#ffffff', 400);
       
