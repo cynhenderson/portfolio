@@ -2486,8 +2486,8 @@ function setupShiko() {
   oscarImg.src = 'oscar-shiko.png'; 
   
   stableBar.style.width = '0%';
-  stableBar.style.background = '#ff0000';
-  stableBar.style.boxShadow = '0 0 6px #ff0000';
+  stableBar.style.background = '#00ff88';
+  stableBar.style.boxShadow = '0 0 6px #00ff88';
   needle.style.left = '50%';
 }
 
@@ -2502,7 +2502,7 @@ function playShiko() {
 
   const DURATION = 5000;
   const MAX_FAIL_TIME = 1200; 
-  const ZONE_WIDTH = 0.3; 
+  const ZONE_WIDTH = 0.18; 
 
   timerBar.style.transition = 'none';
   timerBar.style.width = '100%';
@@ -2555,24 +2555,27 @@ function playShiko() {
       setTimeout(onWin, 100);
       return;
     }
-
-    const speed = 0.6 + (elapsed / DURATION) * 1.0;
+const speed = 0.6 + (elapsed / DURATION) * 1.0;
     const t = elapsed * 0.001 * speed;
     
-    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.0) * 0.25) + (Math.cos(t * Math.PI * 1.6) * 0.15);
+    // 1. More erratic target movement (wider amplitude, out of sync waves)
+    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.3) * 0.3) + (Math.cos(t * Math.PI * 2.1) * 0.2);
     targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
     
     centerZone.style.left = ((targetPos - ZONE_WIDTH/2) * 100) + '%';
     const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
+    
     if (inZone) {
-      failTime = Math.max(0, failTime - dt * 2500); 
+      // 2. Slower recovery (was 2500)
+      failTime = Math.max(0, failTime - dt * 600); 
       oscarImg.src = 'oscar-shiko.png';
       centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
       needle.style.background = '#fff';
       needle.style.boxShadow = '0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5)';
     } else {
-      failTime += dt * 1000;
+      // 3. Harsher penalty (was 1000)
+      failTime += dt * 1200;
       oscarImg.src = 'oscar-shiko-wobble.png';
       centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
@@ -2584,8 +2587,21 @@ function playShiko() {
       }
     }
 
+    // 4. Invert the bar logic so it drains, and color-code the panic
     const failPct = Math.min(failTime / MAX_FAIL_TIME, 1);
-    stableBar.style.width = (failPct * 100) + '%';
+    const healthPct = 1 - failPct; 
+    stableBar.style.width = (healthPct * 100) + '%';
+
+    if (healthPct > 0.5) {
+      stableBar.style.background = '#00ff88'; // Green
+      stableBar.style.boxShadow = '0 0 6px #00ff88';
+    } else if (healthPct > 0.2) {
+      stableBar.style.background = '#ff6a00'; // Orange Warning
+      stableBar.style.boxShadow = '0 0 6px #ff6a00';
+    } else {
+      stableBar.style.background = '#ff4444'; // Red Danger
+      stableBar.style.boxShadow = '0 0 6px #ff4444';
+    }
 
     if (failPct >= 1) {
       onLose();
