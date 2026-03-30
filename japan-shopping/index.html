@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan Master Shopping List</title>
+    <style>
+        :root {
+            --primary: #d18d94;
+            --primary-light: #f8ecee;
+            --secondary: #8c7a6b;
+            --bg: #faf7f5;
+            --card-bg: #fffcfc;
+            --text-main: #333;
+            --text-light: #555;
+            --border: #f0e4e6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            padding-top: 70px;
+        }
+
+        .filter-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 12px 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+        }
+        .filter-nav::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .filter-btn {
+            background: var(--bg);
+            color: var(--secondary);
+            border: 1px solid #e0d8d5;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(209, 141, 148, 0.4);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .category-section {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .category-section h2 {
+            color: var(--secondary);
+            margin-top: 0;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .product-card {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            gap: 15px;
+            transition: transform 0.2s;
+        }
+
+        .product-img {
+            width: 90px;
+            height: 90px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #ccc;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-info h3 {
+            margin: 0 0 6px 0;
+            color: #444;
+            font-size: 1.05em;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 0.75em;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .desc {
+            font-size: 0.9em;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .product-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .product-img {
+                width: 100%;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="filter-nav" id="filterNav">
+    <button class="filter-btn active" data-filter="all">All Items</button>
+    <button class="filter-btn" data-filter="kappabashi">Kappabashi</button>
+    <button class="filter-btn" data-filter="skincare">Skincare & SPF</button>
+    <button class="filter-btn" data-filter="base">Face Base</button>
+    <button class="filter-btn" data-filter="color">Makeup (Color)</button>
+    <button class="filter-btn" data-filter="tools">Tools</button>
+    <button class="filter-btn" data-filter="wellness">Pharmacy</button>
+    <button class="filter-btn" data-filter="lifestyle">Stationery & Home</button>
+</div>
+
+<div class="container">
+    <h1>Japan Shopping List</h1>
+
+    <div class="category-section" data-category="kappabashi">
+        <h2>Kappabashi Kitchenware</h2>
+
+        <div class="product-card">
+            <img src="hocho.png" alt="Japanese Knife" class="product-img">
+            <div class="product-info">
+                <div class="tag">World-Class Blades</div>
+                <h3>Japanese Kitchen Knives (Hōchō)</h3>
+                <p class="desc">Kappabashi is famous for its world-class, exceptionally sharp blades. You can find everything from all-purpose chef's knives to specialty vegetable cleavers. Many stores offer tax-free shopping and custom engraving.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="hashi.png" alt="Chopsticks" class="product-img">
+            <div class="product-info">
+                <div class="tag">Elegant Designs</div>
+                <h3>High-Quality Chopsticks (Hashi) & Rests</h3>
+                <p class="desc">You will find entire stores dedicated to chopsticks, ranging from simple bamboo to elegant lacquered designs. You can also find cute, fanciful chopstick rests, such as animal shapes, to match.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="shokki.png" alt="Tableware" class="product-img">
+            <div class="product-info">
+                <div class="tag">Affordable Ceramics</div>
+                <h3>Beautiful Japanese Tableware (Shokki)</h3>
+                <p class="desc">The street is a treasure trove of affordable ceramics. Look out for lightweight teacups, beautifully painted plates, and sturdy ramen bowls.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="sanpuru.png" alt="Fake Food" class="product-img">
+            <div class="product-info">
+                <div class="tag">Quirky Souvenirs</div>
+                <h3>Realistic Fake Food Samples (Shokuhin Sanpuru)</h3>
+                <p class="desc">These hyper-realistic plastic food models are a staple of Japanese restaurant displays and make for incredibly fun, quirky souvenirs. You can find them as magnets, keychains, and even phone cases.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="grater.png" alt="Grater" class="product-img">
+            <div class="product-info">
+                <div class="tag">Mess-Free Prep</div>
+                <h3>Traditional Graters</h3>
+                <p class="desc">Japanese graters often come with built-in trays to neatly collect ingredients like ginger, daikon radish, or wasabi without the mess.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="skincare">
+        <h2>Skincare & Suncare</h2>
+        
+        <div class="product-card">
+            <img src="hada-labo.png" alt="Hada Labo Lotion" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: Thayers / ELF Drops</div>
+                <h3>Hada Labo Gokujyun Premium Hydrating Lotion</h3>
+                <p class="desc">A milky, deeply hydrating toner that is a holy grail in Japan for a plump base.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="melano-cc.png" alt="Melano CC" class="product-img">
+            <div class="product-info">
+                <div class="tag">Pre-makeup brightening</div>
+                <h3>Melano CC Intensive Anti-Spot Essence</h3>
+                <p class="desc">A fantastic vitamin C serum for brightening the skin under makeup.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="canmake-mermaid.png" alt="Canmake UV" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: ELF Sunbeam</div>
+                <h3>Canmake Mermaid Skin Gel UV (01 or 02)</h3>
+                <p class="desc">Acts as a hydrating primer and SPF 50+, giving a glass-skin glow without feeling greasy.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="biore-uv.png" alt="Bioré UV" class="product-img">
+            <div class="product-info">
+                <div class="tag">Holy Grail Sunscreen</div>
+                <h3>Bioré UV Aqua Rich Watery Essence</h3>
+                <p class="desc">Lightweight, watery gel that absorbs instantly with zero white cast.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="keana-rice-mask.png" alt="Rice Mask" class="product-img">
+            <div class="product-info">
+                <div class="tag">Pore-Smoothing</div>
+                <h3>Keana Nadeshiko Rice Mask</h3>
+                <p class="desc">Sheet masks soaked in 100% Japanese rice extract serum to hydrate and minimize pores.</p>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <img src="rohto-lip-mask.png" alt="Rohto Lip Mask" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: Vitamasques</div>
+                <h3>Rohto Mentholatum Melty Cream Lip</h3>
+                <p class="desc">Melts at body temperature to provide intense, mask-like hydration overnight.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="base">
+        <h2>Base, Conceal & Set</h2>
+        
+        <div class="product-card">
+            <img src="tirtir-cushion.png" alt="Tirtir Cushion" class="product-img">
+            <div class="product-info">
+                <div class="tag">#1 In Japan</div>
+                <h3>Tirtir Mask Fit Red Cushion</h3>
+                <p class="desc">High coverage, luminous finish, and incredible longevity. The must-buy makeup item.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="cezanne-base.png" alt="Cezanne Base" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: Hard Candy Primer</div>
+                <h3>Cezanne Make Keep Base</h3>
+                <p class="desc">Highly recommended for keeping makeup locked in all day with a smooth gripping finish.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="kate-real-cover.png" alt="Kate Foundation" class="product-img">
+            <div class="product-info">
+                <div class="tag">Skin-like Glow</div>
+                <h3>Kate Real Cover Liquid (Light Glow)</h3>
+                <p class="desc">If you prefer a liquid pump over a cushion, this provides a beautiful finish.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="canmake-mixing-concealer.png" alt="Canmake Concealer" class="product-img">
+            <div class="product-info">
+                <div class="tag">Color Corrector</div>
+                <h3>Canmake Color Mixing Concealer</h3>
+                <p class="desc">A custom three-shade palette with a peachy shade specifically for neutralizing dark circles.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="saem-concealer.png" alt="The SAEM Concealer" class="product-img">
+            <div class="product-info">
+                <div class="tag">High Coverage</div>
+                <h3>the SAEM Cover Perfection Tip Concealer</h3>
+                <p class="desc">Incredibly high coverage but blends flawlessly; perfect for brightening the under-eye.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="canmake-powder.png" alt="Canmake Powder" class="product-img">
+            <div class="product-info">
+                <div class="tag">Pore-blurring</div>
+                <h3>Canmake Marshmallow Finish Powder</h3>
+                <p class="desc">A pressed powder that provides a soft-focus, blurring finish that hides pores perfectly.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="kose-mist.png" alt="Kose Mist" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: Milani Spray</div>
+                <h3>Kose Make Keep Mist EX</h3>
+                <p class="desc">A bi-phase formula that locks down makeup beautifully while leaving a natural finish.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="color">
+        <h2>Makeup: Eyes, Cheeks & Lips</h2>
+
+        <div class="product-card">
+            <img src="heroine-mascara.png" alt="Heroine Mascara" class="product-img">
+            <div class="product-info">
+                <div class="tag">Waterproof Holy Grail</div>
+                <h3>Heroine Make Kiss Me Long & Curl Mascara</h3>
+                <p class="desc">Widely considered the best waterproof mascara. Holds a curl all day.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="canmake-creamy-liner.png" alt="Canmake Liner" class="product-img">
+            <div class="product-info">
+                <div class="tag">Budge-proof</div>
+                <h3>Canmake Creamy Touch Liner</h3>
+                <p class="desc">An ultra-thin (1.5mm) gel liner that glides on without tugging.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="excel-shadow.png" alt="Excel Shadow" class="product-img">
+            <div class="product-info">
+                <div class="tag">Buttery Blend</div>
+                <h3>Excel Skinny Rich Shadow</h3>
+                <p class="desc">An ultra-blendable quad of neutral shimmers and mattes.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="heavy-rotation-brow.png" alt="Heavy Rotation Brow" class="product-img">
+            <div class="product-info">
+                <div class="tag">Replaces: L'Oreal Brow Gel</div>
+                <h3>Heavy Rotation Coloring Eyebrow</h3>
+                <p class="desc">The best brow mascara in Japan. Coats every hair and locks them in place.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="canmake-cheek.png" alt="Canmake Blush" class="product-img">
+            <div class="product-info">
+                <div class="tag">Cream Blush</div>
+                <h3>Canmake Cream Cheek</h3>
+                <p class="desc">Melts into the skin beautifully with superior staying power.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="cezanne-highlight.png" alt="Cezanne Highlight" class="product-img">
+            <div class="product-info">
+                <div class="tag">Blinding Glow</div>
+                <h3>Cezanne Pearl Glow Highlight</h3>
+                <p class="desc">Delivers a blinding, finely milled glow that looks high-end.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="kate-lip.png" alt="Kate Lip Monster" class="product-img">
+            <div class="product-info">
+                <div class="tag">Glossy Stain</div>
+                <h3>Kate Lip Monster</h3>
+                <p class="desc">Applies like a glossy balm, stains the lips, and lasts through eating and drinking.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="tools">
+        <h2>Tools & Removers</h2>
+
+        <div class="product-card">
+            <img src="and-be-sponge.png" alt="&be Sponge" class="product-img">
+            <div class="product-info">
+                <div class="tag">Seamless Blend</div>
+                <h3>&be Black Makeup Sponge</h3>
+                <p class="desc">Designed by a famous makeup artist, unbelievably soft for a seamless finish.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="shiseido-131.png" alt="Shiseido Brush" class="product-img">
+            <div class="product-info">
+                <div class="tag">Award Winning</div>
+                <h3>Shiseido Foundation Brush 131</h3>
+                <p class="desc">Buffs in cream and liquid base products perfectly without streaks.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="shiseido-curler.png" alt="Shiseido Curler" class="product-img">
+            <div class="product-info">
+                <div class="tag">Routine Essential</div>
+                <h3>Shiseido Eyelash Curler (Japan Version)</h3>
+                <p class="desc">Much cheaper in Japan! Grab the inexpensive replacement rubber pads too.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="silcot-cotton.png" alt="Silcot Pads" class="product-img">
+            <div class="product-info">
+                <div class="tag">Saves Product</div>
+                <h3>Unicharm Silcot Sponge Touch Cotton Pads</h3>
+                <p class="desc">Designed to "give back" liquid to the skin, using half the amount of toner.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="heroine-remover.png" alt="Mascara Remover" class="product-img">
+            <div class="product-info">
+                <div class="tag">Melts Makeup</div>
+                <h3>Heroine Make Speedy Mascara Remover</h3>
+                <p class="desc">Brush it on, wait 10 seconds, and it melts waterproof mascara right off.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="wellness">
+        <h2>Pharmacy & Wellness</h2>
+
+        <div class="product-card">
+            <img src="megurism-eye-mask.png" alt="Steam Eye Mask" class="product-img">
+            <div class="product-info">
+                <div class="tag">Travel Essential</div>
+                <h3>Megurism Steam Eye Masks</h3>
+                <p class="desc">Self-heating masks that stay warm for 20 minutes. Perfect for the flight home.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="roihi-patches.png" alt="Pain Patches" class="product-img">
+            <div class="product-info">
+                <div class="tag">For Sore Muscles</div>
+                <h3>Roihi-Tsuboko Pain Patches</h3>
+                <p class="desc">Famous "coin" patches that provide targeted heat for walking-induced aches.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="rohto-premium-drops.png" alt="Eye Drops" class="product-img">
+            <div class="product-info">
+                <div class="tag">Cult Favorite</div>
+                <h3>V Rohto Premium Eye Drops</h3>
+                <p class="desc">Advanced formula that refreshes tired eyes with a signature cooling sensation.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="cooling-leg-pads.png" alt="Cooling Leg Patches" class="product-img">
+            <div class="product-info">
+                <div class="tag">Post-Walking Relief</div>
+                <h3>Kyusoku Jikan Cooling Leg Patches</h3>
+                <p class="desc">Adheres easily to calves and feet, providing a soothing, cooling sensation to relieve tired, swollen legs after a long day of sightseeing.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="yuskin-cream.png" alt="Yuskin A Cream" class="product-img">
+            <div class="product-info">
+                <div class="tag">Deep Moisture</div>
+                <h3>Yuskin A Hand & Body Cream</h3>
+                <p class="desc">A deeply moisturizing, vitamin-enriched cream that is a staple in Japanese households for healing dry hands, cracked heels, and winter skin.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="kairo-warmers.png" alt="Stick-on Body Warmers" class="product-img">
+            <div class="product-info">
+                <div class="tag">Gentle Heat</div>
+                <h3>Kairo (Stick-on Body Warmers)</h3>
+                <p class="desc">These single-use heat packs can be stuck to the outside of a base layer shirt. They are perfect for keeping the lower back or shoulders comfortable and warm while out and about.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="bath-salts.png" alt="Japanese Bath Salts" class="product-img">
+            <div class="product-info">
+                <div class="tag">Onsen at Home</div>
+                <h3>Japanese Bath Salts (Nyuyokuzai)</h3>
+                <p class="desc">Back in the pharmacy section, look for boxes of bath salts like Kao Bub (carbonated tablets) or Bath Roman. They are formulated to mimic the mineral profiles of famous Japanese hot springs (onsen) and are absolute magic for soothing tired joints after a long day of walking and shopping.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="category-section" data-category="lifestyle">
+        <h2>Stationery, Home & Pantry</h2>
+
+        <div class="product-card">
+            <img src="uniball-one-p.png" alt="Uni-ball Pen" class="product-img">
+            <div class="product-info">
+                <div class="tag">Best Ink</div>
+                <h3>Uni-ball ONE pens</h3>
+                <p class="desc">Known for having the darkest, most smudge-proof ink.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="zebra.png" alt="Zebra Sarasa" class="product-img">
+            <div class="product-info">
+                <div class="tag">Smooth Writing</div>
+                <h3>Zebra Sarasa Clip Gel Pens</h3>
+                <p class="desc">These are a holy grail for smooth writing and are extremely popular in Japan. They are highly affordable there compared to stateside prices.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="midori-notebook.png" alt="Travelers Notebook" class="product-img">
+            <div class="product-info">
+                <div class="tag">Heritage Item</div>
+                <h3>Traveler's Notebook</h3>
+                <p class="desc">A beautiful leather journal with swappable paper refills.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="kokuyo-notebook.png" alt="Kokuyo Notebook" class="product-img">
+            <div class="product-info">
+                <div class="tag">Bleed-Resistant</div>
+                <h3>Kokuyo Campus or Soft Ring Notebooks</h3>
+                <p class="desc">Japanese paper is famous for its smooth feel and high resistance to ink bleeding. The Kokuyo notebooks are lightweight, incredibly affordable, and a staple for organizing notes.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="tombow-eraser.png" alt="Tombow Eraser" class="product-img">
+            <div class="product-info">
+                <div class="tag">Gold Standard</div>
+                <h3>Tombow Mono Eraser</h3>
+                <p class="desc">This is considered the gold standard of erasers in Japan. It erases cleanly with minimal dust, gives precise control without damaging the paper underneath, and costs pocket change.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="harinacs-stapler.png" alt="Staple-Free Stapler" class="product-img">
+            <div class="product-info">
+                <div class="tag">Office Engineering</div>
+                <h3>Kokuyo Harinacs Staple-Free Stapler</h3>
+                <p class="desc">A brilliant piece of Japanese office engineering that binds papers together by crimping the pages. It means you never have to buy or refill staples again.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="tabio-socks.png" alt="Tabio Socks" class="product-img">
+            <div class="product-info">
+                <div class="tag">Unrivaled Quality</div>
+                <h3>Tabio Socks</h3>
+                <p class="desc">The gold standard of hosiery. Incredible fit and durability.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="wpc-umbrella.png" alt="Wpc Umbrella" class="product-img">
+            <div class="product-info">
+                <div class="tag">Featherlight</div>
+                <h3>Wpc. Tiny Umbrellas</h3>
+                <p class="desc">World-class UV protection in a frame that weighs less than a smartphone.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="yoku-moku-cookies.png" alt="Yoku Moku" class="product-img">
+            <div class="product-info">
+                <div class="tag">Perfect Gift</div>
+                <h3>Yoku Moku Cigare Cookies</h3>
+                <p class="desc">Light, buttery rolled cookies. The beautiful tins make great souvenirs.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="designer-handkerchiefs.png" alt="Designer Handkerchiefs" class="product-img">
+            <div class="product-info">
+                <div class="tag">Affordable Luxury</div>
+                <h3>Designer Handkerchiefs</h3>
+                <p class="desc">On the first floor of almost any major Japanese department store (like Takashimaya, Mitsukoshi, or Isetan), you will find massive displays of beautifully packaged, licensed designer handkerchiefs. You can find brands like Ralph Lauren, Anna Sui, and Vivienne Westwood for around 1,000 to 1,500 yen ($7–$10 USD). They are elegant, practical, take up zero luggage space, and feel like a luxury purchase.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="amano-miso.png" alt="Amano Miso Soup" class="product-img">
+            <div class="product-info">
+                <div class="tag">Restaurant Quality</div>
+                <h3>Amano Foods Freeze-Dried Miso Soup</h3>
+                <p class="desc">Skip the powdered packets. These are individual freeze-dried blocks found in supermarkets that bloom into rich, restaurant-quality soup with tofu, eggplant, or mushrooms that actually taste fresh. They are very inexpensive and make great lightweight gifts.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="laundry-nets.png" alt="Laundry Wash Nets" class="product-img">
+            <div class="product-info">
+                <div class="tag">100-Yen Gem</div>
+                <h3>High-Quality Laundry Nets</h3>
+                <p class="desc">Japanese 100-yen shops (like Daiso, Seria, or Can Do) have the best laundry wash nets in the world. They are incredibly durable and come in specific, structured shapes for sweaters, delicates, and even shoes.</p>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="furikake.png" alt="Furikake" class="product-img">
+            <div class="product-info">
+                <div class="tag">Pantry Upgrade</div>
+                <h3>Unique Furikake (Rice Seasonings)</h3>
+                <p class="desc">For just a couple of dollars, these colorful packets from the grocery store will instantly elevate plain rice, eggs, or popcorn. Look for fun, savory flavors like sukiyaki, butter soy sauce, or plum and shiso.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const categories = document.querySelectorAll('.category-section');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filterValue = btn.getAttribute('data-filter');
+
+            categories.forEach(category => {
+                if (filterValue === 'all') {
+                    category.style.display = 'block';
+                } else {
+                    if (category.getAttribute('data-category') === filterValue) {
+                        category.style.display = 'block';
+                    } else {
+                        category.style.display = 'none';
+                    }
+                }
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
+
+</body>
+</html>
