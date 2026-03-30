@@ -662,7 +662,7 @@
 
     .ghost-hand {
       position: absolute;
-      width: 22%;
+      width: 28%; /* Increased from 22% */
       top: -50%;
       opacity: 0;
       object-fit: contain;
@@ -673,11 +673,11 @@
     .ghost-hand.hand-right { right: -2%; }
 
     .ghost-hand.winding-up {
-      top: -30%;
+      top: -25%; /* Lowered so it's more visible during wind up */
       opacity: 1;
     }
     .ghost-hand.slamming {
-      top: 35%;
+      top: 48%; /* Lowered so the big hand reaches down deeper */
       opacity: 1;
       transition-timing-function: ease-in;
     }
@@ -3116,16 +3116,16 @@ function playBoss() {
     if (S !== 'PLAYING') return;
     standoffPhase = 'NOW';
     AudioEngine.stopDemonRumble();
-    AudioEngine.playGlitchSting(); 
+    AudioEngine.playGlitchSting(); // Acts as a sharp "shing!" sound
     
     doBossFlash('#ff0000', 100);
-    // CHANGED: Explicit instruction instead of "NOW!"
+    // Explicit instruction instead of "NOW!"
     stampShow('SWIPE UP!', '#ff0000', 'clamp(2.5rem, 10vw, 4rem)', 'transparent');
     
     sprite.style.transition = 'transform 0.05s';
     sprite.style.transform = 'translateX(-50%) scale(1.2)';
 
-    // CHANGED: Widened the failure window to 700ms
+    // The failure window (widened to 700ms)
     bossTimeouts.push(setTimeout(() => {
       if (standoffPhase === 'NOW') {
         fail('TOO LATE!');
@@ -3146,7 +3146,7 @@ function playBoss() {
     doBossFlash('#ff0000', 200);
     shake('xl');
     
-    // CHANGED: Make the mistake blatantly obvious
+    // Explicit reason for failure
     stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', '#000');
     
     // Delay the loss sequence slightly so they can read the text
@@ -3215,7 +3215,7 @@ function playBoss() {
     }
 
     if (standoffPhase === 'NOW') {
-      // CHANGED: Shortened swipe distance to 15px to make it hyper-responsive
+      // Must be a distinct upward swipe (hypersensitive 15px)
       if (dy < -15 && Math.abs(dy) > Math.abs(dx)) {
         win(); 
       } else {
