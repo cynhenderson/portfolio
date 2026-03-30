@@ -723,8 +723,8 @@
     }
     #bounce-zone {
       position: absolute;
-      left: 10%;
-      right: 10%;
+      left: 0;
+      right: 0;
       height: 15%;
       top: 50%;
       border-top: 3px solid rgba(0, 255, 100, 0.7);
@@ -735,8 +735,8 @@
     }
     #bounce-zone-glow {
       position: absolute;
-      left: 10%;
-      right: 10%;
+      left: 0;
+      right: 0;
       height: 15%;
       top: 50%;
       background: rgba(0, 255, 100, 0.15);
@@ -1863,7 +1863,7 @@ const GAME_SEQUENCE = [
   { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
   { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
   { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
-  { verb: 'BOUNCE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
+  { verb: 'INFLATE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
   { verb: 'WRAP!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
   { verb: 'FLICK SALT!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
   { verb: 'WAIT FOR IT...', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
@@ -3135,21 +3135,24 @@ function playBoss() {
 
   bossTimeouts.push(triggerTimeout);
 
-  function fail(reason) {
+function fail(reason) {
     if (S !== 'PLAYING') return;
     standoffPhase = 'DONE';
     AudioEngine.stopDemonRumble();
     AudioEngine.playBonk();
     
+    // The violent jump scare penalty
+    sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; // Violent snap
     sprite.src = 'boss-charge.png';
-    sprite.style.transform = 'translateX(-50%) scale(1.8)';
+    sprite.style.transform = 'translateX(-50%) scale(2.2) translateY(10%)'; // Massive scale up into the camera
+    
     doBossFlash('#ff0000', 200);
     shake('xl');
     
     // Explicit reason for failure
     stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', '#000');
     
-    // Delay the loss sequence slightly so they can read the text
+    // Delay the loss sequence slightly so they can read the text and feel the hit
     setTimeout(() => {
       stampHide();
       onLose();
