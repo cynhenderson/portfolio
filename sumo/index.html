@@ -1062,10 +1062,10 @@
 
     /* Outro Animations */
     .outro-fade-in {
-      animation: oscarFadeIn 1s ease-out forwards;
+      animation: oscarFadeIn 1.6s ease-out forwards;
     }
     @keyframes oscarFadeIn {
-      0%   { opacity: 0; transform: translateX(-50%) scale(0.97); }
+      0%   { opacity: 0; transform: translateX(-50%) scale(0.95); }
       100% { opacity: 1; transform: translateX(-50%) scale(1); }
     }
     .outro-charge-enter {
@@ -1078,7 +1078,7 @@
 
     /* Outro Background Camera Pan -- stays zoomed in, pans crowd -> ring */
     .outro-bg-pan {
-      animation: dohyoPan 4s cubic-bezier(0.3, 0.0, 0.2, 1) forwards;
+      animation: dohyoPan 8s cubic-bezier(0.25, 0.0, 0.15, 1) forwards;
     }
     @keyframes dohyoPan {
       0%   { transform: scale(1.8) translateY(22%); }
@@ -2219,17 +2219,17 @@ function playOutroSequence() {
   // 2. Pan from crowd to ring (already zoomed in, never pulls out)
   outroBg.className = 'outro-bg-pan';
 
-  // 3. Crowd swell timed to impact at ~3.6s
-  AudioEngine.playCrowdSwell(3600);
+  // 3. Crowd swell timed to impact at ~7.5s
+  AudioEngine.playCrowdSwell(7500);
 
-  // Phase 1: Oscar fades into the ring
+  // Phase 1: Oscar fades into the ring -- player has time to take it in
   setTimeout(() => {
     outroOscar.src = 'oscar-sumo.png';
     outroOscar.className = 'outro-fade-in';
     AudioEngine.playTaiko();
-  }, 500);
+  }, 1000);
 
-  // Phase 2: Dramatic cut to shikiri -- hold a beat
+  // Phase 2: Hard cut to shikiri -- hold for 2.5s of tension
   setTimeout(() => {
     outroOscar.src = 'oscar-shikiri.png';
     outroOscar.style.animation = 'none';
@@ -2237,9 +2237,9 @@ function playOutroSequence() {
     outroOscar.style.transform = 'translateX(-50%) scale(1)';
     shake('sm');
     AudioEngine.playTaiko();
-  }, 2000);
+  }, 3800);
 
-  // Phase 3: Charge jumps onto screen + shake
+  // Phase 3: Charge jumps onto screen -- hold for 1.5s before impact
   setTimeout(() => {
     outroOscar.src = 'oscar-charge.png';
     outroOscar.style.animation = '';
@@ -2248,9 +2248,9 @@ function playOutroSequence() {
     outroOscar.className = 'outro-charge-enter';
     AudioEngine.playWhoosh();
     shake('sm');
-  }, 3000);
+  }, 6100);
 
-  // Phase 4: Beat, then impact -- cut to promo
+  // Phase 4: Impact -- dead silence, then cut to promo
   setTimeout(() => {
     AudioEngine.stopCrowd();
     shake('xl');
@@ -2258,7 +2258,7 @@ function playOutroSequence() {
     AudioEngine.playCrash();
     outroContainer.classList.remove('active');
     showDemoComplete();
-  }, 3600); 
+  }, 7500);
 }
 
 // ===================================================
