@@ -1076,14 +1076,14 @@
       100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
     }
 
-    /* Outro Background Camera Pan -- stays zoomed in, pans crowd -> ring */
-    .outro-bg-pan {
-      animation: dohyoPan 8s cubic-bezier(0.25, 0.0, 0.15, 1) forwards;
-    }
-    @keyframes dohyoPan {
-      0%   { transform: scale(1.8) translateY(22%); }
-      100% { transform: scale(1.8) translateY(-8%); }
-    }
+/* Outro Background Camera Pan -- Starts wide, zooms in, and STOPS completely */
+.outro-bg-zoom {
+  animation: dohyoZoom 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes dohyoZoom {
+  0%   { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.8) translateY(-8%); }
+}
 
     /* =====================
        PROMO STYLES
@@ -2204,7 +2204,6 @@ function onLose() {
   }, 700);
 }
 
-// THE BRAND NEW OUTRO FUNCTION
 function playOutroSequence() {
   S = 'OUTRO';
   const outroContainer = document.getElementById('outro-container');
@@ -2216,20 +2215,20 @@ function playOutroSequence() {
   gameWrapper.classList.remove('active');
   outroContainer.classList.add('active');
   
-  // 2. Pan from crowd to ring (already zoomed in, never pulls out)
-  outroBg.className = 'outro-bg-pan';
+  // 2. Trigger the new 1.5s zoom-in camera move
+  outroBg.className = 'outro-bg-zoom';
 
-  // 3. Crowd swell timed to impact at ~7.5s
+  // 3. Crowd swell timed to impact
   AudioEngine.playCrowdSwell(7500);
 
-  // Phase 1: Oscar fades into the ring -- player has time to take it in
+  // Phase 1: Oscar fades in AFTER the camera stops (Camera stops at 1.5s, Oscar appears at 1.8s)
   setTimeout(() => {
     outroOscar.src = 'oscar-sumo.png';
     outroOscar.className = 'outro-fade-in';
     AudioEngine.playTaiko();
-  }, 1000);
+  }, 1800);
 
-  // Phase 2: Hard cut to shikiri -- hold for 2.5s of tension
+  // Phase 2: Hard cut to shikiri (Adjusted slightly to account for the later fade-in)
   setTimeout(() => {
     outroOscar.src = 'oscar-shikiri.png';
     outroOscar.style.animation = 'none';
@@ -2237,9 +2236,9 @@ function playOutroSequence() {
     outroOscar.style.transform = 'translateX(-50%) scale(1)';
     shake('sm');
     AudioEngine.playTaiko();
-  }, 3800);
+  }, 4200);
 
-  // Phase 3: Charge jumps onto screen -- hold for 1.5s before impact
+  // Phase 3: Charge jumps onto screen
   setTimeout(() => {
     outroOscar.src = 'oscar-charge.png';
     outroOscar.style.animation = '';
