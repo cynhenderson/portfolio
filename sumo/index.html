@@ -662,7 +662,7 @@
 
     .ghost-hand {
       position: absolute;
-      width: 28%; /* Increased from 22% */
+      width: 28%;
       top: -50%;
       opacity: 0;
       object-fit: contain;
@@ -673,11 +673,11 @@
     .ghost-hand.hand-right { right: -2%; }
 
     .ghost-hand.winding-up {
-      top: -25%; /* Lowered so it's more visible during wind up */
+      top: -25%; 
       opacity: 1;
     }
     .ghost-hand.slamming {
-      top: 48%; /* Lowered so the big hand reaches down deeper */
+      top: 48%; 
       opacity: 1;
       transition-timing-function: ease-in;
     }
@@ -853,32 +853,56 @@
       filter: drop-shadow(0 0 6px rgba(0,229,255,0.6));
       transition: stroke-dashoffset 0.1s ease-out;
     }
+
+    /* Massive, pulsing text hint */
     #wrap-hint {
       position: absolute;
-      top: 14%;
+      top: 15%;
       left: 50%;
       transform: translateX(-50%);
-      color: rgba(0,229,255,0.5);
-      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
+      color: #00e5ff;
+      font-size: clamp(1.5rem, 6vw, 2.5rem); 
+      text-shadow: 0 0 10px #00e5ff, 2px 2px 0 #000;
       z-index: 5;
       pointer-events: none;
       letter-spacing: 0.1em;
       text-align: center;
+      animation: pulse-hint 0.8s ease-in-out infinite alternate;
     }
-    @keyframes spin-hint {
-      0%   { transform: translateX(-50%) rotate(0deg); }
-      100% { transform: translateX(-50%) rotate(360deg); }
+    @keyframes pulse-hint {
+      from { opacity: 0.6; transform: translateX(-50%) scale(0.9); }
+      to { opacity: 1; transform: translateX(-50%) scale(1.1); }
     }
-    #wrap-spin-icon {
+
+    /* The rotating track that holds the dot */
+    #wrap-orbit {
       position: absolute;
-      top: 20%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      width: 70%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -45%); 
       z-index: 5;
       pointer-events: none;
-      opacity: 0.4;
-      animation: spin-hint 1.5s linear infinite;
+      animation: orbit-spin 1.5s linear infinite;
+      transition: opacity 0.3s ease-out;
+    }
+    @keyframes orbit-spin {
+      0% { transform: translate(-50%, -45%) rotate(0deg); }
+      100% { transform: translate(-50%, -45%) rotate(360deg); }
+    }
+
+    /* The glowing green tutorial dot */
+    #wrap-orbit-dot {
+      position: absolute;
+      top: -6px; 
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: #00ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.8);
     }
 
     /* SHAKE */
@@ -1110,8 +1134,10 @@
               <circle class="ring-fill" cx="50" cy="50" r="45"/>
             </svg>
           </div>
-          <div id="wrap-hint">SPIN!</div>
-          <div id="wrap-spin-icon">↻</div>
+          <div id="wrap-hint">WIND IT!</div>
+          <div id="wrap-orbit">
+            <div id="wrap-orbit-dot"></div>
+          </div>
         </div>
         <div id="salt-container">
           <div id="demon-health-bg"><div id="demon-health-bar"></div></div>
@@ -1609,7 +1635,7 @@ const ASSETS = [
   'opponent.png','oscar-throw.png',
   'ghost-hand-left.png','ghost-hand-right.png',
   'oscar-inflated.png','falling-ball.png','falling-tire.png','falling-fish.png',
-  'oscar-unwrapped.png','oscar-wrapping-1.png','oscar-wrapping-2.png',
+  'oscar-unwrapped.png','oscar-wrapping-2.png',
   'keg-demon.png','glass-crack.png',
   'boss-idle.png','boss-slap.png','boss-before-charge.png','boss-charge.png','boss-stunned.png'
 ];
@@ -1864,7 +1890,7 @@ const GAME_SEQUENCE = [
   { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
   { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
   { verb: 'INFLATE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
-  { verb: 'WRAP!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
+  { verb: 'WIND IT!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
   { verb: 'FLICK SALT!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
   { verb: 'WAIT FOR IT...', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
 ];
@@ -2713,7 +2739,6 @@ let wrapTimeouts = [];
 
 const WRAP_SPRITES = [
   'oscar-unwrapped.png',
-  'oscar-wrapping-1.png',
   'oscar-wrapping-2.png',
   'oscar-neutral.png'
 ];
@@ -2724,14 +2749,14 @@ function setupWrap() {
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
   const hint = document.getElementById('wrap-hint');
-  const spinIcon = document.getElementById('wrap-spin-icon');
+  const orbit = document.getElementById('wrap-orbit');
 
   container.style.display = 'block';
   oscar.src = 'oscar-unwrapped.png';
   spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%)';
   ringFill.style.strokeDashoffset = '283';
   hint.style.opacity = '1';
-  spinIcon.style.opacity = '0.4';
+  orbit.style.opacity = '1';
 }
 
 function playWrap() {
@@ -2741,7 +2766,7 @@ function playWrap() {
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
   const hint = document.getElementById('wrap-hint');
-  const spinIcon = document.getElementById('wrap-spin-icon');
+  const orbit = document.getElementById('wrap-orbit');
 
   const TOTAL_TIME = 10000;
   const ROTATIONS_NEEDED = 5;       // full 360° rotations to win
@@ -2774,12 +2799,11 @@ function playWrap() {
     // Update progress ring (283 is the circumference of r=45 circle)
     ringFill.style.strokeDashoffset = String(283 - (progress * 283));
 
-    // Update sprite based on progress thresholds
+    // Update sprite based on progress thresholds (skipping wrapping-1)
     let newIndex;
-    if (progress < 0.25) newIndex = 0;
-    else if (progress < 0.55) newIndex = 1;
-    else if (progress < 0.85) newIndex = 2;
-    else newIndex = 3;
+    if (progress < 0.4) newIndex = 0;
+    else if (progress < 0.8) newIndex = 1;
+    else newIndex = 2;
 
     if (newIndex !== currentSpriteIndex) {
       currentSpriteIndex = newIndex;
@@ -2803,10 +2827,10 @@ function playWrap() {
       lastSwishTime = now;
     }
 
-    // Fade out hint after first progress
+    // Fade out hint and orbit dot after first bit of progress
     if (progress > 0.05) {
       hint.style.opacity = '0';
-      spinIcon.style.opacity = '0';
+      orbit.style.opacity = '0';
     }
 
     // WIN!
@@ -3116,7 +3140,7 @@ function playBoss() {
     if (S !== 'PLAYING') return;
     standoffPhase = 'NOW';
     AudioEngine.stopDemonRumble();
-    AudioEngine.playGlitchSting(); // Acts as a sharp "shing!" sound
+    AudioEngine.playGlitchSting(); 
     
     doBossFlash('#ff0000', 100);
     // Explicit instruction instead of "NOW!"
@@ -3135,16 +3159,16 @@ function playBoss() {
 
   bossTimeouts.push(triggerTimeout);
 
-function fail(reason) {
+  function fail(reason) {
     if (S !== 'PLAYING') return;
     standoffPhase = 'DONE';
     AudioEngine.stopDemonRumble();
     AudioEngine.playBonk();
     
     // The violent jump scare penalty
-    sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; // Violent snap
+    sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; 
     sprite.src = 'boss-charge.png';
-    sprite.style.transform = 'translateX(-50%) scale(2.2) translateY(10%)'; // Massive scale up into the camera
+    sprite.style.transform = 'translateX(-50%) scale(2.2) translateY(10%)'; 
     
     doBossFlash('#ff0000', 200);
     shake('xl');
