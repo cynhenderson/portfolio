@@ -3456,9 +3456,17 @@ function playBoss() {
 
   bossTimeouts.push(triggerTimeout);
 
-  function fail(reason) {
+function fail(reason) {
     if (S !== 'PLAYING') return;
+    
+    // 1. Instantly change state to prevent other interactions/timers
+    S = 'LOSE_ANIM'; 
     standoffPhase = 'DONE';
+    
+    // 2. Clear any pending boss timers (like the "SWIPE UP!" trigger)
+    bossTimeouts.forEach(t => clearTimeout(t));
+    bossTimeouts = [];
+
     AudioEngine.stopDemonRumble();
     AudioEngine.playBonk();
     
@@ -3473,12 +3481,13 @@ function playBoss() {
     // Explicit reason for failure
     stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', '#000');
     
-    // Delay the loss sequence slightly so they can read the text and feel the hit
+    // 3. Hold for a solid beat before proceeding to the loss screen
     setTimeout(() => {
       stampHide();
       onLose();
-    }, 800);
+    }, 1200); // Increased from 800ms so the charge really registers
   }
+
 
   function win() {
     if (S !== 'PLAYING') return;
