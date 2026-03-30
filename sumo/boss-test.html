@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>YOKOZUNA -- Boss Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Press Start 2P', monospace;
+      image-rendering: pixelated;
+    }
+
+    /* =====================
+       PANELS
+    ===================== */
+    .panel {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .panel.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* =====================
+       GAME WRAPPER
+    ===================== */
+    #game-wrapper {
+      position: absolute;
+      inset: 0;
+      display: block;
+      transform-origin: 50.2% 51%;
+    }
+
+    #screen {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 5;
+    }
+    #screen-bg {
+      position: absolute;
+      inset: 0;
+      background: #0a1128;
+    }
+
+    #hud {
+      position: absolute;
+      top: 3%;
+      left: 3%;
+      width: 94%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 5;
+    }
+    #lives { display: flex; gap: 3px; align-items: center; }
+    .heart { width: 22px; height: 22px; object-fit: contain; image-rendering: pixelated; }
+    #score { color: #00e5ff; font-size: clamp(0.5rem, 2vw, 0.7rem); text-shadow: 0 0 8px #00e5ff; }
+
+    #timer-wrap {
+      position: absolute;
+      bottom: 3%;
+      left: 3%;
+      width: 94%;
+      height: 8px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid rgba(0,229,255,0.35);
+      z-index: 5;
+    }
+    #timer-bar {
+      height: 100%;
+      width: 100%;
+      background: #ff6a00;
+      box-shadow: 0 0 6px #ff6a00;
+      transition: width linear;
+    }
+
+    #game-content {
+      position: absolute;
+      top: 13%;
+      left: 0;
+      width: 100%;
+      bottom: 13%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    /* =====================
+       UI OVERLAYS
+    ===================== */
+    #stamp {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(2rem, 8vw, 3rem);
+      color: #ff6a00;
+      text-align: center;
+      text-shadow: 3px 3px 0 #000;
+      z-index: 25;
+      pointer-events: none;
+      white-space: pre-wrap;
+      line-height: 1.3;
+    }
+    #flash {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+      transition: opacity 0.05s;
+    }
+
+    .end-screen {
+      position: absolute;
+      inset: 0;
+      background: #0a1128;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 50;
+      text-align: center;
+      padding: 2.5rem;
+    }
+    .end-screen.active { display: flex; }
+    .end-screen h1 {
+      font-size: clamp(1.2rem, 5.5vw, 1.8rem);
+      line-height: 1.8;
+    }
+    .end-screen .sub {
+      font-size: clamp(0.4rem, 1.8vw, 0.6rem);
+      letter-spacing: 0.1em;
+    }
+    .end-screen .hint {
+      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
+      color: #fff;
+      animation: blink 1s step-end infinite;
+      margin-top: 0.5rem;
+    }
+    #demo-complete h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+    #demo-complete .sub { color: #ff6a00; }
+    #gameover-screen h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+    #gameover-screen .sub { color: #ff6a00; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* SHAKE */
+    @keyframes shake-sm {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-4px); }
+      40%,80% { transform: translateX(4px); }
+    }
+    @keyframes shake-lg {
+      0%,100% { transform: translateX(0); }
+      15%,45%,75% { transform: translateX(-8px); }
+      30%,60%,90% { transform: translateX(8px); }
+    }
+    .shake-sm { animation: shake-sm 0.15s ease-in-out; }
+    .shake-lg { animation: shake-lg 0.22s ease-in-out; }
+    @keyframes shake-xl {
+      0%,100% { transform: translate(0,0); }
+      10%,50%,90% { transform: translate(-14px,-3px); }
+      20%,60% { transform: translate(14px,3px); }
+      30%,70% { transform: translate(-10px,2px); }
+      40%,80% { transform: translate(10px,-2px); }
+    }
+    .shake-xl { animation: shake-xl 0.35s ease-in-out; }
+
+    /* =====================
+       THE YOKOZUNA (Boss)
+    ===================== */
+    #boss-container {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow: hidden;
+      background: #000;
+      perspective: 800px;
+    }
+
+    /* RHYTHM HIGHWAYS */
+    .highway {
+      position: absolute; top: 10%; bottom: 0; width: 44px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 20;
+    }
+    #highway-left { left: 8%; }
+    #highway-right { right: 8%; }
+
+    .hit-zone {
+      position: absolute; top: 80%; width: 100%; height: 44px;
+      border: 2px solid #00e5ff; background: rgba(0, 229, 255, 0.2);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); transform: translateY(-50%);
+    }
+
+    .rhythm-note {
+      position: absolute; left: 4px; right: 4px; height: 20px;
+      border-radius: 4px; display: none; transform: translateY(-50%);
+    }
+    .note-slap { background: #ff6a00; box-shadow: 0 0 8px #ff6a00; }
+    .note-charge { background: #ff00ff; box-shadow: 0 0 8px #ff00ff; height: 45px; }
+    .note-final { background: #fff; box-shadow: 0 0 15px #fff; left: -10px; right: -10px; height: 45px; }
+
+    #boss-health-bg {
+      position: absolute;
+      top: 6%; left: 10%; width: 80%; height: 12px;
+      background: #330000; border: 2px solid #ff0000; z-index: 5;
+    }
+    #boss-health-bar {
+      height: 100%; width: 100%; background: #ff4444;
+      box-shadow: 0 0 8px #ff4444; transition: width 0.2s ease-out;
+    }
+    #boss-sprite {
+      position: absolute;
+      top: 10%; left: 50%;
+      transform: translateX(-50%) scale(1);
+      width: 95%; height: 80%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      z-index: 2;
+      transition: transform 0.1s;
+    }
+    .boss-beat-pulse { transform: translateX(-50%) scale(1.03) !important; }
+    .boss-glow {
+      position: absolute; top: 0; bottom: 0; width: 40%;
+      opacity: 0; z-index: 1; pointer-events: none;
+      transition: opacity 0.1s;
+    }
+    #boss-glow-left  { left: 0;  background: linear-gradient(to right, rgba(0, 229, 255, 0.3), transparent); }
+    #boss-glow-right { right: 0; background: linear-gradient(to left,  rgba(0, 229, 255, 0.3), transparent); }
+    .boss-hand {
+      position: absolute; bottom: -50%; width: 40%; height: 40%;
+      z-index: 4; opacity: 0;
+      transition: bottom 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.1s;
+    }
+    #boss-hand-left  { left: 5%; }
+    #boss-hand-right { right: 5%; }
+    .boss-hand.active { bottom: 0; opacity: 1; }
+    #boss-screen-flash {
+      position: absolute; inset: 0; opacity: 0; z-index: 10;
+      pointer-events: none; transition: opacity 0.2s;
+    }
+
+    /* =====================
+       START / DEBUG OVERLAY
+    ===================== */
+    #start-overlay {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      z-index: 99;
+    }
+    #start-overlay h2 {
+      color: #ff6a00;
+      font-size: clamp(0.9rem, 4vw, 1.4rem);
+      text-shadow: 3px 3px 0 #000;
+      text-align: center;
+      line-height: 1.6;
+    }
+    #start-overlay .start-btn {
+      color: #00e5ff;
+      font-size: clamp(0.55rem, 2.5vw, 0.85rem);
+      text-shadow: 0 0 10px rgba(0,229,255,0.8);
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      animation: blink 1s step-end infinite;
+    }
+    #debug-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.85);
+      border-top: 1px solid #333;
+      padding: 6px 8px;
+      font-size: 9px;
+      color: #aaa;
+      z-index: 60;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #debug-bar span { color: #00e5ff; }
+    #debug-bar .miss { color: #ff4444; }
+    #debug-bar .hit  { color: #00ff88; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <audio id="boss-bgm-track" src="boss-music.mp3" preload="auto"></audio>
+  <div id="game-wrapper">
+    <div id="screen">
+      <div id="screen-bg"></div>
+      <div id="hud">
+        <div id="lives">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+          <img class="heart" src="heart-full.png" alt="">
+        </div>
+        <div id="score">000</div>
+      </div>
+      <div id="game-content">
+        <div id="boss-container">
+          
+          <div id="highway-left" class="highway"><div class="hit-zone"></div></div>
+          <div id="highway-right" class="highway"><div class="hit-zone"></div></div>
+
+          <div id="boss-health-bg"><div id="boss-health-bar"></div></div>
+          <div id="boss-glow-left" class="boss-glow"></div>
+          <div id="boss-glow-right" class="boss-glow"></div>
+          <img id="boss-sprite" src="boss-idle.png" alt="">
+          <div id="boss-hand-left" class="boss-hand">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M20,100 L20,40 L40,40 L40,20 L60,20 L60,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
+              <path d="M60,100 L60,30 L80,30 L80,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
+            </svg>
+          </div>
+          <div id="boss-hand-right" class="boss-hand">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M80,100 L80,40 L60,40 L60,20 L40,20 L40,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
+              <path d="M40,100 L40,30 L20,30 L20,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
+            </svg>
+          </div>
+          <div id="boss-screen-flash"></div>
+        </div>
+      </div>
+      <div id="timer-wrap"><div id="timer-bar"></div></div>
+      <div id="stamp"></div>
+      <div id="flash"></div>
+    </div>
+  </div>
+
+  <div id="demo-complete" class="end-screen">
+    <h1>VICTORY</h1>
+    <div class="sub">THE YOKOZUNA FALLS</div>
+    <div class="hint">TAP TO REPLAY</div>
+  </div>
+  <div id="gameover-screen" class="end-screen">
+    <h1>WAKE<br>UP</h1>
+    <div class="sub">YOU WERE CRUSHED</div>
+    <div class="hint">TAP TO RETRY</div>
+  </div>
+
+  <div id="start-overlay">
+    <h2>THE YOKOZUNA<br>BOSS TEST</h2>
+    <div class="start-btn">TAP TO FIGHT</div>
+  </div>
+
+  <div id="debug-bar">
+    <div>BEAT: <span id="db-beat">--</span></div>
+    <div>PHASE: <span id="db-phase">--</span></div>
+    <div>HP: <span id="db-hp">100</span>%</div>
+    <div>LAST: <span id="db-last">--</span></div>
+    <div>AUDIO: <span id="db-audio">--</span></div>
+  </div>
+
+</div>
+<script>
+// ===================================================
+//  AUDIO ENGINE (full copy from main game)
+// ===================================================
+const AudioEngine = {
+  ctx: null,
+  init: function() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AudioContext();
+  },
+  resume: function() {
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  },
+
+  playSlam: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(100, t);
+    osc.frequency.exponentialRampToValueAtTime(10, t + 0.4);
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.4);
+  },
+
+  playCoin: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(880, t);
+    osc.frequency.setValueAtTime(1760, t + 0.08);
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.2);
+  },
+
+  playWin: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(523.25, t);
+    osc.frequency.setValueAtTime(659.25, t + 0.1);
+    osc.frequency.setValueAtTime(783.99, t + 0.2);
+    osc.frequency.setValueAtTime(1046.50, t + 0.3);
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.setValueAtTime(0.1, t + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.6);
+  },
+
+  playLose: function() {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.5);
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.5);
+  },
+
+  playBonk: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, t);
+    osc.frequency.exponentialRampToValueAtTime(60, t + 0.15);
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.2);
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(300, t + 0.05);
+    osc2.frequency.setValueAtTime(500, t + 0.1);
+    osc2.frequency.setValueAtTime(250, t + 0.15);
+    gain2.gain.setValueAtTime(0.08, t + 0.05);
+    gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+    osc2.connect(gain2); gain2.connect(this.ctx.destination);
+    osc2.start(t + 0.05); osc2.stop(t + 0.25);
+  },
+
+  playThrow: function() {
+    if (!this.ctx) return;
+    const noise = this.ctx.createOscillator();
+    const nGain = this.ctx.createGain();
+    const t = this.ctx.currentTime;
+    noise.type = 'sawtooth';
+    noise.frequency.setValueAtTime(200, t);
+    noise.frequency.exponentialRampToValueAtTime(800, t + 0.1);
+    noise.frequency.exponentialRampToValueAtTime(100, t + 0.3);
+    nGain.gain.setValueAtTime(0.2, t);
+    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    noise.connect(nGain); nGain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + 0.3);
+    const thud = this.ctx.createOscillator();
+    const tGain = this.ctx.createGain();
+    thud.type = 'sine';
+    thud.frequency.setValueAtTime(80, t + 0.12);
+    thud.frequency.exponentialRampToValueAtTime(30, t + 0.4);
+    tGain.gain.setValueAtTime(0, t);
+    tGain.gain.setValueAtTime(0.4, t + 0.12);
+    tGain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+    thud.connect(tGain); tGain.connect(this.ctx.destination);
+    thud.start(t); thud.stop(t + 0.4);
+  },
+
+  playCrash: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, t);
+    osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.3);
+    const bufferSize = this.ctx.sampleRate * 0.15;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.15, t);
+    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    noise.connect(nGain); nGain.connect(this.ctx.destination);
+    noise.start(t); noise.stop(t + 0.15);
+  },
+
+  demonOsc: null,
+  playDemonRumble: function() {
+    if (!this.ctx) return;
+    this.stopDemonRumble();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 45;
+    gain.gain.value = 0.25;
+    const lfo = this.ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 3;
+    const lfoGain = this.ctx.createGain();
+    lfoGain.gain.value = 15;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(); lfo.start();
+    this.demonOsc = { osc, lfo, gain };
+  },
+  stopDemonRumble: function() {
+    if (this.demonOsc && this.ctx) {
+      const t = this.ctx.currentTime;
+      this.demonOsc.gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+      setTimeout(() => {
+        try { this.demonOsc.osc.stop(); this.demonOsc.lfo.stop(); } catch(e){}
+        this.demonOsc = null;
+      }, 150);
+    }
+  },
+
+  playDeflect: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(400, t);
+    osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
+    gain.gain.setValueAtTime(0.4, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.1);
+  },
+
+  bossBuffer: null,
+  bossSource: null,
+  loadBossBGM: function(url) {
+    if (!this.ctx) return Promise.resolve();
+    return fetch(url)
+      .then(r => r.arrayBuffer())
+      .then(ab => new Promise((res, rej) => this.ctx.decodeAudioData(ab, buf => { this.bossBuffer = buf; res(); }, rej)))
+      .catch(err => { console.log('Boss BGM load error (will run without music):', err); });
+  },
+playBossBGM: function() {
+    if (this.ctx && this.bossBuffer) {
+      if (this.bossSource) { try { this.bossSource.stop(); } catch(e){} }
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.bossBuffer;
+      src.connect(this.ctx.destination);
+      src.start(0);
+      this.bossSource = src;
+      document.getElementById('db-audio').textContent = 'boss-music.mp3 (Web Audio)';
+      return this.ctx.currentTime;
+    }
+    
+    // FALLBACK: If fetch failed (e.g., local file:// testing)
+    const el = document.getElementById('boss-bgm-track');
+    if (el) {
+      el.currentTime = 0;
+      el.play().catch(e => console.log('Audio tag fallback failed:', e));
+      document.getElementById('db-audio').textContent = 'boss-music.mp3 (Audio Tag)';
+    } else {
+      document.getElementById('db-audio').textContent = 'SILENT (no audio found)';
+    }
+    return this.ctx ? this.ctx.currentTime : performance.now() / 1000;
+  },
+
+  stopBossBGM: function() {
+    if (this.bossSource) { try { this.bossSource.stop(); } catch(e){} }
+    const el = document.getElementById('boss-bgm-track');
+    if (el) { el.pause(); el.currentTime = 0; }
+  },
+};
+
+// ===================================================
+//  STATE
+// ===================================================
+let S = 'IDLE';
+let score = 0;
+let lives = 4;
+let bossRAF = null;
+let bossTimeouts = [];
+
+const app       = document.getElementById('app');
+const stamp     = document.getElementById('stamp');
+const flashEl   = document.getElementById('flash');
+const demoEl    = document.getElementById('demo-complete');
+const gameoverEl= document.getElementById('gameover-screen');
+
+// Debug refs
+const dbBeat  = document.getElementById('db-beat');
+const dbPhase = document.getElementById('db-phase');
+const dbHp    = document.getElementById('db-hp');
+const dbLast  = document.getElementById('db-last');
+
+// ===================================================
+//  UTILS
+// ===================================================
+function doFlash(color, ms) {
+  flashEl.style.background = color;
+  flashEl.style.opacity = '1';
+  setTimeout(() => { flashEl.style.opacity = '0'; }, ms);
+}
+
+function shake(level) {
+  const cls = level === 'xl' ? 'shake-xl' : level ? 'shake-lg' : 'shake-sm';
+  app.classList.remove('shake-sm', 'shake-lg', 'shake-xl');
+  void app.offsetWidth;
+  app.classList.add(cls);
+  app.addEventListener('animationend', () => app.classList.remove(cls), { once: true });
+}
+
+function stampShow(text, color, sizeCss) {
+  stamp.textContent    = text;
+  stamp.style.color    = color;
+  stamp.style.fontSize = sizeCss;
+  stamp.style.display  = 'flex';
+  stamp.style.opacity  = '1';
+}
+function stampHide() { stamp.style.display = 'none'; }
+
+function setScore() { document.getElementById('score').textContent = String(score).padStart(3, '0'); }
+function setHearts() {
+  document.querySelectorAll('.heart').forEach((h, i) => {
+    h.src = i < lives ? 'heart-full.png' : 'heart-empty.png';
+  });
+}
+
+// ===================================================
+//  WIN / LOSE (local to boss test)
+// ===================================================
+function onWin() {
+  S = 'WIN';
+  cleanupBoss();
+  score++;
+  setScore();
+  AudioEngine.playWin();
+  stampShow('VICTORY!', '#00ff88', 'clamp(2rem, 8vw, 3rem)');
+  setTimeout(() => {
+    stampHide();
+    showDemoComplete();
+  }, 600);
+}
+
+function onLose() {
+  if (S === 'LOSE' || S === 'WIN' || S === 'WIN_ANIM') return;
+  S = 'LOSE';
+  cleanupBoss();
+  lives--;
+  setHearts();
+  AudioEngine.playLose();
+  doFlash('rgba(255,0,0,0.5)', 200);
+  shake(true);
+  stampShow('✗', '#ff0000', 'clamp(3rem, 14vw, 5rem)');
+  setTimeout(() => {
+    stampHide();
+    if (lives <= 0) {
+      showGameOver();
+    } else {
+      // Retry boss
+      setTimeout(startFight, 300);
+    }
+  }, 700);
+}
+
+function showDemoComplete() {
+  demoEl.classList.add('active');
+  const tap = e => { e.preventDefault(); resetFight(); };
+  demoEl.addEventListener('touchstart', tap, { once: true, passive: false });
+  demoEl.addEventListener('mousedown',  tap, { once: true });
+}
+function showGameOver() {
+  gameoverEl.classList.add('active');
+  const tap = e => { e.preventDefault(); resetFight(); };
+  gameoverEl.addEventListener('touchstart', tap, { once: true, passive: false });
+  gameoverEl.addEventListener('mousedown',  tap, { once: true });
+}
+function resetFight() {
+  demoEl.classList.remove('active');
+  gameoverEl.classList.remove('active');
+  score = 0; lives = 4;
+  setScore(); setHearts();
+  setTimeout(startFight, 300);
+}
+
+// ===================================================
+//  GAME 8: THE YOKOZUNA (RHYTHM BOSS) -- full copy
+// ===================================================
+function setupBoss() {
+  const container = document.getElementById('boss-container');
+  const sprite    = document.getElementById('boss-sprite');
+  const hpBar     = document.getElementById('boss-health-bar');
+
+  container.style.display = 'block';
+  sprite.src = 'boss-idle.png';
+  sprite.style.transform = 'translateX(-50%) scale(1)';
+  sprite.className = '';
+  hpBar.style.width = '100%';
+
+  document.getElementById('boss-glow-left').style.opacity  = '0';
+  document.getElementById('boss-glow-right').style.opacity = '0';
+  document.getElementById('boss-hand-left').classList.remove('active');
+  document.getElementById('boss-hand-right').classList.remove('active');
+}
+
+function playBoss() {
+  S = 'PLAYING';
+  const timerBar = document.getElementById('timer-bar');
+  timerBar.style.width = '0%';
+
+  const sprite  = document.getElementById('boss-sprite');
+  const hpBar   = document.getElementById('boss-health-bar');
+  const glowL   = document.getElementById('boss-glow-left');
+  const glowR   = document.getElementById('boss-glow-right');
+  const handL   = document.getElementById('boss-hand-left');
+  const handR   = document.getElementById('boss-hand-right');
+  const flashEl2 = document.getElementById('boss-screen-flash');
+
+  const BPM      = 78;
+  const BEAT_DUR = 60 / BPM;
+  const HIT_WINDOW = 0.35;
+
+  let startTime   = AudioEngine.playBossBGM();
+  let currentBeat = -1;
+  let bossHp      = 100;
+  let phase       = 1;
+  let touchStartX = null;
+  let touchStartY = null;
+
+  const slapBeats = [4, 6, 8, 10, 11, 12, 13, 14, 15, 15.5, 16.5, 17.5, 18];
+  const charges = [
+    { telegraph: 22, impact: 24 },
+    { telegraph: 26, impact: 27.5 },
+    { telegraph: 29, impact: 30 }
+  ];
+  const finalThrowBeat = 35;
+
+  let expectedImpacts = [];
+  slapBeats.forEach(b => expectedImpacts.push({ time: b * BEAT_DUR, side: Math.random() > 0.5 ? 'left' : 'right', type: 'slap', handled: false }));
+  charges.forEach(c   => expectedImpacts.push({ time: c.impact * BEAT_DUR, side: Math.random() > 0.5 ? 'left' : 'right', type: 'charge', handled: false }));
+  expectedImpacts.push({ time: finalThrowBeat * BEAT_DUR, type: 'final', handled: false, side: 'right' });
+
+  // Generate Note Elements in DOM
+  expectedImpacts.forEach(impact => {
+    const noteEl = document.createElement('div');
+    noteEl.className = `rhythm-note note-${impact.type}`;
+    const targetHighway = document.getElementById(`highway-${impact.side === 'left' ? 'left' : 'right'}`);
+    if(targetHighway) targetHighway.appendChild(noteEl);
+    impact.element = noteEl;
+  });
+
+  function doBossFlash(color, ms) {
+    flashEl2.style.background = color;
+    flashEl2.style.opacity = '0.4';
+    setTimeout(() => { flashEl2.style.opacity = '0'; }, ms);
+  }
+
+  function handleInput(type, direction) {
+    if (S !== 'PLAYING') return;
+    const now     = AudioEngine.ctx.currentTime - startTime;
+    const closest = expectedImpacts.find(i => !i.handled && Math.abs(now - i.time) <= HIT_WINDOW);
+
+    dbLast.className = '';
+    if (!closest) {
+      dbLast.textContent = `${type}/${direction} -- WHIFF`;
+      dbLast.className = 'miss';
+      return;
+    }
+
+    if (closest.type === 'slap' && type === 'tap' && direction === closest.side) {
+      closest.handled = true;
+      AudioEngine.playDeflect();
+      bossHp -= 4;
+      hpBar.style.width = `${Math.max(0, bossHp)}%`;
+      dbHp.textContent = Math.max(0, bossHp);
+      const hand = direction === 'left' ? handL : handR;
+      hand.classList.add('active');
+      doBossFlash('#00e5ff', 100);
+      shake(false);
+      dbLast.textContent = `DEFLECT ${direction}`;
+      dbLast.className = 'hit';
+      setTimeout(() => hand.classList.remove('active'), 250);
+
+    } else if (closest.type === 'charge' && type === 'swipe' && direction === closest.side) {
+      closest.handled = true;
+      AudioEngine.playThrow();
+      bossHp -= 15;
+      hpBar.style.width = `${Math.max(0, bossHp)}%`;
+      dbHp.textContent = Math.max(0, bossHp);
+      sprite.src = 'boss-stunned.png';
+      sprite.style.transform = `translateX(${direction === 'left' ? '-100%' : '0%'}) scale(0.9)`;
+      shake('lg');
+      dbLast.textContent = `DODGE ${direction}`;
+      dbLast.className = 'hit';
+
+    } else if (closest.type === 'final' && type === 'swipe' && direction === 'up') {
+      closest.handled = true;
+      S = 'WIN_ANIM';
+      AudioEngine.stopBossBGM();
+      AudioEngine.playWin();
+      AudioEngine.playCrash();
+      bossHp = 0;
+      hpBar.style.width = '0%';
+      dbHp.textContent = 0;
+      doBossFlash('#ffffff', 400);
+      shake('xl');
+      sprite.src = 'boss-stunned.png';
+      sprite.style.transition = 'transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.8s';
+      sprite.style.transform  = 'translate(-50%, -150%) scale(0.5) rotate(180deg)';
+      sprite.style.opacity    = '0';
+      dbLast.textContent = 'FINAL THROW!';
+      dbLast.className = 'hit';
+      setTimeout(onWin, 1500);
+
+    } else {
+      closest.handled = true;
+      AudioEngine.playBonk();
+      doBossFlash('#ff0000', 150);
+      shake(true);
+      dbLast.textContent = `WRONG (needed ${closest.type}/${closest.side})`;
+      dbLast.className = 'miss';
+      onLose();
+    }
+  }
+
+  function onTouchStart(e) {
+    if (e.cancelable) e.preventDefault();
+    const touch  = e.touches ? e.touches[0] : e;
+    touchStartX  = touch.clientX;
+    touchStartY  = touch.clientY;
+  }
+
+function onTouchEnd(e) {
+    if (e.cancelable) e.preventDefault();
+    if (touchStartX === null) return;
+    const touch = e.changedTouches ? e.changedTouches[0] : e;
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+    if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy)) {
+      handleInput('swipe', dx < 0 ? 'left' : 'right');
+    } else if (dy < -25 && Math.abs(dy) > Math.abs(dx)) {
+      handleInput('swipe', 'up');
+    } else {
+      // Taps are super forgiving: anywhere on the left 50% of the screen is "left", etc.
+      handleInput('tap', touch.clientX < window.innerWidth / 2 ? 'left' : 'right');
+    }
+    touchStartX = null;
+    touchStartY = null;
+  }
+
+  app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchend',   onTouchEnd,   { passive: false });
+  app.addEventListener('mousedown',  onTouchStart);
+  app.addEventListener('mouseup',    onTouchEnd);
+  app._bossHandlers = { onTouchStart, onTouchEnd };
+
+  function tick() {
+    if (S !== 'PLAYING') return;
+    const now       = AudioEngine.ctx.currentTime - startTime;
+    const beatFloat = now / BEAT_DUR;
+    const newBeat   = Math.floor(beatFloat);
+
+    // Animate falling notes
+    const LEAD_TIME = 1.8; // Time it takes a note to travel down the track
+    expectedImpacts.forEach(i => {
+      if (i.handled) {
+        if (i.element) i.element.style.display = 'none';
+        return;
+      }
+      const timeUntilHit = i.time - now;
+      if (timeUntilHit <= LEAD_TIME && timeUntilHit > -HIT_WINDOW) {
+        if (i.element) i.element.style.display = 'block';
+        const progress = 1 - (timeUntilHit / LEAD_TIME);
+        // Map progress 0->1 to top 0%->80%
+        if (i.element) i.element.style.top = `${progress * 80}%`;
+      } else {
+        if (i.element) i.element.style.display = 'none';
+      }
+    });
+
+    // Update debug bar
+    dbBeat.textContent  = newBeat;
+    dbPhase.textContent = phase;
+
+    if (newBeat > currentBeat) {
+      currentBeat = newBeat;
+      sprite.classList.add('boss-beat-pulse');
+      setTimeout(() => sprite.classList.remove('boss-beat-pulse'), 100);
+      if (phase === 3) {
+        sprite.style.transform = `translateX(-50%) translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
+      }
+    }
+
+// Check missed impacts
+    expectedImpacts.forEach(i => {
+      if (!i.handled && now > i.time + HIT_WINDOW) {
+        i.handled = true;
+        dbLast.textContent = `MISSED ${i.type}`;
+        dbLast.className = 'miss';
+        // Call our new function here too!
+        takeHit();
+      }
+    });
+
+    // Slap telegraph
+    const upcomingSlap = expectedImpacts.find(i =>
+      i.type === 'slap' && !i.handled && (i.time - now) > 0 && (i.time - now) < BEAT_DUR
+    );
+    if (upcomingSlap) {
+      sprite.src = 'boss-slap.png';
+sprite.style.transform = `translateX(-50%) scaleX(${upcomingSlap.side === 'left' ? -1 : 1})`;
+      const glow = upcomingSlap.side === 'left' ? glowL : glowR;
+      glow.style.opacity = '1';
+    } else if (phase === 1 && !expectedImpacts.some(i => i.type === 'slap' && !i.handled && Math.abs(i.time - now) < BEAT_DUR)) {
+      sprite.src = 'boss-idle.png';
+      sprite.style.transform = 'translateX(-50%) scaleX(1)';
+      glowL.style.opacity = '0'; glowR.style.opacity = '0';
+    }
+
+    // Phase transitions
+    if (phase === 1 && currentBeat >= 20) {
+      phase = 2;
+      stampShow('PHASE 2', '#ff6a00', 'clamp(2rem, 8vw, 3rem)');
+      AudioEngine.playCoin();
+      AudioEngine.playDemonRumble();
+      setTimeout(stampHide, 1000);
+    }
+
+    if (phase === 2 && currentBeat >= 32) {
+      phase = 3;
+      AudioEngine.stopDemonRumble();
+      sprite.src = 'boss-stunned.png';
+    }
+
+    // Phase 2 charge telegraph
+    if (phase === 2) {
+      const activeCharge = charges.find(c => beatFloat >= c.telegraph && beatFloat < c.impact);
+      if (activeCharge) {
+        const tProgress = (beatFloat - activeCharge.telegraph) / (activeCharge.impact - activeCharge.telegraph);
+        if (tProgress > 0.75) {
+          sprite.src = 'boss-charge.png';
+          sprite.style.transform = 'translateX(-50%) scale(1.6)';
+        } else {
+          sprite.src = 'boss-before-charge.png';
+          sprite.style.transform = 'translateX(-50%) scale(1)';
+        }
+        const targetImpact = expectedImpacts.find(i => Math.abs(i.time - activeCharge.impact * BEAT_DUR) < 0.1);
+        if (targetImpact) {
+          const safeGlow = targetImpact.side === 'left' ? glowL : glowR;
+          safeGlow.style.opacity = '1';
+        }
+      } else {
+        glowL.style.opacity = '0'; glowR.style.opacity = '0';
+        if (sprite.src.includes('boss-charge') || sprite.src.includes('boss-before')) {
+          sprite.src = 'boss-idle.png';
+          sprite.style.transform = 'translateX(-50%) scaleX(1)';
+        }
+      }
+    }
+
+    // Phase 3 "NOW!" cue
+    if (phase === 3 && currentBeat === finalThrowBeat - 1 && !expectedImpacts[expectedImpacts.length - 1].handled) {
+      stampShow('NOW!', '#00e5ff', 'clamp(3rem, 10vw, 4rem)');
+      setTimeout(stampHide, BEAT_DUR * 1000);
+    }
+
+    bossRAF = requestAnimationFrame(tick);
+  }
+
+  bossRAF = requestAnimationFrame(tick);
+}
+
+function cleanupBoss() {
+  if (bossRAF) { cancelAnimationFrame(bossRAF); bossRAF = null; }
+  bossTimeouts.forEach(t => clearTimeout(t));
+  bossTimeouts = [];
+  AudioEngine.stopBossBGM();
+  AudioEngine.stopDemonRumble();
+
+  if (app._bossHandlers) {
+    app.removeEventListener('touchstart', app._bossHandlers.onTouchStart);
+    app.removeEventListener('touchend',   app._bossHandlers.onTouchEnd);
+    app.removeEventListener('mousedown',  app._bossHandlers.onTouchStart);
+    app.removeEventListener('mouseup',    app._bossHandlers.onTouchEnd);
+    app._bossHandlers = null;
+  }
+
+  // Clear out leftover notes on reset
+  const hwL = document.getElementById('highway-left');
+  const hwR = document.getElementById('highway-right');
+  if (hwL) hwL.innerHTML = '<div class="hit-zone"></div>';
+  if (hwR) hwR.innerHTML = '<div class="hit-zone"></div>';
+
+  document.getElementById('boss-container').style.display = 'none';
+}
+
+// ===================================================
+//  BOOT
+// ===================================================
+function startFight() {
+  S = 'LOADING';
+  // Re-init audio on each fight start to handle iOS retry
+  AudioEngine.init();
+
+  const doStart = () => {
+    AudioEngine.playCoin();
+    AudioEngine.loadBossBGM('boss-music.mp3').then(() => {
+      setupBoss();
+      playBoss();
+    });
+  };
+
+  if (AudioEngine.ctx.state === 'suspended') {
+    AudioEngine.ctx.resume().then(doStart);
+  } else {
+    doStart();
+  }
+}
+
+const startOverlay = document.getElementById('start-overlay');
+startOverlay.addEventListener('touchstart', e => {
+  e.preventDefault();
+  startOverlay.remove();
+  startFight();
+}, { once: true, passive: false });
+startOverlay.addEventListener('mousedown', e => {
+  e.preventDefault();
+  startOverlay.remove();
+  startFight();
+}, { once: true });
+</script>
+</body>
+</html>
