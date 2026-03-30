@@ -1069,11 +1069,11 @@
       100% { opacity: 1; transform: translateX(-50%) scale(1); }
     }
     .outro-charge-enter {
-      animation: chargeEnter 0.35s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+      animation: chargeEnter 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
     @keyframes chargeEnter {
-      0%   { opacity: 0; transform: translateX(-50%) scale(1.3) translateY(18%); }
-      100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+      0%   { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(10%); }
+      100% { opacity: 1; transform: translateX(-50%) scale(4.5) translateY(15%); }
     }
 
 /* Outro Background Camera Pan -- Starts wide, zooms in, and STOPS completely */
@@ -1573,6 +1573,35 @@ const AudioEngine = {
       osc.start(t + i*0.4); osc.stop(t + i*0.4 + 0.15);
     }
   },
+playHyoshigi: function() {
+    // Sharp, piercing wooden clack for the samurai standoff trigger
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1200, t); 
+    osc.frequency.exponentialRampToValueAtTime(400, t + 0.05);
+    gain.gain.setValueAtTime(1, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.15);
+  },
+
+  playDeathSlam: function() {
+    // A heavy, distorted impact for the jump scare failure
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(100, t);
+    osc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
+    gain.gain.setValueAtTime(0.8, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.5);
+  },
 // --- OUTRO SYNTHESIS ---
 
   playTaiko: function() {
@@ -1704,7 +1733,7 @@ const AudioEngine = {
     noise.start(t); noise.stop(t + dur);
   },
 
-  playSizzle: function() {
+playSizzle: function(pitchMultiplier = 1) {
     if (!this.ctx) return;
     const bufferSize = this.ctx.sampleRate * 0.15;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
@@ -1714,7 +1743,8 @@ const AudioEngine = {
     noise.buffer = buffer;
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'highpass';
-    filter.frequency.value = 4000;
+    // Base frequency is 4000, increases as multiplier goes up
+    filter.frequency.value = 4000 * pitchMultiplier; 
     const gain = this.ctx.createGain();
     const t = this.ctx.currentTime;
     gain.gain.setValueAtTime(0.3, t);
@@ -3297,6 +3327,9 @@ function playSalt() {
       AudioEngine.playSizzle();
       shake('sm');
       demon.style.filter = 'brightness(3) saturate(0)';
+// Calculate how close we are to winning (1.0 to 2.5 multiplier)
+      const intensity = 1 + (currentHits / HITS_NEEDED) * 1.5;
+      AudioEngine.playSizzle(intensity);
 
       const hpPct = Math.max(0, 1 - (currentHits / HITS_NEEDED));
       healthBar.style.width = `${hpPct * 100}%`;
