@@ -1371,14 +1371,19 @@ const AudioEngine = {
       .catch(err => console.log('BGM load error:', err));
   },
   playBGM: function() {
-    if (!this.ctx || !this.bgmBuffer) return false;
-    if (this.bgmSource) { try { this.bgmSource.stop(); } catch(e){} }
-    const src = this.ctx.createBufferSource();
-    src.buffer = this.bgmBuffer;
-    src.connect(this.ctx.destination);
-    src.start(0);
-    this.bgmSource = src;
-    return true;
+    if (this.ctx && this.bgmBuffer) {
+      if (this.bgmSource) { try { this.bgmSource.stop(); } catch(e){} }
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.bgmBuffer;
+      src.connect(this.ctx.destination);
+      src.start(0);
+      this.bgmSource = src;
+      return true;
+    }
+    // fetch() is blocked on file:// -- fall back to the <audio> element
+    const el = document.getElementById('bgm-track');
+    if (el) el.play().catch(() => {});
+    return false;
   }
 };
 
@@ -1452,12 +1457,16 @@ Promise.all([
     const bootGame = (e) => {
       if (e) e.preventDefault();
 
-      if (AudioEngine.ctx.state === 'suspended') {
-        AudioEngine.ctx.resume();
-      }
+      const play = () => {
+        AudioEngine.playCoin();
+        AudioEngine.playBGM();
+      };
 
-      AudioEngine.playCoin();
-      AudioEngine.playBGM();
+      if (AudioEngine.ctx.state === 'suspended') {
+        AudioEngine.ctx.resume().then(play);
+      } else {
+        play();
+      }
 
       startScreenEl.classList.remove('active');
       startScreenEl.removeEventListener('touchstart', bootGame);
@@ -1465,12 +1474,6 @@ Promise.all([
 
       intro1();
     };
-
-    startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
-    startScreenEl.addEventListener('mousedown', bootGame);
-  }, 500);
-});
-
 
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
     startScreenEl.addEventListener('mousedown', bootGame);
