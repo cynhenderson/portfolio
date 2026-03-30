@@ -1447,24 +1447,29 @@ Promise.all([
   loading.style.opacity = '0';
   setTimeout(() => {
     loading.style.display = 'none';
-    startScreenEl.classList.add('const bootGame = (e) => {
-  if (e) e.preventDefault();
+    startScreenEl.classList.add('active');
 
-  // Wake context
-  if (AudioEngine.ctx.state === 'suspended') {
-    AudioEngine.ctx.resume();
-  }
+    const bootGame = (e) => {
+      if (e) e.preventDefault();
 
-  // Start BGM immediately — don't wait on the promise
-  AudioEngine.playCoin();
-  AudioEngine.playBGM();
+      if (AudioEngine.ctx.state === 'suspended') {
+        AudioEngine.ctx.resume();
+      }
 
-  startScreenEl.classList.remove('active');
-  startScreenEl.removeEventListener('touchstart', bootGame);
-  startScreenEl.removeEventListener('mousedown', bootGame);
+      AudioEngine.playCoin();
+      AudioEngine.playBGM();
 
-  intro1();
-};
+      startScreenEl.classList.remove('active');
+      startScreenEl.removeEventListener('touchstart', bootGame);
+      startScreenEl.removeEventListener('mousedown', bootGame);
+
+      intro1();
+    };
+
+    startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
+    startScreenEl.addEventListener('mousedown', bootGame);
+  }, 500);
+});
 
 
     startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
