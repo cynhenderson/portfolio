@@ -1,3872 +1,863 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Oscar's Fever Dream</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cynthia Henderson | Learning Experience Designer</title>
+<title>Cynthia Henderson | LXD + Creative Technologist</title>
+<meta name="description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
 
-    body {
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cynhenderson.com/">
+<meta property="og:title" content="Cynthia Henderson | LXD + Creative Technologist">
+<meta property="og:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+<meta property="og:image" content="https://cynhenderson.com/photos/cat-pixel.png">
 
-    #app {
-      position: relative;
-      width: 100%;
-      max-width: 430px;
-      aspect-ratio: 9 / 16;
-      background: #000;
-      overflow: hidden;
-      font-family: 'Press Start 2P', monospace;
-      image-rendering: pixelated;
-    }
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://cynhenderson.com/">
+<meta property="twitter:title" content="Cynthia Henderson | LXD + Creative Technologist">
+<meta property="twitter:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+<meta property="twitter:image" content="https://cynhenderson.com/photos/cat-pixel.png">
+    <style>
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
 
-    /* =====================
-       PANELS
-    ===================== */
-    .panel {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .panel.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .panel.cut { transition: none; }
+        /* Color Palette */
+        :root {
+            --bg-cream: #FDFBF7;
+            --text-burgundy: #4A0E17;
+            --accent-terracotta: #C25934;
+        }
 
-    /* -- Start Screen -- */
-    #start-screen {
-      background: #0a1128;
-      background-image:
-        linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
-      background-size: 40px 40px;
-      background-position: center center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3rem;
-      z-index: 90;
-      text-align: center;
-      animation: grid-scroll 10s linear infinite;
-    }
-    @keyframes grid-scroll {
-      from { background-position: 0 0; }
-      to   { background-position: 0 400px; }
-    }
-    .title-bg-sprite {
-      position: absolute;
-      height: 80%;
-      opacity: 0.12;
-      filter: grayscale(1) brightness(0.35) sepia(1) hue-rotate(140deg);
-      z-index: 0;
-      pointer-events: none;
-      transform: translateY(10%) scale(1.5);
-    }
-    #start-screen h1 {
-      position: relative;
-      color: #ff6a00;
-      font-size: clamp(1.5rem, 7vw, 2.5rem);
-      text-shadow: 4px 4px 0 #000;
-      line-height: 1.2;
-      z-index: 5;
-      animation: title-float 3s ease-in-out infinite;
-      text-align: center;
-    }
-    #start-screen h1::before,
-    #start-screen h1::after {
-      content: "OSCAR'S\A FEVER DREAM";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      white-space: pre-line;
-      opacity: 0.8;
-      text-align: center;
-    }
-    #start-screen h1::before {
-      color: #00e5ff;
-      z-index: -1;
-      animation: glitch-offset 0.3s steps(2, end) infinite;
-    }
-    #start-screen h1::after {
-      color: #ff00ff;
-      z-index: -2;
-      animation: glitch-offset 0.3s steps(2, end) reverse infinite;
-    }
-    @keyframes glitch-offset {
-      0%   { transform: translate(0); }
-      25%  { transform: translate(-4px, 2px); }
-      50%  { transform: translate(4px, -2px); }
-      75%  { transform: translate(-2px, -4px); }
-      100% { transform: translate(0); }
-    }
-    @keyframes title-float {
-      0%, 100% { transform: translateY(0) rotate(-1deg); }
-      50%      { transform: translateY(-10px) rotate(1deg); }
-    }
-    #start-screen .insert-coin {
-      color: #00e5ff;
-      font-size: clamp(0.7rem, 3.5vw, 1.1rem);
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
-      letter-spacing: 0.2em;
-      cursor: pointer;
-      animation: pulse-glow 3s ease-in-out infinite;
-    }
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.4; transform: scale(0.95); filter: blur(1px); }
-      50%      { opacity: 1; transform: scale(1.05); filter: blur(0px); }
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    /* -- Panel 1: Alley -- */
-    #p1-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform-origin: center 55%;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-cream);
+            color: var(--text-burgundy);
+            font-family: 'Lora', serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    #p1-lamp {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 50%;
-      background: radial-gradient(ellipse at 85% 0%, rgba(255,180,80,0.45) 0%, transparent 70%);
-      animation: flicker 2.5s infinite;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
+        h1, h2, h3, h4, .logo {
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            margin: 0;
+        }
 
-    #p1-fade {
-      position: absolute;
-      inset: 0;
-      background: #000;
-      opacity: 0;
-      transition: opacity 0.5s;
-      pointer-events: none;
-    }
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: sticky;
+            top: 0;
+            background-color: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
 
-    @keyframes kenburns {
-      from { transform: scale(1.05) translateY(0px); }
-      to   { transform: scale(1.3) translateY(-22px); }
-    }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+        }
 
-    @keyframes flicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
-      20%, 24%, 55% { opacity: 0.1; }
-      40% { opacity: 0.6; } 
-    }
+        .logo { font-size: 1.5rem; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-burgundy); font-size: 1.1rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent-terracotta); }
 
-    /* -- Panel 2: Grind -- */
-    #panel2 { background: #000; }
-    #p2-sprite {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: none;
-    }
-    #p2-saturday {
-      position: absolute;
-      inset: 0;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(1.4rem, 6.5vw, 2.5rem);
-      color: rgba(220, 225, 235, 0.7);
-      text-shadow: none;
-      letter-spacing: 0.15em;
-      padding-left: 0.15em; 
-      pointer-events: none;
-      text-align: center;
-    }
-    #p2-fightnight {
-      position: absolute;
-      inset: 0;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(2.5rem, 12vw, 4rem);
-      color: #ff6a00;
-      text-shadow: 4px 4px 0 #000, -2px -2px 0 #000, 0 0 40px rgba(255,106,0,0.8);
-      text-align: center;
-      line-height: 1.1;
-      letter-spacing: 0.05em;
-      pointer-events: none;
-    }
+        /* --- Transition Dividers --- */
+        .medallion-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            position: relative;
+            z-index: 20;
+        }
 
-    /* -- Panel 3: 3AM -- */
-    #panel3 { background: #000; }
-    #p3-bg, #p3-shift {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-    }
+        .medallion-divider.cream-to-white {
+            background: linear-gradient(to bottom, var(--bg-cream) 50%, #ffffff 50%);
+        }
 
-    /* -- Panel 4: Eyes -- */
-    #panel4 { background: #000; }
-    #p4-closed, #p4-open {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-    }
-    #p4-scanlines {
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent, transparent 2px,
-        rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 4px
-      );
-      opacity: 0;
-      pointer-events: none;
-    }
+        .medallion-divider.white-to-cream {
+            background: linear-gradient(to bottom, #ffffff 50%, var(--bg-cream) 50%);
+        }
 
-    /* =====================
-       GAME WRAPPER
-    ===================== */
-    #game-wrapper {
-      position: absolute;
-      inset: 0;
-      display: none;
-      transform-origin: 50.2% 51%;
-    }
-    #game-wrapper.active { display: block; }
+        .medallion-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: rgba(74, 14, 23, 0.15); 
+            max-width: 45%;
+        }
 
-    #screen {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 5;
-    }
-    #screen-bg {
-      position: absolute;
-      inset: 0;
-      background: #0a1128;
-    }
+        .medallion-icon {
+            width: 45px;
+            height: 45px;
+            margin: 0 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(74, 14, 23, 0.08));
+        }
 
-    #hud {
-      position: absolute;
-      top: 3%;
-      left: 3%;
-      width: 94%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 5;
-    }
-    #lives { display: flex; gap: 3px; align-items: center; }
-    .heart { width: 22px; height: 22px; object-fit: contain; image-rendering: pixelated; }
-    #score { color: #00e5ff; font-size: clamp(0.5rem, 2vw, 0.7rem); text-shadow: 0 0 8px #00e5ff; }
+        /* Works Section */
+        #works {
+            height: auto;
+            min-height: 100vh;
+            padding: 4rem 5% 6rem 5%; 
+            background-color: #ffffff; 
+            position: relative;
+            z-index: 10;
+        }
 
-    #timer-wrap {
-      position: absolute;
-      bottom: 3%;
-      left: 3%;
-      width: 94%;
-      height: 8px;
-      background: rgba(0,229,255,0.12);
-      border: 1px solid rgba(0,229,255,0.35);
-      z-index: 5;
-    }
-    #timer-bar {
-      height: 100%;
-      width: 100%;
-      background: #ff6a00;
-      box-shadow: 0 0 6px #ff6a00;
-      transition: width linear;
-    }
+        /* About Section */
+        #about {
+            padding: 4rem 5% 6rem 5%; 
+            background-color: var(--bg-cream); 
+            color: var(--text-burgundy);
+            position: relative;
+            z-index: 10;
+        }
 
-    #game-content {
-      position: absolute;
-      top: 13%;
-      left: 0;
-      width: 100%;
-      bottom: 13%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      z-index: 5;
-      overflow: hidden;
-    }
-    #chanko-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-    }
-    #oscar-img {
-      position: absolute;
-      height: 88%;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 1;
-    }
-    
-    #bowl-container {
-      position: absolute;
-      width: 55%;
-      bottom: 25%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    #chanko-img {
-      width: 100%;
-      object-fit: contain;
-      display: block;
-    }
+        .about-container { max-width: 1000px; margin: 0 auto; }
 
-    #cabinet-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      pointer-events: none;
-      z-index: 10;
-    }
+        #works h2, #about h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 3rem; 
+            text-align: center; 
+            color: var(--text-burgundy); 
+        }
 
-    #glass-crack {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      pointer-events: none;
-      z-index: 20;
-      display: none;
-    }
+        .about-block { margin-bottom: 4rem; }
+        .about-block h3 {
+            font-size: 1.8rem;
+            color: var(--accent-terracotta);
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid rgba(194, 89, 52, 0.15);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
 
-    /* =====================
-       UI OVERLAYS
-    ===================== */
-    #stamp {
-      position: absolute;
-      inset: 0;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(2rem, 8vw, 3rem);
-      color: #ff6a00;
-      text-align: center;
-      text-shadow: 3px 3px 0 #000;
-      z-index: 25;
-      pointer-events: none;
-      white-space: pre-wrap;
-      line-height: 1.3;
-    }
-    #flash {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 30;
-      transition: opacity 0.05s;
-    }
+        .about-text { font-size: 1.2rem; line-height: 1.7; opacity: 0.9; }
 
-    #loading {
-      position: absolute;
-      inset: 0;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      transition: opacity 0.5s;
-    }
-    #loading span {
-      color: #00e5ff;
-      font-size: clamp(0.45rem, 2.2vw, 0.8rem);
-      text-shadow: 0 0 10px #00e5ff;
-      letter-spacing: 0.2em;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.2; }
-    }
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 85vh;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 4rem;
+            position: relative;
+        }
 
-    .end-screen {
-      position: absolute;
-      inset: 0;
-      background: #0a1128;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      z-index: 50;
-      text-align: center;
-      padding: 2.5rem;
-    }
-    .end-screen.active { display: flex; }
-    .end-screen h1 {
-      font-size: clamp(1.2rem, 5.5vw, 1.8rem);
-      line-height: 1.8;
-    }
-    .end-screen .sub {
-      font-size: clamp(0.4rem, 1.8vw, 0.6rem);
-      letter-spacing: 0.1em;
-    }
-    .end-screen .hint {
-      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
-      color: #fff;
-      animation: blink 1s step-end infinite;
-      margin-top: 0.5rem;
-    }
-    #demo-complete h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
-    #demo-complete .sub { color: #ff6a00; }
-    #gameover-screen h1 { color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
-    #gameover-screen .sub { color: #ff6a00; }
+        .hero-content { flex: 1.2; max-width: 650px; z-index: 10; }
+        .hero-content h1 { font-size: 3.8rem; line-height: 1.15; margin-bottom: 1.5rem; }
+        .hero-content p { font-size: 1.5rem; color: var(--text-burgundy); opacity: 0.9; max-width: 90%; }
+        .highlight { color: var(--accent-terracotta); }
 
-    /* =====================
-       SHIKO STOMP (Balance Meter)
-    ===================== */
-    #shiko-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-    }
-    #shiko-oscar {
-      position: absolute;
-      height: 75%;
-      bottom: 18%;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 1;
-    }
-    #balance-meter {
-      position: absolute;
-      bottom: 5%;
-      left: 8%;
-      width: 84%;
-      height: 28px;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    #meter-track {
-      position: relative;
-      width: 100%;
-      height: 14px;
-      border: 2px solid rgba(0,229,255,0.5);
-      background: transparent;
-      overflow: hidden;
-    }
-    #meter-zone-left {
-      position: absolute;
-      top: 0; bottom: 0; left: 0;
-      width: 30%;
-      background: rgba(255, 0, 0, 0.35);
-    }
-    #meter-zone-right {
-      position: absolute;
-      top: 0; bottom: 0; right: 0;
-      width: 30%;
-      background: rgba(255, 0, 0, 0.35);
-    }
-    #meter-zone-center {
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 30%; right: 30%;
-      background: rgba(0, 255, 100, 0.25);
-      box-shadow: inset 0 0 8px rgba(0,255,100,0.3);
-    }
-    #meter-needle {
-      position: absolute;
-      top: -2px; bottom: -2px;
-      width: 4px;
-      background: #fff;
-      box-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-    }
-    #stable-bar-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(0,229,255,0.12);
-      border: 1px solid rgba(0,229,255,0.25);
-    }
-    #stable-bar {
-      height: 100%;
-      width: 0%;
-      background: #00ff88;
-      box-shadow: 0 0 6px #00ff88;
-      transition: none;
-    }
+        .hero-graphic {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-graphic svg { width: 100%; height: auto; max-width: 500px; }
 
-    /* =====================
-       THROW GAME
-    ===================== */
-    #throw-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-    }
-    #throw-oscar {
-      position: absolute;
-      height: 80%;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-    }
-    #throw-zone {
-      position: absolute;
-      left: 5%;
-      right: 5%;
-      height: 10%;
-      top: 65%;    
-      border-top: 3px solid rgba(0, 229, 255, 0.7);
-      border-bottom: 3px solid rgba(0, 229, 255, 0.7);
-      background: rgba(0, 229, 255, 0.08);
-      z-index: 1;
-      pointer-events: none;
-    }
-    #throw-zone-glow {
-      position: absolute;
-      left: 5%;
-      right: 5%;
-      height: 10%; 
-      top: 65%;    
-      background: rgba(0, 229, 255, 0.15);
-      z-index: 1;
-      pointer-events: none;
-      animation: zone-pulse 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes zone-pulse {
-      from { opacity: 0.4; }
-      to   { opacity: 1; }
-    }
-    #throw-opponent {
-      position: absolute;
-      width: 70%;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 3;
-      top: -60%;
-    }
-    #throw-feedback {
-      position: absolute;
-      inset: 0;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(1rem, 4vw, 1.5rem);
-      color: #ff6a00;
-      text-shadow: 2px 2px 0 #000;
-      z-index: 10;
-      pointer-events: none;
-      opacity: 0;
-    }
-    @keyframes opponent-flung {
-      0%   { transform: translateX(-50%) rotate(0deg); opacity: 1; }
-      30%  { transform: translateX(60%) rotate(40deg) scale(0.9); opacity: 1; }
-      100% { transform: translateX(180%) rotate(120deg) scale(0.4); opacity: 0; }
-    }
-    .opponent-flung {
-      animation: opponent-flung 0.6s ease-in forwards !important;
-    }
+        /* Floating Animations */
+        .g-floating { will-change: transform; }
+        .float-1 { animation: gentleBounce 6s ease-in-out infinite; }
+        .float-2 { animation: gentleBounce 8s ease-in-out infinite 1s; } 
+        .float-3 { animation: gentleBounce 7s ease-in-out infinite 2s; } 
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
 
-    /* =====================
-       TSUPPARI DODGE (Swipe to Safety)
-    ===================== */
-    #dodge-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-    }
-    
-    #dodge-oscar {
-      position: absolute;
-      height: 70%;
-      bottom: 0;
-      left: 50%;
-      transform-origin: center center;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    #dodge-oscar.dodge-left  { transform: translateX(-70%) scaleX(-0.55) rotate(8deg); }
-    #dodge-oscar.dodge-right { transform: translateX(-30%) scaleX(0.55) rotate(8deg); }
+        /* Works Grid & Cards */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    /* -- Safe Zone Telegraph Glow -- */
-    #dodge-telegraph {
-      position: absolute;
-      bottom: 0;
-      width: 50%;
-      height: 35%;
-      background: radial-gradient(ellipse at center bottom, rgba(0, 255, 100, 0.5) 0%, transparent 70%);
-      z-index: 1;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease-in;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(2rem, 8vw, 3rem);
-      color: rgba(0, 255, 100, 0.9);
-      text-shadow: 0 0 15px rgba(0, 255, 100, 1);
-    }
-    #dodge-telegraph.tele-left { left: 0; }
-    #dodge-telegraph.tele-left::after { content: '««'; animation: pulse-arrow-left 0.5s infinite alternate; }
-    #dodge-telegraph.tele-right { right: 0; left: auto; }
-    #dodge-telegraph.tele-right::after { content: '»»'; animation: pulse-arrow-right 0.5s infinite alternate; }
+        .work-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
 
-    @keyframes pulse-arrow-left {
-      from { transform: translateX(10px); opacity: 0.4; }
-      to { transform: translateX(-5px); opacity: 1; }
-    }
-    @keyframes pulse-arrow-right {
-      from { transform: translateX(-10px); opacity: 0.4; }
-      to { transform: translateX(5px); opacity: 1; }
-    }
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(74, 14, 23, 0.08);
+        }
 
-    .ghost-hand {
-      position: absolute;
-      width: 28%;
-      top: -50%;
-      opacity: 0;
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 3;
-    }
-    .ghost-hand.hand-left { left: -2%; }
-    .ghost-hand.hand-right { right: -2%; }
+        /* Mockup Container */
+        .work-image-container {
+            width: 100%;
+            height: 250px; 
+            background-color: rgba(194, 89, 52, 0.04);
+            padding: 2rem 2rem 0 2rem;
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.05);
+        }
 
-    .ghost-hand.winding-up {
-      top: -25%; 
-      opacity: 1;
-    }
-    .ghost-hand.slamming {
-      top: 48%; 
-      opacity: 1;
-      transition-timing-function: ease-in;
-    }
-    .ghost-hand.withdrawing {
-      top: -50%;
-      opacity: 0;
-      transition: top 0.3s ease-out, opacity 0.2s ease-out;
-    }
+        .browser-mockup {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid rgba(74, 14, 23, 0.12);
+            border-bottom: none;
+            box-shadow: 0 12px 24px rgba(74, 14, 23, 0.08);
+            transition: transform 0.4s ease;
+        }
 
-    #dodge-wave-counter {
-      position: absolute;
-      top: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(0,229,255,0.6);
-      font-size: clamp(0.4rem, 1.8vw, 0.55rem);
-      z-index: 4;
-      pointer-events: none;
-      letter-spacing: 0.1em;
-    }
+        .work-card:hover .browser-mockup { transform: translateY(-8px); }
 
-    /* =====================
-       BELLY DEFLECTION (Bounce)
-    ===================== */
-    #bounce-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-    }
-    #bounce-oscar {
-      position: absolute;
-      height: 80%;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-    }
-    #bounce-oscar.inflated {
-      transform: translateX(-50%) scaleY(1.05) scaleX(1.08);
-    }
-    #bounce-zone {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 15%;
-      top: 50%;
-      border-top: 3px solid rgba(0, 255, 100, 0.7);
-      border-bottom: 3px solid rgba(0, 255, 100, 0.7);
-      background: rgba(0, 255, 100, 0.08);
-      z-index: 1;
-      pointer-events: none;
-    }
-    #bounce-zone-glow {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 15%;
-      top: 50%;
-      background: rgba(0, 255, 100, 0.15);
-      z-index: 1;
-      pointer-events: none;
-      animation: bounce-zone-pulse 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes bounce-zone-pulse {
-      from { opacity: 0.2; }
-      to   { opacity: 0.8; }
-    }
+        .mockup-header {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background-color: var(--bg-cream);
+            border-bottom: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 8px 8px 0 0;
+        }
 
-    .falling-obj {
-      position: absolute;
-      width: 32%;
-      aspect-ratio: 1 / 1;
-      display: block;
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 3;
-      top: -20%;
-    }
-    /* -- BELLY BOUNCE ARCS -- */
-    @keyframes obj-bounce-left {
-      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
-      40%  { transform: translate(-45vw, -35vh) rotate(-180deg) scale(1.2); opacity: 1; }
-      100% { transform: translate(-80vw, 20vh) rotate(-540deg) scale(0.5); opacity: 0; }
-    }
-    @keyframes obj-bounce-right {
-      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
-      40%  { transform: translate(45vw, -35vh) rotate(180deg) scale(1.2); opacity: 1; }
-      100% { transform: translate(80vw, 20vh) rotate(540deg) scale(0.5); opacity: 0; }
-    }
-    .obj-bounced-left {
-      animation: obj-bounce-left 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards !important;
-    }
-    .obj-bounced-right {
-      animation: obj-bounce-right 0.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards !important;
-    }
-    @keyframes obj-crash {
-      0%   { opacity: 1; }
-      50%  { opacity: 0.5; transform: rotate(15deg); }
-      100% { opacity: 0; }
-    }
-    .obj-crashed {
-      animation: obj-crash 0.3s ease-out forwards !important;
-    }
-    #bounce-counter {
-      position: absolute;
-      top: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(0,229,255,0.6);
-      font-size: clamp(0.4rem, 1.8vw, 0.55rem);
-      z-index: 4;
-      pointer-events: none;
-      letter-spacing: 0.1em;
-    }
+        .mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
+        .dot-1 { background-color: var(--text-burgundy); opacity: 0.15; }
+        .dot-2 { background-color: var(--text-burgundy); opacity: 0.3; }
+        .dot-3 { background-color: var(--accent-terracotta); opacity: 0.8; }
 
-    /* =====================
-       MAWASHI CRISIS (Wrap)
-    ===================== */
-    #wrap-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-    }
-    #wrap-oscar {
-      position: absolute;
-      height: 80%;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-    }
-    #wrap-spotlight {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%);
-    }
-    #wrap-progress-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -45%);
-      width: 70%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      z-index: 4;
-      pointer-events: none;
-    }
-    #wrap-progress-ring svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-    #wrap-progress-ring .ring-bg {
-      fill: none;
-      stroke: rgba(0,229,255,0.15);
-      stroke-width: 4;
-    }
-    #wrap-progress-ring .ring-fill {
-      fill: none;
-      stroke: #00e5ff;
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-dasharray: 283;
-      stroke-dashoffset: 283;
-      filter: drop-shadow(0 0 6px rgba(0,229,255,0.6));
-      transition: stroke-dashoffset 0.1s ease-out;
-    }
+        .mockup-content { width: 100%; height: 180px; overflow: hidden; }
+        .mockup-content img, .mockup-content svg { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
-    /* The rotating track that holds the dot */
-    #wrap-orbit {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 70%;
-      aspect-ratio: 1;
-      transform: translate(-50%, -45%); 
-      z-index: 5;
-      pointer-events: none;
-      animation: orbit-spin 1.5s linear infinite;
-      transition: opacity 0.3s ease-out;
-    }
-    @keyframes orbit-spin {
-      0% { transform: translate(-50%, -45%) rotate(0deg); }
-      100% { transform: translate(-50%, -45%) rotate(360deg); }
-    }
+        .work-content { padding: 2rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .work-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+        .tag {
+            font-family: 'Domine', serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-terracotta);
+            background: rgba(194, 89, 52, 0.08);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+        .work-title { font-size: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+        .work-desc { font-size: 1.05rem; opacity: 0.85; margin-bottom: 2rem; flex-grow: 1; }
 
-    /* The glowing green tutorial dot */
-    #wrap-orbit-dot {
-      position: absolute;
-      top: -6px; 
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 12px;
-      background: #00ff88;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.8);
-    }
+        .work-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-burgundy);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            align-self: flex-start;
+        }
+        .work-link:hover { color: var(--accent-terracotta); }
+        .work-link svg { transition: transform 0.3s ease; }
+        .work-link:hover svg { transform: translateX(4px); }
 
-    /* SHAKE */
-    @keyframes shake-sm {
-      0%,100% { transform: translateX(0); }
-      20%,60% { transform: translateX(-4px); }
-      40%,80% { transform: translateX(4px); }
-    }
-    @keyframes shake-lg {
-      0%,100% { transform: translateX(0); }
-      15%,45%,75% { transform: translateX(-8px); }
-      30%,60%,90% { transform: translateX(8px); }
-    }
-    .shake-sm { animation: shake-sm 0.15s ease-in-out; }
-    .shake-lg { animation: shake-lg 0.22s ease-in-out; }
-    @keyframes shake-xl {
-      0%,100% { transform: translate(0,0); }
-      10%,50%,90% { transform: translate(-14px,-3px); }
-      20%,60% { transform: translate(14px,3px); }
-      30%,70% { transform: translate(-10px,2px); }
-      40%,80% { transform: translate(10px,-2px); }
-    }
-    .shake-xl { animation: shake-xl 0.35s ease-in-out; }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+        .skill-column h4 { font-family: 'Domine', serif; font-size: 1.2rem; color: var(--text-burgundy); margin-bottom: 1rem; }
+        .skill-list { list-style: none; padding: 0; margin: 0; }
+        .skill-list li { font-size: 1.05rem; margin-bottom: 0.6rem; opacity: 0.85; display: flex; align-items: center; gap: 8px; }
+        .skill-list li::before { content: "•"; color: var(--accent-terracotta); font-weight: bold; }
 
-    /* =====================
-       SALT THE DEMON (Boss)
-    ===================== */
-    /* =====================
-       THE YOKOZUNA (Boss)
-    ===================== */
-    #boss-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-      background: #000;
-      perspective: 800px;
-    }
-    #boss-health-bg {
-      position: absolute;
-      top: 6%; left: 10%; width: 80%; height: 12px;
-      background: #330000; border: 2px solid #ff0000; z-index: 5;
-    }
-    #boss-health-bar {
-      height: 100%; width: 100%; background: #ff4444;
-      box-shadow: 0 0 8px #ff4444; transition: width 0.2s ease-out;
-    }
-    #boss-sprite {
-      position: absolute;
-      top: 10%; left: 50%;
-      transform: translateX(-50%) scale(1);
-      width: 95%; height: 80%;
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-      transition: transform 0.1s;
-    }
-    .boss-beat-pulse { transform: translateX(-50%) scale(1.03) !important; }
-    .boss-glow {
-      position: absolute; top: 0; bottom: 0; width: 40%;
-      opacity: 0; z-index: 1; pointer-events: none;
-      transition: opacity 0.1s;
-    }
-    #boss-glow-left  { left: 0;  background: linear-gradient(to right, rgba(0, 229, 255, 0.3), transparent); }
-    #boss-glow-right { right: 0; background: linear-gradient(to left,  rgba(0, 229, 255, 0.3), transparent); }
-    .boss-hand {
-      position: absolute; bottom: -50%; width: 40%; height: 40%;
-      z-index: 4; opacity: 0;
-      transition: bottom 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.1s;
-    }
-    #boss-hand-left  { left: 5%; }
-    #boss-hand-right { right: 5%; }
-    .boss-hand.active { bottom: 0; opacity: 1; }
-    #boss-screen-flash {
-      position: absolute; inset: 0; opacity: 0; z-index: 10;
-      pointer-events: none; transition: opacity 0.2s;
-    }
-    #salt-container {
-      position: absolute;
-      inset: 0;
-      display: none;
-      overflow: hidden;
-      background: linear-gradient(to top, #1a0000 0%, #000 50%);
-    }
-    #demon-health-bg {
-      position: absolute;
-      top: 6%;
-      left: 10%;
-      width: 80%;
-      height: 12px;
-      background: #330000;
-      border: 2px solid #ff0000;
-      z-index: 5;
-    }
-    #demon-health-bar {
-      height: 100%;
-      width: 100%;
-      background: #ff4444;
-      box-shadow: 0 0 8px #ff4444;
-      transition: width 0.1s linear;
-    }
-    #demon-sprite {
-      position: absolute;
-      top: 15%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 85%;
-      object-fit: contain;
-      image-rendering: pixelated;
-      z-index: 2;
-      transition: filter 0.1s;
-    }
-    .salt-particle {
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      box-shadow: 0 0 6px #fff, 0 0 12px rgba(0, 229, 255, 0.8);
-      border-radius: 50%;
-      z-index: 4;
-      pointer-events: none;
-      animation: salt-fly 0.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-    }
-    @keyframes salt-fly {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      80% { opacity: 1; }
-      100% { transform: translate(var(--spread-x), -75vh) scale(1.5); opacity: 0; }
-    }
+        /* Video Callout Banner */
+        .video-callout {
+            max-width: 1000px;
+            margin: 5rem auto 0 auto;
+            padding: 2.5rem 3rem;
+            background-color: var(--bg-cream);
+            border: 1px solid rgba(74, 14, 23, 0.08);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
 
-    /* =====================
-       OUTRO SEQUENCE
-    ===================== */
-    #outro-container {
-      background: #000;
-      z-index: 80;
-    }
-    #outro-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      image-rendering: pixelated;
-    }
-    #outro-oscar {
-      position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%) scale(1);
-      height: 45%;
-      object-fit: contain;
-      image-rendering: pixelated;
-      opacity: 0;
-    }
+        .video-text h3 {
+            font-size: 1.6rem;
+            color: var(--text-burgundy);
+            margin-bottom: 0.5rem;
+        }
 
-    /* Outro Animations */
-    .outro-fade-in {
-      animation: oscarFadeIn 1.6s ease-out forwards;
-    }
-    @keyframes oscarFadeIn {
-      0%   { opacity: 0; transform: translateX(-50%) scale(0.95); }
-      100% { opacity: 1; transform: translateX(-50%) scale(1); }
-    }
-    .outro-charge-enter {
-      animation: chargeEnter 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    }
-    @keyframes chargeEnter {
-0%   { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(5%); }
-      100% { opacity: 1; transform: translateX(-50%) scale(2.5) translateY(5%); }
-    }
+        .video-text p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin: 0;
+        }
 
-/* Outro Background Camera Pan -- Starts wide, zooms in, and STOPS completely */
-.outro-bg-zoom {
-  animation: dohyoZoom 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-@keyframes dohyoZoom {
-  0%   { transform: scale(1) translateY(0); }
-  100% { transform: scale(1.8) translateY(-8%); }
-}
+        .yt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--accent-terracotta);
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+            white-space: nowrap;
+        }
 
-    /* =====================
-       PROMO STYLES
-    ===================== */
-    .promo-text {
-      font-size: clamp(0.5rem, 2.3vw, 0.75rem);
-      line-height: 1.8;
-      margin: 0.5rem 0;
-      color: #fff;
-    }
-    .promo-text .highlight {
-      color: #ff00ff;
-      text-shadow: 2px 2px 0 #000;
-      font-size: clamp(0.6rem, 2.8vw, 0.9rem);
-    }
-    .cta-button {
-      display: inline-block;
-      background: #ff6a00;
-      color: #fff;
-      padding: 15px 20px;
-      text-decoration: none;
-      font-size: clamp(0.6rem, 3vw, 0.9rem);
-      border: 2px solid #fff;
-      box-shadow: 4px 4px 0 #00e5ff;
-      margin-bottom: 0.5rem;
-      transition: transform 0.1s;
-      z-index: 60;
-      position: relative;
-    }
-    .cta-button:active {
-      transform: translate(4px, 4px);
-      box-shadow: 0px 0px 0 #00e5ff;
-    }
-  </style>
+        .yt-link:hover {
+            transform: translateX(4px);
+            color: #d1663f;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--text-burgundy);
+            color: var(--bg-cream);
+            text-align: center;
+            padding: 3.5rem 5% 1.5rem 5%; 
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto 2rem auto; 
+        }
+
+        .footer-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--bg-cream);
+        }
+
+        .footer-content p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            margin-bottom: 1.5rem; 
+        }
+
+        .linkedin-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background-color: var(--accent-terracotta);
+            color: var(--bg-cream);
+            text-decoration: none;
+            padding: 0.8rem 1.8rem; 
+            border-radius: 4px;
+            font-family: 'Domine', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .linkedin-btn:hover {
+            transform: translateY(-3px);
+            background-color: #d1663f;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(253, 251, 247, 0.1);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* --- Easter Egg Styles --- */
+.glitch-text {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(253, 251, 247, 0.4); 
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+            padding: 0 4px;
+        }
+
+        .glitch-text:hover {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace;
+            color: var(--text-burgundy);
+            background: var(--bg-cream);
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+/* Full screen transition overlay */
+/* Smooth, clinical whiteout transition */
+        #glitch-overlay {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh;
+            background: #FAFAFA; /* Matches the diagnostic app */
+            z-index: 99999;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            opacity: 0; pointer-events: none; 
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #glitch-overlay.active {
+            opacity: 1; 
+            pointer-events: all;
+        }
+
+        .glitch-msg {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: 1.1rem; 
+            color: #111111;
+            text-align: center;
+        }
+        .glitch-sub {
+            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
+            font-size: 1rem;
+            color: #FAFAFA;
+            margin-top: 1rem;
+            opacity: 0.7;
+        }
+
+/* A minimal, clinical loading spinner */
+        .system-spinner {
+            margin-top: 2rem;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-top-color: #FF3300;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Mobile Breakpoints */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 3rem; gap: 2rem;}
+            .hero-content p { margin: 0 auto; }
+            .hero-graphic { width: 100%; height: 350px; }
+            .works-grid, .skills-grid { grid-template-columns: 1fr; }
+            #works h2, #about h2 { font-size: 2.2rem; }
+            #works, #about { padding: 4rem 5%; }
+            footer { padding: 3rem 5% 1.5rem 5%; }
+            .video-callout { flex-direction: column; text-align: center; padding: 2rem; margin-top: 3rem; }
+        }
+    </style>
 </head>
 <body>
-<div id="app">
 
-  <audio id="bgm-track" src="intro-music.mp3" preload="auto"></audio>
-
-  <div id="loading"><span>DREAMING...</span></div>
-  
-  <div id="start-screen" class="panel">
-    <img src="oscar-sumo.png" class="title-bg-sprite" alt="">
-    <h1>OSCAR'S<br>FEVER DREAM</h1>
-    <div class="insert-coin">TAP TO START</div>
-  </div>
-
-  <div id="panel1" class="panel">
-    <img id="p1-bg" src="01-poster-bg.png" alt="">
-    <div id="p1-lamp"></div>
-    <div id="p1-fade"></div>
-  </div>
-
-  <div id="panel2" class="panel cut">
-    <img id="p2-sprite" src="oscar-sumo.png" alt="">
-    <div id="p2-saturday">SATURDAY</div>
-    <div id="p2-fightnight">FIGHT<br>NIGHT</div>
-  </div>
-
-  <div id="panel3" class="panel cut">
-    <img id="p3-bg" src="night.png" alt="">
-    <img id="p3-shift" src="night-shift.png" alt="">
-  </div>
-
-  <div id="panel4" class="panel cut">
-    <img id="p4-closed" src="night-close-up.png" alt="">
-    <img id="p4-open" src="night-eyes-open.png" alt="">
-    <div id="p4-scanlines"></div>
-  </div>
-
-  <div id="game-wrapper">
-    <div id="screen">
-      <div id="screen-bg"></div>
-      <div id="hud">
-        <div id="lives">
-          <img class="heart" src="heart-full.png" alt="">
-          <img class="heart" src="heart-full.png" alt="">
-          <img class="heart" src="heart-full.png" alt="">
-          <img class="heart" src="heart-full.png" alt="">
+    <nav>
+        <a href="#" class="logo-container">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+                <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+            </svg>
+            <span class="logo">Cynthia Henderson</span>
+        </a>
+        <div class="nav-links">
+            <a href="#works">Works</a>
+            <a href="#about">About</a>
         </div>
-        <div id="score">000</div>
-      </div>
-      <div id="game-content">
-        <div id="chanko-container">
-          <div id="bowl-container">
-            <img id="chanko-img" src="chanko.png" alt="">
-          </div>
-          <img id="oscar-img" src="mouth-open.png" alt="">
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Hello, I'm <span class="highlight">Cynthia</span>.</h1>
+            <p>I don't just design training. I build the tools to deliver it.</p>
         </div>
-        <div id="shiko-container">
-          <img id="shiko-oscar" src="oscar-shiko.png" alt="">
-          <div id="balance-meter">
-            <div id="meter-track">
-              <div id="meter-zone-left"></div>
-              <div id="meter-zone-center"></div>
-              <div id="meter-zone-right"></div>
-              <div id="meter-needle"></div>
+
+        <div class="hero-graphic">
+            <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="talavera-core" transform="translate(190, 100) scale(1.2)">
+                    <path d="M90 10 L65 44 L50 50 L56 35 Z M90 90 L56 65 L50 50 L65 56 Z M10 90 L35 56 L50 50 L44 65 Z M10 10 L44 35 L50 50 L35 44 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+                    <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+                    <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+                </g>
+                <g id="g-depth-close" class="g-floating float-1">
+                    <path d="M250 40 L 262 65 L 250 85 L 238 65 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <line x1="250" y1="65" x2="250" y2="85" stroke="var(--text-burgundy)" stroke-width="2"/>
+                    <circle cx="250" cy="55" r="2.5" fill="var(--accent-terracotta)"/>
+                    <path d="M330 220 C 330 220, 315 240, 315 255 C 315 265, 322 270, 330 270 C 338 270, 345 265, 345 255 C 345 240, 330 220, 330 220 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M330 240 C 330 240, 322 250, 322 258 C 322 262, 325 265, 330 265 C 335 265, 338 262, 338 258 C 338 250, 330 240, 330 240 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M160 220 L 160 250 L 170 240 L 180 255 L 185 250 L 175 235 L 190 230 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                </g>
+                <g id="g-depth-mid" class="g-floating float-2">
+                    <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M360 160 L 360 135 C 355 131, 350 132, 345 135 L 345 160 C 350 157, 355 155, 360 160 Z" />
+                        <path d="M360 160 L 360 135 C 365 131, 370 132, 375 135 L 375 160 C 370 157, 365 155, 360 160 Z" />
+                    </g>
+                    <g transform="translate(0, 25)" stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                        <rect x="243" y="243" width="14" height="14" transform="rotate(45 250 250)"/>
+                        <line x1="250" y1="260" x2="250" y2="285" />
+                        <path d="M250 275 H 260 V 280" />
+                        <path d="M250 280 H 260 V 285" />
+                    </g>
+                    <path d="M125 165 L 145 165 L 140 180 L 130 180 Z" stroke="var(--text-burgundy)" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M135 165 Q 125 135 120 140 Q 130 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                    <path d="M135 165 Q 135 130 135 135 Q 140 150 135 165 Z" fill="var(--text-burgundy)"/>
+                    <path d="M135 165 Q 145 135 150 140 Q 140 155 135 165 Z" fill="var(--accent-terracotta)"/>
+                </g>
+                <g id="g-depth-far" class="g-floating float-3">
+                    <g stroke="var(--text-burgundy)" stroke-width="2" stroke-linecap="round">
+                        <path d="M310 110 L 330 70 L 350 110 Z" />
+                        <circle cx="350" cy="75" r="5" stroke="var(--accent-terracotta)"/>
+                    </g>
+                    <rect x="155" y="85" width="12" height="12" transform="rotate(45 161 91)" stroke="var(--accent-terracotta)" stroke-width="2"/>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+    <div class="medallion-divider cream-to-white">
+        <div class="medallion-line"></div>
+        <svg class="medallion-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+            <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+            <circle cx="50" cy="50" r="15" fill="var(--bg-cream)"/>
+            <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+        </svg>
+        <div class="medallion-line"></div>
+    </div>
+
+    <section id="works">
+        <h2>Selected Works</h2>
+
+        <div class="works-grid">
+
+<article class="work-card">
+    <div class="work-image-container">
+        <div class="browser-mockup">
+            <div class="mockup-header">
+                <div class="mockup-dot dot-1"></div>
+                <div class="mockup-dot dot-2"></div>
+                <div class="mockup-dot dot-3"></div>
             </div>
-            <div id="stable-bar-track">
-              <div id="stable-bar"></div>
+            <div class="mockup-content">
+                <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="400" height="320" fill="#FDFBF7"/>
+
+                    <rect x="40" y="40" width="320" height="70" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                    <circle cx="80" cy="75" r="18" fill="#4A0E17" opacity="0.1"/>
+                    <line x1="120" y1="65" x2="300" y2="65" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                    <line x1="120" y1="85" x2="240" y2="85" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+
+                    <rect x="40" y="140" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                    <rect x="40" y="140" width="130" height="8" rx="4" fill="#C25934"/>
+
+                    <rect x="40" y="160" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                    <rect x="40" y="160" width="160" height="8" rx="4" fill="#C25934" opacity="0.6"/>
+
+                    <rect x="40" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#C25934" stroke-width="2"/>
+                    <rect x="105" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                    <rect x="170" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                </svg>
             </div>
-          </div>
         </div>
-        <div id="throw-container">
-          <img id="throw-oscar" src="oscar-neutral.png" alt="">
-          <div id="throw-zone"></div>
-          <div id="throw-zone-glow"></div>
-          <img id="throw-opponent" src="opponent.png" alt="">
-          <div id="throw-feedback"></div>
-        </div>
-        <div id="dodge-container">
-          <img id="dodge-oscar" src="oscar-neutral.png" alt="">
-          <div id="dodge-telegraph"></div>
-          <img class="ghost-hand hand-left" id="dodge-hand-left" src="ghost-hand-left.png" alt="">
-          <img class="ghost-hand hand-right" id="dodge-hand-right" src="ghost-hand-right.png" alt="">
-          <div id="dodge-wave-counter"></div>
-        </div>
-        <div id="bounce-container">
-          <img id="bounce-oscar" src="oscar-neutral.png" alt="">
-          <div id="bounce-zone"></div>
-          <div id="bounce-zone-glow"></div>
-          <img id="bounce-obj" class="falling-obj" src="falling-ball.png" alt="">
-          <div id="bounce-counter"></div>
-        </div>
-        <div id="wrap-container">
-          <img id="wrap-oscar" src="oscar-unwrapped.png" alt="">
-          <div id="wrap-spotlight"></div>
-          <div id="wrap-progress-ring">
-            <svg viewBox="0 0 100 100">
-              <circle class="ring-bg" cx="50" cy="50" r="45"/>
-              <circle class="ring-fill" cx="50" cy="50" r="45"/>
-            </svg>
-          </div>
-          <div id="wrap-orbit">
-            <div id="wrap-orbit-dot"></div>
-          </div>
-        </div>
-        <div id="salt-container">
-          <div id="demon-health-bg"><div id="demon-health-bar"></div></div>
-          <img id="demon-sprite" src="keg-demon.png" alt="">
-        </div>
-        <div id="boss-container">
-          <div id="boss-health-bg"><div id="boss-health-bar"></div></div>
-
-          <div id="boss-glow-left" class="boss-glow"></div>
-          <div id="boss-glow-right" class="boss-glow"></div>
-
-          <img id="boss-sprite" src="boss-idle.png" alt="">
-
-          <div id="boss-hand-left" class="boss-hand">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M20,100 L20,40 L40,40 L40,20 L60,20 L60,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
-              <path d="M60,100 L60,30 L80,30 L80,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
-            </svg>
-          </div>
-          <div id="boss-hand-right" class="boss-hand">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M80,100 L80,40 L60,40 L60,20 L40,20 L40,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
-              <path d="M40,100 L40,30 L20,30 L20,100 Z" fill="#00e5ff" stroke="#fff" stroke-width="2"/>
-            </svg>
-          </div>
-
-          <div id="boss-screen-flash"></div>
-        </div>
-      </div>
-      <div id="timer-wrap">
-        <div id="timer-bar"></div>
-      </div>
     </div>
-    <img id="cabinet-img" src="arcade-cabinet.png" alt="">
-    <img id="glass-crack" src="glass-crack.png" alt="">
-  </div>
-
-  <div id="stamp"></div>
-  <div id="flash"></div>
-
-  <div id="outro-container" class="panel">
-    <img id="outro-bg" src="dohyo-bg.png" alt="">
-    <img id="outro-oscar" src="oscar-sumo.png" alt="">
-  </div>
-
-  <div id="demo-complete" class="end-screen">
-    <h1>WAKE UP</h1>
-    <div class="sub">FINAL SCORE: <span id="final-score">000</span></div>
-    <div class="promo-text">Witness the real thing at the<br><span class="highlight">Rollertown Showdown</span><br>Sumo Tournament!</div>
-    <a href="https://www.dallassumoclub.org/rollertown" target="_blank" class="cta-button">GET TICKETS</a>
-    <div class="hint">TAP ANYWHERE TO RESTART</div>
-  </div>
-
-  <div id="gameover-screen" class="end-screen">
-    <h1>WAKE<br>UP</h1>
-    <div class="sub">SCORE: <span id="go-score">000</span></div>
-    <div class="hint">TAP TO RESTART</div>
-  </div>
-<div id="panel-outro" class="panel">
-    <div id="outro-white" style="position: absolute; inset: 0; background: #fff; z-index: 2; transition: opacity 2s ease-in-out;"></div>
-    <img id="outro-sprite" src="oscar-sumo.png" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 1; filter: sepia(0.5) brightness(0.8) hue-rotate(-10deg);">
-    <div id="outro-scanlines" class="scanlines" style="position: absolute; inset: 0; z-index: 3; opacity: 0.3; pointer-events: none;"></div>
-  </div>
-
-  <div id="true-ending-screen" class="end-screen">
-    <h1 style="color: #00e5ff; text-shadow: 0 0 15px rgba(0,229,255,0.8); margin-bottom: 0;">THE FEVER<br>HAS BROKEN</h1>
-    <div class="sub" style="color: #ff6a00; font-size: clamp(0.6rem, 2.5vw, 1rem); line-height: 1.8;">
-      SURVIVED WITH: <span id="end-lives">0</span> LIVES<br>
-      FINAL SCORE: <span id="end-score">000</span>
+    <div class="work-content">
+        <div class="work-tags">
+            <span class="tag">Narrative Design</span>
+            <span class="tag">GSAP</span>
+            <span class="tag">Gamification</span>
+        </div>
+        <h3 class="work-title">Scope // Creep</h3>
+        <p class="work-desc">Protecting the perimeter is a soft skill. I built this high-tension dialogue simulator to train Project Managers in stakeholder negotiation. Use empathy, tactics, or aggression to manage pressure without burning bridges.</p>
+        <a href="scope-creep.html" class="work-link" target="_blank">
+            Play Prototype 
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
     </div>
-    <div class="hint" style="margin-top: 1rem; font-size: clamp(0.5rem, 2vw, 0.7rem); color: #00ff88; text-shadow: 0 0 8px #00ff88; cursor: pointer;">
-      [ TAP TO ENTER ENDLESS GRIND ]
+</article></article>
+
+            <article class="work-card">
+                <div class="work-image-container" style="background-color: rgba(74, 14, 23, 0.03);">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <line x1="50" y1="240" x2="350" y2="240" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <line x1="50" y1="160" x2="350" y2="160" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <line x1="50" y1="80" x2="350" y2="80" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                                <path d="M 60 240 C 160 240, 200 100, 340 80" fill="none" stroke="#C25934" stroke-width="6" stroke-linecap="round"/>
+                                <circle cx="60" cy="240" r="6" fill="#FDFBF7" stroke="#C25934" stroke-width="3"/>
+                                <circle cx="210" cy="145" r="8" fill="#FDFBF7" stroke="#4A0E17" stroke-width="4"/>
+                                <circle cx="340" cy="80" r="12" fill="#C25934"/>
+                                <path d="M 335 80 L 339 85 L 346 74" fill="none" stroke="#FDFBF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Strategy</span>
+                        <span class="tag">SaaS Adoption</span>
+                        <span class="tag">Storytelling</span>
+                    </div>
+                    <h3 class="work-title">Accelerating Adoption</h3>
+                    <p class="work-desc">Lawyers are busy and they don't have time for generic software tutorials. At Thomson Reuters, I helped turn standard training into practice-specific use cases. It is an onboarding ecosystem that respects the learner's schedule while actually showing how the tech solves their daily problems.</p>
+                    <a href="customer-success.html" class="work-link">
+                        Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="work-card">
+                <div class="work-image-container">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <rect x="40" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="40" y="40" width="40" height="6" rx="3" fill="#C25934"/>
+                                <rect x="220" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="220" y="40" width="120" height="6" rx="3" fill="#C25934"/>
+
+                                <rect x="40" y="80" width="320" height="130" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                                <line x1="70" y1="115" x2="330" y2="115" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="145" x2="280" y2="145" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="175" x2="310" y2="175" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+
+                                <rect x="190" y="110" width="80" height="10" rx="3" fill="#4A0E17"/>
+                                <rect x="120" y="170" width="60" height="10" rx="3" fill="#4A0E17"/>
+
+                                <rect x="260" y="240" width="100" height="28" rx="4" fill="#4A0E17"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Simulation Design</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">UI/UX Design</span>
+                    </div>
+                    <h3 class="work-title">AI Integration Training</h3>
+                    <p class="work-desc">Compliance training usually feels like a checklist. I built this prototype to let learners handle sensitive data in a safe, interactive environment. You can scrub prompts and watch your risk metrics shift in real time. It turns a mandatory rule into a decision-based simulation you can test to understand.</p>
+                    <a href="ai-scenario.html" class="work-link" target="_blank">
+                        View Prototype 
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="work-card">
+                <div class="work-image-container" style="background-color: rgba(194, 89, 52, 0.04);">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <path d="M 100 220 L 200 120 L 300 180" fill="none" stroke="#4A0E17" stroke-width="4" stroke-dasharray="8 8" opacity="0.5"/>
+                                <g transform="translate(200, 120)"><path d="M 0 -35 L 35 0 L 0 35 L -35 0 Z" fill="#C25934"/><circle cx="0" cy="0" r="10" fill="#FDFBF7"/></g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Blended Learning</span>
+                        <span class="tag">Instructional Strategy</span>
+                        <span class="tag">Game Design</span>
+                    </div>
+                    <h3 class="work-title">Leadership Elevated</h3>
+                    <p class="work-desc">I took a pile of fragmented training at Dallas College and transformed it into a cohesive journey. This blended experience uses workshops and a custom board game to help 250 managers actually lead. It replaces a standard overhaul with a high-impact, active program.</p>
+                    <a href="leadership-case-study.html" class="work-link">
+                        Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+        </div>
+
+        <div class="video-callout">
+            <div class="video-text">
+                <h3>Looking for video samples?</h3>
+                <p>I also produce, direct, and edit multimedia learning content.</p>
+            </div>
+            <a href="https://www.youtube.com/@cynhenderson" target="_blank" class="yt-link">
+                Watch on YouTube
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <div class="medallion-divider white-to-cream">
+        <div class="medallion-line"></div>
+        <svg class="medallion-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 0L56 35L90 10L65 44L100 50L65 56L90 90L56 65L50 100L44 65L10 90L35 56L0 50L35 44L10 10L44 35L50 0Z" fill="var(--accent-terracotta)"/>
+            <path d="M50 0 L56 35 L50 50 L44 35 Z M100 50 L65 56 L50 50 L65 44 Z M50 100 L44 65 L50 50 L56 65 Z M0 50 L35 44 L50 50 L35 56 Z" fill="var(--text-burgundy)"/>
+            <circle cx="50" cy="50" r="15" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="8" fill="var(--text-burgundy)"/>
+        </svg>
+        <div class="medallion-line"></div>
     </div>
-  </div>
-</div>
+
+    <section id="about">
+        <div class="about-container">
+            <h2>About Me</h2>
+
+            <div class="about-block">
+                <h3>The Philosophy</h3>
+                <p class="about-text">
+                    Adult learning shouldn’t be passive. When you blend behavioral science with digital design, you move beyond “click next to continue” and start building immersive, interactive challenges. I design experiences that respect the learner’s intelligence and their time, with every interaction focused on real competency and real business impact.
+                </p>
+            </div>
+
+            <div class="about-block">
+                <h3>The Skillset</h3>
+                <div class="skills-grid">
+                    <div class="skill-column">
+                        <h4>Instructional Strategy</h4>
+                        <ul class="skill-list">
+                            <li>Needs Analysis & Discovery</li>
+                            <li>Competency Modeling</li>
+                            <li>Behavioral Science</li>
+                            <li>Curriculum Architecture</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>Experience Design</h4>
+                        <ul class="skill-list">
+                            <li>Gamification Mechanics</li>
+                            <li>Scenario-Based Learning</li>
+                            <li>UI/UX Design</li>
+                            <li>Blended Learning Journeys</li>
+                        </ul>
+                    </div>
+                    <div class="skill-column">
+                        <h4>Technical Execution</h4>
+                        <ul class="skill-list">
+                            <li>Rapid Prototyping</li>
+                            <li>Front-End Development</li>
+                            <li>Web Animation</li>
+                            <li>Custom Tools & Interactions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="about-block">
+                <h3>The Human</h3>
+                <p class="about-text">
+                    Right now, I’m obsessed with using AI tools to build learning experiences from scratch. I’m writing code, designing interactions, and shipping prototypes I couldn’t have built alone two years ago. My dream is to build a learning game that feels less like training and more like a rogue‑lite.
+                </p>
+                <p class="about-text" style="margin-top: 1rem;">
+                    I love painting, reading, and Dallas life with a sumo fighter and a very fluffy cat.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <h2>Let's Connect</h2>
+            <p>Love talking to other learning nerds. ❤︎</p>
+
+            <a href="https://www.linkedin.com/in/cynhenderson" target="_blank" class="linkedin-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+                Find me on LinkedIn
+            </a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Cynthia. Designed and <span id="easter-egg-trigger" class="glitch-text">vibe-coded</span> with care.</p>
+        </div>
+    </footer>
+
 <script>
-// ===================================================
-//  AUDIO ENGINE
-// ===================================================
-const AudioEngine = {
-  ctx: null,
-  init: function() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.ctx = new AudioContext();
-  },
-  resume: function() {
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  },
-  
-  playGlitchSting: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(100, t);
-    for(let i=1; i<5; i++) {
-       osc.frequency.setValueAtTime(Math.random() * 2000 + 200, t + (i*0.03));
-    }
-    gain.gain.setValueAtTime(0.4, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.15);
-  },
-
-  playSlam: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(100, t);
-    osc.frequency.exponentialRampToValueAtTime(10, t + 0.4);
-    gain.gain.setValueAtTime(0.5, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.4);
-  },
-
-  playCoin: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(880, t); 
-    osc.frequency.setValueAtTime(1760, t + 0.08); 
-    gain.gain.setValueAtTime(0.1, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.2);
-  },
-
-  playChomp: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(150, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + 0.05); 
-    gain.gain.setValueAtTime(0.15, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05); 
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.05);
-  },
-
-  playWin: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(523.25, t); 
-    osc.frequency.setValueAtTime(659.25, t + 0.1);
-    osc.frequency.setValueAtTime(783.99, t + 0.2); 
-    osc.frequency.setValueAtTime(1046.50, t + 0.3); 
-    gain.gain.setValueAtTime(0.1, t);
-    gain.gain.setValueAtTime(0.1, t + 0.4);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.6);
-  },
-
-  playLose: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(300, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + 0.5); 
-    gain.gain.setValueAtTime(0.2, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.5);
-  },
-
-  playWobble: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(220, t);
-    osc.frequency.setValueAtTime(180, t + 0.04);
-    osc.frequency.setValueAtTime(240, t + 0.08);
-    osc.frequency.setValueAtTime(160, t + 0.12);
-    gain.gain.setValueAtTime(0.08, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.15);
-  },
-
-  playThrow: function() {
-    if (!this.ctx) return;
-    const noise = this.ctx.createOscillator();
-    const nGain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    noise.type = 'sawtooth';
-    noise.frequency.setValueAtTime(200, t);
-    noise.frequency.exponentialRampToValueAtTime(800, t + 0.1);
-    noise.frequency.exponentialRampToValueAtTime(100, t + 0.3);
-    nGain.gain.setValueAtTime(0.2, t);
-    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-    noise.connect(nGain); nGain.connect(this.ctx.destination);
-    noise.start(t); noise.stop(t + 0.3);
-    const thud = this.ctx.createOscillator();
-    const tGain = this.ctx.createGain();
-    thud.type = 'sine';
-    thud.frequency.setValueAtTime(80, t + 0.12);
-    thud.frequency.exponentialRampToValueAtTime(30, t + 0.4);
-    tGain.gain.setValueAtTime(0, t);
-    tGain.gain.setValueAtTime(0.4, t + 0.12);
-    tGain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
-    thud.connect(tGain); tGain.connect(this.ctx.destination);
-    thud.start(t); thud.stop(t + 0.4);
-  },
-
-  playWhiff: function() {
-    if (!this.ctx) return;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(600, t);
-    osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
-    gain.gain.setValueAtTime(0.1, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.15);
-  },
-
-  playWhoosh: function() {
-    if (!this.ctx) return;
-    const bufferSize = this.ctx.sampleRate * 0.25;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    const t = this.ctx.currentTime;
-    filter.frequency.setValueAtTime(2000, t);
-    filter.frequency.exponentialRampToValueAtTime(400, t + 0.2);
-    filter.Q.value = 1.5;
-    const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.2, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
-    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
-    noise.start(t); noise.stop(t + 0.25);
-  },
-
-  playBonk: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(200, t);
-    osc.frequency.exponentialRampToValueAtTime(60, t + 0.15);
-    gain.gain.setValueAtTime(0.4, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.2);
-    
-    const osc2 = this.ctx.createOscillator();
-    const gain2 = this.ctx.createGain();
-    osc2.type = 'square';
-    osc2.frequency.setValueAtTime(300, t + 0.05);
-    osc2.frequency.setValueAtTime(500, t + 0.1);
-    osc2.frequency.setValueAtTime(250, t + 0.15);
-    gain2.gain.setValueAtTime(0.08, t + 0.05);
-    gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
-    osc2.connect(gain2); gain2.connect(this.ctx.destination);
-    osc2.start(t + 0.05); osc2.stop(t + 0.25);
-  },
-
-  playBoing: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    // Rubbery sine sweep up
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(150, t);
-    osc.frequency.exponentialRampToValueAtTime(800, t + 0.08);
-    osc.frequency.exponentialRampToValueAtTime(400, t + 0.2);
-    osc.frequency.exponentialRampToValueAtTime(600, t + 0.25);
-    gain.gain.setValueAtTime(0.25, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.3);
-    // Rubber pop overtone
-    const osc2 = this.ctx.createOscillator();
-    const gain2 = this.ctx.createGain();
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(300, t);
-    osc2.frequency.exponentialRampToValueAtTime(1200, t + 0.06);
-    gain2.gain.setValueAtTime(0.1, t);
-    gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc2.connect(gain2); gain2.connect(this.ctx.destination);
-    osc2.start(t); osc2.stop(t + 0.15);
-  },
-
-  playCrash: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    // Low thud
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(120, t);
-    osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
-    gain.gain.setValueAtTime(0.4, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.3);
-    // Noise crackle
-    const bufferSize = this.ctx.sampleRate * 0.15;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-    const nGain = this.ctx.createGain();
-    nGain.gain.setValueAtTime(0.15, t);
-    nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    noise.connect(nGain); nGain.connect(this.ctx.destination);
-    noise.start(t); noise.stop(t + 0.15);
-  },
-  playAlarm: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    // Plays 4 harsh digital alarm beeps
-    for(let i=0; i<4; i++) {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'square';
-      osc.frequency.value = 800; // Harsh digital pitch
-      gain.gain.setValueAtTime(0.1, t + i*0.4);
-      gain.gain.setValueAtTime(0, t + i*0.4 + 0.15);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(t + i*0.4); osc.stop(t + i*0.4 + 0.15);
-    }
-  },
-playHyoshigi: function() {
-    // Sharp, piercing wooden clack for the samurai standoff trigger
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(1200, t); 
-    osc.frequency.exponentialRampToValueAtTime(400, t + 0.05);
-    gain.gain.setValueAtTime(1, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.15);
-  },
-
-  playDeathSlam: function() {
-    // A heavy, distorted impact for the jump scare failure
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(100, t);
-    osc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
-    gain.gain.setValueAtTime(0.8, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.5);
-  },
-
-  playDemonDeath: function() {
-    // A wailing, pitch-dropping screech for the demon's defeat
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(800, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + 1.0); 
-    gain.gain.setValueAtTime(0.5, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.0);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 1.0);
-  },
-
-  playGlassShatter: function() {
-     // High-frequency noise burst for the arcade cabinet glass breaking
-     if (!this.ctx) return;
-     const t = this.ctx.currentTime;
-     const bufferSize = this.ctx.sampleRate * 0.4;
-     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-     const data = buffer.getChannelData(0);
-     for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
-     
-     const noise = this.ctx.createBufferSource();
-     noise.buffer = buffer;
-     
-     const filter = this.ctx.createBiquadFilter();
-     filter.type = 'highpass';
-     filter.frequency.value = 6000; // Very crispy, bright noise
-
-     const gain = this.ctx.createGain();
-     gain.gain.setValueAtTime(0.8, t);
-     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
-
-     noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
-     noise.start(t);
-  },
-
-  playTaiko: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-
-    // The deep boom (Sine wave)
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    // Start with a sharp pitch drop to give it a heavy "thwack"
-    osc.frequency.setValueAtTime(120, t);
-    osc.frequency.exponentialRampToValueAtTime(45, t + 0.08);
-    osc.frequency.exponentialRampToValueAtTime(20, t + 1.5);
-
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(1.2, t + 0.02); // Fast attack
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.5); // Long resonant decay
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(t);
-    osc.stop(t + 1.5);
-
-    // The drum skin strike (Filtered noise)
-    const bufferSize = this.ctx.sampleRate * 0.15;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
-
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 600;
-
-    const noiseGain = this.ctx.createGain();
-    noiseGain.gain.setValueAtTime(0, t);
-    noiseGain.gain.linearRampToValueAtTime(0.6, t + 0.01);
-    noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(this.ctx.destination);
-    noise.start(t);
-  },
-
-  crowdNode: null,
-  playCrowdSwell: function(durationMs) {
-    if (!this.ctx) return;
-    this.stopCrowd(); // prevent stacking
-
-    const t = this.ctx.currentTime;
-    const duration = durationMs / 1000;
-    const bufferSize = this.ctx.sampleRate * duration;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    // Generate an approximation of Pink Noise for a better crowd rumble
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      let white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179;
-      b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
-      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
-      b6 = white * 0.115926;
-    }
-
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-
-    // Filter sweeps up to simulate crowd getting louder/more frantic
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(200, t); 
-    filter.frequency.linearRampToValueAtTime(800, t + duration); 
-    filter.Q.value = 0.8;
-
-    const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.01, t);
-    gain.gain.exponentialRampToValueAtTime(1.5, t + duration * 0.95); // Swell up!
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-    noise.start(t);
-
-    this.crowdNode = { noise, gain };
-  },
-
-  stopCrowd: function() {
-    if (this.crowdNode && this.ctx) {
-      const t = this.ctx.currentTime;
-      // Fast fade out to prevent clicking
-      this.crowdNode.gain.gain.cancelScheduledValues(t);
-      this.crowdNode.gain.gain.setValueAtTime(this.crowdNode.gain.gain.value, t);
-      this.crowdNode.gain.gain.linearRampToValueAtTime(0.01, t + 0.05);
-      setTimeout(() => { try { this.crowdNode.noise.stop(); } catch(e){} }, 100);
-      this.crowdNode = null;
-    }
-  },
-
-  playSwish: function(speed) {
-    // speed: 0.0 to 1.0, controls pitch and shortness
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const dur = 0.12 - (speed || 0) * 0.05;
-    const freq = 1200 + (speed || 0) * 2000;
-    const bufferSize = Math.floor(this.ctx.sampleRate * dur);
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(freq, t);
-    filter.frequency.exponentialRampToValueAtTime(freq * 0.3, t + dur);
-    filter.Q.value = 2;
-    const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.15, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
-    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
-    noise.start(t); noise.stop(t + dur);
-  },
-
-playSizzle: function(pitchMultiplier = 1) {
-    if (!this.ctx) return;
-    const bufferSize = this.ctx.sampleRate * 0.15;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'highpass';
-    // Base frequency is 4000, increases as multiplier goes up
-    filter.frequency.value = 4000 * pitchMultiplier; 
-    const gain = this.ctx.createGain();
-    const t = this.ctx.currentTime;
-    gain.gain.setValueAtTime(0.3, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
-    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
-    noise.start(t);
-  },
-
-  demonOsc: null,
-  playDemonRumble: function() {
-    if (!this.ctx) return;
-    this.stopDemonRumble();
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.value = 45;
-    gain.gain.value = 0.25;
-
-    const lfo = this.ctx.createOscillator();
-    lfo.type = 'sine';
-    lfo.frequency.value = 3;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 15;
-    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
-
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(); lfo.start();
-    this.demonOsc = { osc, lfo, gain };
-  },
-
-  stopDemonRumble: function() {
-    if (this.demonOsc && this.ctx) {
-      const t = this.ctx.currentTime;
-      this.demonOsc.gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-      setTimeout(() => {
-        try { this.demonOsc.osc.stop(); this.demonOsc.lfo.stop(); } catch(e){}
-        this.demonOsc = null;
-      }, 150);
-    }
-  },
-
-heartbeatTimer: null,
-
-  playHeartbeat: function(totalDurationMs) {
-    if (!this.ctx) return;
-    this.stopHeartbeat(); // Ensure no overlapping loops
-    
-    const startTime = performance.now();
-    
-    const beat = () => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      
-      // The "Lub" (Deep and heavy)
-      const osc1 = this.ctx.createOscillator();
-      const gain1 = this.ctx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(55, t);
-      osc1.frequency.exponentialRampToValueAtTime(35, t + 0.1);
-      gain1.gain.setValueAtTime(0, t);
-      gain1.gain.linearRampToValueAtTime(0.8, t + 0.02); // Quick attack
-      gain1.gain.exponentialRampToValueAtTime(0.01, t + 0.15); // Quick decay
-      osc1.connect(gain1); gain1.connect(this.ctx.destination);
-      osc1.start(t); osc1.stop(t + 0.15);
-
-      // The "Dub" (Slightly higher, slightly quieter, offset by 150ms)
-      const osc2 = this.ctx.createOscillator();
-      const gain2 = this.ctx.createGain();
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(65, t + 0.15);
-      osc2.frequency.exponentialRampToValueAtTime(40, t + 0.25);
-      gain2.gain.setValueAtTime(0, t + 0.15);
-      gain2.gain.linearRampToValueAtTime(0.6, t + 0.17);
-      gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
-      osc2.connect(gain2); gain2.connect(this.ctx.destination);
-      osc2.start(t + 0.15); osc2.stop(t + 0.3);
-      
-      // Visual feedback: Make the Yokozuna pulse to the beat
-      const bossSprite = document.getElementById('boss-sprite');
-      if (bossSprite && bossSprite.className !== 'boss-charge') {
-          bossSprite.classList.add('boss-beat-pulse');
-          setTimeout(() => bossSprite.classList.remove('boss-beat-pulse'), 150);
-      }
-
-      // Calculate the next delay based on how close we are to the trigger
-      const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / totalDurationMs, 1); // 0 to 1
-      
-      // Starts at a resting 1000ms gap, shrinks to a panicked 280ms gap
-      const nextDelay = 1000 - (progress * 720); 
-
-      this.heartbeatTimer = setTimeout(beat, nextDelay);
-    };
-    
-    beat(); // Start the first beat immediately
-  },
-
-  stopHeartbeat: function() {
-    if (this.heartbeatTimer) {
-      clearTimeout(this.heartbeatTimer);
-      this.heartbeatTimer = null;
-    }
-  },
-
-  playDeflect: function() {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(400, t);
-    osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
-    gain.gain.setValueAtTime(0.4, t);
-    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(t); osc.stop(t + 0.1);
-  },
-
-  bossBuffer: null,
-  bossSource: null,
-  loadBossBGM: function(url) {
-    if (!this.ctx) return Promise.resolve();
-    return fetch(url)
-      .then(r => r.arrayBuffer())
-      .then(ab => new Promise((res, rej) => this.ctx.decodeAudioData(ab, buf => { this.bossBuffer = buf; res(); }, rej)))
-      .catch(err => console.log('Boss BGM load error:', err));
-  },
-  playBossBGM: function() {
-    if (this.ctx && this.bossBuffer) {
-      if (this.bossSource) { try { this.bossSource.stop(); } catch(e){} }
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.bossBuffer;
-      src.connect(this.ctx.destination);
-      src.start(0);
-      this.bossSource = src;
-      return this.ctx.currentTime;
-    }
-    return performance.now() / 1000;
-  },
-  stopBossBGM: function() {
-    if (this.bossSource) { try { this.bossSource.stop(); } catch(e){} }
-  },
-
-  bgmBuffer: null,
-  bgmSource: null,
-  loadBGM: function(url) {
-    if (!this.ctx) return Promise.resolve();
-    return fetch(url)
-      .then(r => r.arrayBuffer())
-      .then(ab => new Promise((res, rej) => this.ctx.decodeAudioData(ab, buf => { this.bgmBuffer = buf; res(); }, rej)))
-      .catch(err => console.log('BGM load error:', err));
-  },
-  playBGM: function() {
-    if (this.ctx && this.bgmBuffer) {
-      if (this.bgmSource) { try { this.bgmSource.stop(); } catch(e){} }
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.bgmBuffer;
-      src.connect(this.ctx.destination);
-      src.start(0);
-      this.bgmSource = src;
-      return true;
-    }
-    // fetch() is blocked on file:// -- fall back to the <audio> element
-    const el = document.getElementById('bgm-track');
-    if (el) el.play().catch(() => {});
-    return false;
-  }
-};
-
-// ===================================================
-//  STATE & TIMERS
-// ===================================================
-let S = 'LOADING';
-let score = 0;
-let lives = 4;
-let tapCount = 0;
-let gameTimer = null;
-let introTimeouts = [];
-let glitchId = null;
-
-const app           = document.getElementById('app');
-const loading       = document.getElementById('loading');
-const startScreenEl = document.getElementById('start-screen');
-const bgmTrack      = document.getElementById('bgm-track');
-const panel1        = document.getElementById('panel1');
-const panel2        = document.getElementById('panel2');
-const panel3        = document.getElementById('panel3');
-const panel4        = document.getElementById('panel4');
-const gameWrap      = document.getElementById('game-wrapper');
-const stamp         = document.getElementById('stamp');
-const flashEl       = document.getElementById('flash');
-const demoEl        = document.getElementById('demo-complete');
-const gameoverEl    = document.getElementById('gameover-screen');
-
-function schedule(fn, delay) {
-  introTimeouts.push(setTimeout(fn, delay));
-}
-
-// ===================================================
-//  PRELOAD
-// ===================================================
-const ASSETS = [
-  '01-poster-bg.png','oscar-sumo.png','night.png','night-shift.png',
-  'night-close-up.png','night-eyes-open.png','arcade-cabinet.png',
-  'chanko.png','mouth-open.png','mouth-stuffed.png',
-  'heart-full.png','heart-empty.png',
-  'oscar-shiko.png','oscar-shiko-right.png','oscar-shiko-wobble.png','oscar-neutral.png',
-  'opponent.png','oscar-throw.png',
-  'ghost-hand-left.png','ghost-hand-right.png',
-  'oscar-inflated.png','falling-ball.png','falling-tire.png','falling-fish.png',
-  'oscar-unwrapped.png','oscar-wrapping-2.png',
-  'keg-demon.png','glass-crack.png',
-  'boss-idle.png','boss-slap.png','boss-before-charge.png','boss-charge.png','boss-stunned.png'
-];
-
-// Hold Image object references at module scope so the browser can't evict
-// them from memory cache after the preload promise resolves
-const _imageCache = [];
-
-
-Promise.all([
-  ...ASSETS.map(src => new Promise(r => {
-    const img = new Image();
-    _imageCache.push(img);
-    img.onload = img.onerror = r;
-    img.src = src;
-  })),
-  AudioEngine.loadBGM('intro-music.mp3'),
-  AudioEngine.loadBossBGM('boss-music.mp3')
-]).then(() => {
-  loading.style.opacity = '0';
-  setTimeout(() => {
-    loading.style.display = 'none';
-    startScreenEl.classList.add('active');
-
-    const bootGame = (e) => {
-      // NOTE: Removed e.preventDefault() here so the browser trusts the user interaction to unlock audio
-      AudioEngine.init();
-
-      const play = () => {
-        AudioEngine.playCoin();
-        AudioEngine.playBGM();
-      };
-
-      if (AudioEngine.ctx.state === 'suspended') {
-        AudioEngine.ctx.resume().then(play);
-      } else {
-        play();
-      }
-
-      startScreenEl.classList.remove('active');
-      startScreenEl.removeEventListener('pointerup', bootGame);
-      startScreenEl.removeEventListener('click', bootGame);
-
-      intro1();
-    };
-
-    // Use pointerup and click instead of touchstart for reliable audio context unlocking
-    startScreenEl.addEventListener('pointerup', bootGame, { once: true });
-    startScreenEl.addEventListener('click', bootGame, { once: true });
-  }, 500);
-});
-
-// ===================================================
-//  UTILS
-// ===================================================
-function showPanel(el) {
-  [panel1, panel2, panel3, panel4].forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-}
-function doFlash(color, ms) {
-  flashEl.style.background = color;
-  flashEl.style.opacity = '1';
-  schedule(() => { flashEl.style.opacity = '0'; }, ms);
-}
-function shake(level) {
-  const cls = level === 'xl' ? 'shake-xl' : level ? 'shake-lg' : 'shake-sm';
-  app.classList.remove('shake-sm', 'shake-lg', 'shake-xl');
-  void app.offsetWidth;
-  app.classList.add(cls);
-  app.addEventListener('animationend', () => app.classList.remove(cls), { once: true });
-}
-function stampShow(text, color, sizeCss, bg) {
-  stamp.textContent     = text;
-  stamp.style.color     = color;
-  stamp.style.fontSize  = sizeCss;
-  stamp.style.background = bg || 'transparent';
-  stamp.style.opacity   = '0';
-  stamp.style.transform = 'scale(2.2)';
-  stamp.style.transition = 'none';
-  stamp.style.display   = 'flex';
-  void stamp.offsetWidth;
-  stamp.style.transition = 'transform 0.06s steps(1), opacity 0.04s';
-  stamp.style.transform = 'scale(1)';
-  stamp.style.opacity   = '1';
-  shake(false);
-}
-function stampHide() { stamp.style.display = 'none'; }
-function setScore() { document.getElementById('score').textContent = String(score).padStart(3, '0'); }
-function setHearts() {
-  document.querySelectorAll('.heart').forEach((h, i) => {
-    h.src = i < lives ? 'heart-full.png' : 'heart-empty.png';
-  });
-}
-
-// ===================================================
-//  INTRO
-// ===================================================
-function intro1() {
-  S = 'INTRO_1';
-  showPanel(panel1);
-  const p1bg = document.getElementById('p1-bg');
-  p1bg.style.animation = 'none';
-  void p1bg.offsetWidth;
-  p1bg.style.animation = 'kenburns 8s ease-in-out forwards';
-  schedule(() => {
-    document.getElementById('p1-fade').style.opacity = '1';
-    schedule(intro2, 500); 
-  }, 7500);
-}
-
-function intro2() {
-  S = 'INTRO_2';
-  showPanel(panel2);
-  const sprite     = document.getElementById('p2-sprite');
-  const saturday   = document.getElementById('p2-saturday');
-  const fightnight = document.getElementById('p2-fightnight');
-  [sprite, saturday, fightnight].forEach(el => { el.style.display = 'none'; });
-  sprite.style.filter = 'none';
-  sprite.style.display = 'block';
-  sprite.style.transition = 'none';
-  sprite.style.transformOrigin = 'center 13%';
-  sprite.style.transform = 'scale(1)';
-  void sprite.offsetWidth;
-  sprite.style.transition = 'transform 3.0s ease-in';
-  sprite.style.transform = 'scale(1.7)';
-  schedule(() => {
-    sprite.style.transition = 'none';
-    sprite.style.transformOrigin = 'center center';
-    sprite.style.transform = 'scale(2.8) translateY(16%)';
-    sprite.style.filter = 'brightness(1.4) saturate(4) hue-rotate(-25deg) contrast(1.6)';
-    shake(false);
-  }, 3000);
-  schedule(() => { sprite.style.display = 'none'; }, 3200);
-  schedule(() => {
-    sprite.style.display = 'block';
-    sprite.style.transition = 'none';
-    sprite.style.transformOrigin = 'center center';
-    sprite.style.transform = 'scale(1.3) scaleX(-1)';
-    sprite.style.filter = 'invert(1)';
-    shake(true);
-    AudioEngine.playGlitchSting(); 
-    schedule(() => { sprite.style.display = 'none'; }, 200);
-  }, 3500);
-  schedule(() => {
-    saturday.style.display = 'flex';
-    saturday.style.opacity = '0';
-    saturday.style.transform = 'scale(1.8)';
-    saturday.style.transition = 'none';
-    void saturday.offsetWidth;
-    saturday.style.transition = 'transform 0.15s ease-in, opacity 0.15s linear';
-    saturday.style.opacity = '1';
-    saturday.style.transform = 'scale(1)';
-  }, 4000);
-  schedule(() => {
-    saturday.style.opacity = '0.2';
-    saturday.style.filter = 'blur(2px)';
-    fightnight.style.display = 'flex';
-    fightnight.style.opacity = '0';
-    fightnight.style.transform = 'scale(3)';
-    fightnight.style.transition = 'none';
-    void fightnight.offsetWidth;
-    fightnight.style.transition = 'transform 0.08s ease-in, opacity 0.05s linear';
-    fightnight.style.opacity = '1';
-    fightnight.style.transform = 'scale(1)';
-    shake('xl');
-    doFlash('rgba(255,106,0,0.4)', 150);
-    AudioEngine.playSlam(); 
-  }, 6000);
-  schedule(() => {
-    [sprite, saturday, fightnight].forEach(el => { el.style.display = 'none'; });
-    intro3();
-  }, 8000);
-}
-
-function intro3() {
-  S = 'INTRO_3';
-  showPanel(panel3);
-  const bg = document.getElementById('p3-bg');
-  const shift = document.getElementById('p3-shift');
-  bg.style.transition = 'none';
-  shift.style.transition = 'none';
-  bg.style.opacity = shift.style.opacity = '0';
-  bg.style.transform = 'scale(1.05)';
-  shift.style.transform = 'scale(1.05)';
-  schedule(() => {
-    bg.style.transition = 'opacity 0.8s ease-in-out, transform 3s ease-out';
-    bg.style.opacity = '1';
-    bg.style.transform = 'scale(1)';
-  }, 500);
-  schedule(() => {
-    bg.style.transition = 'none';
-    bg.style.opacity = '0';
-    schedule(() => {
-      shift.style.transition = 'none';
-      shift.style.opacity = '1';
-      shift.style.transform = 'scale(1)';
-    }, 80);
-  }, 3500);
-  schedule(() => {
-    shift.style.opacity = '0';
-    schedule(intro4, 100);
-  }, 4900);
-}
-
-function intro4() {
-  S = 'INTRO_4';
-  showPanel(panel4);
-  const closed = document.getElementById('p4-closed');
-  const open = document.getElementById('p4-open');
-  const scanlines = document.getElementById('p4-scanlines');
-  closed.style.transition = 'none';
-  closed.style.opacity = '0';
-  schedule(() => {
-    closed.style.transition = 'opacity 0.3s';
-    closed.style.opacity = '1';
-  }, 300);
-  schedule(() => {
-    closed.style.transition = 'none';
-    closed.style.opacity = '0';
-    open.style.opacity = '1';
-    scanlines.style.opacity = '1';
-    glitchId = setInterval(() => {
-      const x = (Math.random() - 0.5) * 26;
-      const y = (Math.random() - 0.5) * 6;
-      const h = Math.random() * 200;
-      open.style.transform = `translate(${x}px, ${y}px)`;
-      open.style.filter = `hue-rotate(${h}deg)`;
-    }, 50);
-    ['#00e5ff','#ff6a00','#00e5ff','#ff6a00','#00e5ff','#ff6a00'].forEach((c, i) => {
-      schedule(() => doFlash(c, 60), i * 220);
-    });
-  }, 2000);
-  schedule(() => {
-    clearInterval(glitchId);
-    open.style.transform = '';
-    open.style.filter = '';
-    scanlines.style.opacity = '0';
-    doFlash('#ffffff', 300);
-  }, 3300);
-  schedule(() => {
-    panel4.classList.remove('active');
-    initGame();
-  }, 3500);
-}
-
-// ===================================================
-//  GAME SEQUENCING
-// ===================================================
-const GAME_SEQUENCE = [
-  { verb: 'TAP FAST!', setup: setupChanko,  play: playChanko,  cleanup: cleanupChanko },
-  { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
-  { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
-  { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
-  { verb: 'INFLATE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
-  { verb: 'WIND IT!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
-  { verb: 'FLICK SALT!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
-  { verb: 'WAIT FOR IT...', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
-];
-let currentGame = 0;
-
-function initGame() {
-  S = 'GAME_INIT';
-  gameWrap.classList.add('active');
-  score = 0;
-  lives = 4;
-  currentGame = 0;
-  setScore();
-  setHearts();
-  
-  const screenEl = document.getElementById('screen');
-  screenEl.style.transition = 'none';
-  screenEl.style.transform = 'scale(1) translateY(0)';
-  
-  const crack = document.getElementById('glass-crack');
-  if (crack) crack.style.display = 'none';
-
-  const cabinet = document.getElementById('cabinet-img');
-  cabinet.style.transition = 'none';
-  cabinet.style.transform = 'scale(1)';
-  cabinet.style.opacity = '1';
-  setTimeout(() => {
-    cabinet.style.transition = 'transform 1.5s ease-in, opacity 0.5s ease-out 1s';
-    cabinet.style.transform = 'scale(4.5)';
-    cabinet.style.opacity = '0';
-    setTimeout(() => showVerbScreen(currentGame), 1600);
-  }, 2000);
-}
-
-function showVerbScreen(gameIndex) {
-  S = 'PRE_GAME';
-  const game = GAME_SEQUENCE[gameIndex];
-  AudioEngine.playCoin();
-  stampShow(game.verb, '#ff6a00', 'clamp(2rem, 8vw, 3rem)', '#0a1128');
-  setTimeout(() => {
-    stampHide();
-    game.setup();
-    game.play();
-  }, 1500);
-}
-
-function onWin() {
-  S = 'WIN';
-  const game = GAME_SEQUENCE[currentGame];
-  game.cleanup();
-  score++;
-  setScore();
-  
-  // INTERCEPT BOSS TRANSITION (Moving from Demon to Yokozuna)
-  if (currentGame === 6) {
-    // 1. Kill the happy music to create a tense silence
-    if (AudioEngine.bgmSource) {
-      try { AudioEngine.bgmSource.stop(); } catch(e){}
-    }
-    const el = document.getElementById('bgm-track');
-    if (el) el.pause();
-
-    // 2. Play the heavy wailing sound instead of the happy chime
-    AudioEngine.playDemonDeath(); 
-    
-    // 3. Flash red warning instead of the green checkmark
-    doFlash('rgba(255,0,0,0.5)', 300);
-    shake('xl');
-    stampShow('DANGER!', '#ff0000', 'clamp(3rem, 12vw, 4rem)', 'rgba(0,0,0,0.8)');
-    
-    setTimeout(() => {
-      stampHide();
-      currentGame++;
-      // Proceeds directly to the "WAIT FOR IT..." prompt in silence
-      showVerbScreen(currentGame);
-    }, 1500); // Hold the tension longer than a normal win
-    
-    return; // Exit here so we don't play the standard win sequence
-  }
-
-  // STANDARD WIN BEHAVIOR for all other games
-  AudioEngine.playWin();
-  stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
-  
-  setTimeout(() => {
-    stampHide();
-    currentGame++;
-    if (currentGame >= GAME_SEQUENCE.length) {
-      playOutroSequence(); 
-    } else {
-      showVerbScreen(currentGame);
-    }
-  }, 600);
-}
-
-function onLose() {
-  S = 'LOSE';
-  const game = GAME_SEQUENCE[currentGame];
-  game.cleanup();
-  lives--;
-  setHearts();
-  AudioEngine.playLose();
-  doFlash('rgba(255,0,0,0.5)', 200);
-  shake(true);
-  stampShow('✗', '#ff0000', 'clamp(3rem, 14vw, 5rem)');
-  setTimeout(() => {
-    stampHide();
-    if (lives <= 0) {
-      showGameOver();
-    } else {
-      showVerbScreen(currentGame);
-    }
-  }, 700);
-}
-
-function playOutroSequence() {
-  S = 'OUTRO';
-  const outroContainer = document.getElementById('outro-container');
-  const outroOscar = document.getElementById('outro-oscar');
-  const outroBg = document.getElementById('outro-bg'); 
-  const gameWrapper = document.getElementById('game-wrapper');
-
-  // --- NEW: Reset the outro sequence state instantly! ---
-  outroOscar.className = '';
-  outroOscar.style.animation = '';
-  outroOscar.style.opacity = '0';
-  outroOscar.style.transform = '';
-  outroOscar.src = 'oscar-sumo.png';
-  
-  outroBg.className = ''; 
-  void outroBg.offsetWidth; // Force a CSS reflow so the zoom animation restarts cleanly
-  // ------------------------------------------------------
-
-  // 1. Hide the arcade cabinet, show the dohyo
-  gameWrapper.classList.remove('active');
-  outroContainer.classList.add('active');
-  
-  // 2. Trigger the new 1.5s zoom-in camera move
-  outroBg.className = 'outro-bg-zoom';
-
-  // 3. Crowd swell timed to impact
-  AudioEngine.playCrowdSwell(7500);
-
-  // Phase 1: Oscar fades in AFTER the camera stops (Camera stops at 1.5s, Oscar appears at 1.8s)
-  setTimeout(() => {
-    outroOscar.src = 'oscar-sumo.png';
-    outroOscar.className = 'outro-fade-in';
-    AudioEngine.playTaiko();
-  }, 1800);
-
-  // Phase 2: Hard cut to shikiri
-  setTimeout(() => {
-    outroOscar.src = 'oscar-shikiri.png';
-    outroOscar.style.animation = 'none';
-    outroOscar.style.opacity = '1';
-    outroOscar.style.transform = 'translateX(-50%) scale(1)';
-    shake('sm');
-    AudioEngine.playTaiko();
-  }, 4200);
-
-  // Phase 3: Charge jumps onto screen
-  setTimeout(() => {
-    outroOscar.src = 'oscar-charge.png';
-    outroOscar.style.animation = '';
-    outroOscar.style.opacity = '0';
-    outroOscar.style.transform = '';
-    outroOscar.className = 'outro-charge-enter';
-    AudioEngine.playWhoosh();
-    shake('sm');
-  }, 6100);
-
-  // Phase 4: Impact -- dead silence, then cut to promo
-  setTimeout(() => {
-    AudioEngine.stopCrowd();
-    shake('xl');
-    doFlash('#ffffff', 400);
-    AudioEngine.playCrash();
-    outroContainer.classList.remove('active');
-    showDemoComplete();
-  }, 7500);
-}
-
-// ===================================================
-//  GAME 1: CHANKO EATING
-// ===================================================
-function setupChanko() {
-  const container = document.getElementById('chanko-container');
-  const oscar = document.getElementById('oscar-img');
-  const chanko = document.getElementById('chanko-img');
-  container.style.display = 'block';
-  oscar.src = 'mouth-open.png';
-  chanko.style.clipPath = 'inset(0% 0% 0% 0%)';
-}
-
-function playChanko() {
-  S = 'PLAYING';
-  tapCount = 0;
-  const oscar = document.getElementById('oscar-img');
-  const timerBar = document.getElementById('timer-bar');
-  const chanko = document.getElementById('chanko-img');
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  const DURATION = 5000;
-  const TARGET = 15;
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${DURATION}ms linear`;
-    timerBar.style.width = '0%';
-  });
-  gameTimer = setTimeout(() => {
-    if (S === 'PLAYING') onLose();
-  }, DURATION);
-  function onTap(e) {
-    e.preventDefault();
-    if (S !== 'PLAYING') return;
-    tapCount++;
-    AudioEngine.playChomp();
-    oscar.src = 'mouth-stuffed.png';
-    setTimeout(() => { if (S === 'PLAYING') oscar.src = 'mouth-open.png'; }, 100);
-    const pct = Math.min(tapCount / TARGET, 1);
-    chanko.style.clipPath = `inset(${pct * 48}% 0% 0% 0%)`;
-    shake(false);
-    if (tapCount >= TARGET) onWin();
-  }
-  app.addEventListener('touchstart', onTap, { passive: false });
-  app.addEventListener('mousedown', onTap);
-  app._tap = onTap;
-}
-
-function cleanupChanko() {
-  clearTimeout(gameTimer);
-  if (app._tap) {
-    app.removeEventListener('touchstart', app._tap);
-    app.removeEventListener('mousedown', app._tap);
-    app._tap = null;
-  }
-  document.getElementById('chanko-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 2: SHIKO STOMP (Sweet Spot Slider)
-// ===================================================
-let shikoRAF = null;
-function setupShiko() {
-  const container = document.getElementById('shiko-container');
-  const oscarImg = document.getElementById('shiko-oscar');
-  const stableBar = document.getElementById('stable-bar');
-  const needle = document.getElementById('meter-needle');
-  const centerZone = document.getElementById('meter-zone-center');
-
-  document.getElementById('meter-zone-left').style.display = 'none';
-  document.getElementById('meter-zone-right').style.display = 'none';
-  
-  centerZone.style.right = 'auto'; 
-  centerZone.style.width = '30%';  
-  centerZone.style.left = '35%';
-  container.style.display = 'block';
-  oscarImg.src = 'oscar-shiko.png'; 
-  
-  stableBar.style.width = '0%';
-  stableBar.style.background = '#00ff88';
-  stableBar.style.boxShadow = '0 0 6px #00ff88';
-  needle.style.left = '50%';
-}
-
-function playShiko() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const oscarImg = document.getElementById('shiko-oscar');
-  const needle = document.getElementById('meter-needle');
-  const stableBar = document.getElementById('stable-bar');
-  const centerZone = document.getElementById('meter-zone-center');
-  const track = document.getElementById('meter-track');
-
-  const DURATION = 5000;
-  const MAX_FAIL_TIME = 1200; 
-  const ZONE_WIDTH = 0.3; 
-
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${DURATION}ms linear`;
-    timerBar.style.width = '0%';
-  });
-  let playerPos = 0.5; 
-  let targetPos = 0.5; 
-  let failTime = 0;
-  function updateNeedlePos(clientX) {
-    if (S !== 'PLAYING') return;
-    const rect = track.getBoundingClientRect();
-    let x = (clientX - rect.left) / rect.width;
-    playerPos = Math.max(0, Math.min(1, x)); 
-    needle.style.left = (playerPos * 100) + '%';
-  }
-
-  function onMove(e) {
-    e.preventDefault();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    updateNeedlePos(clientX);
-  }
-
-  function onDown(e) {
-    if (S !== 'PLAYING') return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    updateNeedlePos(clientX);
-  }
-
-  app.addEventListener('touchmove', onMove, { passive: false });
-  app.addEventListener('mousemove', onMove);
-  app.addEventListener('touchstart', onDown, { passive: false });
-  app.addEventListener('mousedown', onDown);
-  
-  app._shikoMove = onMove;
-  app._shikoDown = onDown;
-
-  let startTime = performance.now();
-  let lastFrame = startTime;
-  let lastWobbleTime = 0;
-
-function tick(now) {
-    if (S !== 'PLAYING') return;
-    const dt = Math.min(now - lastFrame, 50) / 1000;
-    lastFrame = now;
-    const elapsed = now - startTime;
-
-    if (elapsed >= DURATION) {
-      S = 'WIN_ANIM';
-      setTimeout(onWin, 100);
-      return;
-    }
-
-    const speed = 0.6 + (elapsed / DURATION) * 0.8; 
-    const t = elapsed * 0.001 * speed;
-    
-    // 1. New Math: Wider sweeps that spend less time hovering at exactly 0.5
-    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.4) * 0.32) + (Math.cos(t * Math.PI * 2.2) * 0.18);
-    targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
-    
-    centerZone.style.left = ((targetPos - ZONE_WIDTH/2) * 100) + '%';
-    const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
-    
-    if (inZone) {
-      // 2. Slightly slower heal (850)
-      failTime = Math.max(0, failTime - dt * 850); 
-      oscarImg.src = 'oscar-shiko.png';
-      centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
-      centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
-      needle.style.background = '#fff';
-      needle.style.boxShadow = '0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5)';
-    } else {
-      // 3. Slightly harsher penalty (1200)
-      failTime += dt * 1200;
-      oscarImg.src = 'oscar-shiko-wobble.png';
-      centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
-      centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
-      needle.style.background = '#ff4444';
-      needle.style.boxShadow = '0 0 8px #ff4444, 0 0 16px rgba(255,68,68,0.5)';
-      if (now - lastWobbleTime > 300) {
-        AudioEngine.playWobble();
-        lastWobbleTime = now;
-      }
-    }
-
-    // 4. Bar logic
-    const failPct = Math.min(failTime / MAX_FAIL_TIME, 1);
-    const healthPct = 1 - failPct; 
-    stableBar.style.width = (healthPct * 100) + '%';
-
-    if (healthPct > 0.5) {
-      stableBar.style.background = '#00ff88'; // Green
-      stableBar.style.boxShadow = '0 0 6px #00ff88';
-    } else if (healthPct > 0.2) {
-      stableBar.style.background = '#ff6a00'; // Orange Warning
-      stableBar.style.boxShadow = '0 0 6px #ff6a00';
-    } else {
-      stableBar.style.background = '#ff4444'; // Red Danger
-      stableBar.style.boxShadow = '0 0 6px #ff4444';
-    }
-
-    if (failPct >= 1) {
-      onLose();
-      return;
-    }
-
-    shikoRAF = requestAnimationFrame(tick);
-  }
-  shikoRAF = requestAnimationFrame(tick);
-}
-
-function cleanupShiko() {
-  if (shikoRAF) { cancelAnimationFrame(shikoRAF); shikoRAF = null; }
-  
-  if (app._shikoMove) {
-    app.removeEventListener('touchmove', app._shikoMove);
-    app.removeEventListener('mousemove', app._shikoMove);
-    app._shikoMove = null;
-  }
-  if (app._shikoDown) {
-    app.removeEventListener('touchstart', app._shikoDown);
-    app.removeEventListener('mousedown', app._shikoDown);
-    app._shikoDown = null;
-  }
-  document.getElementById('shiko-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 3: THE THROW (Reflex Tap)
-// ===================================================
-let throwRAF = null;
-let throwRound = 0; // 0 = round 1, 1 = round 2
-function setupThrow() {
-  throwRound = 0;
-  const container = document.getElementById('throw-container');
-  const oscar = document.getElementById('throw-oscar');
-  const opponent = document.getElementById('throw-opponent');
-  const zoneGlow = document.getElementById('throw-zone-glow');
-  const feedback = document.getElementById('throw-feedback');
-
-  container.style.display = 'block';
-  oscar.src = 'oscar-neutral.png';
-  opponent.style.top = '-60%';
-  opponent.style.opacity = '1';
-  opponent.style.transform = 'translateX(-50%)';
-  opponent.style.width = '70%';
-  opponent.style.filter = 'hue-rotate(140deg) saturate(1.5) brightness(0.85)';
-  opponent.className = '';
-  feedback.style.display = 'none';
-  feedback.style.opacity = '0';
-
-  zoneGlow.style.animation = 'zone-pulse 0.8s ease-in-out infinite alternate';
-}
-
-function setupThrowRound2() {
-  const oscar = document.getElementById('throw-oscar');
-  const opponent = document.getElementById('throw-opponent');
-  const zoneGlow = document.getElementById('throw-zone-glow');
-  const feedback = document.getElementById('throw-feedback');
-
-  oscar.src = 'oscar-neutral.png';
-  opponent.style.top = '-60%';
-  opponent.style.opacity = '1';
-  opponent.style.transform = 'translateX(-50%)';
-  opponent.style.width = '52%';
-  // Red-orange tint for round 2
-  opponent.style.filter = 'hue-rotate(320deg) saturate(2) brightness(0.9)';
-  opponent.className = '';
-  feedback.style.display = 'none';
-  feedback.style.opacity = '0';
-
-  zoneGlow.style.animation = 'zone-pulse 0.8s ease-in-out infinite alternate';
-}
-
-function playThrow() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const oscar = document.getElementById('throw-oscar');
-  const opponent = document.getElementById('throw-opponent');
-  const zone = document.getElementById('throw-zone');
-  const feedback = document.getElementById('throw-feedback');
-
-  // Round 1 is slower/bigger, round 2 is faster/smaller
-  const FALL_DURATION = throwRound === 0 ? 1800 : 1200;
-  const PRE_DELAY = 600 + Math.random() * 800;
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-
-  let fallStart = null;
-  let tapped = false;
-  let falling = false;
-  function startFall() {
-    falling = true;
-    fallStart = performance.now();
-    requestAnimationFrame(() => {
-      timerBar.style.transition = `width ${FALL_DURATION}ms linear`;
-      timerBar.style.width = '0%';
-    });
-    function tick(now) {
-      if (S !== 'PLAYING' || tapped) return;
-      const elapsed = now - fallStart;
-      const progress = Math.min(elapsed / FALL_DURATION, 1);
-      const topPct = -60 + (progress * 170);
-      opponent.style.top = topPct + '%';
-      if (progress >= 1) {
-        onLose();
-        return;
-      }
-      throwRAF = requestAnimationFrame(tick);
-    }
-    throwRAF = requestAnimationFrame(tick);
-  }
-
-  gameTimer = setTimeout(startFall, PRE_DELAY);
-
-  function onTap(e) {
-    e.preventDefault();
-    if (S !== 'PLAYING' || tapped || !falling) return;
-    tapped = true;
-    const oppRect = opponent.getBoundingClientRect();
-    const zoneRect = zone.getBoundingClientRect();
-
-    const feetY = oppRect.bottom - (oppRect.height * 0.05);
-    const hitBuffer = 15;
-
-    if (feetY >= (zoneRect.top - hitBuffer) && feetY <= (zoneRect.bottom + hitBuffer)) {
-      oscar.src = 'oscar-throw.png';
-      AudioEngine.playThrow();
-      shake('xl');
-      doFlash('rgba(0,229,255,0.4)', 150);
-      opponent.className = 'opponent-flung';
-
-      if (throwRound === 0) {
-        // Beat round 1 -- brief celebration then launch round 2
-        if (throwRAF) { cancelAnimationFrame(throwRAF); throwRAF = null; }
-        clearTimeout(gameTimer);
-        app.removeEventListener('touchstart', onTap);
-        app.removeEventListener('mousedown', onTap);
-        app._throwTap = null;
-
-        setTimeout(() => {
-          AudioEngine.playCoin();
-          stampShow('ROUND 2!', '#ff6a00', 'clamp(1.8rem, 7vw, 2.8rem)');
-          setTimeout(() => {
-            stampHide();
-            throwRound = 1;
-            setupThrowRound2();
-            playThrow();
-          }, 900);
-        }, 650);
-      } else {
-        // Beat round 2 -- full win
-        setTimeout(onWin, 600);
-      }
-    } else {
-      AudioEngine.playWhiff();
-      shake(false);
-      feedback.textContent = feetY < zoneRect.top ? 'TOO EARLY!' : 'TOO LATE!';
-      feedback.style.display = 'flex';
-      feedback.style.opacity = '1';
-      feedback.style.color = '#ff4444';
-      setTimeout(() => {
-        feedback.style.opacity = '0';
-        onLose();
-      }, 400);
-    }
-  }
-
-  app.addEventListener('touchstart', onTap, { passive: false });
-  app.addEventListener('mousedown', onTap);
-  app._throwTap = onTap;
-}
-
-function cleanupThrow() {
-  if (throwRAF) { cancelAnimationFrame(throwRAF); throwRAF = null; }
-  clearTimeout(gameTimer);
-  if (app._throwTap) {
-    app.removeEventListener('touchstart', app._throwTap);
-    app.removeEventListener('mousedown', app._throwTap);
-    app._throwTap = null;
-  }
-  throwRound = 0;
-  const opponent = document.getElementById('throw-opponent');
-  if (opponent) {
-    opponent.className = '';
-    opponent.style.top = '-60%';
-    opponent.style.opacity = '1';
-    opponent.style.transform = 'translateX(-50%)';
-    opponent.style.width = '70%';
-    opponent.style.filter = 'hue-rotate(140deg) saturate(1.5) brightness(0.85)';
-  }
-  document.getElementById('throw-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 4: TSUPPARI DODGE (Swipe to Safety)
-// ===================================================
-let dodgeTimeouts = [];
-
-function setupDodge() {
-  const container = document.getElementById('dodge-container');
-  const oscar = document.getElementById('dodge-oscar');
-  const handL = document.getElementById('dodge-hand-left');
-  const handR = document.getElementById('dodge-hand-right');
-  const waveCounter = document.getElementById('dodge-wave-counter');
-  const telegraph = document.getElementById('dodge-telegraph');
-
-  container.style.display = 'block';
-  oscar.src = 'oscar-neutral.png';
-  oscar.className = '';
-  oscar.style.transform = 'translateX(-50%)';
-  
-  handL.className = 'ghost-hand hand-left';
-  handL.style.cssText = ''; 
-  
-  handR.className = 'ghost-hand hand-right';
-  handR.style.cssText = ''; 
-  
-  waveCounter.textContent = '';
-  telegraph.style.opacity = '0';
-}
-
-function playDodge() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const oscar = document.getElementById('dodge-oscar');
-  const handL = document.getElementById('dodge-hand-left');
-  const handR = document.getElementById('dodge-hand-right');
-  const waveCounter = document.getElementById('dodge-wave-counter');
-  const TOTAL_WAVES = 5;
-  const DODGES_NEEDED = 3; 
-  let currentWave = 0;
-  let dodgesHit = 0;
-  let dodgesMissed = 0;
-  let playerSide = 'center'; 
-  let canDodge = false;
-  let swipeHandled = false;
-
-  const TOTAL_TIME = 8000;
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
-    timerBar.style.width = '0%';
-  });
-  waveCounter.textContent = `${dodgesHit}/${DODGES_NEEDED}`;
-
-  let touchStartX = null;
-  let touchStartY = null;
-
-  function handleDodge(direction) {
-    if (S !== 'PLAYING' || !canDodge || swipeHandled) return;
-    swipeHandled = true;
-    if (direction === 'left') {
-      playerSide = 'left';
-      oscar.src = 'oscar-throw.png';
-      oscar.style.transform = '';
-      oscar.className = 'dodge-left';
-    } else {
-      playerSide = 'right';
-      oscar.src = 'oscar-throw.png';
-      oscar.style.transform = '';
-      oscar.className = 'dodge-right';
-    }
-  }
-
-  function onTouchStart(e) {
-    if (e.cancelable) e.preventDefault();
-    if (S !== 'PLAYING') return;
-    const touch = e.touches ? e.touches[0] : e;
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-  }
-
-  // Active swiping to make the trigger instantaneous 
-  function onTouchMove(e) {
-    if (S !== 'PLAYING' || touchStartX === null || swipeHandled) return;
-    if (e.cancelable) e.preventDefault();
-    
-    const touch = e.touches ? e.touches[0] : e;
-    const dx = touch.clientX - touchStartX;
-    const dy = touch.clientY - touchStartY;
-
-    // Trigger swipe the moment they cross the 30px threshold
-    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) {
-      handleDodge(dx < 0 ? 'left' : 'right');
-    }
-  }
-
-  function onTouchEnd(e) {
-    if (e.cancelable) e.preventDefault();
-    touchStartX = null;
-    touchStartY = null;
-  }
-
-  app.addEventListener('touchstart', onTouchStart, { passive: false });
-  app.addEventListener('touchmove', onTouchMove, { passive: false });
-  app.addEventListener('touchend', onTouchEnd, { passive: false });
-  
-  app.addEventListener('mousedown', onTouchStart);
-  app.addEventListener('mousemove', onTouchMove);
-  app.addEventListener('mouseup', onTouchEnd);
-  app.addEventListener('mouseleave', onTouchEnd);
-
-  app._dodgeHandlers = { onTouchStart, onTouchMove, onTouchEnd };
-
-  function launchWave() {
-    if (S !== 'PLAYING') return;
-    if (currentWave >= TOTAL_WAVES) {
-      if (dodgesHit >= DODGES_NEEDED) { onWin(); } else { onLose(); }
-      return;
-    }
-
-    canDodge = true;
-    swipeHandled = false;
-    playerSide = 'center';
-    oscar.src = 'oscar-neutral.png';
-    oscar.className = '';
-    oscar.style.transform = 'translateX(-50%)';
-
-    const side = Math.random() < 0.5 ? 'left' : 'right'; // Threat side
-    const hand = side === 'left' ? handL : handR;
-    const otherHand = side === 'left' ? handR : handL;
-    const telegraph = document.getElementById('dodge-telegraph');
-    
-    // We want the player to swipe to the safe side
-    const safeSide = side === 'left' ? 'right' : 'left';
-
-    otherHand.className = 'ghost-hand ' + (side === 'left' ? 'hand-right' : 'hand-left');
-    const windUpTime = Math.max(360, 600 - currentWave * 60);
-    const slamSpeed = Math.max(230, 350 - currentWave * 30);
-    const pauseTime = Math.max(300, 600 - currentWave * 75);
-
-    // Show the neon green safe zone + arrows on the side they need to jump to!
-    telegraph.className = safeSide === 'left' ? 'tele-left' : 'tele-right';
-    telegraph.style.opacity = '1';
-
-    hand.style.transitionProperty = 'top, opacity';
-    hand.style.transitionDuration = `${windUpTime}ms, 0.1s`;
-    hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' winding-up';
-    
-    dodgeTimeouts.push(setTimeout(() => {
-      if (S !== 'PLAYING') return;
-      
-      telegraph.style.opacity = '0';
-      hand.style.transitionDuration = `${slamSpeed}ms, 0.1s`;
-      hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' slamming';
-      AudioEngine.playWhoosh();
-
-      dodgeTimeouts.push(setTimeout(() => {
-        if (S !== 'PLAYING') return;
-       
-        canDodge = false;
-
-        if (playerSide === safeSide) {
-          dodgesHit++;
-          AudioEngine.playCoin();
-          shake(false);
-        } else {
-          dodgesMissed++;
-          AudioEngine.playBonk();
-          shake(true);
-          doFlash('rgba(255,0,0,0.35)', 150);
+        const trigger = document.getElementById('easter-egg-trigger');
+        let clickCount = 0;
+
+        if(trigger) {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                clickCount++;
+
+                if (clickCount === 1) {
+                    // Escalation warning
+                    trigger.innerText = "[ANOMALY DETECTED. CLICK AGAIN TO DIAGNOSE]";
+                    trigger.style.fontFamily = "'Space Mono', monospace";
+                    trigger.style.color = "var(--text-burgundy)";
+                    trigger.style.background = "var(--bg-cream)";
+                    trigger.style.fontWeight = "bold";
+                    trigger.style.borderBottom = "none";
+                    trigger.style.padding = "2px 8px";
+                } else if (clickCount === 2) {
+                    // Lock the screen so they can't scroll away
+                    document.body.style.overflow = 'hidden';
+
+                    // Build the clean overlay
+                    const overlay = document.createElement('div');
+                    overlay.id = 'glitch-overlay';
+                    overlay.innerHTML = `
+                        <div class="glitch-msg">> Suspending portfolio aesthetic...</div>
+                        <div class="glitch-msg" style="margin-top: 0.5rem; color: #FF3300;">> Routing to diagnostic server...</div>
+                        <div class="system-spinner"></div>
+                    `;
+                    document.body.appendChild(overlay);
+
+                    // Fade it in smoothly
+                    setTimeout(() => {
+                        overlay.classList.add('active');
+                    }, 50);
+
+                    // Redirect to the Enneagram app after 2.2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'enneagram.html'; 
+                    }, 2200);
+                }
+            });
         }
-
-        waveCounter.textContent = `${dodgesHit}/${DODGES_NEEDED}`;
-        
-        hand.style.transitionProperty = '';
-        hand.style.transitionDuration = '';
-        hand.className = 'ghost-hand ' + (side === 'left' ? 'hand-left' : 'hand-right') + ' withdrawing';
-
-        currentWave++;
-
-        dodgeTimeouts.push(setTimeout(() => {
-          oscar.src = 'oscar-neutral.png';
-          oscar.className = '';
-          oscar.style.transform = 'translateX(-50%)';
-          dodgeTimeouts.push(setTimeout(launchWave, 100)); 
-        }, pauseTime));
-      }, slamSpeed));
-
-    }, windUpTime));
-  }
-
-  dodgeTimeouts.push(setTimeout(launchWave, 400));
-}
-
-function cleanupDodge() {
-  dodgeTimeouts.forEach(t => clearTimeout(t));
-  dodgeTimeouts = [];
-  
-  if (app._dodgeHandlers) {
-    app.removeEventListener('touchstart', app._dodgeHandlers.onTouchStart);
-    app.removeEventListener('touchmove', app._dodgeHandlers.onTouchMove);
-    app.removeEventListener('touchend', app._dodgeHandlers.onTouchEnd);
-    app.removeEventListener('mousedown', app._dodgeHandlers.onTouchStart);
-    app.removeEventListener('mousemove', app._dodgeHandlers.onTouchMove);
-    app.removeEventListener('mouseup', app._dodgeHandlers.onTouchEnd);
-    app.removeEventListener('mouseleave', app._dodgeHandlers.onTouchEnd);
-    app._dodgeHandlers = null;
-  }
-  document.getElementById('dodge-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 5: BELLY DEFLECTION (Bounce)
-// ===================================================
-const BOUNCE_OBJECTS = ['falling-fish.png', 'falling-tire.png', 'falling-ball.png'];
-let bounceRAF = null;
-let bounceTimeouts = [];
-
-function setupBounce() {
-  const container = document.getElementById('bounce-container');
-  const oscar = document.getElementById('bounce-oscar');
-  const obj = document.getElementById('bounce-obj');
-  const counter = document.getElementById('bounce-counter');
-
-  container.style.display = 'block';
-  oscar.src = 'oscar-neutral.png';
-  oscar.className = '';
-  obj.style.top = '-20%';
-  obj.style.opacity = '0';
-  obj.className = 'falling-obj';
-  counter.textContent = '';
-}
-
-function playBounce() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const oscar = document.getElementById('bounce-oscar');
-  const obj = document.getElementById('bounce-obj');
-  const counter = document.getElementById('bounce-counter');
-  const container = document.getElementById('bounce-container');
-
-  const TOTAL_OBJECTS = 3;
-  const TOTAL_TIME = 10000;
-  let currentObj = 0;
-  let bounced = 0;
-  let canTap = false;
-  let tapped = false;
-  let fallStart = null;
-  let falling = false;
-
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
-    timerBar.style.width = '0%';
-  });
-
-  counter.textContent = `${bounced}/${TOTAL_OBJECTS}`;
-
-  const objOrder = BOUNCE_OBJECTS.slice(0, TOTAL_OBJECTS);
-
-  function launchObject() {
-    if (S !== 'PLAYING') return;
-    if (currentObj >= TOTAL_OBJECTS) {
-      if (bounced >= TOTAL_OBJECTS) { onWin(); } else { onLose(); }
-      return;
-    }
-
-    // Reset state for this object
-    canTap = true;
-    tapped = false;
-    falling = true;
-
-    // Pick random X position (20%-80% of container width)
-    const xPct = 20 + Math.random() * 60;
-    obj.style.left = xPct + '%';
-    obj.style.transform = 'translateX(-50%)';
-    obj.src = objOrder[currentObj];
-    obj.className = 'falling-obj';
-    obj.style.top = '-20%';
-    obj.style.opacity = '1';
-
-    // Fall speed increases with each object
-    const fallDurations = [2200, 1400, 900];
-    const fallDuration = fallDurations[currentObj] ?? 900;
-    fallStart = performance.now();
-
-    function tick(now) {
-      if (S !== 'PLAYING' || tapped) return;
-      const elapsed = now - fallStart;
-      const progress = Math.min(elapsed / fallDuration, 1);
-      // Fall from -20% to 95%
-      const topPct = -20 + (progress * 115);
-      obj.style.top = topPct + '%';
-
-      if (progress >= 1) {
-        // Missed it
-        canTap = false;
-        AudioEngine.playCrash();
-        shake(true);
-        doFlash('rgba(255,0,0,0.35)', 150);
-        obj.className = 'falling-obj obj-crashed';
-        onLose();
-        return;
-      }
-      bounceRAF = requestAnimationFrame(tick);
-    }
-    bounceRAF = requestAnimationFrame(tick);
-  }
-
-  function onTap(e) {
-    e.preventDefault();
-    if (S !== 'PLAYING' || !canTap || tapped || !falling) return;
-
-    // Check if object is inside the visual bounce zone
-    const objRect = obj.getBoundingClientRect();
-    const zoneRect = document.getElementById('bounce-zone').getBoundingClientRect();
-    const objBottom = objRect.bottom;
-    const objCenter = objRect.top + objRect.height / 2;
-    const hitBuffer = 25;
-
-    if (objBottom >= (zoneRect.top - hitBuffer) && objCenter <= (zoneRect.bottom + hitBuffer)) {
-      // HIT!
-      tapped = true;
-      canTap = false;
-      if (bounceRAF) { cancelAnimationFrame(bounceRAF); bounceRAF = null; }
-
-      bounced++;
-      counter.textContent = `${bounced}/${TOTAL_OBJECTS}`;
-
-      // Inflate Oscar
-      oscar.src = 'oscar-inflated.png';
-      oscar.className = 'inflated';
-      AudioEngine.playBoing();
-      shake(false);
-      doFlash('rgba(0,229,255,0.2)', 100);
-
-      // Bounce the object away in a random direction!
-      const bounceLeft = Math.random() > 0.5;
-      obj.className = `falling-obj ${bounceLeft ? 'obj-bounced-left' : 'obj-bounced-right'}`;
-
-      bounceTimeouts.push(setTimeout(() => {
-        // Deflate Oscar
-        oscar.src = 'oscar-neutral.png';
-        oscar.className = '';
-        obj.style.opacity = '0';
-        obj.className = 'falling-obj';
-
-        currentObj++;
-        if (currentObj >= TOTAL_OBJECTS) {
-          bounceTimeouts.push(setTimeout(() => {
-            if (bounced >= TOTAL_OBJECTS) { onWin(); } else { onLose(); }
-          }, 200));
-        } else {
-          // Pause then launch next
-          bounceTimeouts.push(setTimeout(launchObject, 500));
-        }
-      }, 500));
-    } else {
-      // Too early or too late -- just a whiff, but don't end the round
-      AudioEngine.playWhiff();
-    }
-  }
-
-  app.addEventListener('touchstart', onTap, { passive: false });
-  app.addEventListener('mousedown', onTap);
-  app._bounceTap = onTap;
-
-  // Start first object after a short delay
-  bounceTimeouts.push(setTimeout(launchObject, 600));
-}
-
-function cleanupBounce() {
-  if (bounceRAF) { cancelAnimationFrame(bounceRAF); bounceRAF = null; }
-  bounceTimeouts.forEach(t => clearTimeout(t));
-  bounceTimeouts = [];
-  clearTimeout(gameTimer);
-  if (app._bounceTap) {
-    app.removeEventListener('touchstart', app._bounceTap);
-    app.removeEventListener('mousedown', app._bounceTap);
-    app._bounceTap = null;
-  }
-  document.getElementById('bounce-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 6: MAWASHI CRISIS (Wrap)
-// ===================================================
-let wrapRAF = null;
-let wrapTimeouts = [];
-
-const WRAP_SPRITES = [
-  'oscar-unwrapped.png',
-  'oscar-wrapping-2.png',
-  'oscar-neutral.png'
-];
-
-function setupWrap() {
-  const container = document.getElementById('wrap-container');
-  const oscar = document.getElementById('wrap-oscar');
-  const spotlight = document.getElementById('wrap-spotlight');
-  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const orbit = document.getElementById('wrap-orbit');
-
-  container.style.display = 'block';
-  oscar.src = 'oscar-unwrapped.png';
-  spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%)';
-  ringFill.style.strokeDashoffset = '283';
-  orbit.style.opacity = '1';
-}
-
-function playWrap() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const oscar = document.getElementById('wrap-oscar');
-  const spotlight = document.getElementById('wrap-spotlight');
-  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const orbit = document.getElementById('wrap-orbit');
-
-  const TOTAL_TIME = 10000;
-  const ROTATIONS_NEEDED = 5;       // full 360° rotations to win
-  const TOTAL_ANGLE = ROTATIONS_NEEDED * Math.PI * 2;
-  let cumulativeAngle = 0;
-  let lastAngle = null;
-  let lastSwishTime = 0;
-  let currentSpriteIndex = 0;
-  let startTime = performance.now();
-
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
-    timerBar.style.width = '0%';
-  });
-
-  // Get Oscar's center for angle calculation
-  function getOscarCenter() {
-    const rect = oscar.getBoundingClientRect();
-    return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height * 0.4  // belly area
-    };
-  }
-
-  function updateProgress() {
-    const progress = Math.min(cumulativeAngle / TOTAL_ANGLE, 1);
-
-    // Update progress ring (283 is the circumference of r=45 circle)
-    ringFill.style.strokeDashoffset = String(283 - (progress * 283));
-
-    // Update sprite based on progress thresholds (skipping wrapping-1)
-    let newIndex;
-    if (progress < 0.4) newIndex = 0;
-    else if (progress < 0.8) newIndex = 1;
-    else newIndex = 2;
-
-    if (newIndex !== currentSpriteIndex) {
-      currentSpriteIndex = newIndex;
-      oscar.src = WRAP_SPRITES[newIndex];
-      AudioEngine.playCoin();
-      shake(false);
-    }
-
-    // Update spotlight: shrinks transparent area as time passes AND expands as you progress
-    // Spotlight closes with time, but progress "fights" it open
-    const elapsed = performance.now() - startTime;
-    const timePressure = (elapsed / TOTAL_TIME);       // 0 to 1
-    const spotlightSize = Math.max(8, 60 - (timePressure * 55) + (progress * 20));
-    const spotlightEdge = Math.min(90, spotlightSize + 20);
-    spotlight.style.background = `radial-gradient(circle at 50% 55%, transparent ${spotlightSize}%, rgba(0,0,0,0.95) ${spotlightEdge}%)`;
-
-    // Play swish sound with increasing pitch
-    const now = performance.now();
-    if (now - lastSwishTime > 80) {
-      AudioEngine.playSwish(progress);
-      lastSwishTime = now;
-    }
-
-    // Fade out hint and orbit dot after first bit of progress
-    if (progress > 0.05) {
-      orbit.style.opacity = '0';
-    }
-
-    // WIN!
-    if (progress >= 1) {
-      S = 'WIN_ANIM';
-      // Flash the ring green
-      ringFill.style.stroke = '#00ff88';
-      ringFill.style.filter = 'drop-shadow(0 0 12px rgba(0,255,136,0.8))';
-      doFlash('rgba(0,255,136,0.3)', 200);
-      // Open spotlight fully
-      spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 80%, rgba(0,0,0,0.3) 100%)';
-      wrapTimeouts.push(setTimeout(onWin, 400));
-      return;
-    }
-  }
-
-  function onTouchStart(e) {
-    if (S !== 'PLAYING') return;
-    if (e.cancelable) e.preventDefault();
-    const touch = e.touches ? e.touches[0] : e;
-    const center = getOscarCenter();
-    lastAngle = Math.atan2(touch.clientY - center.y, touch.clientX - center.x);
-  }
-
-  function onTouchMove(e) {
-    if (S !== 'PLAYING' || lastAngle === null) return;
-    if (e.cancelable) e.preventDefault();
-    const touch = e.touches ? e.touches[0] : e;
-    const center = getOscarCenter();
-    const currentAngle = Math.atan2(touch.clientY - center.y, touch.clientX - center.x);
-
-    let delta = currentAngle - lastAngle;
-
-    // Handle angle wrapping at ±π boundary
-    if (delta > Math.PI) delta -= Math.PI * 2;
-    if (delta < -Math.PI) delta += Math.PI * 2;
-
-    // Accept rotation in either direction (absolute value)
-    cumulativeAngle += Math.abs(delta);
-    lastAngle = currentAngle;
-
-    updateProgress();
-  }
-
-  function onTouchEnd(e) {
-    if (e.cancelable) e.preventDefault();
-    lastAngle = null;
-  }
-
-  app.addEventListener('touchstart', onTouchStart, { passive: false });
-  app.addEventListener('touchmove', onTouchMove, { passive: false });
-  app.addEventListener('touchend', onTouchEnd, { passive: false });
-  app.addEventListener('mousedown', onTouchStart);
-  app.addEventListener('mousemove', onTouchMove);
-  app.addEventListener('mouseup', onTouchEnd);
-  app.addEventListener('mouseleave', onTouchEnd);
-
-  app._wrapHandlers = { onTouchStart, onTouchMove, onTouchEnd };
-
-  // Time-out loss
-  wrapTimeouts.push(setTimeout(() => {
-    if (S === 'PLAYING') {
-      // Spotlight slams shut
-      spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 0%, rgba(0,0,0,0.98) 5%)';
-      doFlash('rgba(255,0,0,0.4)', 200);
-      wrapTimeouts.push(setTimeout(onLose, 300));
-    }
-  }, TOTAL_TIME));
-
-  // Tick loop for spotlight pressure (updates even without touch)
-  function pressureTick() {
-    if (S !== 'PLAYING') return;
-    const elapsed = performance.now() - startTime;
-    const timePressure = elapsed / TOTAL_TIME;
-    const progress = Math.min(cumulativeAngle / TOTAL_ANGLE, 1);
-    const spotlightSize = Math.max(8, 60 - (timePressure * 55) + (progress * 20));
-    const spotlightEdge = Math.min(90, spotlightSize + 20);
-    spotlight.style.background = `radial-gradient(circle at 50% 55%, transparent ${spotlightSize}%, rgba(0,0,0,0.95) ${spotlightEdge}%)`;
-    wrapRAF = requestAnimationFrame(pressureTick);
-  }
-  wrapRAF = requestAnimationFrame(pressureTick);
-}
-
-function cleanupWrap() {
-  if (wrapRAF) { cancelAnimationFrame(wrapRAF); wrapRAF = null; }
-  wrapTimeouts.forEach(t => clearTimeout(t));
-  wrapTimeouts = [];
-
-  if (app._wrapHandlers) {
-    app.removeEventListener('touchstart', app._wrapHandlers.onTouchStart);
-    app.removeEventListener('touchmove', app._wrapHandlers.onTouchMove);
-    app.removeEventListener('touchend', app._wrapHandlers.onTouchEnd);
-    app.removeEventListener('mousedown', app._wrapHandlers.onTouchStart);
-    app.removeEventListener('mousemove', app._wrapHandlers.onTouchMove);
-    app.removeEventListener('mouseup', app._wrapHandlers.onTouchEnd);
-    app.removeEventListener('mouseleave', app._wrapHandlers.onTouchEnd);
-    app._wrapHandlers = null;
-  }
-
-  // Reset ring visuals
-  const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  if (ringFill) {
-    ringFill.style.stroke = '#00e5ff';
-    ringFill.style.filter = 'drop-shadow(0 0 6px rgba(0,229,255,0.6))';
-  }
-
-  document.getElementById('wrap-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 7: SALT THE DEMON (Boss Flick)
-// ===================================================
-let saltTimeouts = [];
-
-function setupSalt() {
-  const container = document.getElementById('salt-container');
-  const demon = document.getElementById('demon-sprite');
-  const healthBar = document.getElementById('demon-health-bar');
-
-  container.style.display = 'block';
-  demon.style.filter = 'none';
-  demon.style.top = '100%';
-  healthBar.style.width = '100%';
-
-  requestAnimationFrame(() => {
-    demon.style.transition = 'top 1s ease-out';
-    demon.style.top = '15%';
-  });
-
-  AudioEngine.playDemonRumble();
-}
-
-function playSalt() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const container = document.getElementById('salt-container');
-  const demon = document.getElementById('demon-sprite');
-  const healthBar = document.getElementById('demon-health-bar');
-
-  const TOTAL_TIME = 6000;
-  const HITS_NEEDED = 15;
-  let currentHits = 0;
-  let touchStartY = null;
-
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  requestAnimationFrame(() => {
-    timerBar.style.transition = `width ${TOTAL_TIME}ms linear`;
-    timerBar.style.width = '0%';
-  });
-
-  gameTimer = setTimeout(() => {
-    if (S === 'PLAYING') onLose();
-  }, TOTAL_TIME);
-
-  function createSaltBurst() {
-    const count = Math.floor(Math.random() * 5) + 8;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('div');
-      p.className = 'salt-particle';
-      const spread = (Math.random() - 0.5) * 200;
-      p.style.setProperty('--spread-x', `${spread}px`);
-      p.style.animationDelay = `${Math.random() * 0.05}s`;
-      container.appendChild(p);
-      setTimeout(() => p.remove(), 450);
-    }
-  }
-
-  function handleSwipeUp() {
-    if (S !== 'PLAYING') return;
-
-    AudioEngine.playSwish(0.8);
-    createSaltBurst();
-
-    saltTimeouts.push(setTimeout(() => {
-      if (S !== 'PLAYING') return;
-      currentHits++;
-
-      AudioEngine.playSizzle();
-      shake('sm');
-      demon.style.filter = 'brightness(3) saturate(0)';
-// Calculate how close we are to winning (1.0 to 2.5 multiplier)
-      const intensity = 1 + (currentHits / HITS_NEEDED) * 1.5;
-      AudioEngine.playSizzle(intensity);
-
-      const hpPct = Math.max(0, 1 - (currentHits / HITS_NEEDED));
-      healthBar.style.width = `${hpPct * 100}%`;
-
-      saltTimeouts.push(setTimeout(() => {
-        if (demon) demon.style.filter = 'none';
-      }, 100));
-
-      if (currentHits >= HITS_NEEDED) {
-        S = 'WIN_ANIM';
-        clearTimeout(gameTimer);
-        AudioEngine.playDemonDeath();
-        shake('xl');
-        doFlash('#ffffff', 300);
-        demon.style.transition = 'top 0.5s ease-in, filter 0.5s';
-        demon.style.top = '120%';
-        demon.style.filter = 'brightness(0)';
-
-        saltTimeouts.push(setTimeout(onWin, 600));
-      }
-    }, 200));
-  }
-
-  function onTouchStart(e) {
-    if (e.cancelable) e.preventDefault();
-    if (S !== 'PLAYING') return;
-    const touch = e.touches ? e.touches[0] : e;
-    touchStartY = touch.clientY;
-  }
-
-  function onTouchEnd(e) {
-    if (e.cancelable) e.preventDefault();
-    if (S !== 'PLAYING' || touchStartY === null) return;
-
-    const touch = e.changedTouches ? e.changedTouches[0] : e;
-    const deltaY = touch.clientY - touchStartY;
-
-    if (deltaY < -40) {
-      handleSwipeUp();
-    }
-    touchStartY = null;
-  }
-
-  app.addEventListener('touchstart', onTouchStart, { passive: false });
-  app.addEventListener('touchend', onTouchEnd, { passive: false });
-  app.addEventListener('mousedown', onTouchStart);
-  app.addEventListener('mouseup', onTouchEnd);
-
-  app._saltHandlers = { onTouchStart, onTouchEnd };
-}
-
-function cleanupSalt() {
-  clearTimeout(gameTimer);
-  saltTimeouts.forEach(t => clearTimeout(t));
-  saltTimeouts = [];
-  AudioEngine.stopDemonRumble();
-
-  if (app._saltHandlers) {
-    app.removeEventListener('touchstart', app._saltHandlers.onTouchStart);
-    app.removeEventListener('touchend', app._saltHandlers.onTouchEnd);
-    app.removeEventListener('mousedown', app._saltHandlers.onTouchStart);
-    app.removeEventListener('mouseup', app._saltHandlers.onTouchEnd);
-    app._saltHandlers = null;
-  }
-
-  document.querySelectorAll('.salt-particle').forEach(p => p.remove());
-  document.getElementById('salt-container').style.display = 'none';
-}
-
-// ===================================================
-//  GAME 8: THE YOKOZUNA (SAMURAI STANDOFF)
-// ===================================================
-let bossTimeouts = [];
-
-function setupBoss() {
-  const container = document.getElementById('boss-container');
-  const sprite = document.getElementById('boss-sprite');
-  const healthBg = document.getElementById('boss-health-bg');
-
-  container.style.display = 'block';
-  sprite.src = 'boss-before-charge.png';
-  sprite.style.transform = 'translateX(-50%) scale(1)';
-  sprite.style.transition = 'transform 0.1s';
-  sprite.style.opacity = '1';
-  sprite.className = '';
-
-  // Hide the health bar, this is a 1-hit kill scenario
-  healthBg.style.display = 'none';
-
-  document.getElementById('boss-glow-left').style.opacity = '0';
-  document.getElementById('boss-glow-right').style.opacity = '0';
-  document.getElementById('boss-hand-left').classList.remove('active');
-  document.getElementById('boss-hand-right').classList.remove('active');
-}
-
-function playBoss() {
-  S = 'PLAYING';
-  const timerBar = document.getElementById('timer-bar');
-  const sprite = document.getElementById('boss-sprite');
-  const flashEl = document.getElementById('boss-screen-flash');
-
-  // No visible timer for a standoff to build tension
-  timerBar.style.width = '100%';
-  timerBar.style.transition = 'none';
-
-  let standoffPhase = 'WAITING'; // WAITING, NOW, DONE
-  let touchStartY = null;
-  let touchStartX = null;
-
-  function doBossFlash(color, ms) {
-    flashEl.style.background = color;
-    flashEl.style.opacity = '0.6';
-    setTimeout(() => { flashEl.style.opacity = '0'; }, ms);
-  }
-
-  // Random wait time between 3 and 7 seconds
-  const waitTime = 3000 + Math.random() * 4000;
-
-  AudioEngine.playHeartbeat(waitTime);
-  // Slight slow zoom to build tension
-  sprite.style.transition = `transform ${waitTime}ms linear`;
-  sprite.style.transform = 'translateX(-50%) scale(1.15)';
-
-  // The Trigger
-  const triggerTimeout = setTimeout(() => {
-    if (S !== 'PLAYING') return;
-    standoffPhase = 'NOW';
-    AudioEngine.stopHeartbeat();
-    AudioEngine.playHyoshigi(); 
-    
-    doBossFlash('#ff0000', 100);
-    // Explicit instruction instead of "NOW!"
-    stampShow('SWIPE UP!', '#ff0000', 'clamp(2.5rem, 10vw, 4rem)', 'transparent');
-    
-    sprite.style.transition = 'transform 0.05s';
-    sprite.style.transform = 'translateX(-50%) scale(1.2)';
-
-    // The failure window (widened to 700ms)
-    bossTimeouts.push(setTimeout(() => {
-      if (standoffPhase === 'NOW') {
-        fail('TOO LATE!');
-      }
-    }, 700)); 
-  }, waitTime);
-
-  bossTimeouts.push(triggerTimeout);
-
-function fail(reason) {
-    if (S !== 'PLAYING') return;
-    
-    // 1. Instantly change state to prevent other interactions/timers
-    S = 'LOSE_ANIM'; 
-    standoffPhase = 'DONE';
-    
-    // 2. Clear any pending boss timers
-    bossTimeouts.forEach(t => clearTimeout(t));
-    bossTimeouts = [];
-
-    AudioEngine.stopHeartbeat();
-    AudioEngine.playDeathSlam();
-    
-    // The violent jump scare penalty
-    sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; 
-    sprite.src = 'boss-charge.png';
-    sprite.style.transform = 'translateX(-50%) scale(2.2) translateY(10%)'; 
-    
-    doBossFlash('#ff0000', 200);
-    shake('xl');
-    
-    // FIX: Changed solid '#000' to 'rgba(0,0,0,0.5)' so the Yokozuna 
-    // jump scare is clearly visible behind the text!
-    stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', 'rgba(0,0,0,0.5)');
-    
-    // 3. Hold for a solid beat before proceeding to the loss screen
-    setTimeout(() => {
-      stampHide();
-      onLose();
-    }, 1500); // Increased to 1.5s so the charge really registers
-}
-
-  function win() {
-    if (S !== 'PLAYING') return;
-    standoffPhase = 'DONE';
-    S = 'WIN_ANIM';
-    stampHide();
-
-    // 1. FREEZE TIME
-    AudioEngine.stopHeartbeat();
-    sprite.src = 'boss-stunned.png';
-    
-    // 2. ZOOM OUT THE SCREEN
-    const screenEl = document.getElementById('screen');
-    screenEl.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    screenEl.style.transform = 'scale(0.45) translateY(-15%)'; 
-    
-    // 3. FADE THE CABINET BACK IN
-    const cabinet = document.getElementById('cabinet-img');
-    cabinet.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1s ease-out';
-    cabinet.style.transform = 'scale(1)';
-    cabinet.style.opacity = '1';
-
-// 4. SHATTER
-    bossTimeouts.push(setTimeout(() => {
-      AudioEngine.playGlassShatter(); 
-      shake('xl');
-      doBossFlash('#ffffff', 400);
-      
-      const crack = document.getElementById('glass-crack');
-      if (crack) crack.style.display = 'block';
-      
-      // 5. PROCEED DIRECTLY TO OUTRO (Bypass onWin checkmark)
-      bossTimeouts.push(setTimeout(() => {
-        cleanupBoss();
-        score++;
-        playOutroSequence(); // Trigger the cinematic!
-      }, 1800)); // Hold the shattered screen for 1.8s
-    }, 1300));
-  }
-
-  function onTouchStart(e) {
-    if (e.cancelable) e.preventDefault();
-    const touch = e.touches ? e.touches[0] : e;
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-  }
-
-  function onTouchEnd(e) {
-    if (e.cancelable) e.preventDefault();
-    if (touchStartY === null) return;
-    
-    const touch = e.changedTouches ? e.changedTouches[0] : e;
-    const dx = touch.clientX - touchStartX;
-    const dy = touch.clientY - touchStartY;
-    
-    touchStartX = null;
-    touchStartY = null;
-
-    if (standoffPhase === 'WAITING') {
-      fail('TOO EARLY!');
-      return;
-    }
-
-    if (standoffPhase === 'NOW') {
-      // Must be a distinct upward swipe (hypersensitive 15px)
-      if (dy < -15 && Math.abs(dy) > Math.abs(dx)) {
-        win(); 
-      } else {
-        fail('SWIPE UP!'); 
-      }
-    }
-  }
-
-  app.addEventListener('touchstart', onTouchStart, { passive: false });
-  app.addEventListener('touchend', onTouchEnd, { passive: false });
-  app.addEventListener('mousedown', onTouchStart);
-  app.addEventListener('mouseup', onTouchEnd);
-  app._bossHandlers = { onTouchStart, onTouchEnd };
-}
-
-function cleanupBoss() {
-  bossTimeouts.forEach(t => clearTimeout(t));
-  bossTimeouts = [];
-  AudioEngine.stopDemonRumble();
-
-  if (app._bossHandlers) {
-    app.removeEventListener('touchstart', app._bossHandlers.onTouchStart);
-    app.removeEventListener('touchend', app._bossHandlers.onTouchEnd);
-    app.removeEventListener('mousedown', app._bossHandlers.onTouchStart);
-    app.removeEventListener('mouseup', app._bossHandlers.onTouchEnd);
-    app._bossHandlers = null;
-  }
-
-  document.getElementById('boss-health-bg').style.display = 'block'; // Reset for next loop
-  document.getElementById('boss-container').style.display = 'none';
-}
-
-// ===================================================
-//  END SCREENS & OUTRO
-// ===================================================
-function showDemoComplete() {
-  document.getElementById('final-score').textContent = String(score).padStart(3, '0');
-  demoEl.classList.add('active');
-  
-  const tap = e => { 
-    // If they clicked the ticket link, let the browser handle it, don't restart
-    if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'a') return;
-    
-    e.preventDefault(); 
-    demoEl.removeEventListener('touchstart', tap);
-    demoEl.removeEventListener('mousedown', tap);
-    restart(); 
-  };
-
-  demoEl.addEventListener('touchstart', tap, { passive: false });
-  demoEl.addEventListener('mousedown', tap);
-}
-
-function startOutro() {
-  S = 'OUTRO';
-  
-  // Fade out the shattered game wrapper
-  const gw = document.getElementById('game-wrapper');
-  gw.style.transition = 'opacity 1.5s ease-in-out';
-  gw.style.opacity = '0';
-  
-  // Show the outro panel (starts pure white)
-  const outroPanel = document.getElementById('panel-outro');
-  const white = document.getElementById('outro-white');
-  const sprite = document.getElementById('outro-sprite');
-  
-  showPanel(outroPanel);
-  white.style.opacity = '1';
-  sprite.style.transform = 'scale(1.05)';
-  
-  // 1. Play the alarm clock
-  setTimeout(() => {
-    AudioEngine.playAlarm();
-  }, 1000);
-  
-  // 2. Fade from white to Oscar waking up
-  setTimeout(() => {
-    white.style.opacity = '0';
-    sprite.style.transition = 'transform 5s ease-out';
-    sprite.style.transform = 'scale(1)'; // Slow dramatic zoom out
-  }, 1500);
-  
-  // 3. Transition to the True Ending Score Screen
-  setTimeout(() => {
-    outroPanel.classList.remove('active');
-    
-    // Calculate final stats
-    document.getElementById('end-lives').textContent = lives;
-    const bonus = lives * 500; 
-    document.getElementById('end-score').textContent = String(score * 100 + bonus).padStart(4, '0');
-    
-    const trueEnding = document.getElementById('true-ending-screen');
-    trueEnding.classList.add('active');
-    
-    // Set up endless grind button
-    const tap = e => { 
-      e.preventDefault(); 
-      trueEnding.classList.remove('active');
-      // Loop back to the start, but keep score running!
-      currentGame = 0; 
-      gw.style.opacity = '1';
-      initGame(); 
-    };
-    trueEnding.addEventListener('touchstart', tap, { once: true, passive: false });
-    trueEnding.addEventListener('mousedown',  tap, { once: true });
-
-  }, 6000);
-}
-
-function showGameOver() {
-  document.getElementById('go-score').textContent = String(score).padStart(3, '0');
-  gameoverEl.classList.add('active');
-  const tap = e => { e.preventDefault(); restart(); };
-  gameoverEl.addEventListener('touchstart', tap, { once: true, passive: false });
-  gameoverEl.addEventListener('mousedown',  tap, { once: true });
-}
-
-function restart() {
-  // Hide all end screens and outro panels
-  demoEl.classList.remove('active');
-  gameoverEl.classList.remove('active');
-  document.getElementById('true-ending-screen').classList.remove('active');
-  document.getElementById('outro-container').classList.remove('active');
-  document.getElementById('panel-outro').classList.remove('active');
-  
-  // CRITICAL FIX: Make the game wrapper active and fully visible again
-  const gw = document.getElementById('game-wrapper');
-  gw.classList.add('active');
-  gw.style.opacity = '1';
-
-  const screenEl = document.getElementById('screen');
-  screenEl.style.transition = 'none';
-  screenEl.style.transform = 'none';
-  
-  const crack = document.getElementById('glass-crack');
-  if (crack) crack.style.display = 'none';
-
-  const cabinet = document.getElementById('cabinet-img');
-  cabinet.style.transition = 'none';
-  cabinet.style.transform = 'scale(4.5)';
-  cabinet.style.opacity = '0';
-
-  // Hide all game containers so they don't overlap
-  document.getElementById('chanko-container').style.display = 'none';
-  document.getElementById('shiko-container').style.display = 'none';
-  document.getElementById('throw-container').style.display = 'none';
-  document.getElementById('dodge-container').style.display = 'none';
-  document.getElementById('bounce-container').style.display = 'none';
-  document.getElementById('wrap-container').style.display = 'none';
-  document.getElementById('salt-container').style.display = 'none';
-  document.getElementById('boss-container').style.display = 'none';
-  
-  // Reset stats and start the first game
-  score = 0;
-  lives = 4;
-  currentGame = 0;
-  setScore();
-  setHearts();
-  showVerbScreen(currentGame);
-}
-
-</script>
+    </script>
 </body>
+
 </html>
