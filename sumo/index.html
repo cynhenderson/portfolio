@@ -854,26 +854,6 @@
       transition: stroke-dashoffset 0.1s ease-out;
     }
 
-    /* Massive, pulsing text hint */
-    #wrap-hint {
-      position: absolute;
-      top: 15%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #00e5ff;
-      font-size: clamp(1.5rem, 6vw, 2.5rem); 
-      text-shadow: 0 0 10px #00e5ff, 2px 2px 0 #000;
-      z-index: 5;
-      pointer-events: none;
-      letter-spacing: 0.1em;
-      text-align: center;
-      animation: pulse-hint 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes pulse-hint {
-      from { opacity: 0.6; transform: translateX(-50%) scale(0.9); }
-      to { opacity: 1; transform: translateX(-50%) scale(1.1); }
-    }
-
     /* The rotating track that holds the dot */
     #wrap-orbit {
       position: absolute;
@@ -1218,7 +1198,6 @@
               <circle class="ring-fill" cx="50" cy="50" r="45"/>
             </svg>
           </div>
-          <div id="wrap-hint">WIND IT!</div>
           <div id="wrap-orbit">
             <div id="wrap-orbit-dot"></div>
           </div>
