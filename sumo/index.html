@@ -2279,6 +2279,35 @@ function onWin() {
   game.cleanup();
   score++;
   setScore();
+  
+  // INTERCEPT BOSS TRANSITION (Moving from Demon to Yokozuna)
+  if (currentGame === 6) {
+    // 1. Kill the happy music to create a tense silence
+    if (AudioEngine.bgmSource) {
+      try { AudioEngine.bgmSource.stop(); } catch(e){}
+    }
+    const el = document.getElementById('bgm-track');
+    if (el) el.pause();
+
+    // 2. Play the heavy wailing sound instead of the happy chime
+    AudioEngine.playDemonDeath(); 
+    
+    // 3. Flash red warning instead of the green checkmark
+    doFlash('rgba(255,0,0,0.5)', 300);
+    shake('xl');
+    stampShow('DANGER!', '#ff0000', 'clamp(3rem, 12vw, 4rem)', 'rgba(0,0,0,0.8)');
+    
+    setTimeout(() => {
+      stampHide();
+      currentGame++;
+      // Proceeds directly to the "WAIT FOR IT..." prompt in silence
+      showVerbScreen(currentGame);
+    }, 1500); // Hold the tension longer than a normal win
+    
+    return; // Exit here so we don't play the standard win sequence
+  }
+
+  // STANDARD WIN BEHAVIOR for all other games
   AudioEngine.playWin();
   stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
   
@@ -2286,7 +2315,6 @@ function onWin() {
     stampHide();
     currentGame++;
     if (currentGame >= GAME_SEQUENCE.length) {
-      // Instead of showing the demo screen, we launch the outro cinematic!
       playOutroSequence(); 
     } else {
       showVerbScreen(currentGame);
@@ -3560,7 +3588,7 @@ function fail(reason) {
     S = 'LOSE_ANIM'; 
     standoffPhase = 'DONE';
     
-    // 2. Clear any pending boss timers (like the "SWIPE UP!" trigger)
+    // 2. Clear any pending boss timers
     bossTimeouts.forEach(t => clearTimeout(t));
     bossTimeouts = [];
 
@@ -3575,16 +3603,16 @@ function fail(reason) {
     doBossFlash('#ff0000', 200);
     shake('xl');
     
-    // Explicit reason for failure
-    stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', '#000');
+    // FIX: Changed solid '#000' to 'rgba(0,0,0,0.5)' so the Yokozuna 
+    // jump scare is clearly visible behind the text!
+    stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', 'rgba(0,0,0,0.5)');
     
     // 3. Hold for a solid beat before proceeding to the loss screen
     setTimeout(() => {
       stampHide();
       onLose();
-    }, 1200); // Increased from 800ms so the charge really registers
-  }
-
+    }, 1500); // Increased to 1.5s so the charge really registers
+}
 
   function win() {
     if (S !== 'PLAYING') return;
