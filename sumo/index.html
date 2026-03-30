@@ -3683,9 +3683,18 @@ function showGameOver() {
 }
 
 function restart() {
+  // Hide all end screens and outro panels
   demoEl.classList.remove('active');
   gameoverEl.classList.remove('active');
+  document.getElementById('true-ending-screen').classList.remove('active');
+  document.getElementById('outro-container').classList.remove('active');
+  document.getElementById('panel-outro').classList.remove('active');
   
+  // CRITICAL FIX: Make the game wrapper active and fully visible again
+  const gw = document.getElementById('game-wrapper');
+  gw.classList.add('active');
+  gw.style.opacity = '1';
+
   const screenEl = document.getElementById('screen');
   screenEl.style.transition = 'none';
   screenEl.style.transform = 'none';
@@ -3698,7 +3707,7 @@ function restart() {
   cabinet.style.transform = 'scale(4.5)';
   cabinet.style.opacity = '0';
 
-  // Hide all game containers
+  // Hide all game containers so they don't overlap
   document.getElementById('chanko-container').style.display = 'none';
   document.getElementById('shiko-container').style.display = 'none';
   document.getElementById('throw-container').style.display = 'none';
@@ -3708,6 +3717,7 @@ function restart() {
   document.getElementById('salt-container').style.display = 'none';
   document.getElementById('boss-container').style.display = 'none';
   
+  // Reset stats and start the first game
   score = 0;
   lives = 4;
   currentGame = 0;
@@ -3715,6 +3725,7 @@ function restart() {
   setHearts();
   showVerbScreen(currentGame);
 }
+
 </script>
 </body>
 </html>
