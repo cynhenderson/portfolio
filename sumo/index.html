@@ -3116,20 +3116,21 @@ function playBoss() {
     if (S !== 'PLAYING') return;
     standoffPhase = 'NOW';
     AudioEngine.stopDemonRumble();
-    AudioEngine.playGlitchSting(); // Acts as a sharp "shing!" sound
+    AudioEngine.playGlitchSting(); 
     
     doBossFlash('#ff0000', 100);
-    stampShow('NOW!', '#ff0000', 'clamp(4rem, 14vw, 5rem)', 'transparent');
+    // CHANGED: Explicit instruction instead of "NOW!"
+    stampShow('SWIPE UP!', '#ff0000', 'clamp(2.5rem, 10vw, 4rem)', 'transparent');
     
     sprite.style.transition = 'transform 0.05s';
     sprite.style.transform = 'translateX(-50%) scale(1.2)';
 
-    // The failure window (450ms reflex test)
+    // CHANGED: Widened the failure window to 700ms
     bossTimeouts.push(setTimeout(() => {
       if (standoffPhase === 'NOW') {
         fail('TOO LATE!');
       }
-    }, 450)); 
+    }, 700)); 
   }, waitTime);
 
   bossTimeouts.push(triggerTimeout);
@@ -3144,10 +3145,15 @@ function playBoss() {
     sprite.style.transform = 'translateX(-50%) scale(1.8)';
     doBossFlash('#ff0000', 200);
     shake('xl');
-    stampHide();
     
-    // Slight delay before throwing the loss screen so they feel the impact
-    setTimeout(onLose, 400);
+    // CHANGED: Make the mistake blatantly obvious
+    stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', '#000');
+    
+    // Delay the loss sequence slightly so they can read the text
+    setTimeout(() => {
+      stampHide();
+      onLose();
+    }, 800);
   }
 
   function win() {
@@ -3209,8 +3215,8 @@ function playBoss() {
     }
 
     if (standoffPhase === 'NOW') {
-      // Must be a distinct upward swipe
-      if (dy < -30 && Math.abs(dy) > Math.abs(dx)) {
+      // CHANGED: Shortened swipe distance to 15px to make it hyper-responsive
+      if (dy < -15 && Math.abs(dy) > Math.abs(dx)) {
         win(); 
       } else {
         fail('SWIPE UP!'); 
