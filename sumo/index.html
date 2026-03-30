@@ -2349,6 +2349,17 @@ function playOutroSequence() {
   const outroBg = document.getElementById('outro-bg'); 
   const gameWrapper = document.getElementById('game-wrapper');
 
+  // --- NEW: Reset the outro sequence state instantly! ---
+  outroOscar.className = '';
+  outroOscar.style.animation = '';
+  outroOscar.style.opacity = '0';
+  outroOscar.style.transform = '';
+  outroOscar.src = 'oscar-sumo.png';
+  
+  outroBg.className = ''; 
+  void outroBg.offsetWidth; // Force a CSS reflow so the zoom animation restarts cleanly
+  // ------------------------------------------------------
+
   // 1. Hide the arcade cabinet, show the dohyo
   gameWrapper.classList.remove('active');
   outroContainer.classList.add('active');
@@ -2366,7 +2377,7 @@ function playOutroSequence() {
     AudioEngine.playTaiko();
   }, 1800);
 
-  // Phase 2: Hard cut to shikiri (Adjusted slightly to account for the later fade-in)
+  // Phase 2: Hard cut to shikiri
   setTimeout(() => {
     outroOscar.src = 'oscar-shikiri.png';
     outroOscar.style.animation = 'none';
