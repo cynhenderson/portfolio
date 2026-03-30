@@ -2560,7 +2560,7 @@ function tick(now) {
     const speed = 0.6 + (elapsed / DURATION) * 0.8; 
     const t = elapsed * 0.001 * speed;
     
-    // 1. The Goldilocks Movement: Active, but doesn't instantly teleport to the edges
+    // 1. The Goldilocks Movement (Kept exactly as you liked it)
     let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.25) * 0.28) + (Math.cos(t * Math.PI * 1.9) * 0.16);
     targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
     
@@ -2568,16 +2568,16 @@ function tick(now) {
     const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
     
     if (inZone) {
-      // 2. Solid recovery rate (900)
-      failTime = Math.max(0, failTime - dt * 900); 
+      // 2. INCREASED RECOVERY: Heals much faster now (1200)
+      failTime = Math.max(0, failTime - dt * 1200); 
       oscarImg.src = 'oscar-shiko.png';
       centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
       needle.style.background = '#fff';
       needle.style.boxShadow = '0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5)';
     } else {
-      // 3. Fair penalty (1150) - Mistakes hurt a bit faster than you heal
-      failTime += dt * 1150;
+      // 3. DECREASED PENALTY: Takes damage much slower (800)
+      failTime += dt * 800;
       oscarImg.src = 'oscar-shiko-wobble.png';
       centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
