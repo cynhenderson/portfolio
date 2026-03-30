@@ -1635,7 +1635,7 @@ Promise.all([
     startScreenEl.classList.add('active');
 
     const bootGame = (e) => {
-      if (e) e.preventDefault();
+      // NOTE: Removed e.preventDefault() here so the browser trusts the user interaction to unlock audio
       AudioEngine.init();
 
       const play = () => {
@@ -1650,14 +1650,15 @@ Promise.all([
       }
 
       startScreenEl.classList.remove('active');
-      startScreenEl.removeEventListener('touchstart', bootGame);
-      startScreenEl.removeEventListener('mousedown', bootGame);
+      startScreenEl.removeEventListener('pointerup', bootGame);
+      startScreenEl.removeEventListener('click', bootGame);
 
       intro1();
     };
 
-    startScreenEl.addEventListener('touchstart', bootGame, { passive: false });
-    startScreenEl.addEventListener('mousedown', bootGame);
+    // Use pointerup and click instead of touchstart for reliable audio context unlocking
+    startScreenEl.addEventListener('pointerup', bootGame, { once: true });
+    startScreenEl.addEventListener('click', bootGame, { once: true });
   }, 500);
 });
 
@@ -1865,7 +1866,7 @@ const GAME_SEQUENCE = [
   { verb: 'BOUNCE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
   { verb: 'WRAP!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
   { verb: 'FLICK SALT!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
-  { verb: 'FINISH HIM!', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
+  { verb: 'WAIT FOR IT...', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
 ];
 let currentGame = 0;
 
@@ -3057,21 +3058,24 @@ function cleanupSalt() {
 }
 
 // ===================================================
-//  GAME 8: THE YOKOZUNA (RHYTHM BOSS)
+//  GAME 8: THE YOKOZUNA (SAMURAI STANDOFF)
 // ===================================================
-let bossRAF = null;
 let bossTimeouts = [];
 
 function setupBoss() {
   const container = document.getElementById('boss-container');
   const sprite = document.getElementById('boss-sprite');
-  const hpBar = document.getElementById('boss-health-bar');
+  const healthBg = document.getElementById('boss-health-bg');
 
   container.style.display = 'block';
-  sprite.src = 'boss-idle.png';
+  sprite.src = 'boss-before-charge.png';
   sprite.style.transform = 'translateX(-50%) scale(1)';
+  sprite.style.transition = 'transform 0.1s';
+  sprite.style.opacity = '1';
   sprite.className = '';
-  hpBar.style.width = '100%';
+
+  // Hide the health bar, this is a 1-hit kill scenario
+  healthBg.style.display = 'none';
 
   document.getElementById('boss-glow-left').style.opacity = '0';
   document.getElementById('boss-glow-right').style.opacity = '0';
@@ -3082,111 +3086,103 @@ function setupBoss() {
 function playBoss() {
   S = 'PLAYING';
   const timerBar = document.getElementById('timer-bar');
-  timerBar.style.width = '0%';
-
   const sprite = document.getElementById('boss-sprite');
-  const hpBar = document.getElementById('boss-health-bar');
-  const glowL = document.getElementById('boss-glow-left');
-  const glowR = document.getElementById('boss-glow-right');
-  const handL = document.getElementById('boss-hand-left');
-  const handR = document.getElementById('boss-hand-right');
   const flashEl = document.getElementById('boss-screen-flash');
 
-  const BPM = 78;
-  const BEAT_DUR = 60 / BPM;
-  const HIT_WINDOW = 0.2;
+  // No visible timer for a standoff to build tension
+  timerBar.style.width = '100%';
+  timerBar.style.transition = 'none';
 
-  let startTime = AudioEngine.playBossBGM();
-  let currentBeat = -1;
-  let bossHp = 100;
-
-  let phase = 1;
-  let expectedImpacts = [];
-  let touchStartX = null;
+  let standoffPhase = 'WAITING'; // WAITING, NOW, DONE
   let touchStartY = null;
-
-  const slapBeats = [4, 6, 8, 10, 11, 12, 13, 14, 15, 15.5, 16.5, 17.5, 18];
-  const charges = [
-    { telegraph: 22, impact: 24 },
-    { telegraph: 26, impact: 27.5 },
-    { telegraph: 29, impact: 30 }
-  ];
-  const finalThrowBeat = 35;
-
-  slapBeats.forEach(b => expectedImpacts.push({ time: b * BEAT_DUR, side: Math.random() > 0.5 ? 'left' : 'right', type: 'slap', handled: false }));
-  charges.forEach(c => expectedImpacts.push({ time: c.impact * BEAT_DUR, side: Math.random() > 0.5 ? 'left' : 'right', type: 'charge', handled: false }));
-  expectedImpacts.push({ time: finalThrowBeat * BEAT_DUR, type: 'final', handled: false });
+  let touchStartX = null;
 
   function doBossFlash(color, ms) {
     flashEl.style.background = color;
-    flashEl.style.opacity = '0.4';
+    flashEl.style.opacity = '0.6';
     setTimeout(() => { flashEl.style.opacity = '0'; }, ms);
   }
 
-  function handleInput(type, direction) {
+  // Random wait time between 3 and 7 seconds
+  const waitTime = 3000 + Math.random() * 4000;
+
+  AudioEngine.playDemonRumble();
+  // Slight slow zoom to build tension
+  sprite.style.transition = `transform ${waitTime}ms linear`;
+  sprite.style.transform = 'translateX(-50%) scale(1.15)';
+
+  // The Trigger
+  const triggerTimeout = setTimeout(() => {
     if (S !== 'PLAYING') return;
-    const now = AudioEngine.ctx.currentTime - startTime;
-    const closest = expectedImpacts.find(i => !i.handled && Math.abs(now - i.time) <= HIT_WINDOW);
-    if (!closest) return;
+    standoffPhase = 'NOW';
+    AudioEngine.stopDemonRumble();
+    AudioEngine.playGlitchSting(); // Acts as a sharp "shing!" sound
+    
+    doBossFlash('#ff0000', 100);
+    stampShow('NOW!', '#ff0000', 'clamp(4rem, 14vw, 5rem)', 'transparent');
+    
+    sprite.style.transition = 'transform 0.05s';
+    sprite.style.transform = 'translateX(-50%) scale(1.2)';
 
-    if (closest.type === 'slap' && type === 'tap' && direction === closest.side) {
-      closest.handled = true;
-      AudioEngine.playDeflect();
-      bossHp -= 4;
-      hpBar.style.width = `${Math.max(0, bossHp)}%`;
-      const hand = direction === 'left' ? handL : handR;
-      hand.classList.add('active');
-      doBossFlash('#00e5ff', 100);
-      shake(false);
-      setTimeout(() => hand.classList.remove('active'), 250);
-    } else if (closest.type === 'charge' && type === 'swipe' && direction === closest.side) {
-      closest.handled = true;
-      AudioEngine.playThrow();
-      bossHp -= 15;
-      hpBar.style.width = `${Math.max(0, bossHp)}%`;
-      sprite.src = 'boss-stunned.png';
-      sprite.style.transform = `translateX(${direction === 'left' ? '-100%' : '0%'}) scale(0.9)`;
-      shake('lg');
-    } else if (closest.type === 'final' && type === 'swipe' && direction === 'up') {
-      closest.handled = true;
-      S = 'WIN_ANIM';
+    // The failure window (450ms reflex test)
+    bossTimeouts.push(setTimeout(() => {
+      if (standoffPhase === 'NOW') {
+        fail('TOO LATE!');
+      }
+    }, 450)); 
+  }, waitTime);
 
-      // 1. FREEZE TIME
-      if (bossRAF) { cancelAnimationFrame(bossRAF); bossRAF = null; }
-      AudioEngine.stopBossBGM();
+  bossTimeouts.push(triggerTimeout);
+
+  function fail(reason) {
+    if (S !== 'PLAYING') return;
+    standoffPhase = 'DONE';
+    AudioEngine.stopDemonRumble();
+    AudioEngine.playBonk();
+    
+    sprite.src = 'boss-charge.png';
+    sprite.style.transform = 'translateX(-50%) scale(1.8)';
+    doBossFlash('#ff0000', 200);
+    shake('xl');
+    stampHide();
+    
+    // Slight delay before throwing the loss screen so they feel the impact
+    setTimeout(onLose, 400);
+  }
+
+  function win() {
+    if (S !== 'PLAYING') return;
+    standoffPhase = 'DONE';
+    S = 'WIN_ANIM';
+    stampHide();
+
+    // 1. FREEZE TIME
+    AudioEngine.stopDemonRumble();
+    sprite.src = 'boss-stunned.png';
+    
+    // 2. ZOOM OUT THE SCREEN
+    const screenEl = document.getElementById('screen');
+    screenEl.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    screenEl.style.transform = 'scale(0.45) translateY(-15%)'; 
+    
+    // 3. FADE THE CABINET BACK IN
+    const cabinet = document.getElementById('cabinet-img');
+    cabinet.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1s ease-out';
+    cabinet.style.transform = 'scale(1)';
+    cabinet.style.opacity = '1';
+
+    // 4. SHATTER
+    bossTimeouts.push(setTimeout(() => {
+      AudioEngine.playCrash(); 
+      shake('xl');
+      doBossFlash('#ffffff', 400);
       
-      // 2. ZOOM OUT THE SCREEN
-      const screenEl = document.getElementById('screen');
-      screenEl.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
-      screenEl.style.transform = 'scale(0.45) translateY(-15%)'; 
+      const crack = document.getElementById('glass-crack');
+      if (crack) crack.style.display = 'block';
       
-      // 3. FADE THE CABINET BACK IN
-      const cabinet = document.getElementById('cabinet-img');
-      cabinet.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 1s ease-out';
-      cabinet.style.transform = 'scale(1)';
-      cabinet.style.opacity = '1';
-
-      // 4. THE SHATTER
-      bossTimeouts.push(setTimeout(() => {
-        AudioEngine.playCrash(); 
-        shake('xl');
-        doBossFlash('#ffffff', 400);
-        
-        const crack = document.getElementById('glass-crack');
-        if (crack) {
-          crack.style.display = 'block';
-        }
-        
-        // 5. PROCEED TO OUTRO
-        bossTimeouts.push(setTimeout(onWin, 1500));
-      }, 1300));
-    } else {
-      closest.handled = true;
-      AudioEngine.playBonk();
-      doBossFlash('#ff0000', 150);
-      shake(true);
-      onLose();
-    }
+      // 5. PROCEED TO OUTRO
+      bossTimeouts.push(setTimeout(onWin, 1500));
+    }, 1300));
   }
 
   function onTouchStart(e) {
@@ -3198,19 +3194,28 @@ function playBoss() {
 
   function onTouchEnd(e) {
     if (e.cancelable) e.preventDefault();
-    if (touchStartX === null) return;
+    if (touchStartY === null) return;
+    
     const touch = e.changedTouches ? e.changedTouches[0] : e;
     const dx = touch.clientX - touchStartX;
     const dy = touch.clientY - touchStartY;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-      handleInput('swipe', dx < 0 ? 'left' : 'right');
-    } else if (dy < -40 && Math.abs(dy) > Math.abs(dx)) {
-      handleInput('swipe', 'up');
-    } else {
-      handleInput('tap', touch.clientX < window.innerWidth / 2 ? 'left' : 'right');
-    }
+    
     touchStartX = null;
     touchStartY = null;
+
+    if (standoffPhase === 'WAITING') {
+      fail('TOO EARLY!');
+      return;
+    }
+
+    if (standoffPhase === 'NOW') {
+      // Must be a distinct upward swipe
+      if (dy < -30 && Math.abs(dy) > Math.abs(dx)) {
+        win(); 
+      } else {
+        fail('SWIPE UP!'); 
+      }
+    }
   }
 
   app.addEventListener('touchstart', onTouchStart, { passive: false });
@@ -3218,99 +3223,11 @@ function playBoss() {
   app.addEventListener('mousedown', onTouchStart);
   app.addEventListener('mouseup', onTouchEnd);
   app._bossHandlers = { onTouchStart, onTouchEnd };
-
-  function tick() {
-    if (S !== 'PLAYING') return;
-    const now = AudioEngine.ctx.currentTime - startTime;
-    const beatFloat = now / BEAT_DUR;
-    const newBeat = Math.floor(beatFloat);
-
-    if (newBeat > currentBeat) {
-      currentBeat = newBeat;
-      sprite.classList.add('boss-beat-pulse');
-      setTimeout(() => sprite.classList.remove('boss-beat-pulse'), 100);
-      if (phase === 3) {
-        sprite.style.transform = `translateX(-50%) translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
-      }
-    }
-
-    expectedImpacts.forEach(i => {
-      if (!i.handled && now > i.time + HIT_WINDOW) {
-        i.handled = true;
-        AudioEngine.playBonk();
-        doBossFlash('#ff0000', 150);
-        shake(true);
-        onLose();
-      }
-    });
-
-    const upcomingSlap = expectedImpacts.find(i => i.type === 'slap' && !i.handled && (i.time - now) > 0 && (i.time - now) < BEAT_DUR);
-    if (upcomingSlap) {
-      sprite.src = 'boss-slap.png';
-      sprite.style.transform = `translateX(-50%) scaleX(${upcomingSlap.side === 'right' ? -1 : 1})`;
-      const glow = upcomingSlap.side === 'left' ? glowL : glowR;
-      glow.style.opacity = '1';
-    } else if (phase === 1 && !expectedImpacts.some(i => i.type === 'slap' && !i.handled && Math.abs(i.time - now) < BEAT_DUR)) {
-      sprite.src = 'boss-idle.png';
-      sprite.style.transform = 'translateX(-50%) scaleX(1)';
-      glowL.style.opacity = '0'; glowR.style.opacity = '0';
-    }
-
-    if (phase === 1 && currentBeat >= 20) {
-      phase = 2;
-      stampShow('PHASE 2', '#ff6a00', 'clamp(2rem, 8vw, 3rem)');
-      AudioEngine.playCoin();
-      AudioEngine.playDemonRumble();
-      setTimeout(stampHide, 1000);
-    }
-
-    if (phase === 2 && currentBeat >= 32) {
-      phase = 3;
-      AudioEngine.stopDemonRumble();
-      sprite.src = 'boss-stunned.png';
-    }
-
-    if (phase === 2) {
-      const activeCharge = charges.find(c => beatFloat >= c.telegraph && beatFloat < c.impact);
-      if (activeCharge) {
-        const tProgress = (beatFloat - activeCharge.telegraph) / (activeCharge.impact - activeCharge.telegraph);
-        if (tProgress > 0.75) {
-          sprite.src = 'boss-charge.png';
-          sprite.style.transform = 'translateX(-50%) scale(1.6)';
-        } else {
-          sprite.src = 'boss-before-charge.png';
-          sprite.style.transform = 'translateX(-50%) scale(1)';
-        }
-        const targetImpact = expectedImpacts.find(i => Math.abs(i.time - activeCharge.impact * BEAT_DUR) < 0.1);
-        if (targetImpact) {
-          const safeGlow = targetImpact.side === 'left' ? glowL : glowR;
-          safeGlow.style.opacity = '1';
-        }
-      } else {
-        glowL.style.opacity = '0'; glowR.style.opacity = '0';
-        if (sprite.src.includes('boss-charge') || sprite.src.includes('boss-before')) {
-          sprite.src = 'boss-idle.png';
-          sprite.style.transform = 'translateX(-50%) scaleX(1)';
-        }
-      }
-    }
-
-    if (phase === 3 && currentBeat === finalThrowBeat - 1 && !expectedImpacts[expectedImpacts.length - 1].handled) {
-      stampShow('NOW!', '#00e5ff', 'clamp(3rem, 10vw, 4rem)', 'transparent');
-      setTimeout(stampHide, BEAT_DUR * 1000);
-    }
-
-    bossRAF = requestAnimationFrame(tick);
-  }
-
-  bossRAF = requestAnimationFrame(tick);
 }
 
 function cleanupBoss() {
-  if (bossRAF) { cancelAnimationFrame(bossRAF); bossRAF = null; }
   bossTimeouts.forEach(t => clearTimeout(t));
   bossTimeouts = [];
-  AudioEngine.stopBossBGM();
   AudioEngine.stopDemonRumble();
 
   if (app._bossHandlers) {
@@ -3321,6 +3238,7 @@ function cleanupBoss() {
     app._bossHandlers = null;
   }
 
+  document.getElementById('boss-health-bg').style.display = 'block'; // Reset for next loop
   document.getElementById('boss-container').style.display = 'none';
 }
 
