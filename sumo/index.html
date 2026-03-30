@@ -1436,9 +1436,6 @@ const ASSETS = [
 // them from memory cache after the preload promise resolves
 const _imageCache = [];
 
-// Init audio context early -- suspended on mobile until gesture, but
-// decodeAudioData works on a suspended context so BGM decodes during preload
-AudioEngine.init();
 
 Promise.all([
   ...ASSETS.map(src => new Promise(r => {
@@ -1456,6 +1453,7 @@ Promise.all([
 
     const bootGame = (e) => {
       if (e) e.preventDefault();
+      AudioEngine.init();
 
       const play = () => {
         AudioEngine.playCoin();
