@@ -1452,6 +1452,112 @@ const AudioEngine = {
     noise.connect(nGain); nGain.connect(this.ctx.destination);
     noise.start(t); noise.stop(t + 0.15);
   },
+// --- OUTRO SYNTHESIS ---
+
+  playTaiko: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+
+    // The deep boom (Sine wave)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    // Start with a sharp pitch drop to give it a heavy "thwack"
+    osc.frequency.setValueAtTime(120, t);
+    osc.frequency.exponentialRampToValueAtTime(45, t + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(20, t + 1.5);
+
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(1.2, t + 0.02); // Fast attack
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.5); // Long resonant decay
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 1.5);
+
+    // The drum skin strike (Filtered noise)
+    const bufferSize = this.ctx.sampleRate * 0.15;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 600;
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0, t);
+    noiseGain.gain.linearRampToValueAtTime(0.6, t + 0.01);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+    noise.start(t);
+  },
+
+  crowdNode: null,
+  playCrowdSwell: function(durationMs) {
+    if (!this.ctx) return;
+    this.stopCrowd(); // prevent stacking
+
+    const t = this.ctx.currentTime;
+    const duration = durationMs / 1000;
+    const bufferSize = this.ctx.sampleRate * duration;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Generate an approximation of Pink Noise for a better crowd rumble
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      let white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
+      b6 = white * 0.115926;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    // Filter sweeps up to simulate crowd getting louder/more frantic
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(200, t); 
+    filter.frequency.linearRampToValueAtTime(800, t + duration); 
+    filter.Q.value = 0.8;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.exponentialRampToValueAtTime(1.5, t + duration * 0.95); // Swell up!
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(t);
+
+    this.crowdNode = { noise, gain };
+  },
+
+  stopCrowd: function() {
+    if (this.crowdNode && this.ctx) {
+      const t = this.ctx.currentTime;
+      // Fast fade out to prevent clicking
+      this.crowdNode.gain.gain.cancelScheduledValues(t);
+      this.crowdNode.gain.gain.setValueAtTime(this.crowdNode.gain.gain.value, t);
+      this.crowdNode.gain.gain.linearRampToValueAtTime(0.01, t + 0.05);
+      setTimeout(() => { try { this.crowdNode.noise.stop(); } catch(e){} }, 100);
+      this.crowdNode = null;
+    }
+  },
 
   playSwish: function(speed) {
     // speed: 0.0 to 1.0, controls pitch and shortness
@@ -1944,11 +2050,13 @@ function onWin() {
   setScore();
   AudioEngine.playWin();
   stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
+  
   setTimeout(() => {
     stampHide();
     currentGame++;
     if (currentGame >= GAME_SEQUENCE.length) {
-      showDemoComplete();
+      // Instead of showing the demo screen, we launch the outro cinematic!
+      playOutroSequence(); 
     } else {
       showVerbScreen(currentGame);
     }
@@ -1973,6 +2081,83 @@ function onLose() {
       showVerbScreen(currentGame);
     }
   }, 700);
+}
+
+// THE BRAND NEW OUTRO FUNCTION
+function playOutroSequence() {
+  S = 'OUTRO';
+  const outroContainer = document.getElementById('outro-container');
+  const outroOscar = document.getElementById('outro-oscar');
+  const outroBg = document.getElementById('outro-bg'); 
+  const gameWrapper = document.getElementById('game-wrapper');
+
+  // 1. Hide the arcade cabinet, show the dohyo
+  gameWrapper.classList.remove('active');
+  outroContainer.classList.add('active');
+  
+  // 2. Trigger the slow camera pull-out
+  outroBg.className = 'outro-bg-zoom';
+
+  // 3. Start the crowd swelling (timed for approx 4.2 seconds until impact)
+  AudioEngine.playCrowdSwell(4200);
+
+  // Phase 1: Oscar walks in
+  outroOscar.src = 'oscar-sumo.png';
+  outroOscar.className = 'outro-walk-in';
+
+  // Taiko hit 1: The step onto the dohyo
+  setTimeout(() => AudioEngine.playTaiko(), 300);
+
+  setTimeout(() => {
+    // Phase 2: Shikiri (fists down)
+    outroOscar.src = 'oscar-shikiri.png';
+    shake('sm');
+    
+    // Taiko hit 2: Heavy crouch impact
+    AudioEngine.playTaiko(); 
+
+    setTimeout(() => {
+      // Phase 3: Charge!
+      outroOscar.src = 'oscar-charge.png';
+      outroOscar.className = 'outro-charge';
+      AudioEngine.playWhoosh();
+      AudioEngine.playDemonRumble();
+
+      setTimeout(() => {
+        // Phase 4: Impact & cut to promo
+        AudioEngine.stopDemonRumble();
+        AudioEngine.stopCrowd(); // Dead silence on impact
+        
+        shake('xl');
+        doFlash('#ffffff', 400);
+        AudioEngine.playCrash();
+
+        outroContainer.classList.remove('active');
+        showDemoComplete();
+      }, 700); 
+
+    }, 1500); 
+  }, 2000); 
+}
+
+// UPDATED DEMO COMPLETE TO PROTECT THE CTA LINK
+function showDemoComplete() {
+  document.getElementById('final-score').textContent = String(score).padStart(3, '0');
+  demoEl.classList.add('active');
+  
+  const tap = e => { 
+    // If they clicked the ticket link, let the browser handle it, don't restart
+    if (e.target.tagName && e.target.tagName.toLowerCase() === 'a') return;
+    
+    e.preventDefault(); 
+    demoEl.removeEventListener('touchstart', tap);
+    demoEl.removeEventListener('mousedown', tap);
+    restart(); 
+  };
+  
+  // Removed the { once: true } constraint so we can control link vs background clicks
+  demoEl.addEventListener('touchstart', tap, { passive: false });
+  demoEl.addEventListener('mousedown', tap);
 }
 
 // ===================================================
