@@ -662,7 +662,7 @@
 
     .ghost-hand {
       position: absolute;
-      width: 22%;
+      width: 28%;
       top: -50%;
       opacity: 0;
       object-fit: contain;
@@ -673,11 +673,11 @@
     .ghost-hand.hand-right { right: -2%; }
 
     .ghost-hand.winding-up {
-      top: -30%;
+      top: -25%; 
       opacity: 1;
     }
     .ghost-hand.slamming {
-      top: 35%;
+      top: 48%; 
       opacity: 1;
       transition-timing-function: ease-in;
     }
@@ -723,8 +723,8 @@
     }
     #bounce-zone {
       position: absolute;
-      left: 10%;
-      right: 10%;
+      left: 0;
+      right: 0;
       height: 15%;
       top: 50%;
       border-top: 3px solid rgba(0, 255, 100, 0.7);
@@ -735,8 +735,8 @@
     }
     #bounce-zone-glow {
       position: absolute;
-      left: 10%;
-      right: 10%;
+      left: 0;
+      right: 0;
       height: 15%;
       top: 50%;
       background: rgba(0, 255, 100, 0.15);
@@ -853,32 +853,36 @@
       filter: drop-shadow(0 0 6px rgba(0,229,255,0.6));
       transition: stroke-dashoffset 0.1s ease-out;
     }
-    #wrap-hint {
+
+    /* The rotating track that holds the dot */
+    #wrap-orbit {
       position: absolute;
-      top: 14%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      color: rgba(0,229,255,0.5);
-      font-size: clamp(0.35rem, 1.5vw, 0.5rem);
+      width: 70%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -45%); 
       z-index: 5;
       pointer-events: none;
-      letter-spacing: 0.1em;
-      text-align: center;
+      animation: orbit-spin 1.5s linear infinite;
+      transition: opacity 0.3s ease-out;
     }
-    @keyframes spin-hint {
-      0%   { transform: translateX(-50%) rotate(0deg); }
-      100% { transform: translateX(-50%) rotate(360deg); }
+    @keyframes orbit-spin {
+      0% { transform: translate(-50%, -45%) rotate(0deg); }
+      100% { transform: translate(-50%, -45%) rotate(360deg); }
     }
-    #wrap-spin-icon {
+
+    /* The glowing green tutorial dot */
+    #wrap-orbit-dot {
       position: absolute;
-      top: 20%;
+      top: -6px; 
       left: 50%;
       transform: translateX(-50%);
-      font-size: clamp(1.5rem, 6vw, 2.5rem);
-      z-index: 5;
-      pointer-events: none;
-      opacity: 0.4;
-      animation: spin-hint 1.5s linear infinite;
+      width: 12px;
+      height: 12px;
+      background: #00ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.8);
     }
 
     /* SHAKE */
@@ -1009,6 +1013,90 @@
       80% { opacity: 1; }
       100% { transform: translate(var(--spread-x), -75vh) scale(1.5); opacity: 0; }
     }
+
+    /* =====================
+       OUTRO SEQUENCE
+    ===================== */
+    #outro-container {
+      background: #000;
+      z-index: 80;
+    }
+    #outro-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
+    }
+    #outro-oscar {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%) scale(1);
+      height: 45%;
+      object-fit: contain;
+      image-rendering: pixelated;
+      opacity: 0;
+    }
+
+    /* Outro Animations */
+    .outro-fade-in {
+      animation: oscarFadeIn 1.6s ease-out forwards;
+    }
+    @keyframes oscarFadeIn {
+      0%   { opacity: 0; transform: translateX(-50%) scale(0.95); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    .outro-charge-enter {
+      animation: chargeEnter 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes chargeEnter {
+0%   { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(5%); }
+      100% { opacity: 1; transform: translateX(-50%) scale(2.5) translateY(5%); }
+    }
+
+/* Outro Background Camera Pan -- Starts wide, zooms in, and STOPS completely */
+.outro-bg-zoom {
+  animation: dohyoZoom 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes dohyoZoom {
+  0%   { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.8) translateY(-8%); }
+}
+
+    /* =====================
+       PROMO STYLES
+    ===================== */
+    .promo-text {
+      font-size: clamp(0.5rem, 2.3vw, 0.75rem);
+      line-height: 1.8;
+      margin: 0.5rem 0;
+      color: #fff;
+    }
+    .promo-text .highlight {
+      color: #ff00ff;
+      text-shadow: 2px 2px 0 #000;
+      font-size: clamp(0.6rem, 2.8vw, 0.9rem);
+    }
+    .cta-button {
+      display: inline-block;
+      background: #ff6a00;
+      color: #fff;
+      padding: 15px 20px;
+      text-decoration: none;
+      font-size: clamp(0.6rem, 3vw, 0.9rem);
+      border: 2px solid #fff;
+      box-shadow: 4px 4px 0 #00e5ff;
+      margin-bottom: 0.5rem;
+      transition: transform 0.1s;
+      z-index: 60;
+      position: relative;
+    }
+    .cta-button:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0 #00e5ff;
+    }
   </style>
 </head>
 <body>
@@ -1110,8 +1198,9 @@
               <circle class="ring-fill" cx="50" cy="50" r="45"/>
             </svg>
           </div>
-          <div id="wrap-hint">SPIN!</div>
-          <div id="wrap-spin-icon">↻</div>
+          <div id="wrap-orbit">
+            <div id="wrap-orbit-dot"></div>
+          </div>
         </div>
         <div id="salt-container">
           <div id="demon-health-bg"><div id="demon-health-bar"></div></div>
@@ -1152,10 +1241,17 @@
   <div id="stamp"></div>
   <div id="flash"></div>
 
+  <div id="outro-container" class="panel">
+    <img id="outro-bg" src="dohyo-bg.png" alt="">
+    <img id="outro-oscar" src="oscar-sumo.png" alt="">
+  </div>
+
   <div id="demo-complete" class="end-screen">
-    <h1>DEMO<br>COMPLETE</h1>
-    <div class="sub">SCORE: <span id="final-score">000</span></div>
-    <div class="hint">TAP TO RESTART</div>
+    <h1>WAKE UP</h1>
+    <div class="sub">FINAL SCORE: <span id="final-score">000</span></div>
+    <div class="promo-text">Witness the real thing at the<br><span class="highlight">Rollertown Showdown</span><br>Sumo Tournament!</div>
+    <a href="https://www.dallassumoclub.org/rollertown" target="_blank" class="cta-button">GET TICKETS</a>
+    <div class="hint">TAP ANYWHERE TO RESTART</div>
   </div>
 
   <div id="gameover-screen" class="end-screen">
@@ -1163,7 +1259,22 @@
     <div class="sub">SCORE: <span id="go-score">000</span></div>
     <div class="hint">TAP TO RESTART</div>
   </div>
+<div id="panel-outro" class="panel">
+    <div id="outro-white" style="position: absolute; inset: 0; background: #fff; z-index: 2; transition: opacity 2s ease-in-out;"></div>
+    <img id="outro-sprite" src="oscar-sumo.png" style="position: absolute; width: 100%; height: 100%; object-fit: contain; z-index: 1; filter: sepia(0.5) brightness(0.8) hue-rotate(-10deg);">
+    <div id="outro-scanlines" class="scanlines" style="position: absolute; inset: 0; z-index: 3; opacity: 0.3; pointer-events: none;"></div>
+  </div>
 
+  <div id="true-ending-screen" class="end-screen">
+    <h1 style="color: #00e5ff; text-shadow: 0 0 15px rgba(0,229,255,0.8); margin-bottom: 0;">THE FEVER<br>HAS BROKEN</h1>
+    <div class="sub" style="color: #ff6a00; font-size: clamp(0.6rem, 2.5vw, 1rem); line-height: 1.8;">
+      SURVIVED WITH: <span id="end-lives">0</span> LIVES<br>
+      FINAL SCORE: <span id="end-score">000</span>
+    </div>
+    <div class="hint" style="margin-top: 1rem; font-size: clamp(0.5rem, 2vw, 0.7rem); color: #00ff88; text-shadow: 0 0 8px #00ff88; cursor: pointer;">
+      [ TAP TO ENTER ENDLESS GRIND ]
+    </div>
+  </div>
 </div>
 <script>
 // ===================================================
@@ -1426,6 +1537,194 @@ const AudioEngine = {
     noise.connect(nGain); nGain.connect(this.ctx.destination);
     noise.start(t); noise.stop(t + 0.15);
   },
+  playAlarm: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    // Plays 4 harsh digital alarm beeps
+    for(let i=0; i<4; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = 800; // Harsh digital pitch
+      gain.gain.setValueAtTime(0.1, t + i*0.4);
+      gain.gain.setValueAtTime(0, t + i*0.4 + 0.15);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(t + i*0.4); osc.stop(t + i*0.4 + 0.15);
+    }
+  },
+playHyoshigi: function() {
+    // Sharp, piercing wooden clack for the samurai standoff trigger
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1200, t); 
+    osc.frequency.exponentialRampToValueAtTime(400, t + 0.05);
+    gain.gain.setValueAtTime(1, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.15);
+  },
+
+  playDeathSlam: function() {
+    // A heavy, distorted impact for the jump scare failure
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(100, t);
+    osc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
+    gain.gain.setValueAtTime(0.8, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 0.5);
+  },
+
+  playDemonDeath: function() {
+    // A wailing, pitch-dropping screech for the demon's defeat
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 1.0); 
+    gain.gain.setValueAtTime(0.5, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.0);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(t); osc.stop(t + 1.0);
+  },
+
+  playGlassShatter: function() {
+     // High-frequency noise burst for the arcade cabinet glass breaking
+     if (!this.ctx) return;
+     const t = this.ctx.currentTime;
+     const bufferSize = this.ctx.sampleRate * 0.4;
+     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+     const data = buffer.getChannelData(0);
+     for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+     
+     const noise = this.ctx.createBufferSource();
+     noise.buffer = buffer;
+     
+     const filter = this.ctx.createBiquadFilter();
+     filter.type = 'highpass';
+     filter.frequency.value = 6000; // Very crispy, bright noise
+
+     const gain = this.ctx.createGain();
+     gain.gain.setValueAtTime(0.8, t);
+     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+
+     noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+     noise.start(t);
+  },
+
+  playTaiko: function() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+
+    // The deep boom (Sine wave)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    // Start with a sharp pitch drop to give it a heavy "thwack"
+    osc.frequency.setValueAtTime(120, t);
+    osc.frequency.exponentialRampToValueAtTime(45, t + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(20, t + 1.5);
+
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(1.2, t + 0.02); // Fast attack
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 1.5); // Long resonant decay
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 1.5);
+
+    // The drum skin strike (Filtered noise)
+    const bufferSize = this.ctx.sampleRate * 0.15;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 600;
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0, t);
+    noiseGain.gain.linearRampToValueAtTime(0.6, t + 0.01);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+    noise.start(t);
+  },
+
+  crowdNode: null,
+  playCrowdSwell: function(durationMs) {
+    if (!this.ctx) return;
+    this.stopCrowd(); // prevent stacking
+
+    const t = this.ctx.currentTime;
+    const duration = durationMs / 1000;
+    const bufferSize = this.ctx.sampleRate * duration;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Generate an approximation of Pink Noise for a better crowd rumble
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      let white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
+      b6 = white * 0.115926;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    // Filter sweeps up to simulate crowd getting louder/more frantic
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(200, t); 
+    filter.frequency.linearRampToValueAtTime(800, t + duration); 
+    filter.Q.value = 0.8;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.exponentialRampToValueAtTime(1.5, t + duration * 0.95); // Swell up!
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(t);
+
+    this.crowdNode = { noise, gain };
+  },
+
+  stopCrowd: function() {
+    if (this.crowdNode && this.ctx) {
+      const t = this.ctx.currentTime;
+      // Fast fade out to prevent clicking
+      this.crowdNode.gain.gain.cancelScheduledValues(t);
+      this.crowdNode.gain.gain.setValueAtTime(this.crowdNode.gain.gain.value, t);
+      this.crowdNode.gain.gain.linearRampToValueAtTime(0.01, t + 0.05);
+      setTimeout(() => { try { this.crowdNode.noise.stop(); } catch(e){} }, 100);
+      this.crowdNode = null;
+    }
+  },
 
   playSwish: function(speed) {
     // speed: 0.0 to 1.0, controls pitch and shortness
@@ -1451,7 +1750,7 @@ const AudioEngine = {
     noise.start(t); noise.stop(t + dur);
   },
 
-  playSizzle: function() {
+playSizzle: function(pitchMultiplier = 1) {
     if (!this.ctx) return;
     const bufferSize = this.ctx.sampleRate * 0.15;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
@@ -1461,7 +1760,8 @@ const AudioEngine = {
     noise.buffer = buffer;
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'highpass';
-    filter.frequency.value = 4000;
+    // Base frequency is 4000, increases as multiplier goes up
+    filter.frequency.value = 4000 * pitchMultiplier; 
     const gain = this.ctx.createGain();
     const t = this.ctx.currentTime;
     gain.gain.setValueAtTime(0.3, t);
@@ -1500,6 +1800,69 @@ const AudioEngine = {
         try { this.demonOsc.osc.stop(); this.demonOsc.lfo.stop(); } catch(e){}
         this.demonOsc = null;
       }, 150);
+    }
+  },
+
+heartbeatTimer: null,
+
+  playHeartbeat: function(totalDurationMs) {
+    if (!this.ctx) return;
+    this.stopHeartbeat(); // Ensure no overlapping loops
+    
+    const startTime = performance.now();
+    
+    const beat = () => {
+      if (!this.ctx) return;
+      const t = this.ctx.currentTime;
+      
+      // The "Lub" (Deep and heavy)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(55, t);
+      osc1.frequency.exponentialRampToValueAtTime(35, t + 0.1);
+      gain1.gain.setValueAtTime(0, t);
+      gain1.gain.linearRampToValueAtTime(0.8, t + 0.02); // Quick attack
+      gain1.gain.exponentialRampToValueAtTime(0.01, t + 0.15); // Quick decay
+      osc1.connect(gain1); gain1.connect(this.ctx.destination);
+      osc1.start(t); osc1.stop(t + 0.15);
+
+      // The "Dub" (Slightly higher, slightly quieter, offset by 150ms)
+      const osc2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(65, t + 0.15);
+      osc2.frequency.exponentialRampToValueAtTime(40, t + 0.25);
+      gain2.gain.setValueAtTime(0, t + 0.15);
+      gain2.gain.linearRampToValueAtTime(0.6, t + 0.17);
+      gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+      osc2.connect(gain2); gain2.connect(this.ctx.destination);
+      osc2.start(t + 0.15); osc2.stop(t + 0.3);
+      
+      // Visual feedback: Make the Yokozuna pulse to the beat
+      const bossSprite = document.getElementById('boss-sprite');
+      if (bossSprite && bossSprite.className !== 'boss-charge') {
+          bossSprite.classList.add('boss-beat-pulse');
+          setTimeout(() => bossSprite.classList.remove('boss-beat-pulse'), 150);
+      }
+
+      // Calculate the next delay based on how close we are to the trigger
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / totalDurationMs, 1); // 0 to 1
+      
+      // Starts at a resting 1000ms gap, shrinks to a panicked 280ms gap
+      const nextDelay = 1000 - (progress * 720); 
+
+      this.heartbeatTimer = setTimeout(beat, nextDelay);
+    };
+    
+    beat(); // Start the first beat immediately
+  },
+
+  stopHeartbeat: function() {
+    if (this.heartbeatTimer) {
+      clearTimeout(this.heartbeatTimer);
+      this.heartbeatTimer = null;
     }
   },
 
@@ -1609,7 +1972,7 @@ const ASSETS = [
   'opponent.png','oscar-throw.png',
   'ghost-hand-left.png','ghost-hand-right.png',
   'oscar-inflated.png','falling-ball.png','falling-tire.png','falling-fish.png',
-  'oscar-unwrapped.png','oscar-wrapping-1.png','oscar-wrapping-2.png',
+  'oscar-unwrapped.png','oscar-wrapping-2.png',
   'keg-demon.png','glass-crack.png',
   'boss-idle.png','boss-slap.png','boss-before-charge.png','boss-charge.png','boss-stunned.png'
 ];
@@ -1863,8 +2226,8 @@ const GAME_SEQUENCE = [
   { verb: 'STAY CENTERED!', setup: setupShiko, play: playShiko, cleanup: cleanupShiko },
   { verb: 'WATCH THE FEET!', setup: setupThrow, play: playThrow, cleanup: cleanupThrow },
   { verb: 'SWIPE TO SAFE ZONE!', setup: setupDodge, play: playDodge, cleanup: cleanupDodge },
-  { verb: 'BOUNCE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
-  { verb: 'WRAP!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
+  { verb: 'INFLATE!', setup: setupBounce, play: playBounce, cleanup: cleanupBounce },
+  { verb: 'WIND IT!', setup: setupWrap, play: playWrap, cleanup: cleanupWrap },
   { verb: 'FLICK SALT!', setup: setupSalt, play: playSalt, cleanup: cleanupSalt },
   { verb: 'WAIT FOR IT...', setup: setupBoss, play: playBoss, cleanup: cleanupBoss },
 ];
@@ -1916,13 +2279,43 @@ function onWin() {
   game.cleanup();
   score++;
   setScore();
+  
+  // INTERCEPT BOSS TRANSITION (Moving from Demon to Yokozuna)
+  if (currentGame === 6) {
+    // 1. Kill the happy music to create a tense silence
+    if (AudioEngine.bgmSource) {
+      try { AudioEngine.bgmSource.stop(); } catch(e){}
+    }
+    const el = document.getElementById('bgm-track');
+    if (el) el.pause();
+
+    // 2. Play the heavy wailing sound instead of the happy chime
+    AudioEngine.playDemonDeath(); 
+    
+    // 3. Flash red warning instead of the green checkmark
+    doFlash('rgba(255,0,0,0.5)', 300);
+    shake('xl');
+    stampShow('DANGER!', '#ff0000', 'clamp(3rem, 12vw, 4rem)', 'rgba(0,0,0,0.8)');
+    
+    setTimeout(() => {
+      stampHide();
+      currentGame++;
+      // Proceeds directly to the "WAIT FOR IT..." prompt in silence
+      showVerbScreen(currentGame);
+    }, 1500); // Hold the tension longer than a normal win
+    
+    return; // Exit here so we don't play the standard win sequence
+  }
+
+  // STANDARD WIN BEHAVIOR for all other games
   AudioEngine.playWin();
   stampShow('✓', '#00ff88', 'clamp(3rem, 14vw, 5rem)');
+  
   setTimeout(() => {
     stampHide();
     currentGame++;
     if (currentGame >= GAME_SEQUENCE.length) {
-      showDemoComplete();
+      playOutroSequence(); 
     } else {
       showVerbScreen(currentGame);
     }
@@ -1947,6 +2340,62 @@ function onLose() {
       showVerbScreen(currentGame);
     }
   }, 700);
+}
+
+function playOutroSequence() {
+  S = 'OUTRO';
+  const outroContainer = document.getElementById('outro-container');
+  const outroOscar = document.getElementById('outro-oscar');
+  const outroBg = document.getElementById('outro-bg'); 
+  const gameWrapper = document.getElementById('game-wrapper');
+
+  // 1. Hide the arcade cabinet, show the dohyo
+  gameWrapper.classList.remove('active');
+  outroContainer.classList.add('active');
+  
+  // 2. Trigger the new 1.5s zoom-in camera move
+  outroBg.className = 'outro-bg-zoom';
+
+  // 3. Crowd swell timed to impact
+  AudioEngine.playCrowdSwell(7500);
+
+  // Phase 1: Oscar fades in AFTER the camera stops (Camera stops at 1.5s, Oscar appears at 1.8s)
+  setTimeout(() => {
+    outroOscar.src = 'oscar-sumo.png';
+    outroOscar.className = 'outro-fade-in';
+    AudioEngine.playTaiko();
+  }, 1800);
+
+  // Phase 2: Hard cut to shikiri (Adjusted slightly to account for the later fade-in)
+  setTimeout(() => {
+    outroOscar.src = 'oscar-shikiri.png';
+    outroOscar.style.animation = 'none';
+    outroOscar.style.opacity = '1';
+    outroOscar.style.transform = 'translateX(-50%) scale(1)';
+    shake('sm');
+    AudioEngine.playTaiko();
+  }, 4200);
+
+  // Phase 3: Charge jumps onto screen
+  setTimeout(() => {
+    outroOscar.src = 'oscar-charge.png';
+    outroOscar.style.animation = '';
+    outroOscar.style.opacity = '0';
+    outroOscar.style.transform = '';
+    outroOscar.className = 'outro-charge-enter';
+    AudioEngine.playWhoosh();
+    shake('sm');
+  }, 6100);
+
+  // Phase 4: Impact -- dead silence, then cut to promo
+  setTimeout(() => {
+    AudioEngine.stopCrowd();
+    shake('xl');
+    doFlash('#ffffff', 400);
+    AudioEngine.playCrash();
+    outroContainer.classList.remove('active');
+    showDemoComplete();
+  }, 7500);
 }
 
 // ===================================================
@@ -2713,7 +3162,6 @@ let wrapTimeouts = [];
 
 const WRAP_SPRITES = [
   'oscar-unwrapped.png',
-  'oscar-wrapping-1.png',
   'oscar-wrapping-2.png',
   'oscar-neutral.png'
 ];
@@ -2723,15 +3171,13 @@ function setupWrap() {
   const oscar = document.getElementById('wrap-oscar');
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const hint = document.getElementById('wrap-hint');
-  const spinIcon = document.getElementById('wrap-spin-icon');
+  const orbit = document.getElementById('wrap-orbit');
 
   container.style.display = 'block';
   oscar.src = 'oscar-unwrapped.png';
   spotlight.style.background = 'radial-gradient(circle at 50% 55%, transparent 60%, rgba(0,0,0,0.95) 80%)';
   ringFill.style.strokeDashoffset = '283';
-  hint.style.opacity = '1';
-  spinIcon.style.opacity = '0.4';
+  orbit.style.opacity = '1';
 }
 
 function playWrap() {
@@ -2740,8 +3186,7 @@ function playWrap() {
   const oscar = document.getElementById('wrap-oscar');
   const spotlight = document.getElementById('wrap-spotlight');
   const ringFill = document.querySelector('#wrap-progress-ring .ring-fill');
-  const hint = document.getElementById('wrap-hint');
-  const spinIcon = document.getElementById('wrap-spin-icon');
+  const orbit = document.getElementById('wrap-orbit');
 
   const TOTAL_TIME = 10000;
   const ROTATIONS_NEEDED = 5;       // full 360° rotations to win
@@ -2774,12 +3219,11 @@ function playWrap() {
     // Update progress ring (283 is the circumference of r=45 circle)
     ringFill.style.strokeDashoffset = String(283 - (progress * 283));
 
-    // Update sprite based on progress thresholds
+    // Update sprite based on progress thresholds (skipping wrapping-1)
     let newIndex;
-    if (progress < 0.25) newIndex = 0;
-    else if (progress < 0.55) newIndex = 1;
-    else if (progress < 0.85) newIndex = 2;
-    else newIndex = 3;
+    if (progress < 0.4) newIndex = 0;
+    else if (progress < 0.8) newIndex = 1;
+    else newIndex = 2;
 
     if (newIndex !== currentSpriteIndex) {
       currentSpriteIndex = newIndex;
@@ -2803,10 +3247,9 @@ function playWrap() {
       lastSwishTime = now;
     }
 
-    // Fade out hint after first progress
+    // Fade out hint and orbit dot after first bit of progress
     if (progress > 0.05) {
-      hint.style.opacity = '0';
-      spinIcon.style.opacity = '0';
+      orbit.style.opacity = '0';
     }
 
     // WIN!
@@ -2988,6 +3431,9 @@ function playSalt() {
       AudioEngine.playSizzle();
       shake('sm');
       demon.style.filter = 'brightness(3) saturate(0)';
+// Calculate how close we are to winning (1.0 to 2.5 multiplier)
+      const intensity = 1 + (currentHits / HITS_NEEDED) * 1.5;
+      AudioEngine.playSizzle(intensity);
 
       const hpPct = Math.max(0, 1 - (currentHits / HITS_NEEDED));
       healthBar.style.width = `${hpPct * 100}%`;
@@ -2999,7 +3445,7 @@ function playSalt() {
       if (currentHits >= HITS_NEEDED) {
         S = 'WIN_ANIM';
         clearTimeout(gameTimer);
-        AudioEngine.playCrash();
+        AudioEngine.playDemonDeath();
         shake('xl');
         doFlash('#ffffff', 300);
         demon.style.transition = 'top 0.5s ease-in, filter 0.5s';
@@ -3106,7 +3552,7 @@ function playBoss() {
   // Random wait time between 3 and 7 seconds
   const waitTime = 3000 + Math.random() * 4000;
 
-  AudioEngine.playDemonRumble();
+  AudioEngine.playHeartbeat(waitTime);
   // Slight slow zoom to build tension
   sprite.style.transition = `transform ${waitTime}ms linear`;
   sprite.style.transform = 'translateX(-50%) scale(1.15)';
@@ -3115,40 +3561,58 @@ function playBoss() {
   const triggerTimeout = setTimeout(() => {
     if (S !== 'PLAYING') return;
     standoffPhase = 'NOW';
-    AudioEngine.stopDemonRumble();
-    AudioEngine.playGlitchSting(); // Acts as a sharp "shing!" sound
+    AudioEngine.stopHeartbeat();
+    AudioEngine.playHyoshigi(); 
     
     doBossFlash('#ff0000', 100);
-    stampShow('NOW!', '#ff0000', 'clamp(4rem, 14vw, 5rem)', 'transparent');
+    // Explicit instruction instead of "NOW!"
+    stampShow('SWIPE UP!', '#ff0000', 'clamp(2.5rem, 10vw, 4rem)', 'transparent');
     
     sprite.style.transition = 'transform 0.05s';
     sprite.style.transform = 'translateX(-50%) scale(1.2)';
 
-    // The failure window (450ms reflex test)
+    // The failure window (widened to 700ms)
     bossTimeouts.push(setTimeout(() => {
       if (standoffPhase === 'NOW') {
         fail('TOO LATE!');
       }
-    }, 450)); 
+    }, 700)); 
   }, waitTime);
 
   bossTimeouts.push(triggerTimeout);
 
-  function fail(reason) {
+function fail(reason) {
     if (S !== 'PLAYING') return;
-    standoffPhase = 'DONE';
-    AudioEngine.stopDemonRumble();
-    AudioEngine.playBonk();
     
+    // 1. Instantly change state to prevent other interactions/timers
+    S = 'LOSE_ANIM'; 
+    standoffPhase = 'DONE';
+    
+    // 2. Clear any pending boss timers
+    bossTimeouts.forEach(t => clearTimeout(t));
+    bossTimeouts = [];
+
+    AudioEngine.stopHeartbeat();
+    AudioEngine.playDeathSlam();
+    
+    // The violent jump scare penalty
+    sprite.style.transition = 'transform 0.05s cubic-bezier(0.1, 0.8, 0.2, 1)'; 
     sprite.src = 'boss-charge.png';
-    sprite.style.transform = 'translateX(-50%) scale(1.8)';
+    sprite.style.transform = 'translateX(-50%) scale(2.2) translateY(10%)'; 
+    
     doBossFlash('#ff0000', 200);
     shake('xl');
-    stampHide();
     
-    // Slight delay before throwing the loss screen so they feel the impact
-    setTimeout(onLose, 400);
-  }
+    // FIX: Changed solid '#000' to 'rgba(0,0,0,0.5)' so the Yokozuna 
+    // jump scare is clearly visible behind the text!
+    stampShow(reason, '#ff4444', 'clamp(2rem, 8vw, 3rem)', 'rgba(0,0,0,0.5)');
+    
+    // 3. Hold for a solid beat before proceeding to the loss screen
+    setTimeout(() => {
+      stampHide();
+      onLose();
+    }, 1500); // Increased to 1.5s so the charge really registers
+}
 
   function win() {
     if (S !== 'PLAYING') return;
@@ -3157,7 +3621,7 @@ function playBoss() {
     stampHide();
 
     // 1. FREEZE TIME
-    AudioEngine.stopDemonRumble();
+    AudioEngine.stopHeartbeat();
     sprite.src = 'boss-stunned.png';
     
     // 2. ZOOM OUT THE SCREEN
@@ -3171,17 +3635,21 @@ function playBoss() {
     cabinet.style.transform = 'scale(1)';
     cabinet.style.opacity = '1';
 
-    // 4. SHATTER
+// 4. SHATTER
     bossTimeouts.push(setTimeout(() => {
-      AudioEngine.playCrash(); 
+      AudioEngine.playGlassShatter(); 
       shake('xl');
       doBossFlash('#ffffff', 400);
       
       const crack = document.getElementById('glass-crack');
       if (crack) crack.style.display = 'block';
       
-      // 5. PROCEED TO OUTRO
-      bossTimeouts.push(setTimeout(onWin, 1500));
+      // 5. PROCEED DIRECTLY TO OUTRO (Bypass onWin checkmark)
+      bossTimeouts.push(setTimeout(() => {
+        cleanupBoss();
+        score++;
+        playOutroSequence(); // Trigger the cinematic!
+      }, 1800)); // Hold the shattered screen for 1.8s
     }, 1300));
   }
 
@@ -3209,8 +3677,8 @@ function playBoss() {
     }
 
     if (standoffPhase === 'NOW') {
-      // Must be a distinct upward swipe
-      if (dy < -30 && Math.abs(dy) > Math.abs(dx)) {
+      // Must be a distinct upward swipe (hypersensitive 15px)
+      if (dy < -15 && Math.abs(dy) > Math.abs(dx)) {
         win(); 
       } else {
         fail('SWIPE UP!'); 
@@ -3243,15 +3711,82 @@ function cleanupBoss() {
 }
 
 // ===================================================
-//  END SCREENS
+//  END SCREENS & OUTRO
 // ===================================================
 function showDemoComplete() {
   document.getElementById('final-score').textContent = String(score).padStart(3, '0');
   demoEl.classList.add('active');
-  const tap = e => { e.preventDefault(); restart(); };
-  demoEl.addEventListener('touchstart', tap, { once: true, passive: false });
-  demoEl.addEventListener('mousedown',  tap, { once: true });
+  
+  const tap = e => { 
+    // If they clicked the ticket link, let the browser handle it, don't restart
+    if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'a') return;
+    
+    e.preventDefault(); 
+    demoEl.removeEventListener('touchstart', tap);
+    demoEl.removeEventListener('mousedown', tap);
+    restart(); 
+  };
+
+  demoEl.addEventListener('touchstart', tap, { passive: false });
+  demoEl.addEventListener('mousedown', tap);
 }
+
+function startOutro() {
+  S = 'OUTRO';
+  
+  // Fade out the shattered game wrapper
+  const gw = document.getElementById('game-wrapper');
+  gw.style.transition = 'opacity 1.5s ease-in-out';
+  gw.style.opacity = '0';
+  
+  // Show the outro panel (starts pure white)
+  const outroPanel = document.getElementById('panel-outro');
+  const white = document.getElementById('outro-white');
+  const sprite = document.getElementById('outro-sprite');
+  
+  showPanel(outroPanel);
+  white.style.opacity = '1';
+  sprite.style.transform = 'scale(1.05)';
+  
+  // 1. Play the alarm clock
+  setTimeout(() => {
+    AudioEngine.playAlarm();
+  }, 1000);
+  
+  // 2. Fade from white to Oscar waking up
+  setTimeout(() => {
+    white.style.opacity = '0';
+    sprite.style.transition = 'transform 5s ease-out';
+    sprite.style.transform = 'scale(1)'; // Slow dramatic zoom out
+  }, 1500);
+  
+  // 3. Transition to the True Ending Score Screen
+  setTimeout(() => {
+    outroPanel.classList.remove('active');
+    
+    // Calculate final stats
+    document.getElementById('end-lives').textContent = lives;
+    const bonus = lives * 500; 
+    document.getElementById('end-score').textContent = String(score * 100 + bonus).padStart(4, '0');
+    
+    const trueEnding = document.getElementById('true-ending-screen');
+    trueEnding.classList.add('active');
+    
+    // Set up endless grind button
+    const tap = e => { 
+      e.preventDefault(); 
+      trueEnding.classList.remove('active');
+      // Loop back to the start, but keep score running!
+      currentGame = 0; 
+      gw.style.opacity = '1';
+      initGame(); 
+    };
+    trueEnding.addEventListener('touchstart', tap, { once: true, passive: false });
+    trueEnding.addEventListener('mousedown',  tap, { once: true });
+
+  }, 6000);
+}
+
 function showGameOver() {
   document.getElementById('go-score').textContent = String(score).padStart(3, '0');
   gameoverEl.classList.add('active');
@@ -3259,10 +3794,20 @@ function showGameOver() {
   gameoverEl.addEventListener('touchstart', tap, { once: true, passive: false });
   gameoverEl.addEventListener('mousedown',  tap, { once: true });
 }
+
 function restart() {
+  // Hide all end screens and outro panels
   demoEl.classList.remove('active');
   gameoverEl.classList.remove('active');
+  document.getElementById('true-ending-screen').classList.remove('active');
+  document.getElementById('outro-container').classList.remove('active');
+  document.getElementById('panel-outro').classList.remove('active');
   
+  // CRITICAL FIX: Make the game wrapper active and fully visible again
+  const gw = document.getElementById('game-wrapper');
+  gw.classList.add('active');
+  gw.style.opacity = '1';
+
   const screenEl = document.getElementById('screen');
   screenEl.style.transition = 'none';
   screenEl.style.transform = 'none';
@@ -3275,7 +3820,7 @@ function restart() {
   cabinet.style.transform = 'scale(4.5)';
   cabinet.style.opacity = '0';
 
-  // Hide all game containers
+  // Hide all game containers so they don't overlap
   document.getElementById('chanko-container').style.display = 'none';
   document.getElementById('shiko-container').style.display = 'none';
   document.getElementById('throw-container').style.display = 'none';
@@ -3285,6 +3830,7 @@ function restart() {
   document.getElementById('salt-container').style.display = 'none';
   document.getElementById('boss-container').style.display = 'none';
   
+  // Reset stats and start the first game
   score = 0;
   lives = 4;
   currentGame = 0;
@@ -3292,6 +3838,7 @@ function restart() {
   setHearts();
   showVerbScreen(currentGame);
 }
+
 </script>
 </body>
 </html>
