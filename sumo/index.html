@@ -2502,7 +2502,7 @@ function playShiko() {
 
   const DURATION = 5000;
   const MAX_FAIL_TIME = 1200; 
-  const ZONE_WIDTH = 0.24; 
+  const ZONE_WIDTH = 0.3; 
 
   timerBar.style.transition = 'none';
   timerBar.style.width = '100%';
@@ -2544,7 +2544,8 @@ function playShiko() {
   let startTime = performance.now();
   let lastFrame = startTime;
   let lastWobbleTime = 0;
- function tick(now) {
+
+function tick(now) {
     if (S !== 'PLAYING') return;
     const dt = Math.min(now - lastFrame, 50) / 1000;
     lastFrame = now;
@@ -2556,27 +2557,28 @@ function playShiko() {
       return;
     }
 
-    const speed = 0.6 + (elapsed / DURATION) * 1.0;
+    // 1. Slower overall pacing
+    const speed = 0.5 + (elapsed / DURATION) * 0.8; 
     const t = elapsed * 0.001 * speed;
     
-    // 1. Smoother, slightly less aggressive movement
-    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 1.2) * 0.25) + (Math.cos(t * Math.PI * 1.8) * 0.15);
+    // 2. Tamer movement (stays closer to the center, waves are slower)
+    let rawTarget = 0.5 + (Math.sin(t * Math.PI * 0.8) * 0.2) + (Math.cos(t * Math.PI * 1.2) * 0.1);
     targetPos = Math.max(ZONE_WIDTH/2, Math.min(1 - ZONE_WIDTH/2, rawTarget));
     
     centerZone.style.left = ((targetPos - ZONE_WIDTH/2) * 100) + '%';
     const inZone = Math.abs(playerPos - targetPos) <= (ZONE_WIDTH / 2);
     
     if (inZone) {
-      // 2. 1:1 Recovery Rate (was brutally low at 600)
-      failTime = Math.max(0, failTime - dt * 1000); 
+      // 3. Super fast recovery! (Heals at 1500)
+      failTime = Math.max(0, failTime - dt * 1500); 
       oscarImg.src = 'oscar-shiko.png';
       centerZone.style.background = 'rgba(0, 255, 100, 0.25)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(0,255,100,0.3)';
       needle.style.background = '#fff';
       needle.style.boxShadow = '0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5)';
     } else {
-      // 3. 1:1 Penalty Rate (was brutally high at 1200)
-      failTime += dt * 1000;
+      // 4. Very slow penalty! (Takes damage at 700)
+      failTime += dt * 700;
       oscarImg.src = 'oscar-shiko-wobble.png';
       centerZone.style.background = 'rgba(255, 0, 0, 0.35)';
       centerZone.style.boxShadow = 'inset 0 0 8px rgba(255,0,0,0.5)';
@@ -2588,7 +2590,6 @@ function playShiko() {
       }
     }
 
-    // 4. Bar draining and color logic (unchanged from previous step, works great)
     const failPct = Math.min(failTime / MAX_FAIL_TIME, 1);
     const healthPct = 1 - failPct; 
     stableBar.style.width = (healthPct * 100) + '%';
@@ -2611,7 +2612,6 @@ function playShiko() {
 
     shikoRAF = requestAnimationFrame(tick);
   }
-
   shikoRAF = requestAnimationFrame(tick);
 }
 
