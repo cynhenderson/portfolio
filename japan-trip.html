@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,1136 +16,1172 @@
             --font-body: 'Montserrat', sans-serif;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-body);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
+```
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-body);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        h1, h2, h3 {
-            font-family: var(--font-heading);
-            margin-top: 0;
-        }
+    h1, h2, h3 {
+        font-family: var(--font-heading);
+        margin-top: 0;
+    }
 
-        /* The Hero Section */
-        .hero {
-            background-image: url('photos/hero.png');
-            background-size: cover;
-            background-position: top;
-            height: 45vh; /* Takes up just under half the mobile screen */
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
-        }
+    /* The Hero Section */
+    .hero {
+        background-image: url('photos/hero.png');
+        background-size: cover;
+        background-position: top;
+        height: 45vh; /* Takes up just under half the mobile screen */
+        display: flex;
+        align-items: flex-end;
+        padding: 20px;
+    }
 
-        .hero-overlay {
-            background: rgba(249, 247, 242, 0.9); /* Translucent parchment */
-            padding: 20px;
-            border-radius: 12px;
-            transition: background 0.35s ease, border-left-color 0.35s ease;
-            border-left: 4px solid var(--accent-primary);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 100%;
-            box-sizing: border-box;
-        }
+    .hero-overlay {
+        background: rgba(249, 247, 242, 0.9); /* Translucent parchment */
+        padding: 20px;
+        border-radius: 12px;
+        transition: background 0.35s ease, border-left-color 0.35s ease;
+        border-left: 4px solid var(--accent-primary);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-        .hero-overlay h1 {
-            font-size: 2.2rem;
-            margin-bottom: 5px;
-            color: var(--text-color);
-        }
+    .hero-overlay h1 {
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+        color: var(--text-color);
+    }
 
-        .hero-overlay p {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--accent-primary);
-        }
+    .hero-overlay p {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--accent-primary);
+    }
 
-        /* Layout Container */
-        .container {
-            padding: 20px;
-            max-width: 600px; /* Keeps it tight on larger screens, perfect for mobile */
-            margin: 0 auto;
-        }
+    /* Layout Container */
+    .container {
+        padding: 20px;
+        max-width: 600px; /* Keeps it tight on larger screens, perfect for mobile */
+        margin: 0 auto;
+    }
 
-        /* The Zen Card */
-        .zen-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 25px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            margin-bottom: 30px;
-            border-top: 6px solid var(--accent-secondary);
-        }
+    /* The Zen Card */
+    .zen-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 25px 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        margin-bottom: 30px;
+        border-top: 6px solid var(--accent-secondary);
+    }
 
-        .zen-card h2 {
-            font-size: 1.6rem;
-            border-bottom: 1px solid var(--accent-primary);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
+    .zen-card h2 {
+        font-size: 1.6rem;
+        border-bottom: 1px solid var(--accent-primary);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
 
-        /* Time Block for Itinerary Items */
-        .time-block {
-            margin-bottom: 25px;
-            border-left: 3px solid var(--accent-secondary);
-            padding-left: 15px;
-        }
+    /* Time Block for Itinerary Items */
+    .time-block {
+        margin-bottom: 25px;
+        border-left: 3px solid var(--accent-secondary);
+        padding-left: 15px;
+    }
 
-        .time-block h3 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
+    .time-block h3 {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
 
-        .tag {
-            display: inline-block;
-            background: var(--bg-color);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: 1px solid var(--accent-primary);
-            margin: 0 5px 10px 0;
-        }
+    .tag {
+        display: inline-block;
+        background: var(--bg-color);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1px solid var(--accent-primary);
+        margin: 0 5px 10px 0;
+    }
 
-        .notes {
-            font-size: 0.95rem;
-            color: #4a544c; /* Slightly lighter text for descriptions */
-            margin-bottom: 10px;
-        }
+    .notes {
+        font-size: 0.95rem;
+        color: #4a544c; /* Slightly lighter text for descriptions */
+        margin-bottom: 10px;
+    }
 
-        /* Large, Accessible Buttons */
-        .btn-large {
-            display: block;
-            width: 100%;
-            background-color: var(--text-color);
-            color: var(--bg-color);
-            text-align: center;
-            padding: 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-top: 15px;
-            box-sizing: border-box;
-        }
-        
-        /* Day Pill Navigation */
-        .day-nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background-color: var(--bg-color);
-            padding: 12px 20px;
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        }
+    /* Large, Accessible Buttons */
+    .btn-large {
+        display: block;
+        width: 100%;
+        background-color: var(--text-color);
+        color: var(--bg-color);
+        text-align: center;
+        padding: 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-top: 15px;
+        box-sizing: border-box;
+    }
+    
+    /* Day Pill Navigation */
+    .day-nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: var(--bg-color);
+        padding: 12px 20px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        scrollbar-width: none; /* Firefox */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
 
-        .day-nav::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
+    .day-nav::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
 
-        .day-pill {
-            flex-shrink: 0;
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1.5px solid var(--accent-primary);
-            background: transparent;
-            color: var(--text-color);
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            white-space: nowrap;
-        }
+    .day-pill {
+        flex-shrink: 0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1.5px solid var(--accent-primary);
+        background: transparent;
+        color: var(--text-color);
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        white-space: nowrap;
+    }
 
-        .day-pill.active {
-            background-color: var(--text-color);
-            color: var(--bg-color);
-            border-color: var(--text-color);
-        }
+    .day-pill.active {
+        background-color: var(--text-color);
+        color: var(--bg-color);
+        border-color: var(--text-color);
+    }
 
-        .location-photo {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: block;
-        }
+    .location-photo {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: block;
+    }
 
-        /* ── Our Days section ── */
-        .nav-divider {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            color: var(--accent-primary);
-            font-size: 0.85rem;
-            opacity: 0.5;
-            padding: 0 2px;
-            user-select: none;
-        }
+    /* ── Our Days section ── */
+    .nav-divider {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        color: var(--accent-primary);
+        font-size: 0.85rem;
+        opacity: 0.5;
+        padding: 0 2px;
+        user-select: none;
+    }
 
-        .day-pill.our-day {
-            border-color: #7A9BB5;
-            color: #4a6275;
-        }
+    .day-pill.our-day {
+        border-color: #7A9BB5;
+        color: #4a6275;
+    }
 
-        .day-pill.our-day.active {
-            background-color: #7A9BB5;
-            color: var(--bg-color);
-            border-color: #7A9BB5;
-        }
+    .day-pill.our-day.active {
+        background-color: #7A9BB5;
+        color: var(--bg-color);
+        border-color: #7A9BB5;
+    }
 
-        .zen-card.our-card {
-            border-top-color: #A8C4DB;
-        }
+    .zen-card.our-card {
+        border-top-color: #A8C4DB;
+    }
 
-        .zen-card.our-card h2 {
-            color: #4a6275;
-        }
+    .zen-card.our-card h2 {
+        color: #4a6275;
+    }
 
-        /* Action-required callout */
-        .action-needed {
-            background: #FFFAF0;
-            border: 1.5px solid #D4A373;
-            border-left: 4px solid #C0832A;
-            border-radius: 8px;
-            padding: 14px 16px;
-            margin: 10px 0 15px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
+    /* Action-required callout */
+    .action-needed {
+        background: #FFFAF0;
+        border: 1.5px solid #D4A373;
+        border-left: 4px solid #C0832A;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin: 10px 0 15px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
 
-        .action-needed .action-label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #C0832A;
-            margin-bottom: 6px;
-        }
+    .action-needed .action-label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #C0832A;
+        margin-bottom: 6px;
+    }
 
-        .action-needed a {
-            display: inline-block;
-            margin-top: 8px;
-            font-weight: 600;
-            color: #C0832A;
-            text-decoration: underline;
-        }
-    </style>
+    .action-needed a {
+        display: inline-block;
+        margin-top: 8px;
+        font-weight: 600;
+        color: #C0832A;
+        text-decoration: underline;
+    }
+</style>
+```
+
 </head>
 <body>
 
-    <header class="hero">
-        <div class="hero-overlay">
-            <h1>Hendersons in Tokyo</h1>
-            <p>April 10 – 17, 2026</p>
+```
+<header class="hero">
+    <div class="hero-overlay">
+        <h1>Hendersons in Tokyo</h1>
+        <p>April 10 – 17, 2026</p>
+    </div>
+</header>
+
+<nav class="day-nav">
+    <button class="day-pill active" data-target="day-1">Apr 10</button>
+    <button class="day-pill" data-target="day-2">Apr 11</button>
+    <button class="day-pill" data-target="day-3">Apr 12</button>
+    <button class="day-pill" data-target="day-4">Apr 13</button>
+    <button class="day-pill" data-target="day-5">Apr 14</button>
+    <button class="day-pill" data-target="day-6">Apr 15</button>
+    <button class="day-pill" data-target="day-7">Apr 16</button>
+    <button class="day-pill" data-target="day-8">Apr 17</button>
+    <span class="nav-divider">· · ·</span>
+    <button class="day-pill our-day" data-target="our-day-1">Apr 7</button>
+    <button class="day-pill our-day" data-target="our-day-2">Apr 8</button>
+    <button class="day-pill our-day" data-target="our-day-3">Apr 9</button>
+    <button class="day-pill our-day" data-target="our-day-4">Apr 10 AM</button>
+</nav>
+
+<main class="container">
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 1 — Friday, April 10: Arrival              -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-1">
+        <h2>Friday, April 10: Arrival</h2>
+
+        <div class="time-block">
+            <h3>Narita Airport — Souvenir Shopping</h3>
+            <span class="tag">Terminal 1 & 2, 4F</span>
+            <span class="tag">Nice-to-Have</span>
+            <img src="photos/narita-airport.png" alt="Narita Airport Terminal" class="location-photo">
+            <p class="notes">Budget 90 minutes minimum from landing to exiting the terminal (up to 2 hours if busy) — keep airport shopping as a "nice to have," not a must.<br><br>
+            <strong>Fa-So-La Souvenir</strong> — extensive Japanese souvenirs, folkcraft, and food gifts.<br>
+            <strong>Akebono</strong> — 70-year-old rice cracker shop, beautiful traditional packaging.<br>
+            <strong>BLUE SKY / ANA FESTA</strong> — Japanese Kit Kats in 100+ flavors, Pocky in regional-limited editions, Shingen Mochi.<br>
+            <strong>Gift Keisei Japanese Souvenir</strong> — kimono accessories, key holders, traditional gifts.<br><br>
+            ⚠️ Most shops open 7:30–8:00 AM and close around 8:00–9:00 PM.</p>
         </div>
-    </header>
-
-    <nav class="day-nav">
-        <button class="day-pill active" data-target="day-1">Apr 10</button>
-        <button class="day-pill" data-target="day-2">Apr 11</button>
-        <button class="day-pill" data-target="day-3">Apr 12</button>
-        <button class="day-pill" data-target="day-4">Apr 13</button>
-        <button class="day-pill" data-target="day-5">Apr 14</button>
-        <button class="day-pill" data-target="day-6">Apr 15</button>
-        <button class="day-pill" data-target="day-7">Apr 16</button>
-        <button class="day-pill" data-target="day-8">Apr 17</button>
-        <span class="nav-divider">· · ·</span>
-        <button class="day-pill our-day" data-target="our-day-1">Apr 7</button>
-        <button class="day-pill our-day" data-target="our-day-2">Apr 8</button>
-        <button class="day-pill our-day" data-target="our-day-3">Apr 9</button>
-        <button class="day-pill our-day" data-target="our-day-4">Apr 10 AM</button>
-    </nav>
-
-    <main class="container">
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 1 — Friday, April 10: Arrival              -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-1">
-            <h2>Friday, April 10: Arrival</h2>
-
-            <div class="time-block">
-                <h3>Narita Airport — Souvenir Shopping</h3>
-                <span class="tag">Terminal 1 & 2, 4F</span>
-                <span class="tag">Nice-to-Have</span>
-                <img src="photos/narita-airport.png" alt="Narita Airport Terminal" class="location-photo">
-                <p class="notes">Budget 90 minutes minimum from landing to exiting the terminal (up to 2 hours if busy) — keep airport shopping as a "nice to have," not a must.<br><br>
-                <strong>Fa-So-La Souvenir</strong> — extensive Japanese souvenirs, folkcraft, and food gifts.<br>
-                <strong>Akebono</strong> — 70-year-old rice cracker shop, beautiful traditional packaging.<br>
-                <strong>BLUE SKY / ANA FESTA</strong> — Japanese Kit Kats in 100+ flavors, Pocky in regional-limited editions, Shingen Mochi.<br>
-                <strong>Gift Keisei Japanese Souvenir</strong> — kimono accessories, key holders, traditional gifts.<br><br>
-                ⚠️ Most shops open 7:30–8:00 AM and close around 8:00–9:00 PM.</p>
-            </div>
-            
-            <div class="time-block">
-                <h3>Dinner</h3>
-                <span class="tag">Low-Stress</span>
-                <p class="notes"><strong>Primary: Kineyamugimaru (udon)</strong> — comfortable and low-stress after travel. Recommended for the first night.<br><br>
-                <strong>Plan B: Kaiten sushi (conveyor belt)</strong> — call ahead to confirm proper chairs and tables.</p>
-                <a href="https://maps.google.com/?q=Kineyamugimaru+udon+narita" target="_blank" rel="noopener" class="btn-large">📍 Kineyamugimaru on Maps</a>
-            </div>
-            
-            <div class="time-block">
-                <h3>Keisei Skyliner to Hotel</h3>
-                <span class="tag">Reserved Seats</span>
-                <span class="tag">No Standing</span>
-                <img src="photos/keisei-skyliner.png" alt="Keisei Skyliner Train" class="location-photo">
-                <p class="notes">Reserved seats, smooth ride, no standing — the best option after a long flight. Drops you close to <strong>Resol Stay Akihabara</strong>, your hotel for the week.</p>
-                <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
-            </div>
-
-
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 2 — Saturday, April 11: Asakusa            -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-2" style="display:none">
-            <h2>Saturday, April 11: Asakusa</h2>
-
-            <div class="time-block">
-                <h3>9:30 AM — Kimono Rental</h3>
-                <span class="tag">Traditional</span>
-                <span class="tag">~30 Min to Dress</span>
-                <p class="notes">Get dressed in kimono with hair styling included. Allow about 30 minutes to get fully dressed and ready before heading out.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>10:00 AM — Senso-ji Photoshoot (90 min)</h3>
-                <span class="tag">Iconic</span>
-                <span class="tag">Take It Slow</span>
-                <img src="photos/senso-ji.png" alt="Kaminarimon Gate at Senso-ji" class="location-photo">
-                <p class="notes">90-minute photoshoot around the temple grounds — Kaminarimon gate, Nakamise shopping street, and the main hall.<br><br>
-                ⚠️ Geta sandals can be tiring over distance — take it slow and rest whenever needed.</p>
-                <a href="https://maps.google.com/?q=Senso-ji+Temple+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Senso-ji Temple on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>11:30 AM — Return Kimonos</h3>
-                <span class="tag">Drop-Off</span>
-                <p class="notes">Return the kimonos to the rental shop before heading to lunch.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>12:00 PM — Lunch: Gyukatsu Kyoto Katsugyu</h3>
-                <span class="tag">4.9 Stars</span>
-                <span class="tag">Call Ahead</span>
-                <img src="photos/gyukatsu-kyoto.png" alt="Gyukatsu Kyoto Katsugyu" class="location-photo">
-                <p class="notes">Extremely popular beef cutlet restaurant — have the hotel concierge call ahead to request ground-floor seating. Arrive at open to avoid a wait. The DIY searing element is fun without being physically demanding.<br><br>
-                <strong>Plan B:</strong> Nakamise-dori street food stalls or the nearby depachika at Matsuya Asakusa.</p>
-                <a href="https://maps.google.com/?q=Gyukatsu+Kyoto+Katsugyu+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Gyukatsu Kyoto Katsugyu on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>3:00 PM — Kappabashi Kitchen Supply Town</h3>
-                <span class="tag">Flat Terrain</span>
-                <span class="tag">Easy Walking</span>
-                <img src="photos/kappabashi-street.png" alt="Kappabashi Kitchen Supply Street" class="location-photo">
-                <p class="notes">A fascinating street of professional kitchen supply shops — knives, ceramics, plastic food models, and cooking tools. Flat terrain throughout.<br><br>
-                ⚠️ Shops close around 5:00 PM — arrive by 3:00 PM to have time to browse.</p>
-                <a href="https://maps.google.com/?q=Kappabashi+Kitchen+Street+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Kappabashi on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Evening — Dinner: Dandadan</h3>
-                <span class="tag">Ramen & Gyoza</span>
-                <p class="notes">Lively and beloved chain known for hearty ramen and crispy gyoza. A satisfying end to a full day.</p>
-                <a href="https://maps.google.com/?q=Nikujiru+Gyoza+Dandadan+Kappabashi" target="_blank" rel="noopener" class="btn-large">📍 Dandadan on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 3 — Sunday, April 12: Imperial Palace & Ginza -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-3" style="display:none">
-            <h2>Sunday, April 12: Imperial Palace &amp; Ginza</h2>
-
-            <div class="time-block">
-                <h3>10:30 AM — Nijubashi Bridge</h3>
-                <span class="tag">Flat Walk</span>
-                <span class="tag">Iconic Photo Stop</span>
-                <img src="photos/nijubashi-bridge.png" alt="Nijubashi Bridge at the Imperial Palace" class="location-photo">
-                <p class="notes">Taxi from Akihabara (~10 min). A flat 2-minute walk for the iconic Imperial Palace castle photo. Then taxi directly into north Ginza — no need to linger.</p>
-                <a href="https://maps.google.com/?q=Nijubashi+Bridge+Imperial+Palace+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nijubashi Bridge on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>11:30 AM — Ginza Itoya</h3>
-                <span class="tag">Elevator Access</span>
-                <span class="tag">12 Floors</span>
-                <p class="notes">12 floors of premium stationery, pens, and paper goods. Start at the top floor and work your way down by elevator. Buy postcards here and post them directly from the store's mail service.</p>
-                <a href="https://maps.google.com/?q=Ginza+Itoya+stationery+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ginza Itoya on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>12:15 PM — HANDS Ginza</h3>
-                <span class="tag">Tax-Free</span>
-                <span class="tag">1 Min Walk</span>
-                <p class="notes">Same block as Itoya, 1-minute walk. Japanese gadgets, lifestyle goods, and souvenirs across 5 floors. Tax-free shopping with your passport.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>12:45 PM — Pola Museum Annex</h3>
-                <span class="tag">Free Entry</span>
-                <span class="tag">Rest Stop</span>
-                <p class="notes">Free gallery one block over with elevator access. About 20 minutes — a quiet, calm space perfect for a rest before the Aquarium.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>1:15 PM — Mitsukoshi Depachika (B1/B2)</h3>
-                <span class="tag">Lunch</span>
-                <span class="tag">Food Hall</span>
-                <p class="notes">Head into Mitsukoshi and take the elevator down to the legendary basement food halls. Pick up lunch from the food stalls, then eat at the Hokoten car-free street tables outside on Chuo-dori, or find a seat on the 9F terrace.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>2:15 PM — ART AQUARIUM MUSEUM (Mitsukoshi 9F)</h3>
-                <span class="tag">Pre-Book Tickets</span>
-                <span class="tag">Elevator Access</span>
-                <img src="photos/art-aquarium.png" alt="ART AQUARIUM MUSEUM Goldfish Exhibit" class="location-photo">
-                <p class="notes">Slow, immersive goldfish art installation — one of Tokyo's most unique experiences. Budget 45–60 minutes. Fully elevator-accessible throughout Mitsukoshi department store.<br><br>
-                ⚠️ Book tickets online in advance.</p>
-                <a href="https://maps.google.com/?q=ART+AQUARIUM+MUSEUM+Ginza+Mitsukoshi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 ART AQUARIUM on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>3:15 PM — Onitsuka Tiger</h3>
-                <span class="tag">Multilingual Staff</span>
-                <p class="notes">Short walk south to mid-Ginza. Multilingual staff — great selection of shoes and accessories in the iconic brand's sleek store.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>4:00 PM — Uniqlo + GU</h3>
-                <span class="tag">Tax-Free</span>
-                <span class="tag">Café Break</span>
-                <p class="notes">Both Uniqlo and GU are in the same building, one block south. Both are tax-free with passport. The Uniqlo top-floor café offers a seated break with views if needed.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>5:00 PM — Ginza Six: Dinner + Rooftop</h3>
-                <span class="tag">360° Views</span>
-                <span class="tag">Open Until 11 PM</span>
-                <img src="photos/ginza-six.png" alt="Ginza Six Rooftop Garden" class="location-photo">
-                <p class="notes">Pick up dinner from the basement depachika, then take the elevator to the 14F rooftop garden for 360° views including Tokyo Tower. Open seating, open until 11 PM — stay as long as you like.</p>
-                <a href="https://maps.google.com/?q=Ginza+Six+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ginza Six on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~6:30 PM — Taxi back to Akihabara</h3>
-                <span class="tag">~15 Min</span>
-                <p class="notes">Comfortable taxi ride back to the hotel (~15 minutes).</p>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 4 — Monday, April 13: Roppongi & Shibuya   -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-4" style="display:none">
-            <h2>Monday, April 13: Roppongi &amp; Shibuya</h2>
-
-            <div class="time-block">
-                <h3>10:00 AM — National Art Center, Roppongi</h3>
-                <span class="tag">Elevator Access</span>
-                <span class="tag">Free Exhibitions</span>
-                <img src="photos/national-art-center.png" alt="National Art Center Glass Facade" class="location-photo">
-                <p class="notes">Taxi from hotel (~20 min). One of Japan's largest exhibition spaces — a sweeping undulating glass facade that is architecturally stunning on its own. Multiple free exhibitions plus one ticketed show. Café inside for a mid-visit sit-down. Budget 90 min–2 hours.<br><br>
-                ⚠️ Check nact.jp before you go — exhibitions rotate.<br>
-                ⚠️ Closed Tuesdays — Monday April 13 is fine.</p>
-                <a href="https://maps.google.com/?q=National+Art+Center+Roppongi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 National Art Center on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>12:00 PM — Taxi to Shibuya (~25 min)</h3>
-                <span class="tag">Direct Taxi</span>
-                <p class="notes">Comfortable taxi ride from Roppongi to Shibuya.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>12:15 PM — Lunch: Jikasei MENSHO (Shibuya Parco B1F)</h3>
-                <span class="tag">Ramen</span>
-                <span class="tag">Basement Level</span>
-                <p class="notes">Highly regarded ramen in the basement of Shibuya Parco — a great start before exploring the floors above.</p>
-                <a href="https://maps.google.com/?q=Jikasei+MENSHO+Shibuya+Parco+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Jikasei MENSHO on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>1:15 PM — Shibuya Parco</h3>
-                <span class="tag">Nintendo Tokyo</span>
-                <span class="tag">Pokémon Center</span>
-                <img src="photos/shibuya-parco.png" alt="Shibuya Parco Nintendo Tokyo" class="location-photo">
-                <p class="notes">Start at Floor 6 — Nintendo Tokyo, Pokémon Center, Capcom Store, and Godzilla Store are all on one floor. Work your way down through the fashion floors at your own pace. Café spaces on various floors for rest breaks.<br><br>
-                ⚠️ Layout can be maze-like — take it slow.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:30 PM — Dulton</h3>
-                <span class="tag">Home & Lifestyle</span>
-                <span class="tag">Industrial Vintage Vibe</span>
-                <p class="notes">Japanese lifestyle goods store with a distinct industrial-meets-vintage aesthetic — notebooks, bags, kitchen tools, office supplies, and all kinds of well-designed hardware-adjacent objects. The kind of shop where you browse for 30 minutes and leave with things you didn't know you needed.</p>
-                <a href="https://maps.google.com/?q=Dulton+Shibuya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Dulton Shibuya on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~4:30 PM — Shibuya Center-gai</h3>
-                <span class="tag">Flat Pedestrian Street</span>
-                <span class="tag">Street Food</span>
-                <p class="notes">Lively car-free street lined with shops and food stalls. Good spot for takoyaki (octopus balls) or crepes as an afternoon snack.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>~5:30 PM — Dinner in Shibuya</h3>
-                <span class="tag">Flexible</span>
-                <p class="notes">Plenty of options around Shibuya — no need to plan ahead. <strong>Shibuya Hikarie depachika (B2F)</strong> is a good fallback if you want variety and easy browsing.</p>
-                <a href="https://maps.google.com/?q=Shibuya+Hikarie+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shibuya Hikarie on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~7:00 PM — Share Lounge (Shibuya Tsutaya, 4F)</h3>
-                <span class="tag">Shibuya Crossing View</span>
-                <span class="tag">¥2,500 All-Inclusive</span>
-                <img src="photos/share-lounge.png" alt="Shibuya Crossing from Share Lounge" class="location-photo">
-                <p class="notes">~¥2,500 per person includes unlimited drinks and snacks. Stadium-style seating faces the famous Shibuya Crossing directly. Open until 11 PM — stay as long as you like.</p>
-                <a href="https://maps.google.com/?q=Shibuya+Tsutaya+Books+Share+Lounge+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shibuya Tsutaya on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~8:00 PM — Taxi back to Akihabara</h3>
-                <span class="tag">~20 Min</span>
-                <p class="notes">Comfortable taxi ride back to the hotel.</p>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 5 — Tuesday, April 14: Last Day Together   -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-5" style="display:none">
-            <h2>Tuesday, April 14: Last Day Together</h2>
-
-            <div class="time-block">
-                <h3>9:00 AM — Meiji Shrine (Harajuku)</h3>
-                <span class="tag">Flat Gravel Path</span>
-                <span class="tag">Arrive Early</span>
-                <img src="photos/meiji-shrine.png" alt="Meiji Shrine Forested Path" class="location-photo">
-                <p class="notes">Taxi from Akihabara (~20 min). Enter from the Harajuku/south gate. The forested path to the shrine is about 10–12 minutes each way on flat gravel — serene and beautiful in the early morning before crowds arrive. Budget 75 minutes total.</p>
-                <a href="https://maps.google.com/?q=Meiji+Shrine+Harajuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meiji Shrine on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>11:00 AM — Taxi to Shinjuku (~15 min)</h3>
-                <span class="tag">Direct Taxi</span>
-                <p class="notes">Short taxi ride from Harajuku to Shinjuku.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>11:15 AM — Shinjuku Gyoen</h3>
-                <span class="tag">Cherry Blossoms</span>
-                <span class="tag">¥500 Entry</span>
-                <img src="photos/shinjuku-gyoen.png" alt="Shinjuku Gyoen Cherry Blossoms" class="location-photo">
-                <p class="notes">¥500 per person — enter from the Shinjuku gate on the west side. Mid-April is peak cherry blossom season; this is one of the most beautiful moments of the entire trip. Wide flat lawns, ponds, bridges, and benches throughout — three distinct landscape styles (Japanese, English, French). Budget a relaxed 90 minutes.<br><br>
-                ⚠️ Closes at 4 PM — no alcohol permitted inside.</p>
-                <a href="https://maps.google.com/?q=Shinjuku+Gyoen+National+Garden+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shinjuku Gyoen on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>1:00 PM — Isetan Shinjuku Depachika</h3>
-                <span class="tag">World-Class Food Hall</span>
-                <span class="tag">Omiyage</span>
-                <p class="notes">10-minute walk north from Gyoen. The B1/B2 food hall at Isetan is considered one of the finest depachika in all of Japan. Pick up lunch here and grab last-minute omiyage (gifts) — wagyu, pastries, bento, sweets, all in beautiful gift-ready packaging.</p>
-                <a href="https://maps.google.com/?q=Isetan+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Isetan Shinjuku on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>2:30 PM — Don Quijote Shinjuku Kabukicho</h3>
-                <span class="tag">Tax-Free</span>
-                <span class="tag">Last-Minute Souvenirs</span>
-                <p class="notes">Chaotic, fun, and packed with novelty gifts, snacks, cosmetics, and quirky finds. Tax-free with passport. Great for picking up anything you missed during the week.</p>
-                <a href="https://maps.google.com/?q=Don+Quijote+Shinjuku+Kabukicho+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Don Quijote Shinjuku on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>3:30 PM — Godzilla Head</h3>
-                <span class="tag">Quick Photo Stop</span>
-                <span class="tag">On the Way</span>
-                <p class="notes">One block from Don Quijote — no detour needed. Look up on the way out. The Godzilla Head roars on the hour from 12–8 PM. Quick photo stop, then grab a taxi.<br><br>
-                <strong>Plan B if Don Quijote felt like too much:</strong><br>
-                <strong>Memory Lane (Omoide Yokocho)</strong> — a narrow alley of tiny yakitori stalls near Shinjuku's west exit, atmospheric and easy to duck into for a snack or drink.<br><br>
-                <strong>3D Cat Billboard</strong> — just outside Shinjuku east exit at Cross Shinjuku Vision, a giant realistic cat stretches and looks down from the curved screen. Free to watch, runs throughout the day.<br><br>
-                <strong>Okadaya Shinjuku</strong> — beloved craft store a short walk from the east exit, with a large yarn and knitting floor. Calm, browsable, and very mom-friendly.</p>
-                <a href="https://maps.google.com/?q=Omoide+Yokocho+Memory+Lane+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Memory Lane on Maps</a>
-                <a href="https://maps.google.com/?q=Okadaya+Shinjuku+craft+store+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Okadaya Shinjuku on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>4:00 PM — Return to Hotel</h3>
-                <span class="tag">Rest Before Dinner</span>
-                <p class="notes">Head back to Resol Stay Akihabara to rest and get ready for the farewell dinner.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>7:00 PM — Farewell Dinner: Benitsuya</h3>
-                <span class="tag">Splurge</span>
-                <span class="tag">Geisha Performance</span>
-                <img src="photos/geisha.jpg" alt="Benitsuya Geisha Performance" class="location-photo">
-                <p class="notes">Taxi or subway to Shimbashi (~15 min). <strong>Benitsuya (Geisha Ozashiki Dining)</strong> — 6F, Grand Hammer building, 1 min walk from Shimbashi Station West Exit 7, right in front of SL Square. A stunning modern ozashiki space with crimson walls and traditional décor. Kaiseki course supervised by Kyoto celebrity chef Naoki Okumura (Gion Okumura), with authentic Tokyo geisha performing live dance and shamisen — then ozashiki games and photos together. English-speaking staff on hand. 90-minute seating. Drinks ordered separately on the day.</p>
-                <a href="https://maps.google.com/?q=Benitsuya+Grand+Hammer+Shimbashi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Benitsuya on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 6 — Wednesday, April 15: Parents' Solo Day -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-6" style="display:none">
-            <h2>Wednesday, April 15: Parents' Solo Day — Ueno &amp; Yanaka</h2>
-
-            <div class="time-block">
-                <h3>9:30 AM — Ueno Park</h3>
-                <span class="tag">Cherry Blossoms</span>
-                <span class="tag">Pond Loop</span>
-                <img src="photos/ueno-park.png" alt="Ueno Park Sakura and Shinobazu Pond" class="location-photo">
-                <p class="notes">Gentle cherry blossom stroll through Ueno Park followed by a loop around Shinobazu Pond. One of Tokyo's most famous hanami (blossom-viewing) spots.</p>
-                <a href="https://maps.google.com/?q=Ueno+Park+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ueno Park on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>10:30 AM — Tokyo National Museum</h3>
-                <span class="tag">English Signage</span>
-                <span class="tag">Main Building Only</span>
-                <img src="photos/tokyo-national-museum.png" alt="Tokyo National Museum Exterior" class="location-photo">
-                <p class="notes">Japan's oldest and largest museum. Focus on the main building only — English signage throughout makes it easy to navigate at your own pace.</p>
-                <a href="https://maps.google.com/?q=Tokyo+National+Museum+Ueno+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Tokyo National Museum on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>12:15 PM — Ameyoko Market</h3>
-                <span class="tag">Lunch</span>
-                <span class="tag">Browse</span>
-                <p class="notes">Lunch at <strong>Minatoya</strong> — point at the pictures to order, kaisendon (seafood rice bowls) from ¥500. Browse the lively open-air market stalls after eating.</p>
-                <a href="https://maps.google.com/?q=Ameyoko+Market+Ueno+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ameyoko Market on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>1:45 PM — Yanaka Ginza</h3>
-                <span class="tag">Gently Downhill</span>
-                <span class="tag">Cat Shops &amp; Snacks</span>
-                <img src="photos/yanaka-ginza.png" alt="Yanaka Ginza Street" class="location-photo">
-                <p class="notes">Taxi to the top of Yanaka Ginza, then walk gently downhill through this charming old-Tokyo shopping street. Cat-themed shops and street snacks throughout.</p>
-                <a href="https://maps.google.com/?q=Yanaka+Ginza+shopping+street+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Yanaka Ginza on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>3:00 PM — Optional: Ueno Zoo</h3>
-                <span class="tag">Flat &amp; Paved</span>
-                <span class="tag">If Energy Allows</span>
-                <p class="notes">If energy allows, taxi back to Ueno Zoo — fully flat and paved throughout. Home to Japan's famous giant pandas.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>5:00 PM — Return to Hotel</h3>
-                <span class="tag">Rest &amp; Freshen Up</span>
-                <p class="notes">Head back to Resol Stay Akihabara to rest before the evening.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>6:45 PM — Kingdom Hall Meeting</h3>
-                <span class="tag">~25 Min by Taxi</span>
-                <p class="notes">Taxi to Kingdom Hall at 7-3-3 Arakawa, Arakawa-ku (~25 min). Meeting at 7:30 PM.</p>
-                <a href="https://maps.app.goo.gl/JcJkXYBL7MDtxPsk8" target="_blank" rel="noopener" class="btn-large">📍 Kingdom Hall on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 7 — Thursday, April 16: Parents' Solo Day -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-7" style="display:none">
-            <h2>Thursday, April 16: Parents' Solo Day — Meguro &amp; Hamarikyu</h2>
-
-            <div class="time-block">
-                <h3>10:00 AM — Meguro River Canal Walk</h3>
-                <span class="tag">Late Blossoms</span>
-                <span class="tag">Flat Path</span>
-                <img src="photos/meguro-river.png" alt="Meguro River Canal Cherry Blossoms" class="location-photo">
-                <p class="notes">Stroll north along the canal toward Nakameguro Station. Late blossoms, boutique shops, and a relaxed neighbourhood atmosphere along the water.</p>
-                <a href="https://maps.google.com/?q=Meguro+River+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meguro River on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>11:30 AM — Brunch: flour+water</h3>
-                <span class="tag">English-Friendly</span>
-                <span class="tag">Unlimited Tea</span>
-                <p class="notes">Brunch set for ¥1,980 with unlimited rotating tea and English-friendly staff. A calm, welcoming spot along the canal.<br><br>
-                <strong>Plan B:</strong> Convenience store or a canal-side café for a casual affordable bite.</p>
-                <a href="https://maps.google.com/?q=flour+water+cafe+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 flour+water on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>1:00 PM — Continue South Along the Canal</h3>
-                <span class="tag">Best Blossom Canopy</span>
-                <span class="tag">Boutiques</span>
-                <p class="notes">The southern stretch has the best blossom canopy and reflections on the water. Browse the boutiques and cafés at a leisurely pace.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>2:30 PM — Hamarikyu Gardens</h3>
-                <span class="tag">¥300 Entry</span>
-                <span class="tag">Matcha on the Water</span>
-                <img src="photos/hamarikyu-gardens.png" alt="Nakajima Teahouse at Hamarikyu Gardens" class="location-photo">
-                <p class="notes">Taxi to Hamarikyu Gardens (¥300 entry). The <strong>Nakajima Teahouse</strong> sits on a small island in the tidal pond — enjoy matcha and sweets on the water in one of Tokyo's most beautiful traditional garden settings.</p>
-                <a href="https://maps.google.com/?q=Hamarikyu+Gardens+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Hamarikyu Gardens on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>5:00 PM — Optional: Tokyo Skytree</h3>
-                <span class="tag">If Energy Allows</span>
-                <span class="tag">Pre-Book Tickets</span>
-                <p class="notes">If energy allows, visit the Skytree for sunset views over the city.<br><br>
-                ⚠️ Buy tickets in advance at tokyo-skytree.jp.</p>
-                <a href="https://maps.google.com/?q=Tokyo+Skytree+Sumida+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Tokyo Skytree on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Evening — Taxi Home</h3>
-                <span class="tag">Safe Travels</span>
-                <p class="notes">Comfortable taxi ride back to the hotel for the final night in Tokyo.</p>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- DAY 8 — Friday, April 17: Travel Day           -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card" id="day-8" style="display:none">
-            <h2>Friday, April 17: Travel Day</h2>
-
-            <div class="time-block">
-                <h3>Airport Transfer — Narita</h3>
-                <span class="tag">Keisei Skyliner</span>
-                <span class="tag">Reserved Seats</span>
-                <p class="notes">Take the Keisei Skyliner from Ueno/Nippori back to Narita Airport. Reserved seats, smooth ride — same as the trip in. Budget around 90 minutes from hotel departure to clearing security.</p>
-                <a href="https://maps.google.com/?q=Keisei+Ueno+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Keisei Line on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Airport Souvenir Run</h3>
-                <span class="tag">Terminal 1 & 2, 4F</span>
-                <span class="tag">Last Chance</span>
-                <p class="notes">Last opportunity for any final gifts — Fa-So-La, Akebono, BLUE SKY/ANA FESTA, and Gift Keisei are all in the Terminal 4F shopping area.<br><br>
-                ⚠️ Most shops open 7:30–8:00 AM and close around 8:00–9:00 PM.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>Bon Voyage!</h3>
-                <span class="tag">Safe Flight</span>
-                <p class="notes">Wishing you both a smooth flight home. What a trip.</p>
-            </div>
-        </article>
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- OUR DAY 1 — Tuesday, April 7: Arrival + Odaiba -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card our-card" id="our-day-1" style="display:none">
-            <h2>Tuesday, April 7: Arrival + Odaiba</h2>
-
-            <div class="time-block">
-                <h3>2:20 PM — Land at Haneda</h3>
-                <span class="tag">Haneda Airport</span>
-                <p class="notes">Budget 60–90 minutes through immigration and baggage claim. Taxi from Haneda to Resol Stay Akihabara is ~35–45 min.</p>
-                <a href="https://maps.google.com/?q=Haneda+Airport+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Haneda Airport on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~4:00 PM — Hotel Check-In</h3>
-                <span class="tag">Freshen Up</span>
-                <p class="notes">Check in to Resol Stay Akihabara and freshen up before heading out for the evening.</p>
-                <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~5:30 PM — Yurikamome to Daiba</h3>
-                <span class="tag">~40 Min Total</span>
-                <span class="tag">Scenic Route</span>
-                <p class="notes">From Akihabara, take the JR Keihin-Tohoku Line to Shimbashi (~15 min), then board the <strong>Yurikamome monorail</strong> toward Toyosu. The train crosses directly over the <strong>Rainbow Bridge</strong> — sit at the front for the best views. Ride to <strong>Daiba Station</strong>, which drops you right by DECKS and the waterfront.</p>
-                <a href="https://maps.google.com/?q=Shimbashi+Station+Yurikamome+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shimbashi Yurikamome Station on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Small Worlds Tokyo — If Time Allows</h3>
-                <span class="tag">Ariake (1 Stop Away)</span>
-                <span class="tag">Closes 7 PM</span>
-                <p class="notes">One stop from Daiba on the Yurikamome toward Toyosu — <strong>Ariake Station</strong>. Small Worlds is a massive indoor miniature diorama museum: hyper-detailed scale models of cities, airports, space centers, and anime worlds. Budget 60–90 minutes if you go. Must be done before the 7 PM Gundam show.</p>
-                <a href="https://maps.google.com/?q=Small+Worlds+Tokyo+Ariake" target="_blank" rel="noopener" class="btn-large">📍 Small Worlds Tokyo on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Gundam Base Shop</h3>
-                <span class="tag">Inside DiverCity</span>
-                <div class="action-needed">
-                    <span class="action-label">⚠️ Action Required Before You Go</span>
-                    Check whether the lottery system applies to your visit — some exclusive items require advance entry.
-                    <a href="https://www.gundam-base.net/news/55669.html" target="_blank" rel="noopener">→ Check Gundam Base Lottery Details</a>
-                </div>
-                <p class="notes">Largest Gunpla retail store in Tokyo — wide selection of kits, figures, and limited items. Browse before the 7 PM projection show starts.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>7:00 PM — WALL-G Projection Show</h3>
-                <span class="tag">Unicorn Gundam</span>
-                <span class="tag">Free to Watch</span>
-                <p class="notes">The <strong>WALL-G</strong> projection mapping show plays on the life-size Unicorn Gundam statue outside DiverCity. Shows run on the hour in the evening — 7 PM is the perfect slot.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>DECKS Tokyo Beach — 4F Shopping Street</h3>
-                <span class="tag">Next to DiverCity</span>
-                <p class="notes">The 4th floor Seaside Mall recreates a retro Showa-era alley — novelty shops, crane games, character goods. The outdoor deck here also has a great direct view of the Rainbow Bridge.</p>
-                <a href="https://maps.google.com/?q=DECKS+Tokyo+Beach+Odaiba" target="_blank" rel="noopener" class="btn-large">📍 DECKS Tokyo Beach on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Fuji TV Building</h3>
-                <span class="tag">Iconic Landmark</span>
-                <p class="notes">The giant silver sphere is one of Odaiba's most recognizable sights. Walk the plaza for photos — observation deck inside the sphere is worth it on a clear evening for bay and bridge views.</p>
-                <a href="https://maps.google.com/?q=Fuji+TV+Building+Odaiba+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Fuji TV Building on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Odaiba Kaihin Park — Beach, Hot Dogs &amp; Views</h3>
-                <span class="tag">Waterfront</span>
-                <p class="notes">Grab a hot dog at Ehukai beach and hang out along the waterfront. From here you get the classic Odaiba double shot: the <strong>Rainbow Bridge</strong> lit over the bay and the <strong>Statue of Liberty</strong> replica with the Tokyo skyline behind it. Especially good at dusk.</p>
-                <a href="https://maps.google.com/?q=Odaiba+Kaihin+Park+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Odaiba Kaihin Park on Maps</a>
-                <a href="https://maps.google.com/?q=Odaiba+Statue+of+Liberty+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Statue of Liberty Odaiba on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- OUR DAY 2 — Wednesday, April 8: Jimbocho + Harajuku -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card our-card" id="our-day-2" style="display:none">
-            <h2>Wednesday, April 8: Jimbocho + Daikanyama + Harajuku + Shinjuku</h2>
-
-            <div class="time-block">
-                <h3>Morning — Walk to Jimbocho</h3>
-                <span class="tag">~25 Min Walk from Hotel</span>
-                <span class="tag">No Rush</span>
-                <p class="notes">First stores open at 10 AM — grab a coffee in Kanda on the way. The walk from Akihabara is flat, easy, and a nice way to see the city wake up. Aim to arrive around 10:00–10:15 AM.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>10:00 AM — Isseido Booksellers + Nyankodo</h3>
-                <span class="tag">Art & Illustrated Books</span>
-                <span class="tag">Cat Books</span>
-                <p class="notes">Start here — both open at 10 AM and are right next to each other.<br><br>
-                🎨 <strong>Isseido Booksellers</strong> — rare and antique books with a strong art and illustrated books section upstairs. English-friendly staff. Museum-quality finds. No photography upstairs.<br><br>
-                🐱 <strong>Nyankodo (Anegawa)</strong> — the beloved cat-only antiquarian bookshop. Cat photography books, cat illustration, cat everything. <strong>Cash only!</strong></p>
-                <a href="https://maps.google.com/?cid=17344254167726978986" target="_blank" rel="noopener" class="btn-large">📍 Isseido Booksellers on Maps</a>
-                <a href="https://maps.google.com/?cid=6473146759072261356" target="_blank" rel="noopener" class="btn-large">📍 Nyankodo on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~10:30 AM — Yumeno Manga + Bunken Rock Side</h3>
-                <span class="tag">Vintage Manga</span>
-                <span class="tag">Rock & Metal Magazines</span>
-                <p class="notes">A short walk west along Yasukuni-dori.<br><br>
-                📚 <strong>Yumeno Manga Bookstore</strong> — vintage Showa-era manga, posters, and retro merch. One of the best manga shops in Jimbocho. Worth a browse even if you're not buying.<br><br>
-                🤘 <strong>Bunken Rock Side</strong> — tiny shop packed with vintage rock, metal, and fashion magazines. The staff are exactly your kind of people. Opens 10:30 AM.</p>
-                <a href="https://maps.google.com/?cid=4876797382022550294" target="_blank" rel="noopener" class="btn-large">📍 Yumeno Manga on Maps</a>
-                <a href="https://maps.google.com/?cid=5526886238454351169" target="_blank" rel="noopener" class="btn-large">📍 Bunken Rock Side on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~11:00 AM — Ohya Shobo</h3>
-                <span class="tag">Antique Woodblock Prints</span>
-                <span class="tag">Edo-Era Maps</span>
-                <p class="notes">Don't skip this one. <strong>Ohya Shobo</strong> specializes in antique ukiyo-e woodblock prints, Edo-era illustrated books, and historical maps — some dating back hundreds of years. It's cramped and packed with treasures. Even a 20-minute browse is worth it. Prices range from a few thousand yen for offset prints up to serious collector pieces.</p>
-                <a href="https://maps.google.com/?cid=3385390816142613325" target="_blank" rel="noopener" class="btn-large">📍 Ohya Shobo on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~12:00 PM — Bohemian's Guild</h3>
-                <span class="tag">Art Books</span>
-                <span class="tag">Design & Illustration</span>
-                <p class="notes">Opens at noon — time it perfectly after Ohya Shobo. <strong>Bohemian's Guild</strong> is a secondhand art book treasure trove: design, illustration, fine art, photography. Good English selection, reasonable prices, friendly staff. Budget 30–45 minutes easily. This is the one most likely to cost you extra luggage weight.<br><br>
-                🎯 <strong>Also nearby at noon:</strong> magnif (vintage fashion/art magazines) and @Wonder (movie memorabilia) are both on the same block if you have extra time — walk-in if you pass them, but not must-stops.</p>
-                <a href="https://maps.google.com/?cid=3616084426703138422" target="_blank" rel="noopener" class="btn-large">📍 Bohemian's Guild on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~1:15 PM — Subway to Daikanyama</h3>
-                <span class="tag">~30 Min, One Transfer</span>
-                <span class="tag">Hanzomon Line → Tokyu Toyoko</span>
-                <p class="notes">From Jimbocho Station, take the <strong>Hanzomon Line</strong> to Shibuya (~15 min), then transfer to the <strong>Tokyu Toyoko Line</strong> one stop to Daikanyama (~3 min). Exit and walk 5 minutes to T-Site. Simple, fast, no luggage issues at this point in the day.</p>
-                <a href="https://maps.google.com/?q=Jimbocho+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Jimbocho Station on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~1:30 PM — Daikanyama T-Site</h3>
-                <span class="tag">Tsutaya Books</span>
-                <span class="tag">Art & Design Books</span>
-                <p class="notes">One of the most beautiful bookshops in the world — a flagship Tsutaya concept store across three low wooden buildings in a quiet wooded plaza. Art, design, photography, film, architecture, and music. Browsable in English. Budget 60–90 minutes — this is exactly the kind of place you'll want to linger.</p>
-                <a href="https://maps.google.com/?q=Daikanyama+T-Site+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Daikanyama T-Site on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~2:30 PM — Hollywood Ranch Market</h3>
-                <span class="tag">Americana & Vintage-Inspired</span>
-                <span class="tag">2 Min Walk from T-Site</span>
-                <p class="notes">Right next to T-Site — don't skip it. <strong>Hollywood Ranch Market</strong> is a Japanese concept store with a distinct Americana and vintage-workwear DNA: leather jackets, denim, unusual brands, and occasional Yohji Yamamoto pieces turning up on the racks. The owner is friendly and the stock rotates constantly. Budget 20–30 minutes.</p>
-                <a href="https://maps.google.com/?cid=3458530629576065787" target="_blank" rel="noopener" class="btn-large">📍 Hollywood Ranch Market on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:00 PM — Walk the Meguro Canal to Nakameguro</h3>
-                <span class="tag">Cherry Blossoms</span>
-                <span class="tag">~20 Min Stroll</span>
-                <p class="notes">April 8 is right at peak sakura — the canal will have the full blossom canopy over the water. Walk south from Daikanyama along the canal toward Nakameguro Station, browsing as you go. No strict plan needed — just wander and soak it in.<br><br>
-                🛍️ <strong>Maybe stops along the way:</strong><br>
-                <strong>DIGDIG</strong> — vintage military, workwear, and reverse weave. Friendly staff, fair prices. Quick browse.<br>
-                <strong>BRICK &amp; MORTAR</strong> — handcrafted ceramics and glassware made in their own workshop. Small, beautiful, the kind of thing you can't get at home.<br><br>
-                No pressure on either — treat them as walk-ins if something catches your eye.</p>
-                <a href="https://maps.google.com/?q=DIGDIG+vintage+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 DIGDIG on Maps</a>
-                <a href="https://maps.google.com/?q=BRICK+AND+MORTAR+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 BRICK &amp; MORTAR on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:20 PM — Taxi to Harajuku</h3>
-                <span class="tag">~10 Min from Nakameguro</span>
-                <p class="notes">Grab a taxi from Nakameguro Station to Laforet Harajuku — about 10 minutes and ¥800–1,000. Easier than any subway option, especially with books in tow.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:30 PM — Harajuku — Shopping Route</h3>
-                <span class="tag">Laforet → Cat Street</span>
-                <p class="notes">
-                    <strong>Laforet Harajuku</strong> — multi-floor fashion complex, eclectic and fun.<br><br>
-                    <strong>Kiddy Land</strong> — beloved toy and character goods store, 5 floors on Omotesando-dori.<br><br>
-                    <strong>Ura-Harajuku / Cat Street</strong> — wander the backstreets for vintage shops and independent boutiques.<br><br>
-                    <strong>PAMM-ke</strong> — cute accessories and stationery, worth a stop.<br><br>
-                    <strong>B-Side Label + Junie Moon</strong> — on the same block, stickers and kawaii goods.<br><br>
-                    <strong>Sanrio</strong> — shop-only visit, no café needed here.
-                </p>
-                <a href="https://maps.google.com/?q=Laforet+Harajuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Laforet Harajuku on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~6:30 PM — Dinner in Omotesando</h3>
-                <span class="tag">Before Shinjuku</span>
-                <span class="tag">Flexible</span>
-                <p class="notes">Plenty of dinner options in Omotesando after the Harajuku shopping stretch — no need to plan ahead. Eat here before heading to Shinjuku for the night.</p>
-                <a href="https://maps.google.com/?q=Omotesando+restaurants+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Omotesando Dining on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~8:00 PM — Subway to Shinjuku</h3>
-                <span class="tag">~15 Min, One Transfer</span>
-                <span class="tag">Ginza Line → JR Yamanote</span>
-                <p class="notes">From Omotesando Station, take the <strong>Ginza Line</strong> two stops to Shibuya (~5 min), then the <strong>JR Yamanote Line</strong> one stop to Shinjuku (~5 min). Fast, cheap, and you're heading out for the night anyway.</p>
-                <a href="https://maps.google.com/?q=Omotesando+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Omotesando Station on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~8:30 PM — Shinjuku Bar Crawl 🤘</h3>
-                <span class="tag">Metal & Punk</span>
-                <span class="tag">Late Night</span>
-                <p class="notes">Three bars, one neighborhood — all within walking distance in Kabukicho / Shinjuku proper.<br><br>
-                🍺 <strong>Bar PSY</strong> — intimate, dark, stacked shelves of rare imports. A serious whisky and craft beer bar with the right kind of vibe.<br><br>
-                🤘 <strong>Godz</strong> — the legendary Shinjuku metal bar. Loud, dim, covered in band memorabilia. One of the best metal bars in the world, no exaggeration.<br><br>
-                💀 <strong>Deathmatch in Hell</strong> — punk/hardcore, maximum attitude, exactly what it sounds like. No wrong order to hit these.</p>
-                <a href="https://maps.google.com/?q=Bar+PSY+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Bar PSY on Maps</a>
-                <a href="https://maps.google.com/?q=Godz+Bar+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Godz on Maps</a>
-                <a href="https://maps.google.com/?q=Deathmatch+in+Hell+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Deathmatch in Hell on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- OUR DAY 3 — Thursday, April 9: Shimokitazawa + Nakano Broadway -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card our-card" id="our-day-3" style="display:none">
-            <h2>Thursday, April 9: Nakano Broadway + Gotokuji + Shimokitazawa</h2>
-
-            <div class="time-block">
-                <h3>7:30 AM — Arashio Stable: Sumo Morning Practice</h3>
-                <span class="tag">Street-Facing Window</span>
-                <span class="tag">Or Reserve Inside</span>
-                <p class="notes">Show up at the street-facing window at 2-47-2 Hamacho, Nihonbashi — no tickets, no booking. Watch wrestlers train live on the dohyo from 7:30–9:30 AM.<br><br>
-                🤫 Be quiet and respectful throughout.<br>
-                📷 No flash photography.<br><br>
-                <strong>Want to sit inside?</strong> You can reserve a seat inside the stable — book exactly one week before your visit.</p>
-                <a href="https://ippin-do.chuocity.tokyo/products/202403211001?variant=44668655632576" target="_blank" rel="noopener" class="btn-large">🎟️ Reserve a Seat Inside Arashio</a>
-                <a href="https://maps.google.com/?q=Arashio+Stable+2-47-2+Hamacho+Nihonbashi+Chuo+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Arashio Stable on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~10:30 AM — Subway to Nakano Broadway</h3>
-                <span class="tag">~30 Min, One Transfer</span>
-                <span class="tag">Toei Shinjuku Line → JR Chuo</span>
-                <p class="notes">From Hamacho Station (near the stable), take the <strong>Toei Shinjuku Line</strong> to Shinjuku (~20 min), then the <strong>JR Chuo Line</strong> two stops to Nakano (~5 min). Walk 5 minutes north to Broadway. Nakano Broadway is a labyrinthine mall famous for anime, manga, figures, retro games, and vintage collectibles. Budget about 2 hours to explore the upper floors.<br><br>
-                🎨 <strong>Taco Che (3F)</strong> — the zine and art book destination inside the mall. Indie publications, small press, underground art books, and self-published work. Don't leave without checking this floor.</p>
-                <a href="https://maps.google.com/?q=Hamacho+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Hamacho Station on Maps</a>
-                <a href="https://maps.google.com/?q=Nakano+Broadway+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nakano Broadway on Maps</a>
-                <a href="https://maps.google.com/?q=Taco+Che+Nakano+Broadway+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Taco Che on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>Lunch in Nakano</h3>
-                <span class="tag">Flexible</span>
-                <p class="notes">Plenty of ramen, soba, and lunch sets around Nakano Station. No need to plan ahead — just wander out from Broadway and pick something that looks good.</p>
-            </div>
-
-            <div class="time-block">
-                <h3>~2:00 PM — Cat Train to Gotokuji Temple 🐱🚃</h3>
-                <span class="tag">Setagaya Line Tram</span>
-                <span class="tag">Den-en-toshi → Sangenjaya → Miyanosaka</span>
-                <p class="notes">From Nakano, take the JR Chuo Line back to Shinjuku, then the <strong>Odakyu Line</strong> to Gotokuji Station (~15 min) and walk 12 min to the temple — or for the full cat train experience, go via Shibuya on the <strong>Den-en-toshi Line</strong> to Sangenjaya (~10 min), then transfer to the <strong>Tokyu Setagaya Line</strong> tram to Miyanosaka Station (~10 min walk to temple).<br><br>
-                🐾 <strong>The Setagaya Line is the cat train.</strong> Officially called the <em>Kofuku-no-Manekineko Densha</em>, it's a regular tram decorated top-to-toe in maneki-neko: cat-paw grab straps, paw prints on the floor, cat face on the front. It's not guaranteed to be the special car — check the timetable before you go by searching <strong>"event nekodensya"</strong> and finding the 幸福の招き猫電車 運行時刻表 page.<br><br>
-                🏯 <strong>Gotokuji Temple</strong> — the spiritual birthplace of the maneki-neko. Hundreds of small white ceramic beckoning cat figures line the shrine, left as offerings by visitors over generations. Eerie, beautiful, and deeply charming. Budget 45–60 minutes.</p>
-                <a href="https://maps.google.com/?q=Sangenjaya+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Sangenjaya Station on Maps</a>
-                <a href="https://maps.google.com/?q=Gotokuji+Temple+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Gotokuji Temple on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:15 PM — Setagaya Line to Shimokitazawa</h3>
-                <span class="tag">~5 Min, Same Tram</span>
-                <span class="tag">Miyanosaka → Setagaya-Daita</span>
-                <p class="notes">Hop back on the Setagaya Line tram — possibly the cat train again — from Miyanosaka and ride just a few stops to <strong>Setagaya-Daita Station</strong>. Shirohige's Cream Puff Factory is a 5-minute walk from the station, and you'll work your way north from there. Clean line, no backtracking.</p>
-                <a href="https://maps.google.com/?q=Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shimokitazawa on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:20 PM — Shirohige's Cream Puff Factory 🍮</h3>
-                <span class="tag">Totoro Cream Puffs</span>
-                <span class="tag">Sells Out — Go Early</span>
-                <p class="notes">The Ghibli-themed cream puff shop in Daita — Totoro faces in multiple flavors, displayed like little characters. They sell out regularly so hitting this first makes sense. Quick stop, 15–20 minutes.</p>
-                <a href="https://maps.google.com/?q=Shirohige+Cream+Puff+Factory+Daita+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shirohige's on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~3:45 PM — Bonus Track</h3>
-                <span class="tag">Indie Bookshop</span>
-                <span class="tag">Zines & Small Press</span>
-                <p class="notes">An outdoor creative complex in Daita — walk north from Shirohige's and you're there. NEIGHBORS bookshop carries small press, zines, and art books. The rest of the complex has a few more small independent shops and a coffee spot. Quiet, browsable, exactly your thing. Budget 30–45 minutes.</p>
-                <a href="https://maps.google.com/?q=Bonus+Track+Shimokitazawa+Daita+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Bonus Track on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~4:30 PM — セカイクラス Reload</h3>
-                <span class="tag">Independent Shops</span>
-                <span class="tag">Near the Station</span>
-                <p class="notes">Continue north back toward the station to Reload — an outdoor multi-unit complex with a mix of small independent shops. Good for stickers, knick knacks, and anything interesting that catches your eye. Budget 20–30 minutes.</p>
-                <a href="https://maps.google.com/?q=Sekai+Class+Reload+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 セカイクラス Reload on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~5:30 PM — Curry Dinner</h3>
-                <span class="tag">Shimokita Curry Culture</span>
-                <span class="tag">Before the Show</span>
-                <p class="notes">Shimokitazawa has an unusually deep curry scene — more curry shops per block than almost anywhere in Tokyo. No need to plan ahead: just wander around the station area and pick whichever one looks right.</p>
-                <a href="https://maps.google.com/?q=curry+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">🍛 Curry in Shimokitazawa on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>7:30 PM — Show at Shelter</h3>
-                <span class="tag">Doors 19:00</span>
-                <span class="tag">Show 19:30</span>
-                <span class="tag">Punk / Live Music</span>
-                <p class="notes">Live punk show at Shelter — one of Tokyo's most legendary small venues, right in the heart of Shimokitazawa.<br><br>
-                <strong>Lineup:</strong> QUINCAMPOIX, Vacuum Everyday, Water Maze, LBSTR</p>
-                <a href="https://www.loft-prj.co.jp/schedule/shelter/349267" target="_blank" rel="noopener" class="btn-large">🎸 Shelter Show Details &amp; Tickets</a>
-                <a href="https://maps.google.com/?q=Shelter+live+house+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shelter on Maps</a>
-            </div>
-        </article>
-
-
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- OUR DAY 4 — Friday, April 10: Morning Only     -->
-        <!-- ═══════════════════════════════════════════════ -->
-        <article class="zen-card our-card" id="our-day-4" style="display:none">
-            <h2>Friday, April 10: Morning — Matcha Experience</h2>
-
-            <div class="time-block">
-                <h3>9:00 AM — Matcha Tasting &amp; Making</h3>
-                <span class="tag">Booked via GetYourGuide</span>
-                <span class="tag">Small Group</span>
-                <p class="notes">Small-group matcha tasting and making experience led by a tea farmer in Asakusa. Taste and compare matcha from 5 different production regions of Japan, then make your own. Personal and educational — recent reviews call it a genuine one-on-one experience.<br><br>
-                <strong>Meeting point:</strong> 〒111-0042 東京都台東区寿３丁目１９−８ 変なホテル 2F</p>
-                <a href="https://maps.google.com/?q=Henna+Hotel+Asakusa+3-19-8+Kotobuki+Taito+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meeting Point on Maps</a>
-            </div>
-
-            <div class="time-block">
-                <h3>~11:00 AM — Head to Narita</h3>
-                <span class="tag">Pick Up Parents</span>
-                <span class="tag">Keisei Skyliner</span>
-                <p class="notes">After the matcha experience, take the Keisei Skyliner from Ueno to Narita to meet your parents. Their flight lands at 2:20 PM — budget plenty of time. The family trip begins here.</p>
-                <a href="https://maps.google.com/?q=Keisei+Ueno+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Keisei Ueno Station on Maps</a>
-            </div>
-        </article>
-
-    </main>
-
-
-    <script>
-        const pills = document.querySelectorAll('.day-pill');
-        const cards = document.querySelectorAll('.zen-card');
-        const heroTitle = document.querySelector('.hero-overlay h1');
-        const heroDate = document.querySelector('.hero-overlay p');
-        const heroOverlay = document.querySelector('.hero-overlay');
-
-        pills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                // Update active pill
-                pills.forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-
-                // Show matching card, hide others
-                const target = pill.dataset.target;
-                cards.forEach(card => {
-                    card.style.display = card.id === target ? 'block' : 'none';
-                });
-
-                // Swap hero title + overlay color for "our days"
-                if (pill.classList.contains('our-day')) {
-                    heroTitle.textContent = 'Castros in Tokyo';
-                    heroDate.textContent = 'April 7 – 15, 2026';
-                    heroOverlay.style.background = 'rgba(224, 237, 246, 0.92)';
-                    heroOverlay.style.borderLeftColor = '#7A9BB5';
-                } else {
-                    heroTitle.textContent = 'Hendersons in Tokyo';
-                    heroDate.textContent = 'April 10 – 17, 2026';
-                    heroOverlay.style.background = '';
-                    heroOverlay.style.borderLeftColor = '';
-                }
-
-                // Scroll pill into view if clipped
-                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-
-                // Scroll page to top of content
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        <div class="time-block">
+            <h3>Dinner</h3>
+            <span class="tag">Low-Stress</span>
+            <p class="notes"><strong>Primary: Kineyamugimaru (udon)</strong> — comfortable and low-stress after travel. Recommended for the first night.<br><br>
+            <strong>Plan B: Kaiten sushi (conveyor belt)</strong> — call ahead to confirm proper chairs and tables.</p>
+            <a href="https://maps.google.com/?q=Kineyamugimaru+udon+narita" target="_blank" rel="noopener" class="btn-large">📍 Kineyamugimaru on Maps</a>
+        </div>
+        
+        <div class="time-block">
+            <h3>Keisei Skyliner to Hotel</h3>
+            <span class="tag">Reserved Seats</span>
+            <span class="tag">No Standing</span>
+            <img src="photos/keisei-skyliner.png" alt="Keisei Skyliner Train" class="location-photo">
+            <p class="notes">Reserved seats, smooth ride, no standing — the best option after a long flight. Drops you close to <strong>Resol Stay Akihabara</strong>, your hotel for the week.</p>
+            <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
+        </div>
+
+
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 2 — Saturday, April 11: Asakusa            -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-2" style="display:none">
+        <h2>Saturday, April 11: Asakusa</h2>
+
+        <div class="time-block">
+            <h3>9:30 AM — Kimono Rental</h3>
+            <span class="tag">Traditional</span>
+            <span class="tag">~30 Min to Dress</span>
+            <p class="notes">Get dressed in kimono with hair styling included. Allow about 30 minutes to get fully dressed and ready before heading out.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>10:00 AM — Senso-ji Photoshoot (90 min)</h3>
+            <span class="tag">Iconic</span>
+            <span class="tag">Take It Slow</span>
+            <img src="photos/senso-ji.png" alt="Kaminarimon Gate at Senso-ji" class="location-photo">
+            <p class="notes">90-minute photoshoot around the temple grounds — Kaminarimon gate, Nakamise shopping street, and the main hall.<br><br>
+            ⚠️ Geta sandals can be tiring over distance — take it slow and rest whenever needed.</p>
+            <a href="https://maps.google.com/?q=Senso-ji+Temple+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Senso-ji Temple on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>11:30 AM — Return Kimonos</h3>
+            <span class="tag">Drop-Off</span>
+            <p class="notes">Return the kimonos to the rental shop before heading out to explore.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~11:45 AM — Nakamise-dori &amp; Shin-Nakamise Shopping</h3>
+            <span class="tag">Yukatas</span>
+            <span class="tag">Masks</span>
+            <span class="tag">Accessories</span>
+            <p class="notes">Start shopping the traditional streets while you're right here. Nakamise-dori has stalls selling kitsune and oni masks, folding fans, tenugui towels, and accessories. The covered <strong>Shin-Nakamise arcade</strong> (the cross-street off Nakamise) has more traditional goods shops with flat surfaces and shade.<br><br>
+            🦊 <strong>Masks:</strong> Several stalls along Nakamise carry hand-painted kitsune, hannya, and oni masks in a range of quality levels. Look for the ones with weight and texture rather than thin plastic.<br><br>
+            🎋 <strong>Fans, hair accessories, tenugui:</strong> Scattered throughout both streets. Take your time browsing.<br><br>
+            ♿ <strong>Dad's rest stop:</strong> The <strong>Asakusa Culture and Sightseeing Center</strong> is directly across from Kaminarimon. Free entry, elevator to an observation deck with Senso-ji and Skytree views, a cafe, and accessible restrooms. A great spot to park the WHILL and relax while you and Mom shop.</p>
+            <a href="https://maps.google.com/?q=Nakamise+Shopping+Street+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nakamise-dori on Maps</a>
+            <a href="https://maps.google.com/?q=Asakusa+Culture+Tourist+Information+Center+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Sightseeing Center on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~12:30 PM — Yukata Shopping</h3>
+            <span class="tag">Recycled Kimono</span>
+            <span class="tag">English Staff</span>
+            <p class="notes">Two excellent yukata shops within a few blocks of each other:<br><br>
+            👘 <strong>Konjyaku Kimono Tatsumi</strong> — three shops near Asakusa Public Hall, plus a sister shop called <strong>Oriental Shop Gin</strong> on Nakamise itself. Yukatas, obi, and a wide range of accessories in one stop.<br><br>
+            👘 <strong>Kirakuya Asakusa</strong> — 3-minute walk from Asakusa Station. Over 4,000 recycled kimonos and yukatas at reasonable prices, plus remade kimono-fabric goods and Japanese accessories. English-speaking staff available.</p>
+            <a href="https://maps.google.com/?q=Konjyaku+Kimono+Tatsumi+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Konjyaku Kimono Tatsumi on Maps</a>
+            <a href="https://maps.google.com/?q=Kirakuya+Asakusa+kimono+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Kirakuya Asakusa on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~1:30 PM — Flexible Lunch</h3>
+            <span class="tag">No Reservation</span>
+            <span class="tag">Go with the Flow</span>
+            <p class="notes">No pressure, no plan. Just eat when you're hungry. Options everywhere:<br><br>
+            <strong>Nakamise street food stalls</strong> — fried meat patties, melon pan, ningyo-yaki. Grab and go.<br>
+            <strong>Matsuya Asakusa depachika (B1)</strong> — elevator-accessible basement food hall with ready-to-eat options. Seating available.<br>
+            <strong>Walk-in restaurants around Kaminarimon</strong> — soba, udon, ramen, tonkatsu. Just pick something that looks good.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~2:15 PM — Sumida Park Rest Break</h3>
+            <span class="tag">Flat Paths</span>
+            <span class="tag">Skytree Views</span>
+            <span class="tag">WHILL-Friendly</span>
+            <p class="notes">Walk east to the Sumida River for a recharge. Flat riverside paths, plenty of benches, and beautiful Skytree views right across the water. A peaceful spot to sit for 20-30 minutes before the next round.<br><br>
+            ♿ <strong>Fully WHILL-accessible</strong> — flat paths throughout, wide open space, benches everywhere.</p>
+            <a href="https://maps.google.com/?q=Sumida+Park+Asakusa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Sumida Park on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:00 PM — Kappabashi Kitchen Supply Town</h3>
+            <span class="tag">Knives &amp; Souvenirs</span>
+            <span class="tag">Flat Terrain</span>
+            <img src="photos/kappabashi-street.png" alt="Kappabashi Kitchen Supply Street" class="location-photo">
+            <p class="notes">Head south from Senso-ji on flat terrain (10-15 min walk, all WHILL-friendly). Focus on the knife shops for souvenir knives, plus ceramics and plastic food models if energy allows. No need to do the entire street.<br><br>
+            ⚠️ Shops close around 5:00 PM — arrive by 3:00 to have time to browse.</p>
+            <a href="https://maps.google.com/?q=Kappabashi+Kitchen+Street+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Kappabashi on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Evening — Dinner (Confirmed)</h3>
+            <span class="tag">Reservation Set</span>
+            <p class="notes">Dinner reservation is confirmed. Head to your restaurant from Kappabashi.</p>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 3 — Sunday, April 12: Imperial Palace & Ginza -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-3" style="display:none">
+        <h2>Sunday, April 12: Imperial Palace &amp; Ginza</h2>
+
+        <div class="time-block">
+            <h3>10:30 AM — Nijubashi Bridge</h3>
+            <span class="tag">Flat Walk</span>
+            <span class="tag">Iconic Photo Stop</span>
+            <img src="photos/nijubashi-bridge.png" alt="Nijubashi Bridge at the Imperial Palace" class="location-photo">
+            <p class="notes">Taxi from Akihabara (~10 min). A flat 2-minute walk for the iconic Imperial Palace castle photo. Then taxi directly into north Ginza — no need to linger.</p>
+            <a href="https://maps.google.com/?q=Nijubashi+Bridge+Imperial+Palace+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nijubashi Bridge on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>11:30 AM — Ginza Itoya</h3>
+            <span class="tag">Elevator Access</span>
+            <span class="tag">12 Floors</span>
+            <p class="notes">12 floors of premium stationery, pens, and paper goods. Start at the top floor and work your way down by elevator. Buy postcards here and post them directly from the store's mail service.</p>
+            <a href="https://maps.google.com/?q=Ginza+Itoya+stationery+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ginza Itoya on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>12:15 PM — HANDS Ginza</h3>
+            <span class="tag">Tax-Free</span>
+            <span class="tag">1 Min Walk</span>
+            <p class="notes">Same block as Itoya, 1-minute walk. Japanese gadgets, lifestyle goods, and souvenirs across 5 floors. Tax-free shopping with your passport.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>12:45 PM — Pola Museum Annex</h3>
+            <span class="tag">Free Entry</span>
+            <span class="tag">Rest Stop</span>
+            <p class="notes">Free gallery one block over with elevator access. About 20 minutes — a quiet, calm space perfect for a rest before the Aquarium.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>1:15 PM — Mitsukoshi Depachika (B1/B2)</h3>
+            <span class="tag">Lunch</span>
+            <span class="tag">Food Hall</span>
+            <p class="notes">Head into Mitsukoshi and take the elevator down to the legendary basement food halls. Pick up lunch from the food stalls, then eat at the Hokoten car-free street tables outside on Chuo-dori, or find a seat on the 9F terrace.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>2:15 PM — ART AQUARIUM MUSEUM (Mitsukoshi 9F)</h3>
+            <span class="tag">Pre-Book Tickets</span>
+            <span class="tag">Elevator Access</span>
+            <img src="photos/art-aquarium.png" alt="ART AQUARIUM MUSEUM Goldfish Exhibit" class="location-photo">
+            <p class="notes">Slow, immersive goldfish art installation — one of Tokyo's most unique experiences. Budget 45–60 minutes. Fully elevator-accessible throughout Mitsukoshi department store.<br><br>
+            ⚠️ Book tickets online in advance.</p>
+            <a href="https://maps.google.com/?q=ART+AQUARIUM+MUSEUM+Ginza+Mitsukoshi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 ART AQUARIUM on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>3:15 PM — Onitsuka Tiger</h3>
+            <span class="tag">Multilingual Staff</span>
+            <p class="notes">Short walk south to mid-Ginza. Multilingual staff — great selection of shoes and accessories in the iconic brand's sleek store.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>4:00 PM — Uniqlo + GU</h3>
+            <span class="tag">Tax-Free</span>
+            <span class="tag">Café Break</span>
+            <p class="notes">Both Uniqlo and GU are in the same building, one block south. Both are tax-free with passport. The Uniqlo top-floor café offers a seated break with views if needed.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>5:00 PM — Ginza Six: Dinner + Rooftop</h3>
+            <span class="tag">360° Views</span>
+            <span class="tag">Open Until 11 PM</span>
+            <img src="photos/ginza-six.png" alt="Ginza Six Rooftop Garden" class="location-photo">
+            <p class="notes">Pick up dinner from the basement depachika, then take the elevator to the 14F rooftop garden for 360° views including Tokyo Tower. Open seating, open until 11 PM — stay as long as you like.</p>
+            <a href="https://maps.google.com/?q=Ginza+Six+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ginza Six on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~6:30 PM — Taxi back to Akihabara</h3>
+            <span class="tag">~15 Min</span>
+            <p class="notes">Comfortable taxi ride back to the hotel (~15 minutes).</p>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 4 — Monday, April 13: Roppongi & Shibuya   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-4" style="display:none">
+        <h2>Monday, April 13: Roppongi &amp; Shibuya</h2>
+
+        <div class="time-block">
+            <h3>10:00 AM — National Art Center, Roppongi</h3>
+            <span class="tag">Elevator Access</span>
+            <span class="tag">Free Exhibitions</span>
+            <img src="photos/national-art-center.png" alt="National Art Center Glass Facade" class="location-photo">
+            <p class="notes">Taxi from hotel (~20 min). One of Japan's largest exhibition spaces — a sweeping undulating glass facade that is architecturally stunning on its own. Multiple free exhibitions plus one ticketed show. Café inside for a mid-visit sit-down. Budget 90 min–2 hours.<br><br>
+            ⚠️ Check nact.jp before you go — exhibitions rotate.<br>
+            ⚠️ Closed Tuesdays — Monday April 13 is fine.</p>
+            <a href="https://maps.google.com/?q=National+Art+Center+Roppongi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 National Art Center on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>12:00 PM — Taxi to Shibuya (~25 min)</h3>
+            <span class="tag">Direct Taxi</span>
+            <p class="notes">Comfortable taxi ride from Roppongi to Shibuya.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>12:15 PM — Lunch: Jikasei MENSHO (Shibuya Parco B1F)</h3>
+            <span class="tag">Ramen</span>
+            <span class="tag">Basement Level</span>
+            <p class="notes">Highly regarded ramen in the basement of Shibuya Parco — a great start before exploring the floors above.</p>
+            <a href="https://maps.google.com/?q=Jikasei+MENSHO+Shibuya+Parco+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Jikasei MENSHO on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>1:15 PM — Shibuya Parco</h3>
+            <span class="tag">Nintendo Tokyo</span>
+            <span class="tag">Pokémon Center</span>
+            <img src="photos/shibuya-parco.png" alt="Shibuya Parco Nintendo Tokyo" class="location-photo">
+            <p class="notes">Start at Floor 6 — Nintendo Tokyo, Pokémon Center, Capcom Store, and Godzilla Store are all on one floor. Work your way down through the fashion floors at your own pace. Café spaces on various floors for rest breaks.<br><br>
+            ⚠️ Layout can be maze-like — take it slow.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:30 PM — Dulton</h3>
+            <span class="tag">Home & Lifestyle</span>
+            <span class="tag">Industrial Vintage Vibe</span>
+            <p class="notes">Japanese lifestyle goods store with a distinct industrial-meets-vintage aesthetic — notebooks, bags, kitchen tools, office supplies, and all kinds of well-designed hardware-adjacent objects. The kind of shop where you browse for 30 minutes and leave with things you didn't know you needed.</p>
+            <a href="https://maps.google.com/?q=Dulton+Shibuya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Dulton Shibuya on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~4:30 PM — Shibuya Center-gai</h3>
+            <span class="tag">Flat Pedestrian Street</span>
+            <span class="tag">Street Food</span>
+            <p class="notes">Lively car-free street lined with shops and food stalls. Good spot for takoyaki (octopus balls) or crepes as an afternoon snack.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~5:30 PM — Dinner in Shibuya</h3>
+            <span class="tag">Flexible</span>
+            <p class="notes">Plenty of options around Shibuya — no need to plan ahead. <strong>Shibuya Hikarie depachika (B2F)</strong> is a good fallback if you want variety and easy browsing.</p>
+            <a href="https://maps.google.com/?q=Shibuya+Hikarie+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shibuya Hikarie on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~7:00 PM — Share Lounge (Shibuya Tsutaya, 4F)</h3>
+            <span class="tag">Shibuya Crossing View</span>
+            <span class="tag">¥2,500 All-Inclusive</span>
+            <img src="photos/share-lounge.png" alt="Shibuya Crossing from Share Lounge" class="location-photo">
+            <p class="notes">~¥2,500 per person includes unlimited drinks and snacks. Stadium-style seating faces the famous Shibuya Crossing directly. Open until 11 PM — stay as long as you like.</p>
+            <a href="https://maps.google.com/?q=Shibuya+Tsutaya+Books+Share+Lounge+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shibuya Tsutaya on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~8:00 PM — Taxi back to Akihabara</h3>
+            <span class="tag">~20 Min</span>
+            <p class="notes">Comfortable taxi ride back to the hotel.</p>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 5 — Tuesday, April 14: Last Day Together   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-5" style="display:none">
+        <h2>Tuesday, April 14: Last Day Together</h2>
+
+        <div class="time-block">
+            <h3>9:00 AM — Meiji Shrine (Harajuku)</h3>
+            <span class="tag">Flat Gravel Path</span>
+            <span class="tag">Arrive Early</span>
+            <img src="photos/meiji-shrine.png" alt="Meiji Shrine Forested Path" class="location-photo">
+            <p class="notes">Taxi from Akihabara (~20 min). Enter from the Harajuku/south gate. The forested path to the shrine is about 10–12 minutes each way on flat gravel — serene and beautiful in the early morning before crowds arrive. Budget 75 minutes total.</p>
+            <a href="https://maps.google.com/?q=Meiji+Shrine+Harajuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meiji Shrine on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>11:00 AM — Taxi to Shinjuku (~15 min)</h3>
+            <span class="tag">Direct Taxi</span>
+            <p class="notes">Short taxi ride from Harajuku to Shinjuku.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>11:15 AM — Shinjuku Gyoen</h3>
+            <span class="tag">Cherry Blossoms</span>
+            <span class="tag">¥500 Entry</span>
+            <img src="photos/shinjuku-gyoen.png" alt="Shinjuku Gyoen Cherry Blossoms" class="location-photo">
+            <p class="notes">¥500 per person — enter from the Shinjuku gate on the west side. Mid-April is peak cherry blossom season; this is one of the most beautiful moments of the entire trip. Wide flat lawns, ponds, bridges, and benches throughout — three distinct landscape styles (Japanese, English, French). Budget a relaxed 90 minutes.<br><br>
+            ⚠️ Closes at 4 PM — no alcohol permitted inside.</p>
+            <a href="https://maps.google.com/?q=Shinjuku+Gyoen+National+Garden+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shinjuku Gyoen on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>1:00 PM — Isetan Shinjuku Depachika</h3>
+            <span class="tag">World-Class Food Hall</span>
+            <span class="tag">Omiyage</span>
+            <p class="notes">10-minute walk north from Gyoen. The B1/B2 food hall at Isetan is considered one of the finest depachika in all of Japan. Pick up lunch here and grab last-minute omiyage (gifts) — wagyu, pastries, bento, sweets, all in beautiful gift-ready packaging.</p>
+            <a href="https://maps.google.com/?q=Isetan+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Isetan Shinjuku on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>2:30 PM — Don Quijote Shinjuku Kabukicho</h3>
+            <span class="tag">Tax-Free</span>
+            <span class="tag">Last-Minute Souvenirs</span>
+            <p class="notes">Chaotic, fun, and packed with novelty gifts, snacks, cosmetics, and quirky finds. Tax-free with passport. Great for picking up anything you missed during the week.</p>
+            <a href="https://maps.google.com/?q=Don+Quijote+Shinjuku+Kabukicho+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Don Quijote Shinjuku on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>3:30 PM — Godzilla Head</h3>
+            <span class="tag">Quick Photo Stop</span>
+            <span class="tag">On the Way</span>
+            <p class="notes">One block from Don Quijote — no detour needed. Look up on the way out. The Godzilla Head roars on the hour from 12–8 PM. Quick photo stop, then grab a taxi.<br><br>
+            <strong>Plan B if Don Quijote felt like too much:</strong><br>
+            <strong>Memory Lane (Omoide Yokocho)</strong> — a narrow alley of tiny yakitori stalls near Shinjuku's west exit, atmospheric and easy to duck into for a snack or drink.<br><br>
+            <strong>3D Cat Billboard</strong> — just outside Shinjuku east exit at Cross Shinjuku Vision, a giant realistic cat stretches and looks down from the curved screen. Free to watch, runs throughout the day.<br><br>
+            <strong>Okadaya Shinjuku</strong> — beloved craft store a short walk from the east exit, with a large yarn and knitting floor. Calm, browsable, and very mom-friendly.</p>
+            <a href="https://maps.google.com/?q=Omoide+Yokocho+Memory+Lane+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Memory Lane on Maps</a>
+            <a href="https://maps.google.com/?q=Okadaya+Shinjuku+craft+store+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Okadaya Shinjuku on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>4:00 PM — Return to Hotel</h3>
+            <span class="tag">Rest Before Dinner</span>
+            <p class="notes">Head back to Resol Stay Akihabara to rest and get ready for the farewell dinner.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>7:00 PM — Farewell Dinner: Benitsuya</h3>
+            <span class="tag">Splurge</span>
+            <span class="tag">Geisha Performance</span>
+            <img src="photos/geisha.jpg" alt="Benitsuya Geisha Performance" class="location-photo">
+            <p class="notes">Taxi or subway to Shimbashi (~15 min). <strong>Benitsuya (Geisha Ozashiki Dining)</strong> — 6F, Grand Hammer building, 1 min walk from Shimbashi Station West Exit 7, right in front of SL Square. A stunning modern ozashiki space with crimson walls and traditional décor. Kaiseki course supervised by Kyoto celebrity chef Naoki Okumura (Gion Okumura), with authentic Tokyo geisha performing live dance and shamisen — then ozashiki games and photos together. English-speaking staff on hand. 90-minute seating. Drinks ordered separately on the day.</p>
+            <a href="https://maps.google.com/?q=Benitsuya+Grand+Hammer+Shimbashi+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Benitsuya on Maps</a>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 6 — Wednesday, April 15: Parents' Solo Day -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-6" style="display:none">
+        <h2>Wednesday, April 15: Parents' Solo Day — Ueno &amp; Yanaka</h2>
+
+        <div class="time-block">
+            <h3>9:30 AM — Ueno Park</h3>
+            <span class="tag">Cherry Blossoms</span>
+            <span class="tag">Pond Loop</span>
+            <img src="photos/ueno-park.png" alt="Ueno Park Sakura and Shinobazu Pond" class="location-photo">
+            <p class="notes">Gentle cherry blossom stroll through Ueno Park followed by a loop around Shinobazu Pond. One of Tokyo's most famous hanami (blossom-viewing) spots.</p>
+            <a href="https://maps.google.com/?q=Ueno+Park+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ueno Park on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>10:30 AM — Tokyo National Museum</h3>
+            <span class="tag">English Signage</span>
+            <span class="tag">Main Building Only</span>
+            <img src="photos/tokyo-national-museum.png" alt="Tokyo National Museum Exterior" class="location-photo">
+            <p class="notes">Japan's oldest and largest museum. Focus on the main building only — English signage throughout makes it easy to navigate at your own pace.</p>
+            <a href="https://maps.google.com/?q=Tokyo+National+Museum+Ueno+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Tokyo National Museum on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>12:15 PM — Ameyoko Market</h3>
+            <span class="tag">Lunch</span>
+            <span class="tag">Browse</span>
+            <p class="notes">Lunch at <strong>Minatoya</strong> — point at the pictures to order, kaisendon (seafood rice bowls) from ¥500. Browse the lively open-air market stalls after eating.</p>
+            <a href="https://maps.google.com/?q=Ameyoko+Market+Ueno+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Ameyoko Market on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>1:45 PM — Yanaka Ginza</h3>
+            <span class="tag">Gently Downhill</span>
+            <span class="tag">Cat Shops &amp; Snacks</span>
+            <img src="photos/yanaka-ginza.png" alt="Yanaka Ginza Street" class="location-photo">
+            <p class="notes">Taxi to the top of Yanaka Ginza, then walk gently downhill through this charming old-Tokyo shopping street. Cat-themed shops and street snacks throughout.</p>
+            <a href="https://maps.google.com/?q=Yanaka+Ginza+shopping+street+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Yanaka Ginza on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>3:00 PM — Optional: Ueno Zoo</h3>
+            <span class="tag">Flat &amp; Paved</span>
+            <span class="tag">If Energy Allows</span>
+            <p class="notes">If energy allows, taxi back to Ueno Zoo — fully flat and paved throughout. Home to Japan's famous giant pandas.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>5:00 PM — Return to Hotel</h3>
+            <span class="tag">Rest &amp; Freshen Up</span>
+            <p class="notes">Head back to Resol Stay Akihabara to rest before the evening.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>6:45 PM — Kingdom Hall Meeting</h3>
+            <span class="tag">~25 Min by Taxi</span>
+            <p class="notes">Taxi to Kingdom Hall at 7-3-3 Arakawa, Arakawa-ku (~25 min). Meeting at 7:30 PM.</p>
+            <a href="https://maps.app.goo.gl/JcJkXYBL7MDtxPsk8" target="_blank" rel="noopener" class="btn-large">📍 Kingdom Hall on Maps</a>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 7 — Thursday, April 16: Parents' Solo Day -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-7" style="display:none">
+        <h2>Thursday, April 16: Parents' Solo Day — Meguro &amp; Hamarikyu</h2>
+
+        <div class="time-block">
+            <h3>10:00 AM — Meguro River Canal Walk</h3>
+            <span class="tag">Late Blossoms</span>
+            <span class="tag">Flat Path</span>
+            <img src="photos/meguro-river.png" alt="Meguro River Canal Cherry Blossoms" class="location-photo">
+            <p class="notes">Stroll north along the canal toward Nakameguro Station. Late blossoms, boutique shops, and a relaxed neighbourhood atmosphere along the water.</p>
+            <a href="https://maps.google.com/?q=Meguro+River+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meguro River on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>11:30 AM — Brunch: flour+water</h3>
+            <span class="tag">English-Friendly</span>
+            <span class="tag">Unlimited Tea</span>
+            <p class="notes">Brunch set for ¥1,980 with unlimited rotating tea and English-friendly staff. A calm, welcoming spot along the canal.<br><br>
+            <strong>Plan B:</strong> Convenience store or a canal-side café for a casual affordable bite.</p>
+            <a href="https://maps.google.com/?q=flour+water+cafe+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 flour+water on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>1:00 PM — Continue South Along the Canal</h3>
+            <span class="tag">Best Blossom Canopy</span>
+            <span class="tag">Boutiques</span>
+            <p class="notes">The southern stretch has the best blossom canopy and reflections on the water. Browse the boutiques and cafés at a leisurely pace.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>2:30 PM — Hamarikyu Gardens</h3>
+            <span class="tag">¥300 Entry</span>
+            <span class="tag">Matcha on the Water</span>
+            <img src="photos/hamarikyu-gardens.png" alt="Nakajima Teahouse at Hamarikyu Gardens" class="location-photo">
+            <p class="notes">Taxi to Hamarikyu Gardens (¥300 entry). The <strong>Nakajima Teahouse</strong> sits on a small island in the tidal pond — enjoy matcha and sweets on the water in one of Tokyo's most beautiful traditional garden settings.</p>
+            <a href="https://maps.google.com/?q=Hamarikyu+Gardens+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Hamarikyu Gardens on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>5:00 PM — Optional: Tokyo Skytree</h3>
+            <span class="tag">If Energy Allows</span>
+            <span class="tag">Pre-Book Tickets</span>
+            <p class="notes">If energy allows, visit the Skytree for sunset views over the city.<br><br>
+            ⚠️ Buy tickets in advance at tokyo-skytree.jp.</p>
+            <a href="https://maps.google.com/?q=Tokyo+Skytree+Sumida+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Tokyo Skytree on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Evening — Taxi Home</h3>
+            <span class="tag">Safe Travels</span>
+            <p class="notes">Comfortable taxi ride back to the hotel for the final night in Tokyo.</p>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- DAY 8 — Friday, April 17: Travel Day           -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card" id="day-8" style="display:none">
+        <h2>Friday, April 17: Travel Day</h2>
+
+        <div class="time-block">
+            <h3>Airport Transfer — Narita</h3>
+            <span class="tag">Keisei Skyliner</span>
+            <span class="tag">Reserved Seats</span>
+            <p class="notes">Take the Keisei Skyliner from Ueno/Nippori back to Narita Airport. Reserved seats, smooth ride — same as the trip in. Budget around 90 minutes from hotel departure to clearing security.</p>
+            <a href="https://maps.google.com/?q=Keisei+Ueno+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Keisei Line on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Airport Souvenir Run</h3>
+            <span class="tag">Terminal 1 & 2, 4F</span>
+            <span class="tag">Last Chance</span>
+            <p class="notes">Last opportunity for any final gifts — Fa-So-La, Akebono, BLUE SKY/ANA FESTA, and Gift Keisei are all in the Terminal 4F shopping area.<br><br>
+            ⚠️ Most shops open 7:30–8:00 AM and close around 8:00–9:00 PM.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>Bon Voyage!</h3>
+            <span class="tag">Safe Flight</span>
+            <p class="notes">Wishing you both a smooth flight home. What a trip.</p>
+        </div>
+    </article>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- OUR DAY 1 — Tuesday, April 7: Arrival + Odaiba -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card our-card" id="our-day-1" style="display:none">
+        <h2>Tuesday, April 7: Arrival + Odaiba</h2>
+
+        <div class="time-block">
+            <h3>2:20 PM — Land at Haneda</h3>
+            <span class="tag">Haneda Airport</span>
+            <p class="notes">Budget 60–90 minutes through immigration and baggage claim. Taxi from Haneda to Resol Stay Akihabara is ~35–45 min.</p>
+            <a href="https://maps.google.com/?q=Haneda+Airport+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Haneda Airport on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~4:00 PM — Hotel Check-In</h3>
+            <span class="tag">Freshen Up</span>
+            <p class="notes">Check in to Resol Stay Akihabara and freshen up before heading out for the evening.</p>
+            <a href="https://maps.google.com/?q=Resol+Stay+Akihabara+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Resol Stay Akihabara on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~5:30 PM — Yurikamome to Daiba</h3>
+            <span class="tag">~40 Min Total</span>
+            <span class="tag">Scenic Route</span>
+            <p class="notes">From Akihabara, take the JR Keihin-Tohoku Line to Shimbashi (~15 min), then board the <strong>Yurikamome monorail</strong> toward Toyosu. The train crosses directly over the <strong>Rainbow Bridge</strong> — sit at the front for the best views. Ride to <strong>Daiba Station</strong>, which drops you right by DECKS and the waterfront.</p>
+            <a href="https://maps.google.com/?q=Shimbashi+Station+Yurikamome+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shimbashi Yurikamome Station on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Small Worlds Tokyo — If Time Allows</h3>
+            <span class="tag">Ariake (1 Stop Away)</span>
+            <span class="tag">Closes 7 PM</span>
+            <p class="notes">One stop from Daiba on the Yurikamome toward Toyosu — <strong>Ariake Station</strong>. Small Worlds is a massive indoor miniature diorama museum: hyper-detailed scale models of cities, airports, space centers, and anime worlds. Budget 60–90 minutes if you go. Must be done before the 7 PM Gundam show.</p>
+            <a href="https://maps.google.com/?q=Small+Worlds+Tokyo+Ariake" target="_blank" rel="noopener" class="btn-large">📍 Small Worlds Tokyo on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Gundam Base Shop</h3>
+            <span class="tag">Inside DiverCity</span>
+            <div class="action-needed">
+                <span class="action-label">⚠️ Action Required Before You Go</span>
+                Check whether the lottery system applies to your visit — some exclusive items require advance entry.
+                <a href="https://www.gundam-base.net/news/55669.html" target="_blank" rel="noopener">→ Check Gundam Base Lottery Details</a>
+            </div>
+            <p class="notes">Largest Gunpla retail store in Tokyo — wide selection of kits, figures, and limited items. Browse before the 7 PM projection show starts.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>7:00 PM — WALL-G Projection Show</h3>
+            <span class="tag">Unicorn Gundam</span>
+            <span class="tag">Free to Watch</span>
+            <p class="notes">The <strong>WALL-G</strong> projection mapping show plays on the life-size Unicorn Gundam statue outside DiverCity. Shows run on the hour in the evening — 7 PM is the perfect slot.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>DECKS Tokyo Beach — 4F Shopping Street</h3>
+            <span class="tag">Next to DiverCity</span>
+            <p class="notes">The 4th floor Seaside Mall recreates a retro Showa-era alley — novelty shops, crane games, character goods. The outdoor deck here also has a great direct view of the Rainbow Bridge.</p>
+            <a href="https://maps.google.com/?q=DECKS+Tokyo+Beach+Odaiba" target="_blank" rel="noopener" class="btn-large">📍 DECKS Tokyo Beach on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Fuji TV Building</h3>
+            <span class="tag">Iconic Landmark</span>
+            <p class="notes">The giant silver sphere is one of Odaiba's most recognizable sights. Walk the plaza for photos — observation deck inside the sphere is worth it on a clear evening for bay and bridge views.</p>
+            <a href="https://maps.google.com/?q=Fuji+TV+Building+Odaiba+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Fuji TV Building on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Odaiba Kaihin Park — Beach, Hot Dogs &amp; Views</h3>
+            <span class="tag">Waterfront</span>
+            <p class="notes">Grab a hot dog at Ehukai beach and hang out along the waterfront. From here you get the classic Odaiba double shot: the <strong>Rainbow Bridge</strong> lit over the bay and the <strong>Statue of Liberty</strong> replica with the Tokyo skyline behind it. Especially good at dusk.</p>
+            <a href="https://maps.google.com/?q=Odaiba+Kaihin+Park+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Odaiba Kaihin Park on Maps</a>
+            <a href="https://maps.google.com/?q=Odaiba+Statue+of+Liberty+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Statue of Liberty Odaiba on Maps</a>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- OUR DAY 2 — Wednesday, April 8: Jimbocho + Harajuku -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card our-card" id="our-day-2" style="display:none">
+        <h2>Wednesday, April 8: Jimbocho + Daikanyama + Harajuku + Shinjuku</h2>
+
+        <div class="time-block">
+            <h3>Morning — Walk to Jimbocho</h3>
+            <span class="tag">~25 Min Walk from Hotel</span>
+            <span class="tag">No Rush</span>
+            <p class="notes">First stores open at 10 AM — grab a coffee in Kanda on the way. The walk from Akihabara is flat, easy, and a nice way to see the city wake up. Aim to arrive around 10:00–10:15 AM.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>10:00 AM — Isseido Booksellers + Nyankodo</h3>
+            <span class="tag">Art & Illustrated Books</span>
+            <span class="tag">Cat Books</span>
+            <p class="notes">Start here — both open at 10 AM and are right next to each other.<br><br>
+            🎨 <strong>Isseido Booksellers</strong> — rare and antique books with a strong art and illustrated books section upstairs. English-friendly staff. Museum-quality finds. No photography upstairs.<br><br>
+            🐱 <strong>Nyankodo (Anegawa)</strong> — the beloved cat-only antiquarian bookshop. Cat photography books, cat illustration, cat everything. <strong>Cash only!</strong></p>
+            <a href="https://maps.google.com/?cid=17344254167726978986" target="_blank" rel="noopener" class="btn-large">📍 Isseido Booksellers on Maps</a>
+            <a href="https://maps.google.com/?cid=6473146759072261356" target="_blank" rel="noopener" class="btn-large">📍 Nyankodo on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~10:30 AM — Yumeno Manga + Bunken Rock Side</h3>
+            <span class="tag">Vintage Manga</span>
+            <span class="tag">Rock & Metal Magazines</span>
+            <p class="notes">A short walk west along Yasukuni-dori.<br><br>
+            📚 <strong>Yumeno Manga Bookstore</strong> — vintage Showa-era manga, posters, and retro merch. One of the best manga shops in Jimbocho. Worth a browse even if you're not buying.<br><br>
+            🤘 <strong>Bunken Rock Side</strong> — tiny shop packed with vintage rock, metal, and fashion magazines. The staff are exactly your kind of people. Opens 10:30 AM.</p>
+            <a href="https://maps.google.com/?cid=4876797382022550294" target="_blank" rel="noopener" class="btn-large">📍 Yumeno Manga on Maps</a>
+            <a href="https://maps.google.com/?cid=5526886238454351169" target="_blank" rel="noopener" class="btn-large">📍 Bunken Rock Side on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~11:00 AM — Ohya Shobo</h3>
+            <span class="tag">Antique Woodblock Prints</span>
+            <span class="tag">Edo-Era Maps</span>
+            <p class="notes">Don't skip this one. <strong>Ohya Shobo</strong> specializes in antique ukiyo-e woodblock prints, Edo-era illustrated books, and historical maps — some dating back hundreds of years. It's cramped and packed with treasures. Even a 20-minute browse is worth it. Prices range from a few thousand yen for offset prints up to serious collector pieces.</p>
+            <a href="https://maps.google.com/?cid=3385390816142613325" target="_blank" rel="noopener" class="btn-large">📍 Ohya Shobo on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~12:00 PM — Bohemian's Guild</h3>
+            <span class="tag">Art Books</span>
+            <span class="tag">Design & Illustration</span>
+            <p class="notes">Opens at noon — time it perfectly after Ohya Shobo. <strong>Bohemian's Guild</strong> is a secondhand art book treasure trove: design, illustration, fine art, photography. Good English selection, reasonable prices, friendly staff. Budget 30–45 minutes easily. This is the one most likely to cost you extra luggage weight.<br><br>
+            🎯 <strong>Also nearby at noon:</strong> magnif (vintage fashion/art magazines) and @Wonder (movie memorabilia) are both on the same block if you have extra time — walk-in if you pass them, but not must-stops.</p>
+            <a href="https://maps.google.com/?cid=3616084426703138422" target="_blank" rel="noopener" class="btn-large">📍 Bohemian's Guild on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~1:15 PM — Subway to Daikanyama</h3>
+            <span class="tag">~30 Min, One Transfer</span>
+            <span class="tag">Hanzomon Line → Tokyu Toyoko</span>
+            <p class="notes">From Jimbocho Station, take the <strong>Hanzomon Line</strong> to Shibuya (~15 min), then transfer to the <strong>Tokyu Toyoko Line</strong> one stop to Daikanyama (~3 min). Exit and walk 5 minutes to T-Site. Simple, fast, no luggage issues at this point in the day.</p>
+            <a href="https://maps.google.com/?q=Jimbocho+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Jimbocho Station on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~1:30 PM — Daikanyama T-Site</h3>
+            <span class="tag">Tsutaya Books</span>
+            <span class="tag">Art & Design Books</span>
+            <p class="notes">One of the most beautiful bookshops in the world — a flagship Tsutaya concept store across three low wooden buildings in a quiet wooded plaza. Art, design, photography, film, architecture, and music. Browsable in English. Budget 60–90 minutes — this is exactly the kind of place you'll want to linger.</p>
+            <a href="https://maps.google.com/?q=Daikanyama+T-Site+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Daikanyama T-Site on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~2:30 PM — Hollywood Ranch Market</h3>
+            <span class="tag">Americana & Vintage-Inspired</span>
+            <span class="tag">2 Min Walk from T-Site</span>
+            <p class="notes">Right next to T-Site — don't skip it. <strong>Hollywood Ranch Market</strong> is a Japanese concept store with a distinct Americana and vintage-workwear DNA: leather jackets, denim, unusual brands, and occasional Yohji Yamamoto pieces turning up on the racks. The owner is friendly and the stock rotates constantly. Budget 20–30 minutes.</p>
+            <a href="https://maps.google.com/?cid=3458530629576065787" target="_blank" rel="noopener" class="btn-large">📍 Hollywood Ranch Market on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:00 PM — Walk the Meguro Canal to Nakameguro</h3>
+            <span class="tag">Cherry Blossoms</span>
+            <span class="tag">~20 Min Stroll</span>
+            <p class="notes">April 8 is right at peak sakura — the canal will have the full blossom canopy over the water. Walk south from Daikanyama along the canal toward Nakameguro Station, browsing as you go. No strict plan needed — just wander and soak it in.<br><br>
+            🛍️ <strong>Maybe stops along the way:</strong><br>
+            <strong>DIGDIG</strong> — vintage military, workwear, and reverse weave. Friendly staff, fair prices. Quick browse.<br>
+            <strong>BRICK &amp; MORTAR</strong> — handcrafted ceramics and glassware made in their own workshop. Small, beautiful, the kind of thing you can't get at home.<br><br>
+            No pressure on either — treat them as walk-ins if something catches your eye.</p>
+            <a href="https://maps.google.com/?q=DIGDIG+vintage+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 DIGDIG on Maps</a>
+            <a href="https://maps.google.com/?q=BRICK+AND+MORTAR+Nakameguro+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 BRICK &amp; MORTAR on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:20 PM — Taxi to Harajuku</h3>
+            <span class="tag">~10 Min from Nakameguro</span>
+            <p class="notes">Grab a taxi from Nakameguro Station to Laforet Harajuku — about 10 minutes and ¥800–1,000. Easier than any subway option, especially with books in tow.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:30 PM — Harajuku — Shopping Route</h3>
+            <span class="tag">Laforet → Cat Street</span>
+            <p class="notes">
+                <strong>Laforet Harajuku</strong> — multi-floor fashion complex, eclectic and fun.<br><br>
+                <strong>Kiddy Land</strong> — beloved toy and character goods store, 5 floors on Omotesando-dori.<br><br>
+                <strong>Ura-Harajuku / Cat Street</strong> — wander the backstreets for vintage shops and independent boutiques.<br><br>
+                <strong>PAMM-ke</strong> — cute accessories and stationery, worth a stop.<br><br>
+                <strong>B-Side Label + Junie Moon</strong> — on the same block, stickers and kawaii goods.<br><br>
+                <strong>Sanrio</strong> — shop-only visit, no café needed here.
+            </p>
+            <a href="https://maps.google.com/?q=Laforet+Harajuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Laforet Harajuku on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~6:30 PM — Dinner in Omotesando</h3>
+            <span class="tag">Before Shinjuku</span>
+            <span class="tag">Flexible</span>
+            <p class="notes">Plenty of dinner options in Omotesando after the Harajuku shopping stretch — no need to plan ahead. Eat here before heading to Shinjuku for the night.</p>
+            <a href="https://maps.google.com/?q=Omotesando+restaurants+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Omotesando Dining on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~8:00 PM — Subway to Shinjuku</h3>
+            <span class="tag">~15 Min, One Transfer</span>
+            <span class="tag">Ginza Line → JR Yamanote</span>
+            <p class="notes">From Omotesando Station, take the <strong>Ginza Line</strong> two stops to Shibuya (~5 min), then the <strong>JR Yamanote Line</strong> one stop to Shinjuku (~5 min). Fast, cheap, and you're heading out for the night anyway.</p>
+            <a href="https://maps.google.com/?q=Omotesando+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Omotesando Station on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~8:30 PM — Shinjuku Bar Crawl 🤘</h3>
+            <span class="tag">Metal & Punk</span>
+            <span class="tag">Late Night</span>
+            <p class="notes">Three bars, one neighborhood — all within walking distance in Kabukicho / Shinjuku proper.<br><br>
+            🍺 <strong>Bar PSY</strong> — intimate, dark, stacked shelves of rare imports. A serious whisky and craft beer bar with the right kind of vibe.<br><br>
+            🤘 <strong>Godz</strong> — the legendary Shinjuku metal bar. Loud, dim, covered in band memorabilia. One of the best metal bars in the world, no exaggeration.<br><br>
+            💀 <strong>Deathmatch in Hell</strong> — punk/hardcore, maximum attitude, exactly what it sounds like. No wrong order to hit these.</p>
+            <a href="https://maps.google.com/?q=Bar+PSY+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Bar PSY on Maps</a>
+            <a href="https://maps.google.com/?q=Godz+Bar+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Godz on Maps</a>
+            <a href="https://maps.google.com/?q=Deathmatch+in+Hell+Shinjuku+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Deathmatch in Hell on Maps</a>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- OUR DAY 3 — Thursday, April 9: Shimokitazawa + Nakano Broadway -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card our-card" id="our-day-3" style="display:none">
+        <h2>Thursday, April 9: Nakano Broadway + Gotokuji + Shimokitazawa</h2>
+
+        <div class="time-block">
+            <h3>7:30 AM — Arashio Stable: Sumo Morning Practice</h3>
+            <span class="tag">Street-Facing Window</span>
+            <span class="tag">Or Reserve Inside</span>
+            <p class="notes">Show up at the street-facing window at 2-47-2 Hamacho, Nihonbashi — no tickets, no booking. Watch wrestlers train live on the dohyo from 7:30–9:30 AM.<br><br>
+            🤫 Be quiet and respectful throughout.<br>
+            📷 No flash photography.<br><br>
+            <strong>Want to sit inside?</strong> You can reserve a seat inside the stable — book exactly one week before your visit.</p>
+            <a href="https://ippin-do.chuocity.tokyo/products/202403211001?variant=44668655632576" target="_blank" rel="noopener" class="btn-large">🎟️ Reserve a Seat Inside Arashio</a>
+            <a href="https://maps.google.com/?q=Arashio+Stable+2-47-2+Hamacho+Nihonbashi+Chuo+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Arashio Stable on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~10:30 AM — Subway to Nakano Broadway</h3>
+            <span class="tag">~30 Min, One Transfer</span>
+            <span class="tag">Toei Shinjuku Line → JR Chuo</span>
+            <p class="notes">From Hamacho Station (near the stable), take the <strong>Toei Shinjuku Line</strong> to Shinjuku (~20 min), then the <strong>JR Chuo Line</strong> two stops to Nakano (~5 min). Walk 5 minutes north to Broadway. Nakano Broadway is a labyrinthine mall famous for anime, manga, figures, retro games, and vintage collectibles. Budget about 2 hours to explore the upper floors.<br><br>
+            🎨 <strong>Taco Che (3F)</strong> — the zine and art book destination inside the mall. Indie publications, small press, underground art books, and self-published work. Don't leave without checking this floor.</p>
+            <a href="https://maps.google.com/?q=Hamacho+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Hamacho Station on Maps</a>
+            <a href="https://maps.google.com/?q=Nakano+Broadway+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Nakano Broadway on Maps</a>
+            <a href="https://maps.google.com/?q=Taco+Che+Nakano+Broadway+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Taco Che on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>Lunch in Nakano</h3>
+            <span class="tag">Flexible</span>
+            <p class="notes">Plenty of ramen, soba, and lunch sets around Nakano Station. No need to plan ahead — just wander out from Broadway and pick something that looks good.</p>
+        </div>
+
+        <div class="time-block">
+            <h3>~2:00 PM — Cat Train to Gotokuji Temple 🐱🚃</h3>
+            <span class="tag">Setagaya Line Tram</span>
+            <span class="tag">Den-en-toshi → Sangenjaya → Miyanosaka</span>
+            <p class="notes">From Nakano, take the JR Chuo Line back to Shinjuku, then the <strong>Odakyu Line</strong> to Gotokuji Station (~15 min) and walk 12 min to the temple — or for the full cat train experience, go via Shibuya on the <strong>Den-en-toshi Line</strong> to Sangenjaya (~10 min), then transfer to the <strong>Tokyu Setagaya Line</strong> tram to Miyanosaka Station (~10 min walk to temple).<br><br>
+            🐾 <strong>The Setagaya Line is the cat train.</strong> Officially called the <em>Kofuku-no-Manekineko Densha</em>, it's a regular tram decorated top-to-toe in maneki-neko: cat-paw grab straps, paw prints on the floor, cat face on the front. It's not guaranteed to be the special car — check the timetable before you go by searching <strong>"event nekodensya"</strong> and finding the 幸福の招き猫電車 運行時刻表 page.<br><br>
+            🏯 <strong>Gotokuji Temple</strong> — the spiritual birthplace of the maneki-neko. Hundreds of small white ceramic beckoning cat figures line the shrine, left as offerings by visitors over generations. Eerie, beautiful, and deeply charming. Budget 45–60 minutes.</p>
+            <a href="https://maps.google.com/?q=Sangenjaya+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Sangenjaya Station on Maps</a>
+            <a href="https://maps.google.com/?q=Gotokuji+Temple+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Gotokuji Temple on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:15 PM — Setagaya Line to Shimokitazawa</h3>
+            <span class="tag">~5 Min, Same Tram</span>
+            <span class="tag">Miyanosaka → Setagaya-Daita</span>
+            <p class="notes">Hop back on the Setagaya Line tram — possibly the cat train again — from Miyanosaka and ride just a few stops to <strong>Setagaya-Daita Station</strong>. Shirohige's Cream Puff Factory is a 5-minute walk from the station, and you'll work your way north from there. Clean line, no backtracking.</p>
+            <a href="https://maps.google.com/?q=Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shimokitazawa on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:20 PM — Shirohige's Cream Puff Factory 🍮</h3>
+            <span class="tag">Totoro Cream Puffs</span>
+            <span class="tag">Sells Out — Go Early</span>
+            <p class="notes">The Ghibli-themed cream puff shop in Daita — Totoro faces in multiple flavors, displayed like little characters. They sell out regularly so hitting this first makes sense. Quick stop, 15–20 minutes.</p>
+            <a href="https://maps.google.com/?q=Shirohige+Cream+Puff+Factory+Daita+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shirohige's on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~3:45 PM — Bonus Track</h3>
+            <span class="tag">Indie Bookshop</span>
+            <span class="tag">Zines & Small Press</span>
+            <p class="notes">An outdoor creative complex in Daita — walk north from Shirohige's and you're there. NEIGHBORS bookshop carries small press, zines, and art books. The rest of the complex has a few more small independent shops and a coffee spot. Quiet, browsable, exactly your thing. Budget 30–45 minutes.</p>
+            <a href="https://maps.google.com/?q=Bonus+Track+Shimokitazawa+Daita+Setagaya+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Bonus Track on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~4:30 PM — セカイクラス Reload</h3>
+            <span class="tag">Independent Shops</span>
+            <span class="tag">Near the Station</span>
+            <p class="notes">Continue north back toward the station to Reload — an outdoor multi-unit complex with a mix of small independent shops. Good for stickers, knick knacks, and anything interesting that catches your eye. Budget 20–30 minutes.</p>
+            <a href="https://maps.google.com/?q=Sekai+Class+Reload+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 セカイクラス Reload on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~5:30 PM — Curry Dinner</h3>
+            <span class="tag">Shimokita Curry Culture</span>
+            <span class="tag">Before the Show</span>
+            <p class="notes">Shimokitazawa has an unusually deep curry scene — more curry shops per block than almost anywhere in Tokyo. No need to plan ahead: just wander around the station area and pick whichever one looks right.</p>
+            <a href="https://maps.google.com/?q=curry+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">🍛 Curry in Shimokitazawa on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>7:30 PM — Show at Shelter</h3>
+            <span class="tag">Doors 19:00</span>
+            <span class="tag">Show 19:30</span>
+            <span class="tag">Punk / Live Music</span>
+            <p class="notes">Live punk show at Shelter — one of Tokyo's most legendary small venues, right in the heart of Shimokitazawa.<br><br>
+            <strong>Lineup:</strong> QUINCAMPOIX, Vacuum Everyday, Water Maze, LBSTR</p>
+            <a href="https://www.loft-prj.co.jp/schedule/shelter/349267" target="_blank" rel="noopener" class="btn-large">🎸 Shelter Show Details &amp; Tickets</a>
+            <a href="https://maps.google.com/?q=Shelter+live+house+Shimokitazawa+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Shelter on Maps</a>
+        </div>
+    </article>
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- OUR DAY 4 — Friday, April 10: Morning Only     -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <article class="zen-card our-card" id="our-day-4" style="display:none">
+        <h2>Friday, April 10: Morning — Matcha Experience</h2>
+
+        <div class="time-block">
+            <h3>9:00 AM — Matcha Tasting &amp; Making</h3>
+            <span class="tag">Booked via GetYourGuide</span>
+            <span class="tag">Small Group</span>
+            <p class="notes">Small-group matcha tasting and making experience led by a tea farmer in Asakusa. Taste and compare matcha from 5 different production regions of Japan, then make your own. Personal and educational — recent reviews call it a genuine one-on-one experience.<br><br>
+            <strong>Meeting point:</strong> 〒111-0042 東京都台東区寿３丁目１９−８ 変なホテル 2F</p>
+            <a href="https://maps.google.com/?q=Henna+Hotel+Asakusa+3-19-8+Kotobuki+Taito+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Meeting Point on Maps</a>
+        </div>
+
+        <div class="time-block">
+            <h3>~11:00 AM — Head to Narita</h3>
+            <span class="tag">Pick Up Parents</span>
+            <span class="tag">Keisei Skyliner</span>
+            <p class="notes">After the matcha experience, take the Keisei Skyliner from Ueno to Narita to meet your parents. Their flight lands at 2:20 PM — budget plenty of time. The family trip begins here.</p>
+            <a href="https://maps.google.com/?q=Keisei+Ueno+Station+Tokyo" target="_blank" rel="noopener" class="btn-large">📍 Keisei Ueno Station on Maps</a>
+        </div>
+    </article>
+
+</main>
+
+
+<script>
+    const pills = document.querySelectorAll('.day-pill');
+    const cards = document.querySelectorAll('.zen-card');
+    const heroTitle = document.querySelector('.hero-overlay h1');
+    const heroDate = document.querySelector('.hero-overlay p');
+    const heroOverlay = document.querySelector('.hero-overlay');
+
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            // Update active pill
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+
+            // Show matching card, hide others
+            const target = pill.dataset.target;
+            cards.forEach(card => {
+                card.style.display = card.id === target ? 'block' : 'none';
             });
+
+            // Swap hero title + overlay color for "our days"
+            if (pill.classList.contains('our-day')) {
+                heroTitle.textContent = 'Castros in Tokyo';
+                heroDate.textContent = 'April 7 – 15, 2026';
+                heroOverlay.style.background = 'rgba(224, 237, 246, 0.92)';
+                heroOverlay.style.borderLeftColor = '#7A9BB5';
+            } else {
+                heroTitle.textContent = 'Hendersons in Tokyo';
+                heroDate.textContent = 'April 10 – 17, 2026';
+                heroOverlay.style.background = '';
+                heroOverlay.style.borderLeftColor = '';
+            }
+
+            // Scroll pill into view if clipped
+            pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+            // Scroll page to top of content
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-    </script>
+    });
+</script>
+```
 
 </body>
 
 </html>
-
-
