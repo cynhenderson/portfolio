@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berlin Family Trip 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F5F1E8; /* Soft Linden Cream */
+            --text-color: #2B3340; /* Slate Blue, like Berlin twilight */
+            --accent-primary: #B5651D; /* Berlin Brick */
+            --accent-secondary: #D9E2EC; /* Pale Spree Blue */
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            margin-top: 0;
+        }
+
+        /* The Hero Section */
+        .hero {
+            background-image: url('photos/hero.png');
+            background-size: cover;
+            background-position: center;
+            height: 45vh;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .hero-overlay {
+            background: rgba(245, 241, 232, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hero-overlay h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .hero-overlay p {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--accent-primary);
+        }
+
+        /* Layout Container */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* The Zen Card */
+        .zen-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+            border-top: 6px solid var(--accent-secondary);
+        }
+
+        .zen-card h2 {
+            font-size: 1.6rem;
+            border-bottom: 1px solid var(--accent-primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Time Block for Itinerary Items */
+        .time-block {
+            margin-bottom: 25px;
+            border-left: 3px solid var(--accent-secondary);
+            padding-left: 15px;
+        }
+
+        .time-block h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-color);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-primary);
+            margin: 0 5px 10px 0;
+        }
+
+        .notes {
+            font-size: 0.95rem;
+            color: #4a544c;
+            margin-bottom: 10px;
+        }
+
+        /* Large, Accessible Buttons */
+        .btn-large {
+            display: block;
+            width: 100%;
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+
+        /* Day Pill Navigation */
+        .day-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--bg-color);
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .day-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-pill {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--accent-primary);
+            background: transparent;
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+
+        .day-pill.active {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border-color: var(--text-color);
+        }
+
+        .location-photo {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: block;
+            background: var(--accent-secondary);
+        }
+
+        /* Reference card */
+        .reference-card {
+            border-top-color: var(--accent-primary);
+        }
+
+        .reference-card h3 {
+            color: var(--accent-primary);
+            font-size: 1.05rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--accent-secondary);
+        }
+
+        .reference-card h3:first-of-type { margin-top: 0; }
+
+        .reference-card h4 {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            margin: 12px 0 4px;
+        }
+
+        .reference-card ul {
+            padding-left: 18px;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .reference-card ul li {
+            margin-bottom: 6px;
+        }
+
+        /* Action-required callout */
+        .action-needed {
+            background: #FFFAF0;
+            border: 1.5px solid #D4A373;
+            border-left: 4px solid #C0832A;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 10px 0 15px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .action-needed .action-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #C0832A;
+            margin-bottom: 6px;
+        }
+
+        .action-needed a {
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 600;
+            color: #C0832A;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-overlay">
+            <h1>Hendersons in Berlin</h1>
+            <p>July 8 – 13, 2026</p>
+        </div>
+    </header>
+
+    <nav class="day-nav">
+        <button class="day-pill active" data-target="day-1">Jul 8</button>
+        <button class="day-pill" data-target="day-2">Jul 9</button>
+        <button class="day-pill" data-target="day-3">Jul 10</button>
+        <button class="day-pill" data-target="day-4">Jul 11</button>
+        <button class="day-pill" data-target="day-5">Jul 12</button>
+        <button class="day-pill" data-target="day-6">Jul 13</button>
+        <button class="day-pill" data-target="reference">Tips</button>
+    </nav>
+
+    <main class="container">
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 1 — Wednesday, July 8: Arrival             -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-1">
+            <h2>Wednesday, July 8: Arrival in Berlin</h2>
+
+            <div class="time-block">
+                <h3>Evening — Arrival at Hauptbahnhof</h3>
+                <span class="tag">South Exit</span>
+                <span class="tag">200m to Hotel</span>
+                <img src="photos/hauptbahnhof.png" alt="Berlin Hauptbahnhof" class="location-photo">
+                <p class="notes">The EuroCity train from Warsaw pulls directly into Berlin Hauptbahnhof. Exit via the <strong>South Exit (Washingtonplatz)</strong>. The IntercityHotel is less than 200 meters away.</p>
+                <a href="https://maps.google.com/?q=IntercityHotel+Berlin+Hauptbahnhof" target="_blank" rel="noopener" class="btn-large">📍 IntercityHotel on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>If You Need Cash on Arrival</h3>
+                <span class="tag">Hauptbahnhof ATMs</span>
+                <p class="notes">There are ATMs inside Hauptbahnhof. Look for <strong>Deutsche Bank, Commerzbank, or Postbank</strong> machines (low or no fee). Avoid the orange and blue <strong>Euronet</strong> machines — they charge €5 to €6 per withdrawal. If asked about currency, always choose <strong>EUR</strong>, never your home currency.<br><br>
+                Full cash and transit guidance is in the Tips section.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>After Settling In — Brandenburg Gate at Dusk</h3>
+                <span class="tag">~10 Min Walk</span>
+                <span class="tag">Flat & Pedestrian</span>
+                <img src="photos/brandenburg-gate-dusk.png" alt="Brandenburg Gate illuminated at dusk" class="location-photo">
+                <p class="notes">Walk south across the <strong>Moltkebrücke</strong>. In about ten minutes you reach the Reichstag, and a few minutes further you pass through Pariser Platz to the Brandenburg Gate.<br><br>
+                Round trip is roughly 2.5 km, so plan rest stops at the Reichstag lawn or in Pariser Platz. If tired from the train, a taxi from the hotel to the Gate is under ten minutes and cheap — walk back toward the river to dinner at your own pace.</p>
+                <a href="https://maps.google.com/?q=Brandenburg+Gate+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Brandenburg Gate on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Dinner — Zollpackhof</h3>
+                <span class="tag">Classic Beer Garden</span>
+                <span class="tag">Riverside</span>
+                <img src="photos/zollpackhof.png" alt="Zollpackhof beer garden under chestnut trees" class="location-photo">
+                <p class="notes">Across the river from the station — a classic German beer garden with riverside seating under chestnut trees. Casual, easy, and the right scale for a first night. About 5 minutes' walk from the hotel.<br><br>
+                <strong>Elisabeth-Abegg-Straße 1.</strong> No reservation needed, but possible online.</p>
+                <a href="https://maps.google.com/?q=Zollpackhof+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Zollpackhof on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 2 — Thursday, July 9: Markets & Old Berlin -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-2" style="display:none">
+            <h2>Thursday, July 9: Markets & Old Berlin</h2>
+
+            <div class="time-block">
+                <h3>8:00 AM — Tiergarten in the Morning</h3>
+                <span class="tag">Right Next to Hotel</span>
+                <span class="tag">Flat & Shaded</span>
+                <img src="photos/tiergarten-morning.png" alt="Tiergarten park in morning light" class="location-photo">
+                <p class="notes">Tiergarten is right next to the hotel. Enter from the eastern edge near the Reichstag and find a shaded bench by the Spree or near the Neuer See. The light at this hour is the best of the day.<br><br>
+                For breakfast: the hotel café works fine, or walk through the park to <strong>Café am Neuen See</strong> (opens 9:00, lakeside).</p>
+                <a href="https://maps.google.com/?q=Cafe+am+Neuen+See+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Café am Neuen See on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>10:30 AM — S-Bahn to Hackescher Markt</h3>
+                <span class="tag">~4 Min, Direct</span>
+                <span class="tag">S3 / S5 / S7 / S9</span>
+                <p class="notes">Two stops from Hauptbahnhof, about 4 minutes. The Thursday weekly market runs 9:00–18:00. It leans toward food and crafts (cheese, fish sandwiches, olives) more than souvenirs — the real souvenir gold is in the courtyards just off the square.</p>
+                <a href="https://maps.google.com/?q=Hackescher+Markt+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Hackescher Markt on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>11:00 AM — Hackesche Höfe Courtyards</h3>
+                <span class="tag">Souvenir Shopping</span>
+                <span class="tag">8 Interconnected Courtyards</span>
+                <img src="photos/hackesche-hofe.png" alt="Hackesche Höfe Art Nouveau tile courtyard" class="location-photo">
+                <p class="notes">Beautiful Art Nouveau tilework. Eight interconnected courtyards full of shops:<br><br>
+                🚦 <strong>Ampelmann Shop</strong> — iconic East Berlin pedestrian-light gifts<br>
+                🎄 <strong>Käthe Wohlfahrt</strong> — German Christmas ornaments year-round<br>
+                ✨ Various small design boutiques across the courtyards<br><br>
+                While Mom browses, Dad can rest at <strong>Monbijoupark</strong> right across the Spree — lovely views toward Museum Island, plenty of benches and shade.</p>
+                <a href="https://maps.google.com/?q=Hackesche+Hofe+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Hackesche Höfe on Maps</a>
+                <a href="https://maps.google.com/?q=Monbijoupark+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Monbijoupark on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>1:00 PM — Lunch on Oranienburger Straße</h3>
+                <span class="tag">Walk Past, Pick</span>
+                <p class="notes">A few minutes from the courtyards. Many restaurants line this street, so it's easy to walk past, read menus, and choose. Traditional German, Italian, light cafés. <strong>Hofbräu Wirtshaus</strong> is on this street if a sit-down German lunch sounds right.</p>
+                <a href="https://maps.google.com/?q=Oranienburger+Strasse+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Oranienburger Straße on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>2:30 PM — Hotel Rest</h3>
+                <span class="tag">Real Break</span>
+                <span class="tag">S-Bahn 4 Min</span>
+                <p class="notes">S-Bahn back to Hauptbahnhof (4 minutes). A real break here will protect the evening — jet lag is still in the picture.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>5:30 PM — Taxi to Nikolaiviertel</h3>
+                <span class="tag">~10 Min Taxi</span>
+                <span class="tag">Berlin's Old Quarter</span>
+                <img src="photos/nikolaiviertel.png" alt="Nikolaiviertel cobblestone street with St. Nicholas Church" class="location-photo">
+                <p class="notes">Berlin's reconstructed old quarter, best in the evening when crowds thin and the light is golden on the Spree. Take a taxi rather than the U-Bahn to save Dad's legs.<br><br>
+                Cobblestone streets and traditional souvenir shops: nutcrackers, beer steins, Berlin Bear figurines. The riverbank has benches every few meters.</p>
+                <a href="https://maps.google.com/?q=Nikolaiviertel+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Nikolaiviertel on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>7:30 PM — Dinner in Nikolaiviertel</h3>
+                <span class="tag">Three Options Nearby</span>
+                <p class="notes">All three cluster within a few minutes' walk — you can read menus and pick:<br><br>
+                🥨 <strong>Zum Nußbaum</strong> — classic old-Berlin tavern, traditional German fare<br>
+                🍻 <strong>Zur Gerichtslaube</strong> — historic dining hall, hearty German<br>
+                🍺 <strong>Brauhaus Georgbræu</strong> — Berlin brewery with a riverside terrace</p>
+                <a href="https://maps.google.com/?q=Zum+Nussbaum+Nikolaiviertel+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Zum Nußbaum on Maps</a>
+                <a href="https://maps.google.com/?q=Zur+Gerichtslaube+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Zur Gerichtslaube on Maps</a>
+                <a href="https://maps.google.com/?q=Brauhaus+Georgbraeu+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Brauhaus Georgbræu on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 3 — Friday, July 10: The Spree by Boat     -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-3" style="display:none">
+            <h2>Friday, July 10: The Spree by Boat</h2>
+
+            <div class="time-block">
+                <h3>8:00 AM — Slow Morning</h3>
+                <span class="tag">Optional: Reichstag Dome</span>
+                <img src="photos/reichstag-dome.png" alt="Inside the Reichstag glass dome" class="location-photo">
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Book in June Before You Go</span>
+                    The Reichstag dome visit is free but requires advance registration. Slots open about 2 months ahead and fill up fast. Skip the trip if not booked — it's optional.
+                    <a href="https://www.bundestag.de/en/visittheBundestag" target="_blank" rel="noopener">→ Book Reichstag Dome Slot</a>
+                </div>
+                <p class="notes">If a dome slot is booked, this is the morning for it. Free, accessible by elevator, with one of the best views in Berlin. Morning slots are quieter.<br><br>
+                If not booked, take a leisurely breakfast at the hotel café and a short walk along the Spree promenade.</p>
+                <a href="https://maps.google.com/?q=Reichstag+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Reichstag on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>10:30 AM — To the Cruise Dock</h3>
+                <span class="tag">Arrive 20–30 Min Early</span>
+                <p class="notes">Most sightseeing cruises depart from docks near Nikolaiviertel and Museum Island on the Spree. From Hauptbahnhof, take the S-Bahn to <strong>Hackescher Markt</strong> or <strong>Friedrichstraße</strong>, then walk to the dock.<br><br>
+                ⚠️ <strong>Build in extra time.</strong> Several reviews mention the docks can be tricky to find. Aim to arrive 20 to 30 minutes before departure.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>12:00 PM — Spree Lunch Cruise</h3>
+                <span class="tag">3.5 Hours</span>
+                <span class="tag">Meal Included</span>
+                <img src="photos/spree-cruise.png" alt="Spree River cruise passing Berlin Cathedral" class="location-photo">
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Book at Least a Week Ahead</span>
+                    July is peak season for cruises. Reserve in advance and add the dock address here once booked.
+                    <a href="https://www.getyourguide.com/spree-river-l2700/dinner-lunch-cruises-tc108/" target="_blank" rel="noopener">→ Browse Lunch Cruises on GetYourGuide</a>
+                </div>
+                <p class="notes">A 3 to 3.5 hour sightseeing cruise with a meal on board. From the water you'll see the Reichstag, government quarter, Museum Island, Berliner Dom, the TV Tower, and Bellevue Palace.<br><br>
+                <strong>Two operator styles to consider:</strong><br><br>
+                🛳️ <strong>Stern und Kreis</strong> — the classic Berlin operator. Hot and cold food à la carte rather than fixed menu. More flexible.<br>
+                🍽️ <strong>Prepaid lunch cruise</strong> via Viator or GetYourGuide. Fixed meal included, simpler arrangement.<br><br>
+                <strong>Tip:</strong> Bring a light layer. Even in summer the breeze on the open deck can be cool. Arrive early to choose seating.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>3:30 PM — Choose Your Own Afternoon</h3>
+                <span class="tag">Energy Permitting</span>
+                <p class="notes"><strong>If feeling strong, especially if near Charlottenburg:</strong><br>
+                Stroll through <strong>Schloss Charlottenburg gardens</strong>. Formal baroque gardens, free to enter, plenty of benches, beautiful in July. You don't need the palace tour — the grounds alone are the point.<br><br>
+                <strong>If tired:</strong><br>
+                Taxi or S-Bahn back to the hotel for a real rest. Lunch on a boat plus three hours on the water is plenty for one day.</p>
+                <a href="https://maps.google.com/?q=Schloss+Charlottenburg+gardens+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Charlottenburg Gardens on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Evening — Light Dinner Near Hotel</h3>
+                <span class="tag">Walking Distance</span>
+                <p class="notes">After lunch on the boat, dinner should be light and close:<br><br>
+                🏛️ <strong>Paris-Moskau</strong> — historic restaurant in an 1898 half-timbered house, ~10 min walk. Traditional German-French menu, beautiful setting.<br>
+                🍺 <strong>Zollpackhof</strong> again — if Wednesday's beer garden was a hit.<br>
+                🛏️ <strong>Hotel restaurant or room service</strong> — genuinely fine if the day was long.</p>
+                <a href="https://maps.google.com/?q=Paris-Moskau+Restaurant+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Paris-Moskau on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 4 — Saturday, July 11: Memorials & Museum  -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-4" style="display:none">
+            <h2>Saturday, July 11: Memorials & Museum Island</h2>
+
+            <div class="time-block">
+                <h3>9:30 AM — Berlin Wall Memorial</h3>
+                <span class="tag">S-Bahn to Nordbahnhof, ~5 Min</span>
+                <span class="tag">Free Outdoor Site</span>
+                <img src="photos/wall-memorial.png" alt="Berlin Wall Memorial on Bernauer Strasse" class="location-photo">
+                <p class="notes">The <strong>Gedenkstätte Berliner Mauer</strong> on Bernauer Strasse is the most substantive Wall site in the city — original wall sections, the preserved "death strip," a watchtower, and a documentation center with exhibitions.<br><br>
+                Allow 2 to 3 hours, but it's easy to stay shorter. The viewing tower has elevator access for an overhead sense of how the wall divided the city.<br><br>
+                ⚠️ This is emotionally heavy material. The open-air format lets you take it at your own pace, sit when needed, and step out anytime.<br><br>
+                <strong>Plan B if heavy history feels like too much:</strong> Skip the Wall Memorial entirely and head straight to <strong>KaDeWe</strong> instead — Berlin's legendary luxury department store. The 6th-floor <strong>Feinschmeckeretage</strong> food hall is the showstopper: 110+ counters of chocolates, pastries, cheeses, oysters, cured meats from across Europe. Browse-able, plenty of seating, and a great way for Mom to find unique food souvenirs. U-Bahn U2 from Hauptbahnhof to Wittenbergplatz, ~15 min.</p>
+                <a href="https://maps.google.com/?q=Berlin+Wall+Memorial+Bernauer+Strasse" target="_blank" rel="noopener" class="btn-large">📍 Berlin Wall Memorial on Maps</a>
+                <a href="https://maps.google.com/?q=KaDeWe+Berlin" target="_blank" rel="noopener" class="btn-large">📍 KaDeWe (Plan B) on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>12:30 PM — Lunch in Mitte</h3>
+                <span class="tag">Flexible</span>
+                <p class="notes">S-Bahn one stop south to Friedrichstraße or Hackescher Markt. Plenty of options — and Mom already knows the area from Thursday.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>2:00 PM — Museum Island & Antiques Market</h3>
+                <span class="tag">Saturday Market</span>
+                <span class="tag">60+ Stands</span>
+                <img src="photos/museum-island.png" alt="Museum Island with Berliner Dom" class="location-photo">
+                <p class="notes">The <strong>antiques and book market behind the Bodemuseum</strong> runs Saturdays and Sundays — books, records, handicrafts, and small antiques. Set on the river, well away from the Unter den Linden crowds.<br><br>
+                <strong>A perfect pairing: a market for Mom, a beautiful riverside setting for Dad.</strong></p>
+                <a href="https://maps.google.com/?q=Bodemuseum+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Bodemuseum on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>3:00 PM — Choose One Museum</h3>
+                <span class="tag">Don't Try For More</span>
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Buy Tickets Online in Advance</span>
+                    Both museums have elevators and timed entry. Book online to skip the line.
+                    <a href="https://www.smb.museum/en/museums-institutions/alte-nationalgalerie/home/" target="_blank" rel="noopener">→ Alte Nationalgalerie Tickets</a>
+                </div>
+                <p class="notes">🎨 <strong>Alte Nationalgalerie (recommended)</strong> — 19th-century European art: Caspar David Friedrich, Menzel, French Impressionists, German Romantics. A pure art museum experience in a gorgeous building.<br><br>
+                🗿 <strong>Neues Museum (alternative)</strong> — home of the famous Nefertiti bust and ancient Egyptian art. Very manageable in 90 minutes.</p>
+                <a href="https://maps.google.com/?q=Alte+Nationalgalerie+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Alte Nationalgalerie on Maps</a>
+                <a href="https://maps.google.com/?q=Neues+Museum+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Neues Museum on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>4:30 PM — Gendarmenmarkt</h3>
+                <span class="tag">10 Min Walk</span>
+                <span class="tag">Berlin's Prettiest Square</span>
+                <img src="photos/gendarmenmarkt.png" alt="Gendarmenmarkt with Konzerthaus and the two cathedrals" class="location-photo">
+                <p class="notes">A ten-minute walk south across the Spree. Widely considered Berlin's most beautiful square, anchored by the Konzerthaus flanked by the matching <strong>Französischer Dom</strong> and <strong>Deutscher Dom</strong>.<br><br>
+                Plenty of benches and café tables along the edges — the perfect place to rest after Museum Island. Try an Aperol or coffee at one of the cafés on the square and watch the light change.</p>
+                <a href="https://maps.google.com/?q=Gendarmenmarkt+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Gendarmenmarkt on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Evening — Dinner at Gendarmenmarkt</h3>
+                <span class="tag">Stay on the Square</span>
+                <p class="notes">🥩 <strong>Lutter & Wegner</strong> (recommended) — historic Berlin institution, right on the square. Traditional German with white-tablecloth feel. Walk a few meters from the cafés and you're at dinner.<br><br>
+                🌇 <strong>Käfer Dachgarten</strong> on the Reichstag rooftop — special-evening view, requires advance booking (no security wait for restaurant guests).<br><br>
+                🛏️ <strong>Back near the hotel</strong> if energy is low — easy S-Bahn ride.</p>
+                <a href="https://maps.google.com/?q=Lutter+und+Wegner+Gendarmenmarkt+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Lutter & Wegner on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 5 — Sunday, July 12: Flea Markets & Wall   -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-5" style="display:none">
+            <h2>Sunday, July 12: Flea Markets & the Wall</h2>
+
+            <div class="time-block">
+                <h3>10:00 AM — Mauerpark Flea Market</h3>
+                <span class="tag">Sundays Only</span>
+                <span class="tag">Cash Only</span>
+                <img src="photos/mauerpark.png" alt="Mauerpark Sunday flea market" class="location-photo">
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Hit an ATM Saturday Evening</span>
+                    Many flea market vendors don't take cards. Withdraw cash before bed Saturday so you're not scrambling Sunday morning.
+                </div>
+                <p class="notes">Sunday is Mauerpark day. The market runs 10:00–18:00, but arriving close to opening beats the heat and the worst crowds. Tram or S-Bahn from Hauptbahnhof, roughly 20 minutes.<br><br>
+                Vendors spread across more than 7,000 sq m: vintage clothing, vinyl, GDR memorabilia, eclectic furniture, jewelry, handmade goods. The market sits on the former "death strip" of the Berlin Wall, which gives the surrounding park an unusual feel.<br><br>
+                Dad can rest at any food stall or café along <strong>Oderberger Strasse</strong> next to the park.</p>
+                <a href="https://maps.google.com/?q=Mauerpark+Flea+Market+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Mauerpark on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>1:00 PM — Lunch in Prenzlauer Berg</h3>
+                <span class="tag">Walk Past, Pick</span>
+                <p class="notes">The streets just south of Mauerpark — particularly <strong>Kastanienallee</strong> and <strong>Oderberger Strasse</strong> — are café-heavy and exactly the "walk past, read menus, pick" format Mom likes. Lots of outdoor seating in July.</p>
+                <a href="https://maps.google.com/?q=Kastanienallee+Prenzlauer+Berg+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Kastanienallee on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>3:00 PM — East Side Gallery</h3>
+                <span class="tag">1.3 km Open-Air</span>
+                <span class="tag">Tram or U-Bahn</span>
+                <img src="photos/east-side-gallery.png" alt="East Side Gallery murals on the Berlin Wall" class="location-photo">
+                <p class="notes">Tram or U-Bahn to <strong>Warschauer Strasse</strong> or <strong>Ostbahnhof</strong>. The East Side Gallery is the longest preserved stretch of the Berlin Wall: 1.3 km painted by artists in 1990. Outdoor, flat, runs along the Spree.<br><br>
+                You don't need to walk the whole length. Even twenty minutes captures the iconic murals — the Brezhnev-Honecker kiss, the Trabant breaking through the wall. Benches and a riverside promenade for breaks.<br><br>
+                <strong>Plan B if Wall sites feel like too much:</strong> Head to the <strong>Botanischer Garten Berlin</strong> instead — one of the largest and most beautiful botanical gardens in the world. 22,000 plant species across 43 hectares, plus historic glasshouses including the Great Tropical House. Mostly flat paths, abundant benches, and a perfect rest day for Dad. S-Bahn S1 to Botanischer Garten station, ~30 min from central Berlin.</p>
+                <a href="https://maps.google.com/?q=East+Side+Gallery+Berlin" target="_blank" rel="noopener" class="btn-large">📍 East Side Gallery on Maps</a>
+                <a href="https://maps.google.com/?q=Botanischer+Garten+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Botanischer Garten (Plan B) on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>4:30 PM — Bonus: Oberbaumbrücke</h3>
+                <span class="tag">If Energy Holds</span>
+                <span class="tag">Lovely Photo Stop</span>
+                <img src="photos/oberbaumbrucke.png" alt="Oberbaumbrücke double-deck brick bridge" class="location-photo">
+                <p class="notes">A beautiful brick double-deck bridge right at the end of the gallery. A lovely crossing back into Kreuzberg, perfect for photos.</p>
+                <a href="https://maps.google.com/?q=Oberbaumbrucke+Berlin" target="_blank" rel="noopener" class="btn-large">📍 Oberbaumbrücke on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Evening — Farewell Dinner</h3>
+                <span class="tag">Last Night</span>
+                <p class="notes">Three options for a send-off:<br><br>
+                🍻 <strong>Hofbräu Berlin</strong> near Alexanderplatz — big Bavarian beer hall, lively and traditional. Easy to sit, easy menu, classic German farewell.<br>
+                🥩 <strong>Lutter & Wegner</strong> on Gendarmenmarkt — if not done Saturday. Historic Berlin institution, beautiful square.<br>
+                🌳 <strong>Zollpackhof</strong> again — walking distance from the hotel. The simplest possible last night.<br><br>
+                <strong>Pack tonight if possible.</strong> Flight is Monday.</p>
+                <a href="https://maps.google.com/?q=Hofbrau+Berlin+Alexanderplatz" target="_blank" rel="noopener" class="btn-large">📍 Hofbräu Berlin on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 6 — Monday, July 13: Departure             -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-6" style="display:none">
+            <h2>Monday, July 13: Departure</h2>
+
+            <div class="time-block">
+                <h3>Morning — Breakfast Options</h3>
+                <span class="tag">Easy & Close</span>
+                <p class="notes">Last morning before the flight. Keep it close to the hotel so there's no stress about timing.<br><br>
+                ☕ <strong>Hotel breakfast</strong> — the simplest choice. If included in the room, take advantage of it on the last morning.<br><br>
+                🥐 <strong>Café in Hauptbahnhof</strong> — the station itself has several cafés and bakeries open early. <strong>Le Crobag</strong> for French-style pastries and coffee, or <strong>Kamps</strong> for traditional German bakery items. Open by 6:00 AM. Convenient if you're already heading to the train platforms.<br><br>
+                🍳 <strong>Benedict Berlin</strong> (10 min walk or short taxi) — Berlin's most-loved all-day breakfast spot. International menu with shakshuka, eggs Benedict, pancakes. Opens at 8:00 AM. A real sit-down send-off meal if there's time.</p>
+                <a href="https://maps.google.com/?q=Benedict+Berlin+restaurant" target="_blank" rel="noopener" class="btn-large">📍 Benedict Berlin on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>To the Airport — FEX from Hauptbahnhof</h3>
+                <span class="tag">23 Min Direct</span>
+                <span class="tag">4 Trains Per Hour</span>
+                <div class="action-needed">
+                    <span class="action-label">⚠️ Buy an ABC Ticket, Not AB</span>
+                    The airport is in Zone C. A standard AB ticket won't cover the trip. Buy an <strong>ABC single ticket (~€5)</strong> at any yellow ticket machine in Hauptbahnhof or via the BVG app. Validate paper tickets at the yellow/red stamping boxes before boarding.
+                </div>
+                <p class="notes">The <strong>FEX (Flughafen-Express)</strong> is the easiest way to the airport. Four trains per hour, 23 minutes direct from Hauptbahnhof to <strong>Flughafen BER</strong>, no transfers. Runs from 4:00 AM to 1:00 AM.<br><br>
+                <strong>How to find it at Hauptbahnhof:</strong> The FEX departs from the lower-level regional train platforms (Gleis 1–8). Check the departure boards for "FEX" or "Flughafen BER." Allow extra time since Hauptbahnhof is large.<br><br>
+                <strong>Timing rule of thumb:</strong> For an international flight, aim to be at BER about 2.5 hours before departure. Add the 23-minute train ride plus ~15 minutes of buffer at Hauptbahnhof. So leaving the hotel about 3 hours and 15 minutes before the flight is comfortable.</p>
+                <a href="https://maps.google.com/?q=Berlin+Hauptbahnhof" target="_blank" rel="noopener" class="btn-large">📍 Berlin Hauptbahnhof on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Plan B — Taxi to BER</h3>
+                <span class="tag">~€50–€70</span>
+                <span class="tag">30–45 Min</span>
+                <p class="notes">If carrying lots of luggage or the timing is tight, a taxi from the hotel to BER runs about €50–€70 and takes 30–45 minutes depending on traffic. Door-to-door, no stairs, no platform-hunting.<br><br>
+                Use <strong>FreeNow</strong>, <strong>Bolt</strong>, or <strong>Uber</strong> apps, or have the hotel front desk call a taxi for you. Ask for a quote upfront if possible.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>At BER — Terminal 1 vs Terminal 2</h3>
+                <span class="tag">Check Your Ticket</span>
+                <p class="notes">The FEX arrives at the <strong>Flughafen BER station</strong> on level U2, directly under Terminal 1.<br><br>
+                ✈️ <strong>Terminal 1:</strong> Just a few minutes' walk from the train platform up to the check-in hall.<br><br>
+                ✈️ <strong>Terminal 2:</strong> Go up to arrivals level E0 and follow the signs. About a 10-minute walk.<br><br>
+                Most US flights depart from Terminal 1, but check the boarding pass to confirm.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Last Souvenirs</h3>
+                <span class="tag">If Time Allows</span>
+                <p class="notes">Both terminals have shops airside (after security). Look for:<br><br>
+                🍫 <strong>Ritter Sport</strong> — the iconic square German chocolate, often with airport-exclusive flavors<br>
+                🥨 <strong>Lebkuchen / German cookies</strong> — Bahlsen and other brands at most newsstands<br>
+                🐻 <strong>Berlin Bear merchandise</strong> — small souvenirs at gift shops if anything was missed in town<br><br>
+                Prices are slightly marked up versus city shops, but it's a fine last chance for chocolate to bring home.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Safe Travels! ✈️</h3>
+                <p class="notes">Tschüss, Berlin. Until next time.</p>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- REFERENCE — Logistics & Tips                   -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card reference-card" id="reference" style="display:none">
+            <h2>Logistics & Tips</h2>
+
+            <h3>Before You Go · Book in June</h3>
+            <ul>
+                <li><strong>Reichstag dome slot</strong> at bundestag.de — free, slots open ~2 months ahead</li>
+                <li><strong>Friday lunch cruise</strong> on the Spree — at least 1–2 weeks ahead for peak July</li>
+                <li><strong>Museum Island ticket</strong> for Saturday (Alte Nationalgalerie or Neues Museum)</li>
+                <li>Confirm ATM cards work internationally and have a 4-digit PIN</li>
+                <li>Download <strong>BVG Fahrinfo</strong> app for transit, and offline Google Maps for Berlin</li>
+            </ul>
+
+            <h3>Getting Cash · ATMs in Berlin</h3>
+            <p class="notes">Germany still runs heavily on cash. Many flea markets, smaller cafés, and street food vendors don't take cards. Plan to withdraw euros within the first day.</p>
+
+            <h4>Use these banks (low or no fee for foreign cards)</h4>
+            <ul>
+                <li><strong>Deutsche Bank, Commerzbank, Postbank, Sparkasse</strong> — major German banks, ATMs everywhere</li>
+                <li>The closest ATMs to the hotel are inside Hauptbahnhof or on Invalidenstraße. Ask the front desk.</li>
+            </ul>
+
+            <h4>Avoid these</h4>
+            <ul>
+                <li><strong>Euronet</strong> — orange and blue freestanding machines, €5–6 fee per withdrawal</li>
+                <li><strong>Reisebank</strong> currency exchange counters — convenient but unfavorable rates</li>
+            </ul>
+
+            <h4>At the ATM</h4>
+            <ul>
+                <li>If asked "Charge in EUR or your home currency?" — always choose <strong>EUR</strong></li>
+                <li>Withdraw a larger amount once rather than several small ones (flat fees add up)</li>
+                <li>German for ATM: <strong>Geldautomat</strong>. Useful in Google Maps.</li>
+            </ul>
+
+            <h3>Public Transit · BVG & S-Bahn</h3>
+            <p class="notes">Berlin's transit is excellent and step-free in most central stations. Trains, buses, and trams share tickets within the same zone.</p>
+
+            <h4>Which zone</h4>
+            <p class="notes">Everything on this itinerary is in <strong>Zone AB</strong>. Zone ABC is only needed for the airport (BER) or Potsdam.</p>
+
+            <h4>Which ticket</h4>
+            <ul>
+                <li><strong>24-hour ticket (Tageskarte) AB</strong> — ~€9.80, unlimited rides. Best choice most days.</li>
+                <li><strong>Berlin WelcomeCard AB</strong> — combines transit with 25–50% discounts at attractions</li>
+                <li><strong>Single ticket AB</strong> — ~€4, one-off trips only</li>
+            </ul>
+
+            <h4>How to buy</h4>
+            <ul>
+                <li>Yellow ticket machines on every U-Bahn and S-Bahn platform. Has English mode.</li>
+                <li>BVG Fahrinfo app sells digital tickets that activate immediately (no validation needed).</li>
+                <li>Buses sell single tickets from the driver, contactless only.</li>
+            </ul>
+
+            <div class="action-needed">
+                <span class="action-label">⚠️ Crucial</span>
+                Paper tickets must be <strong>validated by stamping</strong> in the small yellow/red boxes on the platform <strong>before boarding</strong>. Fine for unstamped ticket is €60 and inspectors are strict. Digital and pre-purchased day tickets are usually pre-validated — check the printed time.
+            </div>
+
+            <h3>Taxis & Rideshare</h3>
+            <ul>
+                <li><strong>Uber, Bolt, FreeNow</strong> all work in Berlin. FreeNow is the most common local app.</li>
+                <li>For trips under 2 km, tell the driver <strong>"Kurzstrecke"</strong> for a flat short-fare rate (~€6).</li>
+                <li>Taxis are easy to find at any major station and reasonably priced.</li>
+            </ul>
+
+            <h3>Tipping</h3>
+            <ul>
+                <li><strong>Restaurants:</strong> round up or add 5–10%. When paying, tell the server the total amount (e.g., for a €27 bill, say "30"). Don't leave cash on the table.</li>
+                <li><strong>Taxis:</strong> round up to the nearest euro or two.</li>
+                <li><strong>Hotel housekeeping:</strong> €1–2 per day is generous.</li>
+            </ul>
+
+            <h3>Useful German</h3>
+            <ul>
+                <li><strong>Guten Tag</strong> · hello (formal, daytime)</li>
+                <li><strong>Danke</strong> · thank you</li>
+                <li><strong>Bitte</strong> · please / you're welcome</li>
+                <li><strong>Entschuldigung</strong> · excuse me / sorry</li>
+                <li><strong>Die Rechnung, bitte</strong> · the check, please</li>
+                <li><strong>Sprechen Sie Englisch?</strong> · do you speak English?</li>
+            </ul>
+
+            <h3>Practical Notes</h3>
+            <ul>
+                <li><strong>Sundays:</strong> regular shops are closed. Markets, restaurants, cafés, and tourist sites stay open. Plan grocery runs for Saturday.</li>
+                <li><strong>Weather:</strong> July averages ~25°C / 77°F daytime, cooler evenings. Pack layers. Afternoon rain showers happen — a small umbrella is wise.</li>
+                <li><strong>Water:</strong> tap water is excellent. Restaurants will ask "Stilles Wasser oder mit Kohlensäure?" (still or sparkling).</li>
+                <li><strong>Walking:</strong> Berlin pavements are mostly flat but cobblestone in older areas (Nikolaiviertel, parts of Hackescher Markt). Comfortable shoes matter.</li>
+                <li><strong>Emergencies:</strong> 112 for all emergencies (medical, fire, police).</li>
+            </ul>
+
+            <h3>If Plans Slip</h3>
+            <p class="notes">This itinerary has real breathing room built in. If a morning runs long or an afternoon nap stretches past 4 PM, the next item can almost always move to the next day. The only timing-sensitive things are the Reichstag dome slot (if booked) and the Friday cruise. Everything else flexes.</p>
+        </article>
+
+    </main>
+
+
+    <script>
+        const pills = document.querySelectorAll('.day-pill');
+        const cards = document.querySelectorAll('.zen-card');
+
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+
+                const target = pill.dataset.target;
+                cards.forEach(card => {
+                    card.style.display = card.id === target ? 'block' : 'none';
+                });
+
+                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
