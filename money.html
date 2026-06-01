@@ -188,7 +188,7 @@
 
         // Core App Logic
         const DAILY_ALLOWANCE = 20;
-        const START_DATE = new Date('2026-05-18T00:00:00'); // Updated to today
+        const START_DATE = new Date('2026-06-01T00:00:00'); // Updated to June 1 experiment start
 
         function calculateTotalAllowance() {
             const today = new Date();
@@ -210,10 +210,11 @@
             const totalAllowance = calculateTotalAllowance();
             const isAppActive = totalAllowance > 0;
 
-            // Fetch all transactions
+            // Fetch all transactions, ignoring anything before the new start date
             const { data: transactions, error } = await db
                 .from('transactions')
                 .select('*')
+                .gte('created_at', START_DATE.toISOString()) 
                 .order('created_at', { ascending: false });
 
             if (error) {
