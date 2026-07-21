@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cynthia Henderson | Learning Experience Designer</title>
-<title>Cynthia Henderson | LXD + Creative Technologist</title>
-<meta name="description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
+    <meta name="description" content="Moving beyond 'click next.' I build high-stakes learning tools, scalable enterprise strategies, and interactive prototypes that respect learner intelligence.">
 
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://cynhenderson.com/">
-<meta property="og:title" content="Cynthia Henderson | LXD + Creative Technologist">
-<meta property="og:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
-<meta property="og:image" content="https://cynhenderson.com/photos/cat-pixel.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cynhenderson.com/">
+    <meta property="og:title" content="Cynthia Henderson | LXD + Creative Technologist">
+    <meta property="og:description" content="Moving beyond 'click next.' I build high-stakes learning tools, scalable enterprise strategies, and interactive prototypes that respect learner intelligence.">
+    <meta property="og:image" content="https://cynhenderson.com/photos/cat-pixel.png">
 
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://cynhenderson.com/">
-<meta property="twitter:title" content="Cynthia Henderson | LXD + Creative Technologist">
-<meta property="twitter:description" content="Moving beyond 'click next.' I build high-stakes learning tools and vibe-coded prototypes that respect the learner's intelligence. LXD based in Dallas.">
-<meta property="twitter:image" content="https://cynhenderson.com/photos/cat-pixel.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cynhenderson.com/">
+    <meta property="twitter:title" content="Cynthia Henderson | LXD + Creative Technologist">
+    <meta property="twitter:description" content="Moving beyond 'click next.' I build high-stakes learning tools, scalable enterprise strategies, and interactive prototypes that respect learner intelligence.">
+    <meta property="twitter:image" content="https://cynhenderson.com/photos/cat-pixel.png">
+    
     <style>
         /* Import Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
@@ -60,6 +60,7 @@
             background-color: rgba(253, 251, 247, 0.95);
             backdrop-filter: blur(5px);
             z-index: 100;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.05);
         }
 
         .logo-container {
@@ -108,46 +109,6 @@
             filter: drop-shadow(0 4px 8px rgba(74, 14, 23, 0.08));
         }
 
-        /* Works Section */
-        #works {
-            height: auto;
-            min-height: 100vh;
-            padding: 4rem 5% 6rem 5%; 
-            background-color: #ffffff; 
-            position: relative;
-            z-index: 10;
-        }
-
-        /* About Section */
-        #about {
-            padding: 4rem 5% 6rem 5%; 
-            background-color: var(--bg-cream); 
-            color: var(--text-burgundy);
-            position: relative;
-            z-index: 10;
-        }
-
-        .about-container { max-width: 1000px; margin: 0 auto; }
-
-        #works h2, #about h2 { 
-            font-size: 2.8rem; 
-            margin-bottom: 3rem; 
-            text-align: center; 
-            color: var(--text-burgundy); 
-        }
-
-        .about-block { margin-bottom: 4rem; }
-        .about-block h3 {
-            font-size: 1.8rem;
-            color: var(--accent-terracotta);
-            margin-bottom: 1.2rem;
-            border-bottom: 2px solid rgba(194, 89, 52, 0.15);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
-
-        .about-text { font-size: 1.2rem; line-height: 1.7; opacity: 0.9; }
-
         /* Hero Section */
         .hero {
             display: flex;
@@ -184,6 +145,23 @@
         @keyframes gentleBounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-6px); }
+        }
+
+        /* Works Section */
+        #works {
+            height: auto;
+            min-height: 100vh;
+            padding: 4rem 5% 6rem 5%; 
+            background-color: #ffffff; 
+            position: relative;
+            z-index: 10;
+        }
+
+        #works h2, #about h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 3rem; 
+            text-align: center; 
+            color: var(--text-burgundy); 
         }
 
         /* Works Grid & Cards */
@@ -254,19 +232,33 @@
         .mockup-content img, .mockup-content svg { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
         .work-content { padding: 2rem; display: flex; flex-direction: column; flex-grow: 1; }
-        .work-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1rem; }
+        
+        .work-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
         .tag {
             font-family: 'Domine', serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-size: 0.8rem;
             color: var(--accent-terracotta);
             background: rgba(194, 89, 52, 0.08);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
             font-weight: 700;
         }
-        .work-title { font-size: 1.6rem; margin-bottom: 0.8rem; line-height: 1.3; }
+
+        .work-title { font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.3; }
+        
+        /* Clean editorial stat line without AI left-borders or boxes */
+        .metric-highlight {
+            font-family: 'Domine', serif;
+            font-size: 0.95rem;
+            color: var(--accent-terracotta);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .metric-highlight span {
+            color: var(--text-burgundy);
+            font-weight: 400;
+        }
+
         .work-desc { font-size: 1.05rem; opacity: 0.85; margin-bottom: 2rem; flex-grow: 1; }
 
         .work-link {
@@ -284,6 +276,28 @@
         .work-link:hover { color: var(--accent-terracotta); }
         .work-link svg { transition: transform 0.3s ease; }
         .work-link:hover svg { transform: translateX(4px); }
+
+        /* About Section */
+        #about {
+            padding: 4rem 5% 6rem 5%; 
+            background-color: var(--bg-cream); 
+            color: var(--text-burgundy);
+            position: relative;
+            z-index: 10;
+        }
+
+        .about-container { max-width: 1000px; margin: 0 auto; }
+        .about-block { margin-bottom: 4rem; }
+        .about-block h3 {
+            font-size: 1.8rem;
+            color: var(--accent-terracotta);
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid rgba(194, 89, 52, 0.15);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .about-text { font-size: 1.2rem; line-height: 1.7; opacity: 0.9; }
 
         .skills-grid {
             display: grid;
@@ -393,73 +407,6 @@
             opacity: 0.6;
         }
 
-        /* --- Easter Egg Styles --- */
-.glitch-text {
-            cursor: pointer;
-            border-bottom: 1px dashed rgba(253, 251, 247, 0.4); 
-            transition: all 0.2s ease;
-            position: relative;
-            display: inline-block;
-            padding: 0 4px;
-        }
-
-        .glitch-text:hover {
-            font-family: 'Space Mono', 'JetBrains Mono', monospace;
-            color: var(--text-burgundy);
-            background: var(--bg-cream);
-            border-radius: 2px;
-            font-weight: bold;
-        }
-
-/* Full screen transition overlay */
-/* Smooth, clinical whiteout transition */
-        #glitch-overlay {
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh;
-            background: #FAFAFA; /* Matches the diagnostic app */
-            z-index: 99999;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
-            opacity: 0; pointer-events: none; 
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        #glitch-overlay.active {
-            opacity: 1; 
-            pointer-events: all;
-        }
-
-        .glitch-msg {
-            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
-            font-size: 1.1rem; 
-            color: #111111;
-            text-align: center;
-        }
-        .glitch-sub {
-            font-family: 'Space Mono', 'JetBrains Mono', monospace; 
-            font-size: 1rem;
-            color: #FAFAFA;
-            margin-top: 1rem;
-            opacity: 0.7;
-        }
-
-/* A minimal, clinical loading spinner */
-        .system-spinner {
-            margin-top: 2rem;
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ccc;
-            border-top-color: #FF3300;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         /* Mobile Breakpoints */
         @media (max-width: 900px) {
             .hero { flex-direction: column; justify-content: center; text-align: center; padding-top: 3rem; gap: 2rem;}
@@ -493,7 +440,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Hello, I'm <span class="highlight">Cynthia</span>.</h1>
-            <p>I don't just design training. I build the tools to deliver it.</p>
+            <p>Turning complex enterprise workflows into intuitive, high-impact learning experiences.</p>
         </div>
 
         <div class="hero-graphic">
@@ -554,52 +501,7 @@
         <h2>Selected Works</h2>
 
         <div class="works-grid">
-
-<article class="work-card">
-    <div class="work-image-container">
-        <div class="browser-mockup">
-            <div class="mockup-header">
-                <div class="mockup-dot dot-1"></div>
-                <div class="mockup-dot dot-2"></div>
-                <div class="mockup-dot dot-3"></div>
-            </div>
-            <div class="mockup-content">
-                <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="400" height="320" fill="#FDFBF7"/>
-
-                    <rect x="40" y="40" width="320" height="70" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
-                    <circle cx="80" cy="75" r="18" fill="#4A0E17" opacity="0.1"/>
-                    <line x1="120" y1="65" x2="300" y2="65" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
-                    <line x1="120" y1="85" x2="240" y2="85" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
-
-                    <rect x="40" y="140" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
-                    <rect x="40" y="140" width="130" height="8" rx="4" fill="#C25934"/>
-
-                    <rect x="40" y="160" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
-                    <rect x="40" y="160" width="160" height="8" rx="4" fill="#C25934" opacity="0.6"/>
-
-                    <rect x="40" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#C25934" stroke-width="2"/>
-                    <rect x="105" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
-                    <rect x="170" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
-                </svg>
-            </div>
-        </div>
-    </div>
-    <div class="work-content">
-        <div class="work-tags">
-            <span class="tag">Narrative Design</span>
-            <span class="tag">GSAP</span>
-            <span class="tag">Gamification</span>
-        </div>
-        <h3 class="work-title">Scope // Creep</h3>
-        <p class="work-desc">Protecting the perimeter is a soft skill. I built this high-tension dialogue simulator to train Project Managers in stakeholder negotiation. Use empathy, tactics, or aggression to manage pressure without burning bridges.</p>
-        <a href="scope-creep.html" class="work-link" target="_blank">
-            Play Prototype 
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </a>
-    </div>
-</article></article>
-
+            <!-- Thomson Reuters Case Study - Position 1 for Enterprise Impact -->
             <article class="work-card">
                 <div class="work-image-container" style="background-color: rgba(74, 14, 23, 0.03);">
                     <div class="browser-mockup">
@@ -625,12 +527,13 @@
                 </div>
                 <div class="work-content">
                     <div class="work-tags">
-                        <span class="tag">Strategy</span>
+                        <span class="tag">Enterprise Strategy</span>
                         <span class="tag">SaaS Adoption</span>
-                        <span class="tag">Storytelling</span>
+                        <span class="tag">GenAI Ecosystem</span>
                     </div>
-                    <h3 class="work-title">Accelerating Adoption</h3>
-                    <p class="work-desc">Lawyers are busy and they don't have time for generic software tutorials. At Thomson Reuters, I helped turn standard training into practice-specific use cases. It is an onboarding ecosystem that respects the learner's schedule while actually showing how the tech solves their daily problems.</p>
+                    <h3 class="work-title">Accelerating Legal AI Adoption</h3>
+                    <div class="metric-highlight">Key Impact: <span>154% YoY platform growth &bull; 318k users trained</span></div>
+                    <p class="work-desc">At Thomson Reuters, I designed scalable web-based learning within the Legal Learning Hub. By translating complex GenAI tools into practice-specific use cases, we accelerated monthly active AI adoption from 83,000 to 161,000 users while driving tool utilization from 17% to 25%.</p>
                     <a href="customer-success.html" class="work-link">
                         Read Case Study
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -638,6 +541,7 @@
                 </div>
             </article>
 
+            <!-- Scope Creep -->
             <article class="work-card">
                 <div class="work-image-container">
                     <div class="browser-mockup">
@@ -649,39 +553,38 @@
                         <div class="mockup-content">
                             <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="400" height="320" fill="#FDFBF7"/>
-                                <rect x="40" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
-                                <rect x="40" y="40" width="40" height="6" rx="3" fill="#C25934"/>
-                                <rect x="220" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
-                                <rect x="220" y="40" width="120" height="6" rx="3" fill="#C25934"/>
-
-                                <rect x="40" y="80" width="320" height="130" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
-                                <line x1="70" y1="115" x2="330" y2="115" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
-                                <line x1="70" y1="145" x2="280" y2="145" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
-                                <line x1="70" y1="175" x2="310" y2="175" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
-
-                                <rect x="190" y="110" width="80" height="10" rx="3" fill="#4A0E17"/>
-                                <rect x="120" y="170" width="60" height="10" rx="3" fill="#4A0E17"/>
-
-                                <rect x="260" y="240" width="100" height="28" rx="4" fill="#4A0E17"/>
+                                <rect x="40" y="40" width="320" height="70" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                                <circle cx="80" cy="75" r="18" fill="#4A0E17" opacity="0.1"/>
+                                <line x1="120" y1="65" x2="300" y2="65" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="120" y1="85" x2="240" y2="85" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <rect x="40" y="140" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="40" y="140" width="130" height="8" rx="4" fill="#C25934"/>
+                                <rect x="40" y="160" width="200" height="8" rx="4" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="40" y="160" width="160" height="8" rx="4" fill="#C25934" opacity="0.6"/>
+                                <rect x="40" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#C25934" stroke-width="2"/>
+                                <rect x="105" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                                <rect x="170" y="200" width="55" height="80" rx="4" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
                             </svg>
                         </div>
                     </div>
                 </div>
                 <div class="work-content">
                     <div class="work-tags">
-                        <span class="tag">Simulation Design</span>
-                        <span class="tag">JavaScript</span>
-                        <span class="tag">UI/UX Design</span>
+                        <span class="tag">Narrative Design</span>
+                        <span class="tag">GSAP & JS</span>
+                        <span class="tag">Gamification</span>
                     </div>
-                    <h3 class="work-title">AI Integration Training</h3>
-                    <p class="work-desc">Compliance training usually feels like a checklist. I built this prototype to let learners handle sensitive data in a safe, interactive environment. You can scrub prompts and watch your risk metrics shift in real time. It turns a mandatory rule into a decision-based simulation you can test to understand.</p>
-                    <a href="ai-scenario.html" class="work-link" target="_blank">
-                        View Prototype 
+                    <h3 class="work-title">Scope // Creep</h3>
+                    <div class="metric-highlight">Tech Focus: <span>Custom JavaScript & state tracking</span></div>
+                    <p class="work-desc">Protecting the perimeter is a critical human performance competency. I coded and designed this high-tension branching dialogue simulator to train Project Managers in stakeholder negotiation. Learners use empathy, tactics, or boundary-setting to manage project pressure without burning relationships.</p>
+                    <a href="scope-creep.html" class="work-link" target="_blank">
+                        Play Prototype 
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </a>
                 </div>
             </article>
 
+            <!-- Dallas College Case Study -->
             <article class="work-card">
                 <div class="work-image-container" style="background-color: rgba(194, 89, 52, 0.04);">
                     <div class="browser-mockup">
@@ -702,13 +605,57 @@
                 <div class="work-content">
                     <div class="work-tags">
                         <span class="tag">Blended Learning</span>
-                        <span class="tag">Instructional Strategy</span>
-                        <span class="tag">Game Design</span>
+                        <span class="tag">LMS Implementation</span>
+                        <span class="tag">ILT & WBT</span>
                     </div>
                     <h3 class="work-title">Leadership Elevated</h3>
-                    <p class="work-desc">I took a pile of fragmented training at Dallas College and transformed it into a cohesive journey. This blended experience uses workshops and a custom board game to help 250 managers actually lead. It replaces a standard overhaul with a high-impact, active program.</p>
+                    <div class="metric-highlight">Key Impact: <span>4.8/5.0 rating &bull; +30% course completion</span></div>
+                    <p class="work-desc">At Dallas College, I conducted performance gap analyses with stakeholders to overhaul fragmented training into a scalable blended curriculum for 250+ leaders. Coupled with a new LMS implementation, the solution reduced administrative overhead by 20% while lifting overall employee onboarding satisfaction by 15%.</p>
                     <a href="leadership-case-study.html" class="work-link">
                         Read Case Study
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </article>
+
+            <!-- AI Integration Training -->
+            <article class="work-card">
+                <div class="work-image-container">
+                    <div class="browser-mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-dot dot-1"></div>
+                            <div class="mockup-dot dot-2"></div>
+                            <div class="mockup-dot dot-3"></div>
+                        </div>
+                        <div class="mockup-content">
+                            <svg viewBox="0 0 400 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="400" height="320" fill="#FDFBF7"/>
+                                <rect x="40" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="40" y="40" width="40" height="6" rx="3" fill="#C25934"/>
+                                <rect x="220" y="40" width="140" height="6" rx="3" fill="#4A0E17" opacity="0.1"/>
+                                <rect x="220" y="40" width="120" height="6" rx="3" fill="#C25934"/>
+                                <rect x="40" y="80" width="320" height="130" rx="6" fill="#ffffff" stroke="#4A0E17" stroke-width="2" stroke-opacity="0.15"/>
+                                <line x1="70" y1="115" x2="330" y2="115" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="145" x2="280" y2="145" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <line x1="70" y1="175" x2="310" y2="175" stroke="#4A0E17" stroke-width="6" stroke-linecap="round" opacity="0.15"/>
+                                <rect x="190" y="110" width="80" height="10" rx="3" fill="#4A0E17"/>
+                                <rect x="120" y="170" width="60" height="10" rx="3" fill="#4A0E17"/>
+                                <rect x="260" y="240" width="100" height="28" rx="4" fill="#4A0E17"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-content">
+                    <div class="work-tags">
+                        <span class="tag">Simulation Design</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">UI/UX Design</span>
+                    </div>
+                    <h3 class="work-title">AI Integration Training</h3>
+                    <div class="metric-highlight">Methodology: <span>Safe-fail scenario learning</span></div>
+                    <p class="work-desc">Compliance training often fails because it acts as a passive checklist. I built this interactive sandbox prototype to let employees practice handling sensitive data in real time. Learners scrub prompts and watch organizational risk metrics shift based on their inputs, transforming mandatory policy into active competency.</p>
+                    <a href="ai-scenario.html" class="work-link" target="_blank">
+                        View Prototype 
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </a>
                 </div>
@@ -747,7 +694,7 @@
             <div class="about-block">
                 <h3>The Philosophy</h3>
                 <p class="about-text">
-                    Adult learning shouldn’t be passive. When you blend behavioral science with digital design, you move beyond “click next to continue” and start building immersive, interactive challenges. I design experiences that respect the learner’s intelligence and their time, with every interaction focused on real competency and real business impact.
+                    Adult learning shouldn’t be passive. When you blend rigorous behavioral science and ADDIE methodology with custom digital design, you move beyond “click next to continue” and start building immersive, scenario-based challenges. I design learning ecosystems that respect learner intelligence and time, ensuring every interactive solution is anchored in measurable human performance and business ROI.
                 </p>
             </div>
 
@@ -757,39 +704,42 @@
                     <div class="skill-column">
                         <h4>Instructional Strategy</h4>
                         <ul class="skill-list">
-                            <li>Needs Analysis & Discovery</li>
-                            <li>Competency Modeling</li>
-                            <li>Behavioral Science</li>
-                            <li>Curriculum Architecture</li>
+                            <li>ADDIE & Human Performance</li>
+                            <li>Training Needs Analysis (TNA)</li>
+                            <li>Performance Gap Analysis</li>
+                            <li>Universal Design (UDL)</li>
+                            <li>Change Management</li>
                         </ul>
                     </div>
                     <div class="skill-column">
                         <h4>Experience Design</h4>
                         <ul class="skill-list">
+                            <li>Scenario-Based Simulation</li>
                             <li>Gamification Mechanics</li>
-                            <li>Scenario-Based Learning</li>
-                            <li>UI/UX Design</li>
-                            <li>Blended Learning Journeys</li>
+                            <li>Web & ILT Curriculum Architecture</li>
+                            <li>Information Mapping</li>
+                            <li>UI/UX Design & Figma</li>
                         </ul>
                     </div>
                     <div class="skill-column">
                         <h4>Technical Execution</h4>
                         <ul class="skill-list">
-                            <li>Rapid Prototyping</li>
-                            <li>Front-End Development</li>
-                            <li>Web Animation</li>
-                            <li>Custom Tools & Interactions</li>
+                            <li>Articulate Storyline & Rise</li>
+                            <li>HTML, CSS & JavaScript (GSAP)</li>
+                            <li>LMS Administration (Workday, etc.)</li>
+                            <li>Adobe CC (Premiere, After Effects)</li>
+                            <li>GenAI & Custom Tooling</li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="about-block">
-                <h3>The Human</h3>
+                <h3>The Technologist & Human</h3>
                 <p class="about-text">
-                    Right now, I’m obsessed with using AI tools to build learning experiences from scratch. I’m writing code, designing interactions, and shipping prototypes I couldn’t have built alone two years ago. My dream is to build a learning game that feels less like training and more like a rogue‑lite.
+                    I am actively leveraging modern AI and rapid prototyping frameworks to engineer learning tools from scratch. Whether writing custom code blocks, designing branching logic, or shipping interactive prototypes, my goal is to build training that feels less like a mandatory compliance chore and more like an engaging, high-stakes game.
                 </p>
                 <p class="about-text" style="margin-top: 1rem;">
-                    I love painting, reading, and Dallas life with a <a href="https://cynhenderson.com/sumo/">sumo fighter</a> and a very fluffy cat.
+                    Outside of work, I love painting, reading fiction, and enjoying life in the Dallas area with a sumo fighter and a very fluffy cat.
                 </p>
             </div>
 
@@ -809,55 +759,8 @@
             </a>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Cynthia. Designed and <span id="easter-egg-trigger" class="glitch-text">vibe-coded</span> with care.</p>
+            <p>&copy; 2026 Cynthia Henderson. Designed and developed with care.</p>
         </div>
     </footer>
-
-<script>
-        const trigger = document.getElementById('easter-egg-trigger');
-        let clickCount = 0;
-
-        if(trigger) {
-            trigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                clickCount++;
-
-                if (clickCount === 1) {
-                    // Escalation warning
-                    trigger.innerText = "[ANOMALY DETECTED. CLICK AGAIN TO DIAGNOSE]";
-                    trigger.style.fontFamily = "'Space Mono', monospace";
-                    trigger.style.color = "var(--text-burgundy)";
-                    trigger.style.background = "var(--bg-cream)";
-                    trigger.style.fontWeight = "bold";
-                    trigger.style.borderBottom = "none";
-                    trigger.style.padding = "2px 8px";
-                } else if (clickCount === 2) {
-                    // Lock the screen so they can't scroll away
-                    document.body.style.overflow = 'hidden';
-
-                    // Build the clean overlay
-                    const overlay = document.createElement('div');
-                    overlay.id = 'glitch-overlay';
-                    overlay.innerHTML = `
-                        <div class="glitch-msg">> Suspending portfolio aesthetic...</div>
-                        <div class="glitch-msg" style="margin-top: 0.5rem; color: #FF3300;">> Routing to diagnostic server...</div>
-                        <div class="system-spinner"></div>
-                    `;
-                    document.body.appendChild(overlay);
-
-                    // Fade it in smoothly
-                    setTimeout(() => {
-                        overlay.classList.add('active');
-                    }, 50);
-
-                    // Redirect to the Enneagram app after 2.2 seconds
-                    setTimeout(() => {
-                        window.location.href = 'enneagram.html'; 
-                    }, 2200);
-                }
-            });
-        }
-    </script>
 </body>
-
 </html>

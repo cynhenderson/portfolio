@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Onboarding | Cynthia</title>
+    <title>Accelerating Legal AI Adoption | Cynthia Henderson</title>
+    <meta name="description" content="How a practice-specific onboarding strategy at Thomson Reuters accelerated GenAI adoption from 83k to 161k monthly active users.">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
         :root {
             --bg-cream: #FDFBF7;
             --text-burgundy: #4A0E17;
             --accent-terracotta: #C25934;
+            --ui-font: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
@@ -25,115 +27,214 @@
         h1, h2, h3, h4 {
             font-family: 'Domine', serif;
             margin: 0;
+            font-weight: 700;
         }
 
+        /* Nav */
         nav {
-            padding: 2rem 5%;
+            padding: 1.5rem 5%;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.06);
+            background-color: rgba(253, 251, 247, 0.95);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(8px);
+            z-index: 50;
         }
 
         .back-link {
             text-decoration: none;
             color: var(--text-burgundy);
-            font-family: 'Domine', serif;
+            font-family: var(--ui-font);
             font-weight: 700;
+            font-size: 0.95rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .back-link:hover { color: var(--accent-terracotta); }
+        .back-link svg { transition: transform 0.3s ease; }
+        .back-link:hover svg { transform: translateX(-4px); }
 
+        /* Layout Container */
         .cs-container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 2rem 5% 5rem 5%;
+            padding: 3.5rem 5% 6rem 5%;
         }
 
+        /* Hero Header */
         .cs-hero {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .cs-hero .client-tag {
+            font-family: var(--ui-font);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-terracotta);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.75rem;
+            display: block;
         }
 
         .cs-hero h1 {
-            font-size: 3.5rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
+            font-size: 3.2rem;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            color: var(--text-burgundy);
         }
 
-        .cs-hero .subtitle {
-            font-size: 1.2rem;
+        .cs-hero .hero-desc {
+            font-size: 1.35rem;
+            opacity: 0.9;
+            max-width: 740px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Clean Editorial Stat Strip (No AI Boxes) */
+        .stat-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 3.5rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(74, 14, 23, 0.12);
+            border-bottom: 1px solid rgba(74, 14, 23, 0.12);
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-family: var(--ui-font);
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--accent-terracotta);
-            font-family: 'Domine', serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+            line-height: 1;
         }
 
+        .stat-item p {
+            font-family: var(--ui-font);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-burgundy);
+            margin: 0;
+            opacity: 0.8;
+            line-height: 1.3;
+        }
+
+        /* Upgraded Architectural Hero Graphic */
         .cs-hero-image {
             width: 100%;
-            height: 400px;
-            background-color: rgba(194, 89, 52, 0.1);
+            height: 380px;
+            background-color: #ffffff;
             border-radius: 12px;
-            margin-bottom: 4rem;
-            object-fit: cover;
+            margin-bottom: 4.5rem;
+            border: 1px solid rgba(74, 14, 23, 0.1);
+            box-shadow: 0 16px 32px rgba(74, 14, 23, 0.04);
+            overflow: hidden;
         }
 
-        .cs-section { margin-bottom: 4rem; }
+        .cs-section { margin-bottom: 4.5rem; }
         
         .cs-section h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid rgba(74, 14, 23, 0.1);
-            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(74, 14, 23, 0.15);
+            padding-bottom: 0.75rem;
+            color: var(--text-burgundy);
         }
 
+        .cs-section p {
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        /* Clean Editorial 2-Column Grid */
         .cs-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
+            gap: 3.5rem;
+            margin-bottom: 5rem;
         }
 
         .cs-box {
             background: #ffffff;
             padding: 2.5rem;
-            border-radius: 8px;
-            border: 1px solid rgba(74, 14, 23, 0.08);
-            box-shadow: 0 10px 30px rgba(74, 14, 23, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(74, 14, 23, 0.1);
         }
 
         .cs-box h3 {
             color: var(--accent-terracotta);
             font-size: 1.4rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            font-family: 'Domine', serif;
         }
 
+        .cs-box p {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .cs-box p:last-child { margin-bottom: 0; }
+
+        /* Process Steps */
         .process-step {
             display: flex;
-            gap: 2rem;
-            margin-bottom: 3rem;
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
+            align-items: flex-start;
         }
 
         .step-number {
-            font-family: 'Domine', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--accent-terracotta);
-            opacity: 0.4;
-            line-height: 1;
+            font-family: var(--ui-font);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--bg-cream);
+            background-color: var(--text-burgundy);
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
         }
 
         .step-content h3 {
             font-size: 1.5rem;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-burgundy);
         }
 
-        @media (max-width: 768px) {
-            .cs-grid { grid-template-columns: 1fr; }
-            .cs-hero h1 { font-size: 2.5rem; }
-            .process-step { flex-direction: column; gap: 0.5rem; }
+        .step-content p {
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 850px) {
+            .stat-strip { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+            .cs-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .cs-hero h1 { font-size: 2.4rem; }
+            .cs-hero-image { height: 280px; }
+            .process-step { flex-direction: column; gap: 1rem; }
+            .step-number { width: 40px; height: 40px; font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -141,7 +242,7 @@
 
     <nav>
         <a href="index.html" class="back-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
@@ -151,105 +252,138 @@
 
     <main class="cs-container">
         <header class="cs-hero">
-            <div class="subtitle">Thomson Reuters</div>
-            <h1>Accelerating Adoption</h1>
-            <p style="font-size: 1.3rem; opacity: 0.9; max-width: 700px; margin: 1rem auto;">I helped turn generic software tutorials into a targeted onboarding strategy that actually shows lawyers how to solve their daily problems.</p>
+            <span class="client-tag">Thomson Reuters &bull; Case Study</span>
+            <h1>Accelerating Legal AI Adoption</h1>
+            <p class="hero-desc">How I transitioned our onboarding strategy away from generic software tutorials and engineered practice-specific use cases that solved daily workflow bottlenecks for legal professionals.</p>
         </header>
 
-        <svg class="cs-hero-image" viewBox="0 0 900 400" width="100%" height="400" xmlns="http://www.w3.org/2000/svg" style="background-color: #FDFBF7; border: 1px solid rgba(74, 14, 23, 0.08);">
-            <g transform="translate(450, 200)">
-                <path d="M 0 0 C 150 -180, 350 -180, 350 0 C 350 180, 150 180, 0 0 C -150 -180, -350 -180, -350 0 C -350 180, -150 180, 0 0 Z" fill="none" stroke="#C25934" stroke-width="5" opacity="0.3"/>
+        <!-- Clean Stat Strip Focus for Enterprise Scannability -->
+        <section class="stat-strip">
+            <div class="stat-item">
+                <h4>154%</h4>
+                <p>YoY Platform Growth</p>
+            </div>
+            <div class="stat-item">
+                <h4>318k</h4>
+                <p>Users Targeted for GenAI</p>
+            </div>
+            <div class="stat-item">
+                <h4>161k</h4>
+                <p>Monthly Active Users (Up from 83k)</p>
+            </div>
+            <div class="stat-item">
+                <h4>+47%</h4>
+                <p>Tool Utilization Lift (17% to 25%)</p>
+            </div>
+        </section>
+
+        <!-- Upgraded Architectural Data & Ecosystem SVG -->
+        <div class="cs-hero-image">
+            <svg viewBox="0 0 960 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="960" height="380" fill="#ffffff"/>
+                <g opacity="0.04" stroke="#4A0E17" stroke-width="1">
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none"/>
+                    </pattern>
+                    <rect width="960" height="380" fill="url(#grid)"/>
+                </g>
                 
-                <path d="M 0 0 C 100 -100, 250 -100, 250 0 C 250 100, 100 100, 0 0 C -100 -100, -250 -100, -250 0 C -250 100, -100 100, 0 0 Z" fill="none" stroke="#4A0E17" stroke-width="3" stroke-dasharray="8 8" opacity="0.2"/>
+                <g transform="translate(480, 190)">
+                    <!-- Connecting Data Pathways -->
+                    <path d="M -320 0 C -200 -120, -100 -120, 0 0 C 100 120, 200 120, 320 0" fill="none" stroke="#C25934" stroke-width="4" stroke-dasharray="8 8" opacity="0.4"/>
+                    <path d="M -320 0 C -200 120, -100 120, 0 0 C 100 -120, 200 -120, 320 0" fill="none" stroke="#4A0E17" stroke-width="3" opacity="0.15"/>
+                    <line x1="-380" y1="0" x2="380" y2="0" stroke="#4A0E17" stroke-width="2" opacity="0.1"/>
+                    
+                    <!-- Left Node: Platform Input -->
+                    <g transform="translate(-320, 0)">
+                        <circle cx="0" cy="0" r="45" fill="#FDFBF7" stroke="#4A0E17" stroke-width="3"/>
+                        <rect x="-18" y="-22" width="36" height="44" rx="4" fill="none" stroke="#C25934" stroke-width="3"/>
+                        <line x1="-10" y1="-10" x2="10" y2="-10" stroke="#4A0E17" stroke-width="2"/>
+                        <line x1="-10" y1="0" x2="10" y2="0" stroke="#4A0E17" stroke-width="2"/>
+                        <line x1="-10" y1="10" x2="0" y2="10" stroke="#C25934" stroke-width="2"/>
+                    </g>
 
-                <line x1="-350" y1="0" x2="-250" y2="0" stroke="#4A0E17" stroke-width="2" opacity="0.4"/>
-                <line x1="350" y1="0" x2="250" y2="0" stroke="#4A0E17" stroke-width="2" opacity="0.4"/>
+                    <!-- Center Node: Learning Hub Architecture -->
+                    <g transform="translate(0, 0)">
+                        <circle cx="0" cy="0" r="65" fill="#FDFBF7" stroke="#C25934" stroke-width="4"/>
+                        <circle cx="0" cy="0" r="48" fill="#4A0E17" opacity="0.05"/>
+                        <polygon points="-15,-22 22,0 -15,22" fill="#C25934"/>
+                        <circle cx="-55" cy="-55" r="8" fill="#4A0E17"/>
+                        <circle cx="55" cy="55" r="8" fill="#4A0E17"/>
+                    </g>
 
-                <circle cx="0" cy="0" r="35" fill="#FDFBF7" stroke="#4A0E17" stroke-width="5"/>
-                <polygon points="-5,-12 12,0 -5,12" fill="#C25934"/>
-                
-                <circle cx="-350" cy="0" r="25" fill="#FDFBF7" stroke="#C25934" stroke-width="5"/>
-                <rect x="-358" y="-8" width="16" height="16" fill="#4A0E17"/>
+                    <!-- Right Node: Active User Adoption -->
+                    <g transform="translate(320, 0)">
+                        <circle cx="0" cy="0" r="55" fill="#FDFBF7" stroke="#4A0E17" stroke-width="3"/>
+                        <circle cx="0" cy="-12" r="14" fill="#C25934"/>
+                        <path d="M -24 22 C -24 6, 24 6, 24 22 Z" fill="#C25934"/>
+                        <circle cx="42" cy="-35" r="12" fill="#4A0E17"/>
+                        <path d="M 37 -35 L 41 -31 L 49 -41" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    </g>
 
-                <path d="M -250 -20 L -230 0 L -250 20 L -270 0 Z" fill="#4A0E17"/>
-
-                <rect x="325" y="-25" width="50" height="50" rx="12" fill="#C25934"/>
-                <circle cx="350" cy="0" r="8" fill="#FDFBF7"/>
-
-                <circle cx="250" cy="0" r="16" fill="#FDFBF7" stroke="#4A0E17" stroke-width="4"/>
-
-                <circle cx="230" cy="-135" r="18" fill="#4A0E17"/>
-                <circle cx="230" cy="-135" r="6" fill="#FDFBF7"/>
-
-                <rect x="-250" y="115" width="40" height="40" rx="8" fill="#FDFBF7" stroke="#4A0E17" stroke-width="3"/>
-                <path d="M -240 135 L -230 145 L -215 125" fill="none" stroke="#C25934" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                
-                <circle cx="-162" cy="-75" r="10" fill="#FDFBF7" stroke="#4A0E17" stroke-width="3"/>
-
-                <circle cx="162" cy="75" r="12" fill="#C25934"/>
-
-                <circle cx="-100" cy="115" r="4" fill="#C25934" opacity="0.6"/>
-               
-                <circle cx="80" cy="110" r="5" fill="#C25934" opacity="0.6"/>
-                <circle cx="280" cy="-80" r="4" fill="#4A0E17" opacity="0.5"/>
-            </g>
-        </svg>
+                    <!-- Contextual Data Satellites -->
+                    <circle cx="-160" cy="-85" r="12" fill="#C25934" opacity="0.8"/>
+                    <circle cx="160" cy="85" r="16" fill="#4A0E17" opacity="0.7"/>
+                    <rect x="-170" y="75" width="20" height="20" rx="4" transform="rotate(45 -160 85)" fill="none" stroke="#4A0E17" stroke-width="3"/>
+                </g>
+            </svg>
+        </div>
 
         <section class="cs-section">
-            <h2>Project Overview</h2>
-            <p>Enterprise legal software has a notoriously steep learning curve. Customers were dropping off because the onboarding barrier was simply too high. To fix this, I moved our strategy away from generic feature-dumping and built a practice-specific onboarding flow instead.</p>
-            <p>We did not just show users where to click. We used narrative-driven, bite-sized use cases to prove exactly how the software could immediately save them time. It established a new standard for our customer outreach and drove actual, measurable growth in product adoption.</p>
+            <h2>Project Overview & Enterprise Impact</h2>
+            <p>Enterprise legal software features a notoriously steep learning curve. When Thomson Reuters set an aggressive organizational goal to scale GenAI adoption across 318,000 global legal professionals, existing generic software tutorials were resulting in significant user drop-off. The onboarding barrier was simply too high for time-starved attorneys.</p>
+            <p>To solve this, I redesigned the instructional architecture within the Legal Learning Hub. By replacing isolated feature-dumping with practice-specific workflows and narrative-driven micro-learning, we transformed how attorneys interact with AI. This new ecosystem directly supported a 154% year-over-year platform growth rate, scaled monthly active AI adoption from 83,000 to 161,000 users, and increased our dedicated GenAI "super users" from 13,000 to 35,000.</p>
         </section>
 
         <div class="cs-grid">
             <div class="cs-box">
                 <h3>The Challenge</h3>
-                <p>When you give a user too many options, they freeze. Our data showed that new customers were overwhelmed by the platform's sheer size, so they just stuck to the basic features and ignored the real value. We needed to stop teaching the tool and start teaching the workflow. The challenge was building paths specific enough for different legal practices while respecting an attorney's nonexistent free time.</p>
+                <p>When confronted with a sprawling enterprise platform, users freeze. Data from our analytics team revealed that new customers were overwhelmed by the software's sheer breadth, causing them to default to basic legacy tools while ignoring high-value GenAI capabilities.</p>
+                <p>We needed to stop teaching the tool's UI and start teaching the attorney's daily workflow. The challenge lay in architecting learning paths specific enough for disparate legal disciplines (e.g., litigation, tax, employment) while respecting an attorney's near-nonexistent free time.</p>
             </div>
             <div class="cs-box">
-                <h3>My Role</h3>
-                <p>I owned the instructional strategy and multimedia design. I built the core curriculum using Articulate Rise, Storyline, Adobe Premiere, and Illustrator.</p>
-                <p>Beyond the build, I worked directly with subject matter experts to map out the reality of legal workflows. I also partnered closely with the Customer Success team to make sure these learning assets actually reached users through targeted in-app messaging.</p>
+                <h3>My Role & Execution</h3>
+                <p>As the Learning Experience Designer, I owned the end-to-end instructional strategy, competency modeling, and multimedia execution. I authored foundational digital learning assets using Articulate Storyline, Rise, Adobe Premiere Pro, and Illustrator.</p>
+                <p>Beyond content creation, I partnered directly with Product, Marketing, and Legal stakeholders to conduct continuous training needs analyses (TNA). I also collaborated with Customer Success to embed learning nudges directly in-app, ensuring our educational assets intercepted users at the exact moment of workflow friction.</p>
             </div>
         </div>
 
         <section class="cs-section">
-            <h2>The Approach & Process</h2>
-            <p style="margin-bottom: 3rem;">We had to stop training users like software testers and start training them like busy professionals. Here is how we got it done.</p>
+            <h2>The Instructional Strategy & Process</h2>
+            <p style="margin-bottom: 3.5rem;">We had to stop training lawyers like software QA testers and start training them like busy legal strategists. Here is how we engineered the turnaround.</p>
 
             <div class="process-step">
                 <div class="step-number">01</div>
                 <div class="step-content">
-                    <h3>Practice-Specific Storytelling</h3>
-                    <p>A family lawyer does not use software the same way an employment lawyer does. I worked with experts to scrap our generic content and build highly targeted learning plans for specific legal disciplines. Instead of teaching isolated buttons, we built story-driven use cases to solve actual daily pain points.</p>
+                    <h3>Practice-Specific Workflow Mapping</h3>
+                    <p>A family law litigator does not utilize GenAI in the same way an M&A corporate attorney does. I collaborated with subject matter experts to scrap our generic feature overviews and engineer highly targeted learning plans for specialized legal disciplines. Instead of teaching isolated button functions, we built story-driven use cases that solved immediate daily pain points like brief summarization and contract deposition analysis.</p>
                 </div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">02</div>
                 <div class="step-content">
-                    <h3>Bite-Sized, Flexible Pacing</h3>
-                    <p>Lawyers do not have time for hour-long modules. I broke the learning paths down into bite-sized chunks meant to take no more than ten minutes a week. The architecture was completely flexible. Users could follow the entire narrative arc from the beginning, or they could parachute in to grab exactly what they needed on demand.</p>
+                    <h3>Bite-Sized, On-Demand Architecture</h3>
+                    <p>Attorneys bill by the hour; they cannot dedicate 60 minutes to linear LMS courses. I structured the curriculum into modular, 5-to-10-minute micro-learning blocks. The learning architecture was completely modular: users could follow a guided narrative onboarding journey from start to finish, or they could parachute directly into specific workflow modules for on-demand performance support.</p>
                 </div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">03</div>
                 <div class="step-content">
-                    <h3>A Smart Tech Ecosystem</h3>
-                    <p>Great content is useless if no one sees it. While the core curriculum lived in the LMS, the actual learning experience had to meet users where they already were. I partnered with the success team to embed the journey directly into the software. We used Pendo to trigger automated nudges and relied on Snowflake data to see what worked and fix what did not.</p>
+                    <h3>In-App Behavioral Nudging & Analytics</h3>
+                    <p>High-quality learning content is useless if it sits isolated in an LMS. To meet users inside their actual workflow, I partnered with the Product and Success teams to integrate our curriculum directly into the software interface. We utilized Pendo to trigger behavioral, contextual nudges based on user actions, and monitored Snowflake analytics data to iterate on drop-off points in real time.</p>
                 </div>
             </div>
 
             <div class="process-step">
                 <div class="step-number">04</div>
                 <div class="step-content">
-                    <h3>Modernizing Social Outreach</h3>
-                    <p>We needed a better way to catch attention outside the platform. I designed dynamic announcements for our community pages and LinkedIn groups. I also noticed our marketing formats were feeling a bit dated, so I pitched and produced the team's first vertical videos using Adobe Premiere. They performed so well that vertical video immediately became the new standard for our product outreach.</p>
+                    <h3>Multimedia Campaign & CoCounsel Event ROI</h3>
+                    <p>To drive external engagement and excitement, I expanded our learning deliverables into high-impact multimedia formats. I scripted, edited, and produced promotional hype video content and dynamic visual branding for the flagship CoCounsel Circle customer event. This integrated multimedia campaign drove nearly 1,000 registrations and actively engaged 417 unique attendees across specialized practice-area workshops.</p>
                 </div>
             </div>
         </section>
-
     </main>
 </body>
 </html>
