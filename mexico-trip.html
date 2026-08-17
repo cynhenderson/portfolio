@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexico City Trip 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9F7F2; 
+            --text-color: #2F3630; 
+            --accent-primary: #D4A373; 
+            --accent-secondary: #F4DADA; 
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            margin-top: 0;
+        }
+
+        /* The Hero Section */
+        .hero {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 45vh; 
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .hero-overlay {
+            background: rgba(249, 247, 242, 0.9); 
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hero-overlay h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .hero-overlay p {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--accent-primary);
+        }
+
+        /* Layout Container */
+        .container {
+            padding: 20px;
+            max-width: 600px; 
+            margin: 0 auto;
+        }
+
+        /* The Zen Card */
+        .zen-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+            border-top: 6px solid var(--accent-secondary);
+        }
+
+        .zen-card h2 {
+            font-size: 1.6rem;
+            border-bottom: 1px solid var(--accent-primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Time Block for Itinerary Items */
+        .time-block {
+            margin-bottom: 25px;
+            border-left: 3px solid var(--accent-secondary);
+            padding-left: 15px;
+        }
+
+        .time-block h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-color);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--accent-primary);
+            margin: 0 5px 10px 0;
+        }
+
+        .notes {
+            font-size: 0.95rem;
+            color: #4a544c; 
+            margin-bottom: 10px;
+        }
+
+        /* Large, Accessible Buttons */
+        .btn-large {
+            display: block;
+            width: 100%;
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+        
+        /* Day Pill Navigation */
+        .day-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--bg-color);
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        .day-nav::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .day-pill {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--accent-primary);
+            background: transparent;
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+
+        .day-pill.active {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border-color: var(--text-color);
+        }
+
+        .location-photo {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-overlay">
+            <h1>CDMX Girls' Trip</h1>
+            <p>October 13 – 20, 2026</p>
+        </div>
+    </header>
+
+    <nav class="day-nav">
+        <button class="day-pill active" data-target="day-1">Oct 13</button>
+        <button class="day-pill" data-target="day-2">Oct 14</button>
+        <button class="day-pill" data-target="day-3">Oct 15</button>
+        <button class="day-pill" data-target="day-4">Oct 16</button>
+        <button class="day-pill" data-target="day-5">Oct 17</button>
+        <button class="day-pill" data-target="day-6">Oct 18</button>
+        <button class="day-pill" data-target="day-7">Oct 19</button>
+        <button class="day-pill" data-target="day-8">Oct 20</button>
+    </nav>
+
+    <main class="container">
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 1 — Tuesday, October 13: Arrival          -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-1">
+            <h2>Tuesday, Oct 13: Arrival & Settling In</h2>
+
+            <div class="time-block">
+                <h3>Afternoon — Check-In</h3>
+                <span class="tag">Roma-Condesa</span>
+                <span class="tag">Laidback Base</span>
+                <p class="notes">Arrive in the city and drop bags at <strong>ULIV Pulse Roma-Condesa</strong>. This area is tree-lined, very tranquil, close to the metro, and low on crime—perfect for putting Mom at ease as you settle in.</p>
+                <a href="https://maps.google.com/?q=ULIV+Pulse+Roma-Condesa+Mexico+City" target="_blank" rel="noopener" class="btn-large">📍 ULIV Pulse on Maps</a>
+            </div>
+            
+            <div class="time-block">
+                <h3>Late Lunch / Dinner</h3>
+                <span class="tag">Low-Stress</span>
+                <span class="tag">Tacos</span>
+                <p class="notes">Keep it incredibly easy for the first night. Walk to either <strong>Tacos Hola El Güero</strong> (famous for their guisados in clay pots) or <strong>Taquería El Jarocho</strong>. Both are casual, legendary, and right in the neighborhood.</p>
+                <a href="https://maps.google.com/?q=Tacos+Hola+El+Guero+Condesa" target="_blank" rel="noopener" class="btn-large">📍 Tacos Hola El Güero</a>
+            </div>
+            
+            <div class="time-block">
+                <h3>Evening Stroll</h3>
+                <span class="tag">Parque México</span>
+                <p class="notes">Take a gentle, easy walk through Parque México or Parque España to help Mom unwind and get a feel for the neighborhood's beautiful art deco architecture.</p>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 2 — Wednesday, October 14: Coyoacán       -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-2" style="display:none">
+            <h2>Wednesday, Oct 14: Coyoacán Stroll</h2>
+
+            <div class="time-block">
+                <h3>Morning — Plazas & Coffee</h3>
+                <span class="tag">South CDMX</span>
+                <span class="tag">Cobblestones</span>
+                <p class="notes">Head south to Coyoacán. Take a slow walk through the beautiful, bohemian plazas: Jardín Hidalgo and Jardín Centenario. Grab a traditional coffee at Café El Jarocho to start the day.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Afternoon — Museums</h3>
+                <span class="tag">Frida Kahlo</span>
+                <span class="tag">Trotsky</span>
+                <p class="notes">Visit the <strong>Frida Kahlo Museum (Casa Azul)</strong> or the <strong>Leon Trotsky Museum</strong>. <br><br>⚠️ <em>Make sure to book tickets well in advance for Casa Azul!</em></p>
+            </div>
+
+            <div class="time-block">
+                <h3>Late Afternoon — Churros</h3>
+                <span class="tag">Sweet Treat</span>
+                <p class="notes">Wander the cobblestone streets and pick up some fresh churros before heading back to Condesa for the evening.</p>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 3 — Thursday, October 15: Centro Histórico -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-3" style="display:none">
+            <h2>Thursday, Oct 15: Centro Histórico & Artesanías</h2>
+
+            <div class="time-block">
+                <h3>Morning — Mercado de Artesanías La Ciudadela</h3>
+                <span class="tag">Folk Art</span>
+                <span class="tag">Souvenirs</span>
+                <p class="notes">Head toward the historic center early. La Ciudadela is the premier spot for authentic, high-quality folk art from all over Mexico. Intricate textiles, Talavera ceramics, and vibrant alebrijes. Take your time browsing!</p>
+                <a href="https://maps.google.com/?q=Mercado+de+Artesanias+La+Ciudadela" target="_blank" rel="noopener" class="btn-large">📍 La Ciudadela on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Lunch — Thomson Reuters</h3>
+                <span class="tag">Colleagues</span>
+                <p class="notes">Meet up with your colleagues for lunch at or around the Thomson Reuters office.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Afternoon — MUNAL</h3>
+                <span class="tag">Classic Mexican Art</span>
+                <span class="tag">Architecture</span>
+                <p class="notes">Walk to <strong>MUNAL (Museo Nacional de Arte)</strong>. The building itself is one of the most stunning in the city, housing an incredible collection of Mexican art.</p>
+                <a href="https://maps.google.com/?q=MUNAL+Museo+Nacional+de+Arte+Mexico+City" target="_blank" rel="noopener" class="btn-large">📍 MUNAL on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 4 — Friday, October 16: Chapultepec       -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-4" style="display:none">
+            <h2>Friday, Oct 16: Chapultepec & Condesa</h2>
+
+            <div class="time-block">
+                <h3>Morning — Castillo de Chapultepec</h3>
+                <span class="tag">Arrive Early</span>
+                <span class="tag">Hilltop Views</span>
+                <p class="notes">Head into Bosque de Chapultepec right when it opens to beat the heat and the crowds. The walk up to the castle is paved but on an incline. The views of Reforma from the top are unmatched.</p>
+                <a href="https://maps.google.com/?q=Castillo+de+Chapultepec" target="_blank" rel="noopener" class="btn-large">📍 Castillo on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Afternoon — Museo de Arte Moderno (MAM)</h3>
+                <span class="tag">Modern Art</span>
+                <p class="notes">After a casual lunch in or near the park, walk over to MAM. The architecture of the building and the sculpture garden are just as impressive as the exhibits inside.</p>
+                <a href="https://maps.google.com/?q=Museo+de+Arte+Moderno+Mexico+City" target="_blank" rel="noopener" class="btn-large">📍 MAM on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Late Afternoon — Condesa Shopping</h3>
+                <span class="tag">Boutiques</span>
+                <p class="notes">Walk back into Condesa and spend the afternoon winding down by popping into local boutiques around Amsterdam Avenue.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Dinner — Jowong</h3>
+                <span class="tag">Korean Fusion</span>
+                <span class="tag">Banchan</span>
+                <p class="notes">Head to Calle Pachuca for dinner at <strong>Jowong</strong>. Elevated Korean-Mexican fusion with an incredible array of banchan. A great change of pace for the palate!</p>
+                <a href="https://maps.google.com/?q=Jowong+Condesa" target="_blank" rel="noopener" class="btn-large">📍 Jowong on Maps</a>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAYS 5 & 6 — Family Weekend                   -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-5" style="display:none">
+            <h2>Saturday, Oct 17: Family Day</h2>
+            <div class="time-block">
+                <h3>All Day</h3>
+                <span class="tag">Family</span>
+                <p class="notes">Reserved entirely for spending time with family.</p>
+            </div>
+        </article>
+
+        <article class="zen-card" id="day-6" style="display:none">
+            <h2>Sunday, Oct 18: Family Day</h2>
+            <div class="time-block">
+                <h3>All Day</h3>
+                <span class="tag">Family</span>
+                <p class="notes">Reserved entirely for spending time with family.</p>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 7 — Monday, October 19: Roma & La Laguna  -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-7" style="display:none">
+            <h2>Monday, Oct 19: Roma Norte & La Laguna</h2>
+
+            <div class="time-block">
+                <h3>Morning — Roma Norte Shopping</h3>
+                <span class="tag">Pingüino</span>
+                <span class="tag">Sara Casa</span>
+                <p class="notes">Since museums are closed on Mondays, today is all about the neighborhoods. Stroll through Roma Norte and make sure to visit <strong>Pingüino</strong> and <strong>Sara Casa</strong> for unique clothing and home pieces.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Lunch — Merendero Biarritz</h3>
+                <span class="tag">Retro Diner</span>
+                <p class="notes">Grab lunch at Merendero Biarritz. Great food in a fun, classic retro atmosphere.</p>
+                <a href="https://maps.google.com/?q=Merendero+Biarritz+Roma" target="_blank" rel="noopener" class="btn-large">📍 Merendero Biarritz</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Afternoon — La Laguna</h3>
+                <span class="tag">Doctores</span>
+                <span class="tag">Design Studios</span>
+                <p class="notes">Head over to the edge of Roma into the Doctores neighborhood to visit <strong>La Laguna</strong>. This beautifully restored 1920s textile factory is packed with independent design studios, ceramic workshops, and coffee roasters.</p>
+                <a href="https://maps.google.com/?q=La+Laguna+Doctores+Mexico+City" target="_blank" rel="noopener" class="btn-large">📍 La Laguna on Maps</a>
+            </div>
+
+            <div class="time-block">
+                <h3>Evening — Farewell Dinner</h3>
+                <span class="tag">Last Night</span>
+                <p class="notes">Enjoy your last evening with a lovely dinner somewhere in the Roma or Condesa neighborhood before heading home tomorrow.</p>
+            </div>
+        </article>
+
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- DAY 8 — Tuesday, October 20: Departure        -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <article class="zen-card" id="day-8" style="display:none">
+            <h2>Tuesday, Oct 20: Departure</h2>
+
+            <div class="time-block">
+                <h3>Morning — Coffee & Pack</h3>
+                <span class="tag">Pastries</span>
+                <p class="notes">Grab a final coffee and some pan dulce in the neighborhood, pack up, and check out of ULIV Pulse.</p>
+            </div>
+
+            <div class="time-block">
+                <h3>Head to the Airport</h3>
+                <span class="tag">Safe Travels</span>
+                <p class="notes">Order a rideshare to the airport. Make sure to account for CDMX traffic!</p>
+            </div>
+        </article>
+
+    </main>
+
+    <script>
+        const pills = document.querySelectorAll('.day-pill');
+        const cards = document.querySelectorAll('.zen-card');
+
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                // Update active pill
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+
+                // Show matching card, hide others
+                const target = pill.dataset.target;
+                cards.forEach(card => {
+                    card.style.display = card.id === target ? 'block' : 'none';
+                });
+
+                // Scroll pill into view if clipped
+                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+                // Scroll page to top of content
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
