@@ -288,6 +288,9 @@
         .host-tv-options button { background: transparent; border: 2px solid var(--text-dark); color: var(--text-dark); border-radius: 50px; padding: 0.55rem 1rem; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
         .host-tv-options button[aria-pressed="true"] { background: var(--color-price); border-color: var(--color-price); color: var(--bg-cream); }
         .host-tv-options button:disabled { opacity: 0.5; cursor: wait; }
+        .host-live { font-size: 0.85rem; font-weight: 600; margin: 0.75rem 0 0 0; color: #888; }
+        .host-live.ok { color: var(--color-baby); }
+        .host-live.warn { color: var(--color-crime); }
 
         /* --- TV DISPLAY (?tv) --- */
         body.tv-mode header { display: none; }
@@ -340,6 +343,9 @@
         .tv-actual { position: absolute; bottom: 2.1em; width: 0.25em; background: var(--color-crime); border-radius: 0.2em; margin-left: -0.125em; z-index: 1; top: 1.5em; }
         .tv-actual::before { content: '👻'; position: absolute; top: -1.6em; left: 50%; transform: translateX(-50%); font-size: 2em; }
         .tv-idle { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .tv-banner { position: fixed; left: 50%; bottom: 1.5em; transform: translateX(-50%); z-index: 30; background: var(--color-crime); color: #fff; border-radius: 0.6em; padding: 0.8em 1.2em; font-size: 1.05em; max-width: 80%; line-height: 1.4; display: none; }
+        .tv-banner.on { display: block; }
+        .tv-banner code { background: rgba(255,255,255,0.18); padding: 0.1em 0.35em; border-radius: 0.25em; }
         .tv-final-layout { display: grid; grid-template-columns: 1fr auto; gap: 4em; align-items: center; }
         .tv-final-photo { width: 17em; }
         .tv-reaction { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; gap: 4em; background: var(--bg-cream); z-index: 20; padding: 3em 5em; box-sizing: border-box; }
@@ -563,6 +569,7 @@
             <div class="host-tv">
                 <h2>On the shared screen</h2>
                 <div class="host-tv-options" id="host-tv-options"></div>
+                <p class="host-live" id="host-live">Connecting live updates...</p>
                 <p class="pf-small">Open <strong id="host-tv-url"></strong> in its own browser window and share only that window in Teams. It never shows a price until you reveal it. This host page does, so keep it off the share.</p>
             </div>
             <p class="host-status" id="host-status"></p>
@@ -629,6 +636,8 @@
             </div>
             <div id="tv-price-idle" class="tv-idle"></div>
         </section>
+
+        <div class="tv-banner" id="tv-banner" role="alert"></div>
 
         <div class="tv-reaction" id="tv-reaction" aria-live="polite">
             <figure class="polaroid" id="tv-reaction-photo"><img id="tv-reaction-img" alt="Winny, looking shocked"></figure>
@@ -1131,6 +1140,8 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'price_state' }, p => { if (p.new && p.new.id === 1) pfApplyState(p.new); })
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'guesses' }, () => pfQueueGuessRefresh())
                 .subscribe(status => { if (status === 'SUBSCRIBED') pfFetchState(); });
+            // Backup refresh so items open and reveals show even without the live connection.
+            setInterval(() => { if (!document.hidden) pfFetchState(); }, 5000);
             // Phones sleep between items; catch up when the screen wakes.
             document.addEventListener('visibilitychange', () => { if (!document.hidden) pfFetchState(); });
             pfFetchState();
@@ -1293,7 +1304,7 @@
         // =====================================================================
         //  THE PRICE IS FRIGHT: host view  (yoursite.github.io/?host)
         // =====================================================================
-        const host = { serverPrices: {}, pass: null, state: null, guesses: [], reveals: [], timer: null, started: false, controlsKey: null, animated: null };
+        const host = { live: null, tvScreen: null, serverPrices: {}, pass: null, state: null, guesses: [], reveals: [], timer: null, started: false, controlsKey: null, animated: null };
         const HOST_PASS_KEY = 'pf_host_pass';
         const HOST_PRICES_KEY = 'pf_host_prices';
         const HOST_SECTIONS = ['host-offline', 'host-gate', 'host-panel'];
@@ -1358,7 +1369,13 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'price_reveals' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'tv_state' }, () => hostQueue())
-                .subscribe(status => { if (status === 'SUBSCRIBED') hostRefresh(); });
+                .subscribe(status => {
+                    host.live = status === 'SUBSCRIBED';
+                    hostRenderLive();
+                    if (host.live) hostRefresh();
+                });
+            setInterval(() => { if (!document.hidden) hostRefresh(); }, 4000);
+            setTimeout(() => { if (host.live === null) { host.live = false; hostRenderLive(); } }, 8000);
             document.addEventListener('visibilitychange', () => { if (!document.hidden) hostRefresh(); });
             hostRefresh();
         }
@@ -1372,7 +1389,7 @@
                 sb.from('price_reveals').select('item_id, actual_price'),
                 sb.from('tv_state').select('screen').eq('id', 1).single()
             ]);
-            if (tvs.data) hostRenderTvControl(tvs.data.screen);
+            if (tvs.data) { host.tvScreen = tvs.data.screen; hostRenderTvControl(tvs.data.screen); }
             if (st.error) { console.error(st.error); document.getElementById('host-error').textContent = "Couldn't reach Supabase. Check the setup."; return; }
             host.state = st.data;
             host.guesses = withNames(gs.data);
@@ -1486,6 +1503,14 @@
                 </div>`).join('');
         }
 
+        function hostRenderLive() {
+            const el = document.getElementById('host-live');
+            if (!el) return;
+            if (host.live === true) { el.textContent = 'Live updates: on'; el.className = 'host-live ok'; }
+            else if (host.live === false) { el.textContent = "Live updates aren't connecting, so every screen refreshes every few seconds instead. Games still work."; el.className = 'host-live warn'; }
+            else { el.textContent = 'Connecting live updates...'; el.className = 'host-live'; }
+        }
+
         async function hostSet(itemId, phase, price = null) {
             const err = document.getElementById('host-error');
             err.textContent = '';
@@ -1495,6 +1520,9 @@
                 console.error(error);
                 err.textContent = "That didn't go through. Try again.";
                 host.controlsKey = null;
+            } else if (host.tvScreen !== 'price') {
+                // Opening, revealing, or finishing an item puts the shared screen on the price game.
+                await sb.rpc('host_set_tv', { pass: host.pass, p_screen: 'price' });
             }
             await hostRefresh();
         }
@@ -1581,6 +1609,7 @@
             document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
             document.getElementById('view-tv').classList.add('active');
             if (!sb) { tvShow('tv-offline'); return; }
+            tvShow('tv-welcome'); // show something right away, even before data loads
 
             document.getElementById('tv-url').textContent = joinUrl().replace(/^https?:\/\//, '');
             fillStrip(document.getElementById('tv-strip'));
@@ -1591,10 +1620,21 @@
             ['tv_state', 'price_state', 'guesses', 'price_reveals', 'players', 'game_progress'].forEach(t =>
                 ch.on('postgres_changes', { event: '*', schema: 'public', table: t }, () => tvQueue()));
             ch.subscribe(status => { if (status === 'SUBSCRIBED') tvRefresh(); });
-            // Safety net in case the TV's connection drops quietly.
-            setInterval(tvRefresh, 20000);
+            // Backup refresh so the screen keeps up even if the live connection doesn't deliver.
+            setInterval(() => { if (!document.hidden) tvRefresh(); }, 4000);
             window.addEventListener('resize', () => tvRender());
             tvRefresh();
+        }
+
+        function tvBanner(errors) {
+            const el = document.getElementById('tv-banner');
+            if (!errors.length) { el.classList.remove('on'); return; }
+            errors.forEach(e => console.error(e));
+            const missing = errors.some(e => e.code === '42P01' || e.code === 'PGRST205' || /does not exist|schema cache/i.test(e.message || ''));
+            el.innerHTML = missing
+                ? 'The database is missing tables this screen needs. Re-run <code>supabase-setup.sql</code> in the Supabase SQL Editor, then reload.'
+                : `Can't load game data: ${escapeHtml(errors[0].message || errors[0].code || 'unknown error')}`;
+            el.classList.add('on');
         }
 
         function tvQueue() { clearTimeout(tv.timer); tv.timer = setTimeout(tvRefresh, 300); }
@@ -1608,7 +1648,9 @@
                 sb.from('players').select('id, name, created_at'),
                 sb.from('game_progress').select('player_id, game, solved, total, score, started_at, finished_at, updated_at, players(name)')
             ]);
-            if (ts.error || ps.error) { console.error(ts.error || ps.error); return; }
+            const problems = [ts, ps, gs, rv, pl, gp].filter(r => r.error).map(r => r.error);
+            tvBanner(problems);
+            if (ps.error) { console.error(ps.error); return; }
             // Play Winny's reaction only when we actually watched guessing turn into a reveal
             // (not when the screen is reloaded or switched to after the fact).
             const prev = tv.prevPrice, cur = ps.data;
@@ -1617,12 +1659,12 @@
             }
             tv.prevPrice = { phase: cur.phase, current_item: cur.current_item };
             tv.data = {
-                screen: ts.data.screen,
+                screen: (ts.data && ts.data.screen) || 'welcome',
                 price: ps.data,
                 guesses: withNames(gs.data),
                 reveals: rv.data || [],
                 players: (pl.data || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)),
-                progress: gp.data || []
+                progress: gp.error ? [] : (gp.data || [])
             };
             tvRender();
         }
