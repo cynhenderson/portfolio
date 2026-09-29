@@ -600,7 +600,8 @@
             </details>
 
             <div style="text-align:center;">
-                <button class="host-reset" onclick="hostReset()">Reset game (clears all guesses)</button>
+                <button class="host-reset" onclick="hostReset()">Reset Price is Fright only (keeps players)</button><br>
+                <button class="host-reset" onclick="hostResetAll()">Remove all players and scores</button>
             </div>
         </div>
     </main>
@@ -968,7 +969,12 @@
         async function saveProgress(game, fields) {
             if (!sb || !player) return;
             if (!(await syncPlayer())) return;
-            const { error } = await sb.from('game_progress').upsert({ player_id: player.id, game, ...fields, updated_at: nowISO() });
+            const row = { player_id: player.id, game, ...fields, updated_at: nowISO() };
+            let { error } = await sb.from('game_progress').upsert(row);
+            if (error && error.code === '23503') { // player was removed by the host; add them back and retry
+                playerSynced = false;
+                if (await syncPlayer()) ({ error } = await sb.from('game_progress').upsert(row));
+            }
             // 42501 = this game is already finished for this player; later runs don't count.
             if (error && error.code !== '42501') console.error('Could not save progress', error);
         }
@@ -1011,7 +1017,6 @@
             document.querySelectorAll('.emoji-row.revealed').forEach(r => { r.classList.remove('revealed'); r.querySelector('.guess-input').value = ''; });
             initTrivia();
             playerSynced = false;
-            syncPlayer();
         }
 
         // Connections (bonus): groups found, mistakes, and time. Saved in the browser so a refresh keeps progress.
@@ -1408,6 +1413,10 @@
             const value = Math.round((local / CURRENCIES[cur].rate) * 100) / 100; // scored in US dollars
             const row = { player_id: player.id, item_id: s.current_item, guess_value: value, currency: cur, local_value: local };
             let { error } = await sb.from('guesses').insert(row);
+            if (error && error.code === '23503') { // player was removed by the host; add them back and retry
+                playerSynced = false;
+                if (await syncPlayer()) ({ error } = await sb.from('guesses').insert(row));
+            }
             if (error && (error.code === 'PGRST204' || error.code === '42703')) {
                 // Database hasn't been updated for currencies yet: save the US-dollar guess only.
                 ({ error } = await sb.from('guesses').insert({ player_id: row.player_id, item_id: row.item_id, guess_value: value }));
@@ -1684,6 +1693,22 @@
             if (error) { console.error(error); document.getElementById('host-error').textContent = "Reset didn't go through. Try again."; return; }
             host.controlsKey = null;
             host.animated = null;
+            await hostRefresh();
+        }
+
+        async function hostResetAll() {
+            if (!confirm('Remove all players and scores? This deletes every player, every guess, and all emoji, trivia, and Connections progress, and puts the shared screen back on Welcome. Use it to clear test players before the party.')) return;
+            const { error } = await sb.rpc('host_reset_all', { pass: host.pass });
+            if (error) {
+                console.error(error);
+                document.getElementById('host-error').textContent = /function|schema cache/i.test(error.message || '')
+                    ? 'Re-run supabase-setup.sql in the Supabase SQL Editor first, then try again.'
+                    : "That didn't go through. Try again.";
+                return;
+            }
+            host.controlsKey = null;
+            host.animated = null;
+            document.getElementById('host-error').textContent = '';
             await hostRefresh();
         }
 
