@@ -281,6 +281,16 @@
         .pf-reaction img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(44, 42, 40, 0.2); flex-shrink: 0; }
         .pf-reaction p { margin: 0; font-family: 'DM Serif Display', serif; font-size: 1.15rem; line-height: 1.25; }
 
+        /* --- CURRENCIES --- */
+        .pf-currency { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin: -0.5rem 0 1.25rem 0; font-size: 0.85rem; color: #666; }
+        .pf-currency span { margin-right: 4px; }
+        .pf-currency button { background: transparent; border: 2px solid var(--text-dark); color: var(--text-dark); border-radius: 50px; padding: 0.35rem 0.8rem; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+        .pf-currency button[aria-pressed="true"] { background: var(--color-price); border-color: var(--color-price); color: var(--bg-cream); }
+        .fx-row { display: flex; gap: 0.5em; flex-wrap: wrap; margin-top: 0.5em; }
+        .fx-chip { background: var(--tile-default); border-radius: 50px; padding: 0.25em 0.8em; font-size: 1.2em; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .tv-reaction .fx-chip { font-size: 1.5em; }
+        .tv-fx-note { font-size: 1em; color: #8a8578; margin: 0.4em 0 0 0; }
+
         /* --- HOST: TV CONTROL --- */
         .host-tv { background-color: var(--tile-default); border-radius: 16px; padding: 1.25rem 1.5rem; width: 100%; box-sizing: border-box; margin-bottom: 1.25rem; text-align: center; }
         .host-tv h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 1.25rem; margin: 0 0 0.75rem 0; }
@@ -364,7 +374,7 @@
         .tv-game-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2em; }
         .tv-clues { display: flex; flex-wrap: wrap; gap: 0.6em 1.6em; justify-content: flex-end; font-size: 2em; max-width: 60%; }
         .tv-board { margin-top: 2em; column-count: 2; column-gap: 4em; column-fill: auto; flex: 1; min-height: 0; overflow: hidden; }
-        .tv-row { display: grid; grid-template-columns: 1.6em 9em 1fr 7em; gap: 0.8em; align-items: center; font-size: 1.3em; break-inside: avoid; margin-bottom: 0.55em; }
+        .tv-row { display: grid; grid-template-columns: 1.6em 9em 1fr 8.5em; gap: 0.8em; align-items: center; font-size: 1.3em; break-inside: avoid; margin-bottom: 0.55em; }
         .tv-row .pos { color: #8a8578; font-variant-numeric: tabular-nums; }
         .tv-row .who { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tv-row .bar { height: 0.7em; background: #ddd8ca; border-radius: 0.35em; overflow: hidden; }
@@ -502,6 +512,7 @@
     <main id="view-price" class="view-container">
         <h1>The Price is Fright</h1>
         <p class="subtitle">Guess what these baby essentials really cost. The host reveals each price.</p>
+        <div class="pf-currency" id="pf-currency" role="group" aria-label="Show prices in"></div>
 
         <div id="pf-offline" class="pf-panel" style="display:none;">
             <p style="margin:0;">This game isn't connected yet. The host needs to check the Supabase settings.</p>
@@ -624,6 +635,7 @@
                         <p class="tv-kicker" id="tv-price-progress"></p>
                         <h1 class="tv-item-name" id="tv-item-name"></h1>
                         <p class="tv-status" id="tv-price-status"></p>
+                        <p class="tv-fx-note">Guesses show in each player's own currency.</p>
                         <div class="tv-real" id="tv-price-real"></div>
                     </div>
                     <div class="tv-side" id="tv-price-board"></div>
@@ -644,6 +656,7 @@
             <div class="tv-reaction-text">
                 <p class="tv-reaction-item" id="tv-reaction-item"></p>
                 <p class="tv-reaction-price" id="tv-reaction-price"></p>
+                <div class="fx-row" id="tv-reaction-fx"></div>
                 <p class="tv-reaction-cap" id="tv-reaction-cap"></p>
                 <p class="tv-reaction-sub" id="tv-reaction-sub"></p>
             </div>
@@ -658,6 +671,16 @@
                 <div class="tv-clues" id="tv-clues"></div>
             </div>
             <div class="tv-board" id="tv-emoji-board"></div>
+        </section>
+
+        <section id="tv-connections" class="tv-screen">
+            <div class="tv-game-head">
+                <div>
+                    <h1 class="tv-title-sm">Connections</h1>
+                    <p class="tv-lede">Bonus round. Find four groups of four in your game window. Fewest mistakes wins ties.</p>
+                </div>
+            </div>
+            <div class="tv-board" id="tv-connections-board"></div>
         </section>
 
         <section id="tv-trivia" class="tv-screen">
@@ -716,6 +739,7 @@
                     homeBtn.style.display = targetId === 'view-home' ? 'none' : 'flex';
                     if (targetId === 'view-emoji') emojiMarkStarted();
                     if (targetId === 'view-trivia') triviaMarkStarted();
+                    if (targetId === 'view-connections') connMarkStarted();
                     
                     gsap.fromTo(targetView, 
                         {opacity: 0, y: 10}, 
@@ -734,11 +758,11 @@
         };
         let activeWords = []; let selectedWords = []; const activeGrid = document.getElementById('active-grid'); const solvedContainer = document.getElementById('solved-container'); const btnSubmit = document.getElementById('btn-submit'); const btnDeselect = document.getElementById('btn-deselect'); const btnShuffle = document.getElementById('btn-shuffle');
         function toggleInstructions() { const panel = document.getElementById('instructions'); if (panel.style.display === 'block') { gsap.to(panel, { opacity: 0, y: -10, duration: 0.2, onComplete: () => panel.style.display = 'none' }); } else { panel.style.display = 'block'; gsap.fromTo(panel, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 }); } }
-        function initConnections() { Object.values(solutionData).forEach(cat => activeWords.push(...cat.words)); shuffleArray(activeWords); renderGrid(); }
+        function initConnections() { activeWords = []; selectedWords = []; solvedContainer.innerHTML = ''; Object.values(solutionData).forEach(cat => activeWords.push(...cat.words)); shuffleArray(activeWords); renderGrid(); }
         function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
         function renderGrid() { activeGrid.innerHTML = ''; activeWords.forEach(word => { const tile = document.createElement('div'); tile.className = `tile ${selectedWords.includes(word) ? 'selected' : ''}`; tile.textContent = word; tile.addEventListener('click', () => handleTileClick(word)); activeGrid.appendChild(tile); }); btnSubmit.disabled = selectedWords.length !== 4; btnDeselect.disabled = selectedWords.length === 0; }
         function handleTileClick(word) { const index = selectedWords.indexOf(word); if (index > -1) selectedWords.splice(index, 1); else if (selectedWords.length < 4) selectedWords.push(word); renderGrid(); }
-        btnSubmit.addEventListener('click', () => { let matchedCategory = null; let maxOverlap = 0; for (const [category, data] of Object.entries(solutionData)) { const overlap = selectedWords.filter(word => data.words.includes(word)).length; if (overlap === 4) { matchedCategory = { name: category, ...data }; break; } if (overlap > maxOverlap) { maxOverlap = overlap; } } if (matchedCategory) { activeWords = activeWords.filter(w => !selectedWords.includes(w)); selectedWords = []; const row = document.createElement('div'); row.className = 'solved-row'; row.style.backgroundColor = matchedCategory.color; row.innerHTML = `<div class="solved-category">${matchedCategory.name}</div><div class="solved-words">${matchedCategory.words.join(', ')}</div>`; gsap.set(row, { scale: 0.9, opacity: 0 }); solvedContainer.appendChild(row); gsap.to(row, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.5)" }); renderGrid(); } else { gsap.to('.tile.selected', { x: () => Math.random() * 10 - 5, duration: 0.05, yoyo: true, repeat: 7, onComplete: () => gsap.set('.tile.selected', { x: 0 }) }); if (maxOverlap === 3) { const feedback = document.getElementById('feedback-display'); gsap.fromTo(feedback, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.3 }); setTimeout(() => { gsap.to(feedback, { opacity: 0, duration: 0.4 }); }, 2500); } } });
+        btnSubmit.addEventListener('click', () => { let matchedCategory = null; let maxOverlap = 0; for (const [category, data] of Object.entries(solutionData)) { const overlap = selectedWords.filter(word => data.words.includes(word)).length; if (overlap === 4) { matchedCategory = { name: category, ...data }; break; } if (overlap > maxOverlap) { maxOverlap = overlap; } } if (matchedCategory) { activeWords = activeWords.filter(w => !selectedWords.includes(w)); selectedWords = []; const row = document.createElement('div'); row.className = 'solved-row'; row.style.backgroundColor = matchedCategory.color; row.innerHTML = `<div class="solved-category">${matchedCategory.name}</div><div class="solved-words">${matchedCategory.words.join(', ')}</div>`; gsap.set(row, { scale: 0.9, opacity: 0 }); solvedContainer.appendChild(row); gsap.to(row, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.5)" }); renderGrid(); connRecordSolve(matchedCategory.name); } else { connRecordMistake(); gsap.to('.tile.selected', { x: () => Math.random() * 10 - 5, duration: 0.05, yoyo: true, repeat: 7, onComplete: () => gsap.set('.tile.selected', { x: 0 }) }); if (maxOverlap === 3) { const feedback = document.getElementById('feedback-display'); gsap.fromTo(feedback, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.3 }); setTimeout(() => { gsap.to(feedback, { opacity: 0, duration: 0.4 }); }, 2500); } } });
         btnDeselect.addEventListener('click', () => { selectedWords = []; renderGrid(); }); btnShuffle.addEventListener('click', () => { shuffleArray(activeWords); gsap.fromTo(".tile", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.02 }); renderGrid(); });
 
         // --- GAME: EMOJI PUZZLER LOGIC ---
@@ -982,11 +1006,58 @@
             if (!sb || !player) return;
             const { data, error } = await sb.from('players').select('id').eq('id', player.id);
             if (error || (data && data.some(r => r.id === player.id))) return;
-            try { localStorage.removeItem(EMOJI_KEY); localStorage.removeItem(TRIVIA_KEY); } catch (e) {}
+            try { localStorage.removeItem(EMOJI_KEY); localStorage.removeItem(TRIVIA_KEY); localStorage.removeItem(CONN_KEY); } catch (e) {}
+            initConnections();
             document.querySelectorAll('.emoji-row.revealed').forEach(r => { r.classList.remove('revealed'); r.querySelector('.guess-input').value = ''; });
             initTrivia();
             playerSynced = false;
             syncPlayer();
+        }
+
+        // Connections (bonus): groups found, mistakes, and time. Saved in the browser so a refresh keeps progress.
+        const CONN_KEY = 'connections_progress_v1';
+        const CONN_TOTAL = Object.keys(solutionData).length;
+        function connSaved() { return loadJSON(CONN_KEY) || { solved: [], mistakes: 0, started_at: null, finished_at: null }; }
+        function connSync(p) {
+            saveProgress('connections', { solved: p.solved.length, total: CONN_TOTAL, score: p.solved.length, mistakes: p.mistakes, started_at: p.started_at, finished_at: p.finished_at });
+        }
+        function connMarkStarted() {
+            const p = connSaved();
+            if (p.started_at) return;
+            p.started_at = nowISO();
+            saveJSON(CONN_KEY, p);
+            connSync(p);
+        }
+        function connRecordSolve(category) {
+            const p = connSaved();
+            if (p.finished_at) return;
+            if (!p.started_at) p.started_at = nowISO();
+            if (!p.solved.includes(category)) p.solved.push(category);
+            if (p.solved.length >= CONN_TOTAL) p.finished_at = nowISO();
+            saveJSON(CONN_KEY, p);
+            connSync(p);
+        }
+        function connRecordMistake() {
+            const p = connSaved();
+            if (p.finished_at) return;
+            if (!p.started_at) p.started_at = nowISO();
+            p.mistakes += 1;
+            saveJSON(CONN_KEY, p);
+            connSync(p);
+        }
+        function connRestore() {
+            const p = connSaved();
+            p.solved.forEach(name => {
+                const cat = solutionData[name];
+                if (!cat) return;
+                activeWords = activeWords.filter(w => !cat.words.includes(w));
+                const row = document.createElement('div');
+                row.className = 'solved-row';
+                row.style.backgroundColor = cat.color;
+                row.innerHTML = `<div class="solved-category">${name}</div><div class="solved-words">${cat.words.join(', ')}</div>`;
+                solvedContainer.appendChild(row);
+            });
+            renderGrid();
         }
 
         // Trivia
@@ -1021,30 +1092,30 @@
         //   link: Amazon product URL (or null to hide the link)
         //   min/max/step: slider range. Set max well above the real price so it isn't a giveaway.
         const priceItems = [
-            { id: 'bassinet',  name: 'Smart Bassinet',         min: 0, max: 1500, step: 5,
-              img: 'https://m.media-amazon.com/images/I/71xopXRC0VL._AC_SX679_.jpg',
-              link: 'https://www.amazon.com/HALO-BassiNest-Connected-Swivel-Sleeper/dp/B0F172K7CT' },
+            { id: 'diapers',   name: 'Box of 140 Newborn Diapers', min: 0, max: 200,  step: 1,
+              img: 'https://m.media-amazon.com/images/I/81rdqc0SmrL._AC_SX679_.jpg',
+              link: 'https://www.amazon.com/Pampers-Swaddlers-Absorbent-Comfortable-Disposable/dp/B07SVHLGV8' },
             { id: 'stroller',  name: 'Travel System Stroller', min: 0, max: 1200, step: 5,
               img: 'https://m.media-amazon.com/images/I/81EveQhJ0-L._SX679_.jpg',
               link: 'https://www.amazon.com/Graco-Stroller-Adjustable-Reversible-Lightweight/dp/B07Y5X7N27' },
+            { id: 'babyfood',  name: 'Jar of Baby Food',       min: 0, max: 20,   step: 0.25,
+              img: 'https://m.media-amazon.com/images/I/71Q-eNwcj+L._SX679_.jpg',
+              link: 'https://www.amazon.com/HAPPY-Organic-Stage-Sweet-Potatoes/dp/B07DH3NTSF' },
             { id: 'carseat',   name: 'Convertible Car Seat',   min: 0, max: 800,  step: 5,
               img: 'https://m.media-amazon.com/images/I/81Gzd15T9hL._SX679_.jpg',
               link: 'https://www.amazon.com/Graco-TriRide-Reclining-Seat-Kipling/dp/B0DQLPX5XH' },
-            { id: 'glider',    name: 'Nursery Glider Chair',   min: 0, max: 2000, step: 5,
-              img: 'https://m.media-amazon.com/images/I/71L8J9a1RPL._AC_SX679_.jpg',
-              link: 'https://www.amazon.com/MAMAZING-Adjustable-Armrests-Breastfeeding-Certified/dp/B0DHGXQXHG' },
+            { id: 'pajamas',   name: 'Magnetic Cotton Footie Pajamas', min: 0, max: 150, step: 1,
+              img: 'https://m.media-amazon.com/images/I/51vI4-n2gsL._AC_SX679_.jpg',
+              link: 'https://www.amazon.com/Magnetic-Me-Magnificent-Organic-Cotton/dp/B0FTVF76FL' },
             { id: 'monitor',   name: 'Video Baby Monitor',     min: 0, max: 600,  step: 5,
               img: 'https://m.media-amazon.com/images/I/615lPdvVnpL._AC_SX679_.jpg',
               link: 'https://www.amazon.com/HelloBaby-HB6550-2-Dual-Camera-Monitor/dp/B0H29SVYTK' },
-            { id: 'swing',     name: 'Motion Baby Swing',      min: 0, max: 800,  step: 5,
-              img: 'https://m.media-amazon.com/images/I/61urNEfegVL._SX679_.jpg',
-              link: 'https://www.amazon.com/Infants-Monamii-Bluetooth-Electric-Portable/dp/B0D65F9NS7' },
-            { id: 'diaperbag', name: 'Designer Diaper Bag',    min: 0, max: 2500, step: 5,
-              img: 'https://media.neimanmarcus.com/f_auto,q_auto:low,ar_4:5,c_fill,dpr_2.0,w_790/01/nm_4927535_100296_m',
-              link: 'https://www.neimanmarcus.com/p/burberry-check-print-diaper-bag-prod281950077' }, 
             { id: 'carrier',   name: 'Baby Carrier',           min: 0, max: 400,  step: 5,
               img: 'https://m.media-amazon.com/images/I/61-9LgtO5YL._SX679_.jpg',
-              link: 'https://www.amazon.com/gp/aw/d/B0CLGCN5ZS' }
+              link: 'https://www.amazon.com/gp/aw/d/B0CLGCN5ZS' },
+            { id: 'glider',    name: 'Nursery Glider Chair',   min: 0, max: 2000, step: 5,
+              img: 'https://m.media-amazon.com/images/I/71L8J9a1RPL._AC_SX679_.jpg',
+              link: 'https://www.amazon.com/MAMAZING-Adjustable-Armrests-Breastfeeding-Certified/dp/B0DHGXQXHG' }
         ];
 
         // Scoring: each item is worth 100 / (number of items) points, scaled by accuracy.
@@ -1062,6 +1133,43 @@
             return '$' + v.toLocaleString(undefined, { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: 2 });
         }
         function fmtPts(n) { return (Math.round(n * 10) / 10).toString(); }
+
+        // ---- Currencies ----
+        // Units per 1 US dollar. Checked September 29, 2026 (mid-market). Update here if you like.
+        const CURRENCIES = {
+            USD: { symbol: '$',   short: 'US$', label: 'US dollars',       rate: 1 },
+            MXN: { symbol: 'MX$', short: 'MX$', label: 'Mexican pesos',    rate: 17.80 },
+            CAD: { symbol: 'CA$', short: 'CA$', label: 'Canadian dollars', rate: 1.42 }
+        };
+        // Format an amount that is already in the given currency.
+        function fmtIn(v, code) {
+            if (!code || code === 'USD') return fmt(v);
+            const c = CURRENCIES[code] || CURRENCIES.USD;
+            v = Math.round(Number(v) * 100) / 100;
+            const showCents = v < 100 && v % 1 !== 0;
+            return c.symbol + v.toLocaleString(undefined, { minimumFractionDigits: showCents ? 2 : 0, maximumFractionDigits: showCents ? 2 : 0 });
+        }
+        // Format a US-dollar amount in another currency.
+        function money(usd, code) { return fmtIn(Number(usd) * ((CURRENCIES[code] || CURRENCIES.USD).rate), code || 'USD'); }
+        // A guess the way its guesser entered it (their own currency), falling back to US dollars.
+        function guessText(g) {
+            if (g.currency && g.currency !== 'USD' && g.local_value !== null && g.local_value !== undefined) return fmtIn(Number(g.local_value), g.currency);
+            return fmt(g.guess_value);
+        }
+        // Real price in all three currencies, for the shared screen.
+        function allCurrencies(usd) {
+            return ['MXN', 'CAD'].map(c => `<span class="fx-chip">${money(usd, c)}</span>`).join('');
+        }
+        function niceStep(x) {
+            const p = Math.pow(10, Math.floor(Math.log10(x)));
+            return [1, 2, 5, 10].map(m => m * p).reduce((best, s) => Math.abs(s - x) < Math.abs(best - x) ? s : best);
+        }
+        function sliderSpec(item, code) {
+            if (!code || code === 'USD') return { min: item.min, max: item.max, step: item.step };
+            const rate = CURRENCIES[code].rate;
+            const step = niceStep(item.step * rate);
+            return { min: 0, max: Math.ceil((item.max * rate) / step) * step, step };
+        }
 
         function renderDots(plotEl, item, guesses, opts) {
             plotEl.querySelectorAll('.dot, .marker-actual').forEach(el => el.remove());
@@ -1121,7 +1229,7 @@
         // =====================================================================
         //  THE PRICE IS FRIGHT: guest view
         // =====================================================================
-        const pf = { started: false, state: null, guesses: [], animatedReveal: null, refreshTimer: null };
+        const pf = { currency: (loadJSON('pf_currency') || 'USD'), started: false, state: null, guesses: [], animatedReveal: null, refreshTimer: null };
         const PF_SECTIONS = ['pf-offline', 'pf-waiting', 'pf-round', 'pf-final'];
         function pfShowOnly(id) { PF_SECTIONS.forEach(s => document.getElementById(s).style.display = (s === id ? 'block' : 'none')); }
 
@@ -1131,6 +1239,7 @@
         }
 
         async function pfInitGuest() {
+            pfRenderCurrency();
             if (!sb) { pfShowOnly('pf-offline'); return; }
             if (pf.started) { pfFetchState(); return; }
             pf.started = true;
@@ -1161,7 +1270,7 @@
         async function pfRefreshGuesses() {
             const itemId = pf.state && pf.state.current_item;
             if (!itemId) { pf.guesses = []; pfRender(); return; }
-            const { data, error } = await sb.from('guesses').select('player_id, guess_value, players(name)').eq('item_id', itemId);
+            const { data, error } = await sb.from('guesses').select('*, players(name)').eq('item_id', itemId);
             if (error) { console.error(error); return; }
             if (!pf.state || pf.state.current_item !== itemId) return; // item moved on meanwhile
             pf.guesses = withNames(data);
@@ -1182,7 +1291,7 @@
             pfRefreshGuesses();
         }
 
-        function pfRenderCard() {
+        function pfRenderCard(keepUsd) {
             const item = pfItem(pf.state && pf.state.current_item);
             if (!item) return;
             const idx = pfItemIndex(item.id);
@@ -1195,14 +1304,17 @@
             link.style.display = 'none'; // shown only after the reveal, so nobody can peek at the price
             if (item.link) link.href = item.link; else link.removeAttribute('href');
             const slider = document.getElementById('pf-slider');
-            slider.min = item.min; slider.max = item.max; slider.step = item.step;
-            slider.value = Math.round((item.min + item.max) / 2 / item.step) * item.step;
-            document.getElementById('pf-value').textContent = fmt(slider.value);
-            document.getElementById('pf-min').textContent = fmt(item.min);
-            document.getElementById('pf-max').textContent = fmt(item.max);
-            document.getElementById('pf-rmin').textContent = fmt(item.min);
-            document.getElementById('pf-rmax').textContent = fmt(item.max);
-            gsap.fromTo('#pf-round .price-card', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 });
+            const spec = sliderSpec(item, pf.currency);
+            const rate = CURRENCIES[pf.currency].rate;
+            slider.min = spec.min; slider.max = spec.max; slider.step = spec.step;
+            const target = keepUsd !== undefined ? keepUsd * rate : (spec.min + spec.max) / 2;
+            slider.value = Math.min(spec.max, Math.max(spec.min, Math.round(target / spec.step) * spec.step));
+            document.getElementById('pf-value').textContent = fmtIn(slider.value, pf.currency);
+            document.getElementById('pf-min').textContent = fmtIn(spec.min, pf.currency);
+            document.getElementById('pf-max').textContent = fmtIn(spec.max, pf.currency);
+            document.getElementById('pf-rmin').textContent = money(item.min, pf.currency);
+            document.getElementById('pf-rmax').textContent = money(item.max, pf.currency);
+            if (keepUsd === undefined) gsap.fromTo('#pf-round .price-card', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 });
         }
 
         function pfRender() {
@@ -1220,7 +1332,7 @@
 
             document.getElementById('pf-guess-controls').style.display = canGuess ? 'block' : 'none';
             const locked = document.getElementById('pf-locked');
-            if (mine) { locked.style.display = 'block'; locked.innerHTML = `Your guess<br><strong>${fmt(mine.guess_value)}</strong>`; }
+            if (mine) { locked.style.display = 'block'; locked.innerHTML = `Your guess<br><strong>${(mine.currency === pf.currency && mine.local_value != null) ? fmtIn(mine.local_value, pf.currency) : money(mine.guess_value, pf.currency)}</strong>`; }
             else if (!canGuess) { locked.style.display = 'block'; locked.textContent = 'Guessing is closed for this one.'; }
             else { locked.style.display = 'none'; }
 
@@ -1241,22 +1353,42 @@
                 lines.innerHTML = `<p class="stat-line">Waiting for the host to reveal the real price.</p>`;
                 return;
             }
-            let html = `<p class="stat-line">The real price</p><span class="stat-big" style="text-align:center;">${fmt(actual)}</span>`;
+            const cur = pf.currency;
+            let html = `<p class="stat-line">The real price</p><span class="stat-big" style="text-align:center;">${money(actual, cur)}</span>`;
+            if (cur !== 'USD') html += `<p class="pf-small" style="margin-top:0;">${fmt(actual)} in US dollars</p>`;
             if (mine) {
                 const diff = Math.abs(mine.guess_value - actual);
-                html += `<p class="stat-line">You were off by <strong>${fmt(diff)}</strong> and earned <strong>${fmtPts(pfPoints(mine.guess_value, actual))}</strong> points.</p>`;
+                html += diff < 0.01
+                    ? `<p class="stat-line">You nailed it exactly and earned <strong>${fmtPts(pfPoints(mine.guess_value, actual))}</strong> points.</p>`
+                    : `<p class="stat-line">You were off by <strong>${money(diff, cur)}</strong> and earned <strong>${fmtPts(pfPoints(mine.guess_value, actual))}</strong> points.</p>`;
             }
             const winners = closestGuessers(pf.guesses, actual);
             if (winners.length) {
-                html += `<p class="stat-line">Closest: <strong>${winners.map(w => escapeHtml(w.name)).join(', ')}</strong> (${fmt(winners[0].guess_value)})</p>`;
+                html += `<p class="stat-line">Closest: <strong>${winners.map(w => escapeHtml(w.name)).join(', ')}</strong> (${guessText(winners[0])})</p>`;
             }
             html += `<div class="pf-reaction"><img src="${PHOTOS.dogFace}" alt=""><p>${escapeHtml(dogReaction(s.current_item, pf.guesses, actual).cap)}</p></div>`;
             lines.innerHTML = html;
         }
 
         document.getElementById('pf-slider').addEventListener('input', e => {
-            document.getElementById('pf-value').textContent = fmt(e.target.value);
+            document.getElementById('pf-value').textContent = fmtIn(e.target.value, pf.currency);
         });
+
+        function pfRenderCurrency() {
+            document.getElementById('pf-currency').innerHTML = '<span>Show prices in</span>' + Object.entries(CURRENCIES).map(([code, c]) =>
+                `<button aria-pressed="${code === pf.currency}" onclick="pfSetCurrency('${code}')" title="${c.label}">${c.short}</button>`).join('');
+        }
+        function pfSetCurrency(code) {
+            if (!CURRENCIES[code] || code === pf.currency) return;
+            // Keep the slider pointing at the same real amount after switching.
+            const slider = document.getElementById('pf-slider');
+            const usdNow = Number(slider.value) / CURRENCIES[pf.currency].rate;
+            pf.currency = code;
+            saveJSON('pf_currency', code);
+            pfRenderCurrency();
+            pfRenderCard(usdNow);
+            pfRender();
+        }
 
         async function pfLockIn() {
             const s = pf.state;
@@ -1271,8 +1403,15 @@
                 btn.disabled = false;
                 return;
             }
-            const value = Number(document.getElementById('pf-slider').value);
-            const { error } = await sb.from('guesses').insert({ player_id: player.id, item_id: s.current_item, guess_value: value });
+            const local = Number(document.getElementById('pf-slider').value);
+            const cur = pf.currency;
+            const value = Math.round((local / CURRENCIES[cur].rate) * 100) / 100; // scored in US dollars
+            const row = { player_id: player.id, item_id: s.current_item, guess_value: value, currency: cur, local_value: local };
+            let { error } = await sb.from('guesses').insert(row);
+            if (error && (error.code === 'PGRST204' || error.code === '42703')) {
+                // Database hasn't been updated for currencies yet: save the US-dollar guess only.
+                ({ error } = await sb.from('guesses').insert({ player_id: row.player_id, item_id: row.item_id, guess_value: value }));
+            }
             btn.disabled = false;
 
             // 23505 = already guessed this item (e.g. double tap). Treat as success.
@@ -1282,7 +1421,7 @@
                 return;
             }
             if (!pf.guesses.find(g => g.player_id === player.id)) {
-                pf.guesses.push({ player_id: player.id, guess_value: value, name: player.name });
+                pf.guesses.push({ player_id: player.id, guess_value: value, currency: cur, local_value: local, name: player.name });
             }
             pfRender();
             pfRefreshGuesses();
@@ -1385,7 +1524,7 @@
         async function hostRefresh() {
             const [st, gs, rv, tvs] = await Promise.all([
                 sb.from('price_state').select('*').eq('id', 1).single(),
-                sb.from('guesses').select('player_id, item_id, guess_value, players(name)'),
+                sb.from('guesses').select('*, players(name)'),
                 sb.from('price_reveals').select('item_id, actual_price'),
                 sb.from('tv_state').select('screen').eq('id', 1).single()
             ]);
@@ -1433,7 +1572,7 @@
                     const sorted = [...itemGuesses].sort((a, b) => Math.abs(a.guess_value - actual) - Math.abs(b.guess_value - actual));
                     html += `<p class="stat-line">Real price: <strong>${fmt(actual)}</strong></p>`;
                     html += sorted.length ? `<table class="host-table"><thead><tr><th>Name</th><th class="num">Guess</th><th class="num">Off by</th><th class="num">Points</th></tr></thead><tbody>` +
-                        sorted.map((g, i) => `<tr class="${i === 0 ? 'top' : ''}"><td>${escapeHtml(g.name)}</td><td class="num">${fmt(g.guess_value)}</td><td class="num">${fmt(Math.abs(g.guess_value - actual))}</td><td class="num">${fmtPts(pfPoints(g.guess_value, actual))}</td></tr>`).join('') +
+                        sorted.map((g, i) => `<tr class="${i === 0 ? 'top' : ''}"><td>${escapeHtml(g.name)}</td><td class="num">${fmt(g.guess_value)}${g.currency && g.currency !== 'USD' ? `<br><span class="pf-small">${guessText(g)}</span>` : ''}</td><td class="num">${fmt(Math.abs(g.guess_value - actual))}</td><td class="num">${fmtPts(pfPoints(g.guess_value, actual))}</td></tr>`).join('') +
                         `</tbody></table>` : `<p class="empty-note">Nobody guessed this one.</p>`;
                 }
                 cur.innerHTML = html;
@@ -1577,7 +1716,8 @@
             { id: 'welcome', label: 'Welcome + link' },
             { id: 'price',   label: 'Price is Fright' },
             { id: 'emoji',   label: 'Emoji movies' },
-            { id: 'trivia',  label: 'Trivia' }
+            { id: 'trivia',  label: 'Trivia' },
+            { id: 'connections', label: 'Connections' }
         ];
         function joinUrl() { return location.origin + location.pathname; }
 
@@ -1643,10 +1783,10 @@
             const [ts, ps, gs, rv, pl, gp] = await Promise.all([
                 sb.from('tv_state').select('*').eq('id', 1).single(),
                 sb.from('price_state').select('*').eq('id', 1).single(),
-                sb.from('guesses').select('player_id, item_id, guess_value, players(name)'),
+                sb.from('guesses').select('*, players(name)'),
                 sb.from('price_reveals').select('item_id, actual_price'),
                 sb.from('players').select('id, name, created_at'),
-                sb.from('game_progress').select('player_id, game, solved, total, score, started_at, finished_at, updated_at, players(name)')
+                sb.from('game_progress').select('player_id, game, solved, total, score, mistakes, started_at, finished_at, updated_at, players(name)')
             ]);
             const problems = [ts, ps, gs, rv, pl, gp].filter(r => r.error).map(r => r.error);
             tvBanner(problems);
@@ -1675,6 +1815,7 @@
             if (d.screen === 'price') { tvShow('tv-price'); tvRenderPrice(d); }
             else if (d.screen === 'emoji') { tvHideReaction(); tvShow('tv-emoji'); tvRenderEmoji(d); }
             else if (d.screen === 'trivia') { tvHideReaction(); tvShow('tv-trivia'); tvRenderTrivia(d); }
+            else if (d.screen === 'connections') { tvHideReaction(); tvShow('tv-connections'); tvRenderConnections(d); }
             else { tvHideReaction(); tvShow('tv-welcome'); tvRenderWelcome(d); }
         }
 
@@ -1739,8 +1880,8 @@
             const real = document.getElementById('tv-price-real');
             if (revealed) {
                 const winners = closestGuessers(itemGuesses, actual);
-                real.innerHTML = `<p class="label">The real price</p><span class="amount">${fmt(actual)}</span>` +
-                    (winners.length ? `<p class="winner">Closest: <strong>${winners.map(w => escapeHtml(w.name)).join(', ')}</strong> at ${fmt(winners[0].guess_value)}</p>` : '');
+                real.innerHTML = `<p class="label">The real price</p><span class="amount">${fmt(actual)}</span><div class="fx-row">${allCurrencies(actual)}</div>` +
+                    (winners.length ? `<p class="winner">Closest: <strong>${winners.map(w => escapeHtml(w.name)).join(', ')}</strong> at ${guessText(winners[0])}</p>` : '');
             } else {
                 real.innerHTML = '';
             }
@@ -1770,7 +1911,7 @@
             const placed = sorted.map(g => {
                 const el = document.createElement('div');
                 el.className = 'tv-pill' + (winners.has(g.player_id) ? ' winner' : '');
-                el.innerHTML = `<span class="n">${escapeHtml(g.name)}</span><span class="v">${fmt(g.guess_value)}</span>`;
+                el.innerHTML = `<span class="n">${escapeHtml(g.name)}</span><span class="v">${guessText(g)}</span>`;
                 lanes.appendChild(el);
                 const tick = document.createElement('div');
                 tick.className = 'tick';
@@ -1820,6 +1961,7 @@
             const r = dogReaction(item.id, guesses, actual);
             document.getElementById('tv-reaction-item').textContent = item.name;
             document.getElementById('tv-reaction-price').textContent = fmt(actual);
+            document.getElementById('tv-reaction-fx').innerHTML = allCurrencies(actual);
             document.getElementById('tv-reaction-cap').textContent = r.cap;
             document.getElementById('tv-reaction-sub').textContent = r.sub;
             overlay.classList.add('on');
@@ -1866,6 +2008,19 @@
             tvBoard(document.getElementById('tv-emoji-board'), rows, EMOJI_TOTAL, 'Open Fatherhood is Scary in your game window to get on the board.');
         }
 
+        function tvRenderConnections(d) {
+            const plural = n => `${n} miss${n === 1 ? '' : 'es'}`;
+            const rows = gameRows(d.progress, 'connections').map(r => {
+                const m = r.mistakes || 0, solved = r.solved || 0;
+                return {
+                    name: r.name, progress: solved, done: !!r.finished_at, mistakes: m,
+                    secs: r.finished_at ? (new Date(r.finished_at) - new Date(r.started_at)) : Infinity,
+                    stat: r.finished_at ? `Done, ${plural(m)}` : `${solved}/${CONN_TOTAL}, ${plural(m)}`
+                };
+            }).sort((a, b) => (b.progress - a.progress) || (a.mistakes - b.mistakes) || (a.secs - b.secs));
+            tvBoard(document.getElementById('tv-connections-board'), rows, CONN_TOTAL, 'Open Connections in your game window to get on the board.');
+        }
+
         function tvRenderTrivia(d) {
             const T = triviaData.length;
             const rows = gameRows(d.progress, 'trivia').map(r => ({
@@ -1885,6 +2040,7 @@
         initConnections();
         initTrivia();
         emojiRestore();
+        connRestore();
         fillStrip(document.getElementById('home-strip'));
         if (IS_TV) tvBoot(); else if (IS_HOST) hostBoot(); else { renderHome(); checkFreshStart(); }
     </script>
