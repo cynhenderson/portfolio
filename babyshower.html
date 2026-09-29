@@ -219,7 +219,7 @@
         .pf-locked strong { color: var(--color-price); font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-weight: 400; }
         .price-progress { font-weight: 700; font-size: 0.9rem; color: var(--color-price); margin: 0 0 0.5rem 0; text-align: center; }
         .price-card { background-color: var(--tile-default); border-radius: 16px; padding: 1.5rem; width: 100%; box-sizing: border-box; }
-        .price-photo { width: 100%; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; background: #fff; display: flex; align-items: center; justify-content: center; }
+        .price-photo { width: 100%; aspect-ratio: 4/3; max-height: 32vh; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; background: #fff; display: flex; align-items: center; justify-content: center; }
         .price-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .price-photo-placeholder { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: #8a8578; font-size: 0.85rem; }
         .price-photo-placeholder span { font-size: 2.5rem; }
@@ -270,6 +270,79 @@
         .host-setup-row:last-child { border-bottom: none; }
         .host-reset { margin-top: 1.5rem; background: none; border: none; color: var(--color-crime); font-family: 'Inter', sans-serif; font-weight: 600; text-decoration: underline; cursor: pointer; }
         .empty-note { text-align: center; color: #888; font-size: 0.9rem; margin: 0.5rem 0; }
+        /* --- HOST: TV CONTROL --- */
+        .host-tv { background-color: var(--tile-default); border-radius: 16px; padding: 1.25rem 1.5rem; width: 100%; box-sizing: border-box; margin-bottom: 1.25rem; text-align: center; }
+        .host-tv h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 1.25rem; margin: 0 0 0.75rem 0; }
+        .host-tv-options { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .host-tv-options button { background: transparent; border: 2px solid var(--text-dark); color: var(--text-dark); border-radius: 50px; padding: 0.55rem 1rem; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+        .host-tv-options button[aria-pressed="true"] { background: var(--color-price); border-color: var(--color-price); color: var(--bg-cream); }
+        .host-tv-options button:disabled { opacity: 0.5; cursor: wait; }
+
+        /* --- TV DISPLAY (?tv) --- */
+        body.tv-mode header { display: none; }
+        body.tv-mode { overflow: hidden; }
+        .view-container.tv-view { max-width: none; width: 100vw; height: 100vh; padding: 0; font-size: clamp(14px, 1.25vw, 30px); }
+        .tv-screen { display: none; width: 100%; height: 100%; box-sizing: border-box; padding: 3.5em 4.5em; flex-direction: column; }
+        .tv-screen.on { display: flex; }
+        .tv-title { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 5.5em; line-height: 1; margin: 0; text-align: left; }
+        .tv-title-sm { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 3.6em; line-height: 1.05; margin: 0; text-align: left; }
+        .tv-lede { font-size: 1.5em; color: #5d5a55; margin: 0.4em 0 0 0; }
+        .tv-empty { font-size: 1.3em; color: #8a8578; }
+
+        .tv-welcome-grid { display: flex; flex-direction: column; justify-content: center; flex: 1; }
+        .tv-url { display: inline-block; font-size: 2.2em; font-weight: 700; color: var(--color-price); background: var(--tile-default); border-radius: 0.4em; padding: 0.35em 0.7em; margin: 0.8em 0 0 0; word-break: break-all; }
+        .tv-count { font-size: 1.2em; font-weight: 700; margin: 0 0 0.6em 0; }
+        .tv-chips { display: flex; flex-wrap: wrap; gap: 0.5em; max-height: 9em; overflow: hidden; }
+        .tv-chip { background: var(--tile-default); border-radius: 50px; padding: 0.35em 1em; font-size: 1.15em; font-weight: 600; }
+
+        /* Price */
+        .tv-price-head { display: grid; grid-template-columns: 17em 1fr 17em; gap: 2.5em; align-items: start; }
+        .tv-photo { width: 17em; height: 17em; background: #fff; border-radius: 1em; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .tv-photo .ghost { font-size: 4em; }
+        .tv-photo img { width: 100%; height: 100%; object-fit: contain; }
+        .tv-kicker { font-weight: 700; color: var(--color-price); font-size: 1.2em; margin: 0 0 0.3em 0; }
+        .tv-item-name { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 3.6em; line-height: 1.05; margin: 0; text-align: left; }
+        .tv-status { font-size: 1.4em; margin: 0.6em 0 0 0; color: #5d5a55; }
+        .tv-real { margin-top: 0.8em; }
+        .tv-real .label { font-size: 1.2em; margin: 0; }
+        .tv-real .amount { font-family: 'DM Serif Display', serif; font-size: 5em; color: var(--color-crime); line-height: 1; display: block; }
+        .tv-real .winner { font-size: 1.35em; margin: 0.4em 0 0 0; }
+        .tv-real .winner strong { color: var(--color-price); }
+        .tv-side { background: var(--tile-default); border-radius: 1em; padding: 1.2em 1.4em; }
+        .tv-side h3 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 1.6em; margin: 0 0 0.5em 0; }
+        .tv-rank { display: flex; justify-content: space-between; gap: 1em; font-size: 1.15em; padding: 0.35em 0; border-bottom: 1px solid rgba(0,0,0,0.07); }
+        .tv-rank:last-child { border-bottom: none; }
+        .tv-rank span:last-child { font-variant-numeric: tabular-nums; font-weight: 700; }
+        .tv-lanes-wrap { position: relative; flex: 1; margin-top: 2em; display: flex; flex-direction: column; justify-content: flex-end; min-height: 0; }
+        .tv-lanes { position: relative; width: 100%; }
+        .tv-pill { position: absolute; z-index: 2; background: var(--bg-cream); border: 2px solid #b9b3a1; border-radius: 50px; padding: 0.3em 0.8em; white-space: nowrap; font-size: 1.05em; line-height: 1.3; }
+        .tv-pill .n { font-weight: 700; }
+        .tv-pill .v { color: #6b675f; margin-left: 0.4em; font-variant-numeric: tabular-nums; }
+        .tv-pill.winner { background: var(--color-price); border-color: var(--color-price); color: var(--bg-cream); z-index: 3; }
+        .tv-pill.winner .v { color: var(--bg-cream); }
+        .tv-axis { position: relative; height: 0.5em; background: #ddd8ca; border-radius: 0.25em; margin-top: 0.8em; }
+        .tv-axis .tick { position: absolute; top: -0.25em; width: 1em; height: 1em; border-radius: 50%; background: #a9a290; transform: translateX(-50%); border: 2px solid var(--bg-cream); }
+        .tv-axis-labels { display: flex; justify-content: space-between; font-size: 1.1em; color: #8a8578; margin-top: 0.5em; }
+        .tv-actual { position: absolute; bottom: 2.1em; width: 0.25em; background: var(--color-crime); border-radius: 0.2em; margin-left: -0.125em; z-index: 1; top: 1.5em; }
+        .tv-actual::before { content: '👻'; position: absolute; top: -1.6em; left: 50%; transform: translateX(-50%); font-size: 2em; }
+        .tv-idle { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .tv-final-list { margin-top: 1.5em; max-width: 36em; }
+        .tv-final-list .tv-rank { font-size: 1.6em; }
+        .tv-final-list .tv-rank:first-child { color: var(--color-price); font-weight: 700; }
+
+        /* Emoji + trivia boards */
+        .tv-game-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2em; }
+        .tv-clues { display: flex; flex-wrap: wrap; gap: 0.6em 1.6em; justify-content: flex-end; font-size: 2em; max-width: 60%; }
+        .tv-board { margin-top: 2em; column-count: 2; column-gap: 4em; column-fill: auto; flex: 1; min-height: 0; overflow: hidden; }
+        .tv-row { display: grid; grid-template-columns: 1.6em 9em 1fr 7em; gap: 0.8em; align-items: center; font-size: 1.3em; break-inside: avoid; margin-bottom: 0.55em; }
+        .tv-row .pos { color: #8a8578; font-variant-numeric: tabular-nums; }
+        .tv-row .who { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tv-row .bar { height: 0.7em; background: #ddd8ca; border-radius: 0.35em; overflow: hidden; }
+        .tv-row .bar span { display: block; height: 100%; background: var(--color-baby); border-radius: 0.35em; transition: width 0.6s ease; }
+        .tv-row.done .bar span { background: var(--color-price); }
+        .tv-row .stat { text-align: right; font-variant-numeric: tabular-nums; font-size: 0.9em; }
+        .tv-more { color: #8a8578; font-size: 1.1em; }
+
         @media (max-width: 480px) {
             .tile { font-size: 0.75rem; }
             .emoji-clue { font-size: 1.4rem; }
@@ -384,12 +457,13 @@
         <div id="trivia-end" style="display: none; text-align: center; width: 100%;">
             <h2 style="font-family: 'DM Serif Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0;">Game Over!</h2>
             <p style="font-size: 1.2rem; margin-bottom: 1rem;">You scored <strong id="final-score">0</strong> out of 6.</p>
+            <p class="pf-small" id="trivia-note" style="display:none;">Practice round. Your first score is the one that counts.</p>
             
             <div id="trivia-recap" class="trivia-recap-container">
                 <!-- Recap questions injected here via JS -->
             </div>
 
-            <button class="action-btn" onclick="initTrivia()">Play Again</button>
+            <button class="action-btn" onclick="initTrivia(true)">Play Again</button>
         </div>
     </main>
 
@@ -399,7 +473,7 @@
         <p class="subtitle">Guess what these baby essentials really cost. The host reveals each price.</p>
 
         <div id="pf-offline" class="pf-panel" style="display:none;">
-            <p style="margin:0;">This game isn't connected yet. The host needs to add the Supabase settings to the page.</p>
+            <p style="margin:0;">This game isn't connected yet. The host needs to check the Supabase settings.</p>
         </div>
 
         <div id="pf-waiting" class="pf-panel" style="display:none;">
@@ -461,6 +535,11 @@
         </div>
 
         <div id="host-panel" style="display:none; width:100%;">
+            <div class="host-tv">
+                <h2>On the shared screen</h2>
+                <div class="host-tv-options" id="host-tv-options"></div>
+                <p class="pf-small">Open <strong id="host-tv-url"></strong> in its own browser window and share only that window in Teams. It never shows a price until you reveal it. This host page does, so keep it off the share.</p>
+            </div>
             <p class="host-status" id="host-status"></p>
             <div class="price-card" id="host-current"></div>
             <div class="host-controls" id="host-controls"></div>
@@ -482,6 +561,67 @@
             </div>
         </div>
     </main>
+    <!-- TV DISPLAY (open the page with ?tv on the end of the URL) -->
+    <main id="view-tv" class="view-container tv-view">
+        <section id="tv-offline" class="tv-screen">
+            <div class="tv-idle"><h1 class="tv-title-sm">Not connected</h1><p class="tv-lede">Add the Supabase settings to the page, then reload.</p></div>
+        </section>
+
+        <section id="tv-welcome" class="tv-screen">
+            <div class="tv-welcome-grid">
+                <div>
+                    <h1 class="tv-title">Shower Games</h1>
+                    <p class="tv-lede">Open the link in the Teams chat to play, and enter your name.</p>
+                    <div><p class="tv-url" id="tv-url"></p></div>
+                </div>
+            </div>
+            <p class="tv-count" id="tv-player-count"></p>
+            <div class="tv-chips" id="tv-players"></div>
+        </section>
+
+        <section id="tv-price" class="tv-screen">
+            <div id="tv-price-live" style="display:none; flex-direction:column; height:100%;">
+                <div class="tv-price-head">
+                    <div class="tv-photo" id="tv-photo"></div>
+                    <div>
+                        <p class="tv-kicker" id="tv-price-progress"></p>
+                        <h1 class="tv-item-name" id="tv-item-name"></h1>
+                        <p class="tv-status" id="tv-price-status"></p>
+                        <div class="tv-real" id="tv-price-real"></div>
+                    </div>
+                    <div class="tv-side" id="tv-price-board"></div>
+                </div>
+                <div class="tv-lanes-wrap" id="tv-lanes-wrap">
+                    <div class="tv-lanes" id="tv-lanes"></div>
+                    <div class="tv-axis" id="tv-axis"></div>
+                    <div class="tv-axis-labels"><span id="tv-axis-min"></span><span id="tv-axis-max"></span></div>
+                </div>
+            </div>
+            <div id="tv-price-idle" class="tv-idle"></div>
+        </section>
+
+        <section id="tv-emoji" class="tv-screen">
+            <div class="tv-game-head">
+                <div>
+                    <h1 class="tv-title-sm">Fatherhood is Scary</h1>
+                    <p class="tv-lede">Name each horror movie in your game window.</p>
+                </div>
+                <div class="tv-clues" id="tv-clues"></div>
+            </div>
+            <div class="tv-board" id="tv-emoji-board"></div>
+        </section>
+
+        <section id="tv-trivia" class="tv-screen">
+            <div class="tv-game-head">
+                <div>
+                    <h1 class="tv-title-sm">How Well Do You Know Him?</h1>
+                    <p class="tv-lede">Six questions about the dad-to-be. Scores appear as people finish.</p>
+                </div>
+            </div>
+            <div class="tv-board" id="tv-trivia-board"></div>
+        </section>
+    </main>
+
     <!-- GAME: CONNECTIONS (BONUS) -->
     <main id="view-connections" class="view-container">
         <div class="header-group">
@@ -521,6 +661,8 @@
                     targetView.classList.add('active');
                     
                     homeBtn.style.display = targetId === 'view-home' ? 'none' : 'flex';
+                    if (targetId === 'view-emoji') emojiMarkStarted();
+                    if (targetId === 'view-trivia') triviaMarkStarted();
                     
                     gsap.fromTo(targetView, 
                         {opacity: 0, y: 10}, 
@@ -550,7 +692,7 @@
         function normalizeString(str) { return str.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/^(the|a|an)\s+/g, '').trim(); }
         function getEditDistance(a, b) { if (a.length === 0) return b.length; if (b.length === 0) return a.length; const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]); for (let j = 0; j <= a.length; j++) matrix[0][j] = j; for (let i = 1; i <= b.length; i++) { for (let j = 1; j <= a.length; j++) { if (b.charAt(i - 1) === a.charAt(j - 1)) { matrix[i][j] = matrix[i - 1][j - 1]; } else { matrix[i][j] = Math.min( matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1) ); } } } return matrix[b.length][a.length]; }
         function isGuessCorrect(guess, answer) { const normGuess = normalizeString(guess); const normAnswer = normalizeString(answer); if (normGuess === normAnswer) return true; const maxTypos = normAnswer.length > 5 ? 2 : 1; const distance = getEditDistance(normGuess, normAnswer); return distance <= maxTypos; }
-        function handleEmojiGuess(rowElement) { if (rowElement.classList.contains('revealed')) return; const inputField = rowElement.querySelector('.guess-input'); const guess = inputField.value; const correctAnswer = rowElement.getAttribute('data-answer'); if (isGuessCorrect(guess, correctAnswer)) { rowElement.classList.add('revealed'); const title = rowElement.querySelector('.movie-title'); gsap.fromTo(title, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.2 }); } else { gsap.to(rowElement, { x: () => Math.random() * 10 - 5, duration: 0.05, yoyo: true, repeat: 5, onComplete: () => gsap.set(rowElement, { x: 0 }) }); } }
+        function handleEmojiGuess(rowElement) { if (rowElement.classList.contains('revealed')) return; const inputField = rowElement.querySelector('.guess-input'); const guess = inputField.value; const correctAnswer = rowElement.getAttribute('data-answer'); if (isGuessCorrect(guess, correctAnswer)) { rowElement.classList.add('revealed'); emojiRecordSolve(correctAnswer); const title = rowElement.querySelector('.movie-title'); gsap.fromTo(title, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.2 }); } else { gsap.to(rowElement, { x: () => Math.random() * 10 - 5, duration: 0.05, yoyo: true, repeat: 5, onComplete: () => gsap.set(rowElement, { x: 0 }) }); } }
         document.querySelectorAll('.emoji-row').forEach(row => { const btn = row.querySelector('.check-btn'); const input = row.querySelector('.guess-input'); btn.addEventListener('click', () => handleEmojiGuess(row)); input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleEmojiGuess(row); } }); });
 
         // --- GAME: TRIVIA LOGIC ---
@@ -566,12 +708,46 @@
         let currentQuestion = 0;
         let score = 0;
 
-        function initTrivia() {
-            currentQuestion = 0;
-            score = 0;
+        // Only a guest's first run through trivia counts. Progress is saved in their browser,
+        // so a refresh picks up where they left off instead of starting over.
+        let triviaRecording = true;
+        function initTrivia(practice = false) {
+            const saved = triviaSaved();
             document.getElementById('trivia-end').style.display = 'none';
+            document.getElementById('trivia-note').style.display = 'none';
             document.getElementById('trivia-card').style.display = 'block';
+            gsap.set('#trivia-card', { scale: 1 });
+            if (!practice && saved && saved.finished_at) {
+                triviaRecording = false;
+                score = saved.score;
+                showTriviaEnd(false);
+                return;
+            }
+            if (!practice && saved && saved.q < triviaData.length) {
+                triviaRecording = true;
+                currentQuestion = saved.q;
+                score = saved.score;
+            } else {
+                triviaRecording = !practice;
+                currentQuestion = 0;
+                score = 0;
+            }
             loadQuestion();
+        }
+
+        function showTriviaEnd(animate = true) {
+            buildRecap();
+            document.getElementById('trivia-card').style.display = 'none';
+            document.getElementById('trivia-progress').textContent = 'Complete!';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('trivia-note').style.display = triviaRecording ? 'none' : 'block';
+            const saved = triviaSaved();
+            if (!triviaRecording && saved && saved.finished_at) {
+                document.getElementById('trivia-note').textContent = `Your first score was ${saved.score} out of ${triviaData.length}. That's the one that counts.`;
+            }
+            const endScreen = document.getElementById('trivia-end');
+            endScreen.style.display = 'block';
+            if (animate) gsap.fromTo(endScreen, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 });
         }
 
         function loadQuestion() {
@@ -623,20 +799,14 @@
                 gsap.to(btnElement, { x: () => Math.random() * 10 - 5, duration: 0.05, yoyo: true, repeat: 5, onComplete: () => gsap.set(btnElement, { x: 0 }) });
             }
 
+            if (triviaRecording) triviaRecordAnswer(currentQuestion + 1, score);
+
             setTimeout(() => {
                 currentQuestion++;
                 if (currentQuestion < triviaData.length) {
                     gsap.to('#trivia-card', { opacity: 0, x: -20, duration: 0.3, onComplete: loadQuestion });
                 } else {
-                    buildRecap();
-                    gsap.to('#trivia-card', { opacity: 0, scale: 0.9, duration: 0.3, onComplete: () => {
-                        document.getElementById('trivia-card').style.display = 'none';
-                        document.getElementById('trivia-progress').textContent = 'Complete!';
-                        document.getElementById('final-score').textContent = score;
-                        const endScreen = document.getElementById('trivia-end');
-                        endScreen.style.display = 'block';
-                        gsap.fromTo(endScreen, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 });
-                    }});
+                    gsap.to('#trivia-card', { opacity: 0, scale: 0.9, duration: 0.3, onComplete: () => showTriviaEnd(true) });
                 }
             }, 1500);
         }
@@ -710,6 +880,83 @@
         }
 
         document.getElementById('welcome-name').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+
+        // =====================================================================
+        //  GAME PROGRESS (emoji + trivia), shown live on the shared screen
+        // =====================================================================
+        function loadJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+        function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+        const nowISO = () => new Date().toISOString();
+
+        async function saveProgress(game, fields) {
+            if (!sb || !player) return;
+            if (!(await syncPlayer())) return;
+            const { error } = await sb.from('game_progress').upsert({ player_id: player.id, game, ...fields, updated_at: nowISO() });
+            // 42501 = this game is already finished for this player; later runs don't count.
+            if (error && error.code !== '42501') console.error('Could not save progress', error);
+        }
+
+        // Emoji puzzler
+        const EMOJI_KEY = 'emoji_progress_v1';
+        const EMOJI_TOTAL = document.querySelectorAll('.emoji-row').length;
+        function emojiSaved() { return loadJSON(EMOJI_KEY) || { solved: [], started_at: null, finished_at: null }; }
+        function emojiSync(p) {
+            saveProgress('emoji', { solved: p.solved.length, total: EMOJI_TOTAL, score: p.solved.length, started_at: p.started_at, finished_at: p.finished_at });
+        }
+        function emojiRestore() {
+            const p = emojiSaved();
+            document.querySelectorAll('.emoji-row').forEach(r => { if (p.solved.includes(r.dataset.answer)) r.classList.add('revealed'); });
+        }
+        function emojiMarkStarted() {
+            const p = emojiSaved();
+            if (p.started_at) return;
+            p.started_at = nowISO();
+            saveJSON(EMOJI_KEY, p);
+            emojiSync(p);
+        }
+        function emojiRecordSolve(answer) {
+            const p = emojiSaved();
+            if (!p.started_at) p.started_at = nowISO();
+            if (!p.solved.includes(answer)) p.solved.push(answer);
+            if (p.solved.length >= EMOJI_TOTAL && !p.finished_at) p.finished_at = nowISO();
+            saveJSON(EMOJI_KEY, p);
+            emojiSync(p);
+        }
+
+        // If the host cleared the players table (e.g. after a test run), forget this
+        // browser's saved emoji/trivia progress so the real party starts fresh.
+        async function checkFreshStart() {
+            if (!sb || !player) return;
+            const { data, error } = await sb.from('players').select('id').eq('id', player.id);
+            if (error || (data && data.some(r => r.id === player.id))) return;
+            try { localStorage.removeItem(EMOJI_KEY); localStorage.removeItem(TRIVIA_KEY); } catch (e) {}
+            document.querySelectorAll('.emoji-row.revealed').forEach(r => { r.classList.remove('revealed'); r.querySelector('.guess-input').value = ''; });
+            initTrivia();
+            playerSynced = false;
+            syncPlayer();
+        }
+
+        // Trivia
+        const TRIVIA_KEY = 'trivia_progress_v1';
+        function triviaSaved() { return loadJSON(TRIVIA_KEY); }
+        function triviaSync(p) {
+            saveProgress('trivia', { solved: p.q, total: triviaData.length, score: p.score, started_at: p.started_at, finished_at: p.finished_at });
+        }
+        function triviaMarkStarted() {
+            if (triviaSaved()) return;
+            const p = { q: 0, score: 0, started_at: nowISO(), finished_at: null };
+            saveJSON(TRIVIA_KEY, p);
+            triviaSync(p);
+        }
+        function triviaRecordAnswer(answeredCount, currentScore) {
+            const p = triviaSaved() || { q: 0, score: 0, started_at: nowISO(), finished_at: null };
+            if (p.finished_at) return;
+            p.q = answeredCount;
+            p.score = currentScore;
+            if (p.q >= triviaData.length) p.finished_at = nowISO();
+            saveJSON(TRIVIA_KEY, p);
+            triviaSync(p);
+        }
 
         // =====================================================================
         //  THE PRICE IS FRIGHT: shared config
@@ -867,7 +1114,8 @@
                 : `<div class="price-photo-placeholder"><span>👻</span>Photo coming soon</div>`;
             document.getElementById('pf-item-name').textContent = item.name;
             const link = document.getElementById('pf-item-link');
-            if (item.link) { link.href = item.link; link.style.display = 'block'; } else { link.style.display = 'none'; }
+            link.style.display = 'none'; // shown only after the reveal, so nobody can peek at the price
+            if (item.link) link.href = item.link; else link.removeAttribute('href');
             const slider = document.getElementById('pf-slider');
             slider.min = item.min; slider.max = item.max; slider.step = item.step;
             slider.value = Math.round((item.min + item.max) / 2 / item.step) * item.step;
@@ -889,6 +1137,7 @@
 
             const mine = pf.guesses.find(g => g.player_id === player.id);
             const revealed = s.phase === 'revealed';
+            document.getElementById('pf-item-link').style.display = (revealed && item.link) ? 'block' : 'none';
             const canGuess = s.phase === 'guessing' && !mine;
 
             document.getElementById('pf-guess-controls').style.display = canGuess ? 'block' : 'none';
@@ -1040,6 +1289,7 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'guesses' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'price_reveals' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => hostQueue())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'tv_state' }, () => hostQueue())
                 .subscribe(status => { if (status === 'SUBSCRIBED') hostRefresh(); });
             document.addEventListener('visibilitychange', () => { if (!document.hidden) hostRefresh(); });
             hostRefresh();
@@ -1048,11 +1298,13 @@
         function hostQueue() { clearTimeout(host.timer); host.timer = setTimeout(hostRefresh, 300); }
 
         async function hostRefresh() {
-            const [st, gs, rv] = await Promise.all([
+            const [st, gs, rv, tvs] = await Promise.all([
                 sb.from('price_state').select('*').eq('id', 1).single(),
                 sb.from('guesses').select('player_id, item_id, guess_value, players(name)'),
-                sb.from('price_reveals').select('item_id, actual_price')
+                sb.from('price_reveals').select('item_id, actual_price'),
+                sb.from('tv_state').select('screen').eq('id', 1).single()
             ]);
+            if (tvs.data) hostRenderTvControl(tvs.data.screen);
             if (st.error) { console.error(st.error); document.getElementById('host-error').textContent = "Couldn't reach Supabase. Check the setup."; return; }
             host.state = st.data;
             host.guesses = withNames(gs.data);
@@ -1201,11 +1453,281 @@
         }
 
         // =====================================================================
+        //  STANDINGS helpers (shared by host + TV)
+        // =====================================================================
+        function priceStandings(guesses, reveals) {
+            const actuals = {};
+            (reveals || []).forEach(r => actuals[r.item_id] = Number(r.actual_price));
+            const byPlayer = {};
+            guesses.forEach(g => {
+                const p = byPlayer[g.player_id] || (byPlayer[g.player_id] = { name: g.name, pts: 0 });
+                if (actuals[g.item_id] !== undefined) p.pts += pfPoints(g.guess_value, actuals[g.item_id]);
+            });
+            return { rows: Object.values(byPlayer).sort((a, b) => b.pts - a.pts), revealed: Object.keys(actuals).length };
+        }
+        function durationText(start, end) {
+            if (!start || !end) return '';
+            const s = Math.max(0, Math.round((new Date(end) - new Date(start)) / 1000));
+            return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+        }
+        function gameRows(progress, game) {
+            return progress.filter(r => r.game === game).map(r => ({ ...r, name: (r.players && r.players.name) || 'Guest' }));
+        }
+
+        // =====================================================================
+        //  HOST: choose what the TV shows
+        // =====================================================================
+        const TV_SCREENS = [
+            { id: 'welcome', label: 'Welcome + link' },
+            { id: 'price',   label: 'Price is Fright' },
+            { id: 'emoji',   label: 'Emoji movies' },
+            { id: 'trivia',  label: 'Trivia' }
+        ];
+        function joinUrl() { return location.origin + location.pathname; }
+
+        function hostRenderTvControl(current) {
+            document.getElementById('host-tv-url').textContent = joinUrl().replace(/^https?:\/\//, '') + '?tv';
+            document.getElementById('host-tv-options').innerHTML = TV_SCREENS.map(s =>
+                `<button aria-pressed="${s.id === current}" onclick="hostSetTv('${s.id}')">${s.label}</button>`).join('');
+        }
+        async function hostSetTv(screen) {
+            document.querySelectorAll('#host-tv-options button').forEach(b => b.disabled = true);
+            const { error } = await sb.rpc('host_set_tv', { pass: host.pass, p_screen: screen });
+            if (error) { console.error(error); document.getElementById('host-error').textContent = "The TV didn't switch. Try again."; }
+            await hostRefresh();
+        }
+
+        // =====================================================================
+        //  TV DISPLAY  (yoursite.github.io/?tv)  — no passcode, never shows
+        //  a real price until the host reveals it.
+        // =====================================================================
+        const IS_TV = new URLSearchParams(location.search).has('tv');
+        const tv = { data: null, timer: null, animated: null, lastItem: null };
+
+        function tvShow(id) {
+            document.querySelectorAll('#view-tv .tv-screen').forEach(s => s.classList.toggle('on', s.id === id));
+        }
+
+        function tvBoot() {
+            document.body.classList.add('tv-mode');
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-tv').classList.add('active');
+            if (!sb) { tvShow('tv-offline'); return; }
+
+            document.getElementById('tv-url').textContent = joinUrl().replace(/^https?:\/\//, '');
+            document.getElementById('tv-clues').innerHTML = [...document.querySelectorAll('.emoji-clue')].map(c => `<span>${c.textContent}</span>`).join('');
+
+            const ch = sb.channel('tv');
+            ['tv_state', 'price_state', 'guesses', 'price_reveals', 'players', 'game_progress'].forEach(t =>
+                ch.on('postgres_changes', { event: '*', schema: 'public', table: t }, () => tvQueue()));
+            ch.subscribe(status => { if (status === 'SUBSCRIBED') tvRefresh(); });
+            // Safety net in case the TV's connection drops quietly.
+            setInterval(tvRefresh, 20000);
+            window.addEventListener('resize', () => tvRender());
+            tvRefresh();
+        }
+
+        function tvQueue() { clearTimeout(tv.timer); tv.timer = setTimeout(tvRefresh, 300); }
+
+        async function tvRefresh() {
+            const [ts, ps, gs, rv, pl, gp] = await Promise.all([
+                sb.from('tv_state').select('*').eq('id', 1).single(),
+                sb.from('price_state').select('*').eq('id', 1).single(),
+                sb.from('guesses').select('player_id, item_id, guess_value, players(name)'),
+                sb.from('price_reveals').select('item_id, actual_price'),
+                sb.from('players').select('id, name, created_at'),
+                sb.from('game_progress').select('player_id, game, solved, total, score, started_at, finished_at, updated_at, players(name)')
+            ]);
+            if (ts.error || ps.error) { console.error(ts.error || ps.error); return; }
+            tv.data = {
+                screen: ts.data.screen,
+                price: ps.data,
+                guesses: withNames(gs.data),
+                reveals: rv.data || [],
+                players: (pl.data || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)),
+                progress: gp.data || []
+            };
+            tvRender();
+        }
+
+        function tvRender() {
+            const d = tv.data;
+            if (!d) return;
+            if (d.screen === 'price') { tvShow('tv-price'); tvRenderPrice(d); }
+            else if (d.screen === 'emoji') { tvShow('tv-emoji'); tvRenderEmoji(d); }
+            else if (d.screen === 'trivia') { tvShow('tv-trivia'); tvRenderTrivia(d); }
+            else { tvShow('tv-welcome'); tvRenderWelcome(d); }
+        }
+
+        function tvRenderWelcome(d) {
+            const n = d.players.length;
+            document.getElementById('tv-player-count').textContent = n ? `${n} player${n === 1 ? '' : 's'} in` : 'Waiting for the first player';
+            document.getElementById('tv-players').innerHTML = d.players.map(p => `<span class="tv-chip">${escapeHtml(p.name)}</span>`).join('');
+        }
+
+        function tvRenderPrice(d) {
+            const s = d.price;
+            const item = pfItem(s.current_item);
+            const live = document.getElementById('tv-price-live');
+            const idle = document.getElementById('tv-price-idle');
+            const standings = priceStandings(d.guesses, d.reveals);
+
+            if (s.phase === 'lobby' || !item || s.phase === 'finished') {
+                live.style.display = 'none';
+                idle.style.display = 'flex';
+                if (s.phase === 'finished') {
+                    idle.innerHTML = `<h1 class="tv-title">Final standings</h1><p class="tv-lede">The Price is Fright</p>
+                        <div class="tv-final-list">${standings.rows.slice(0, 8).map((r, i) =>
+                            `<div class="tv-rank"><span>${i + 1}. ${escapeHtml(r.name)}</span><span>${fmtPts(r.pts)}</span></div>`).join('') || '<p class="tv-empty">No scores yet.</p>'}</div>`;
+                } else {
+                    idle.innerHTML = `<h1 class="tv-title">The Price is Fright</h1>
+                        <p class="tv-lede">How haunting are baby prices? Keep your game window open. The first item opens soon.</p>`;
+                }
+                tv.lastItem = null;
+                return;
+            }
+
+            live.style.display = 'flex';
+            idle.style.display = 'none';
+            const idx = pfItemIndex(item.id);
+            const revealed = s.phase === 'revealed';
+            const actual = revealed ? Number(s.actual_price) : null;
+            const itemGuesses = d.guesses.filter(g => g.item_id === item.id);
+
+            if (tv.lastItem !== item.id) {
+                tv.lastItem = item.id;
+                document.getElementById('tv-photo').innerHTML = item.img ? `<img src="${escapeHtml(item.img)}" alt="">` : '<span class="ghost">👻</span>';
+                document.getElementById('tv-item-name').textContent = item.name;
+                document.getElementById('tv-price-progress').textContent = `Item ${idx + 1} of ${priceItems.length}`;
+                document.getElementById('tv-axis-min').textContent = fmt(item.min);
+                document.getElementById('tv-axis-max').textContent = fmt(item.max);
+            }
+
+            const n = itemGuesses.length;
+            document.getElementById('tv-price-status').textContent = revealed
+                ? `${n} guess${n === 1 ? '' : 'es'}`
+                : `Guessing is open. ${n} guess${n === 1 ? '' : 'es'} in so far.`;
+
+            const real = document.getElementById('tv-price-real');
+            if (revealed) {
+                const winners = closestGuessers(itemGuesses, actual);
+                real.innerHTML = `<p class="label">The real price</p><span class="amount">${fmt(actual)}</span>` +
+                    (winners.length ? `<p class="winner">Closest: <strong>${winners.map(w => escapeHtml(w.name)).join(', ')}</strong> at ${fmt(winners[0].guess_value)}</p>` : '');
+            } else {
+                real.innerHTML = '';
+            }
+
+            document.getElementById('tv-price-board').innerHTML = `<h3>Standings</h3>` + (standings.revealed
+                ? standings.rows.slice(0, 6).map((r, i) => `<div class="tv-rank"><span>${i + 1}. ${escapeHtml(r.name)}</span><span>${fmtPts(r.pts)}</span></div>`).join('')
+                : `<p class="tv-empty" style="margin:0;">Points appear after the first reveal.</p>`);
+
+            tvRenderLanes(item, itemGuesses, actual, revealed);
+        }
+
+        // Name tags sit above the price line; overlapping tags stack into rows.
+        function tvRenderLanes(item, guesses, actual, revealed) {
+            const lanes = document.getElementById('tv-lanes');
+            const axis = document.getElementById('tv-axis');
+            const wrap = document.getElementById('tv-lanes-wrap');
+            lanes.innerHTML = '';
+            axis.innerHTML = '';
+            wrap.querySelectorAll('.tv-actual').forEach(e => e.remove());
+
+            const W = lanes.clientWidth || wrap.clientWidth;
+            const range = (item.max - item.min) || 1;
+            const xOf = v => Math.min(1, Math.max(0, (v - item.min) / range)) * W;
+            const winners = revealed ? new Set(closestGuessers(guesses, actual).map(g => g.player_id)) : new Set();
+            const sorted = [...guesses].sort((a, b) => a.guess_value - b.guess_value);
+
+            const placed = sorted.map(g => {
+                const el = document.createElement('div');
+                el.className = 'tv-pill' + (winners.has(g.player_id) ? ' winner' : '');
+                el.innerHTML = `<span class="n">${escapeHtml(g.name)}</span><span class="v">${fmt(g.guess_value)}</span>`;
+                lanes.appendChild(el);
+                const tick = document.createElement('div');
+                tick.className = 'tick';
+                tick.style.left = xOf(g.guess_value) + 'px';
+                axis.appendChild(tick);
+                return { g, el };
+            });
+
+            const laneRight = [];
+            const laneH = placed.length ? placed[0].el.offsetHeight + 8 : 0;
+            placed.forEach(({ g, el }) => {
+                const w = el.offsetWidth;
+                const left = Math.min(Math.max(xOf(g.guess_value) - w / 2, 0), Math.max(0, W - w));
+                let lane = laneRight.findIndex(r => r + 8 <= left);
+                if (lane === -1) { lane = laneRight.length; laneRight.push(0); }
+                laneRight[lane] = left + w;
+                el.style.left = left + 'px';
+                el.dataset.lane = lane;
+            });
+            const laneCount = Math.max(1, laneRight.length);
+            // Lane 0 sits closest to the line.
+            placed.forEach(({ el }) => { el.style.top = ((laneCount - 1 - Number(el.dataset.lane)) * laneH) + 'px'; });
+            lanes.style.height = (laneCount * laneH) + 'px';
+
+            if (revealed) {
+                const m = document.createElement('div');
+                m.className = 'tv-actual';
+                m.style.left = xOf(actual) + 'px';
+                wrap.appendChild(m);
+                if (tv.animated !== item.id && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    gsap.fromTo(m, { y: -120, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'bounce.out' });
+                }
+                tv.animated = item.id;
+            } else if (tv.animated === item.id) {
+                tv.animated = null;
+            }
+            if (!guesses.length) {
+                lanes.innerHTML = `<p class="tv-empty" style="position:absolute; bottom:0; margin:0;">Guesses will appear here as they come in.</p>`;
+                lanes.style.height = '3em';
+            }
+        }
+
+        function tvBoard(el, rows, total, emptyText) {
+            if (!rows.length) { el.innerHTML = `<p class="tv-empty">${emptyText}</p>`; return; }
+            const MAX = 20;
+            el.innerHTML = rows.slice(0, MAX).map((r, i) => `
+                <div class="tv-row ${r.done ? 'done' : ''}">
+                    <span class="pos">${i + 1}</span>
+                    <span class="who">${escapeHtml(r.name)}</span>
+                    <span class="bar"><span style="width:${Math.round((r.progress / total) * 100)}%"></span></span>
+                    <span class="stat">${r.stat}</span>
+                </div>`).join('') + (rows.length > MAX ? `<p class="tv-more">and ${rows.length - MAX} more</p>` : '');
+        }
+
+        function tvRenderEmoji(d) {
+            const rows = gameRows(d.progress, 'emoji').map(r => ({
+                name: r.name, progress: r.solved || 0, done: !!r.finished_at, finished_at: r.finished_at, updated_at: r.updated_at,
+                stat: r.finished_at ? `Done in ${durationText(r.started_at, r.finished_at)}` : `${r.solved || 0}/${EMOJI_TOTAL}`
+            })).sort((a, b) =>
+                (b.progress - a.progress) ||
+                ((a.finished_at ? new Date(a.finished_at) : Infinity) - (b.finished_at ? new Date(b.finished_at) : Infinity)) ||
+                (new Date(a.updated_at) - new Date(b.updated_at)));
+            tvBoard(document.getElementById('tv-emoji-board'), rows, EMOJI_TOTAL, 'Open Fatherhood is Scary in your game window to get on the board.');
+        }
+
+        function tvRenderTrivia(d) {
+            const T = triviaData.length;
+            const rows = gameRows(d.progress, 'trivia').map(r => ({
+                name: r.name, done: !!r.finished_at,
+                progress: r.finished_at ? (r.score || 0) : (r.solved || 0),
+                score: r.score || 0,
+                secs: r.finished_at ? (new Date(r.finished_at) - new Date(r.started_at)) : Infinity,
+                stat: r.finished_at ? `${r.score}/${T}` : `Q${Math.min((r.solved || 0) + 1, T)} of ${T}`
+            })).sort((a, b) =>
+                (Number(b.done) - Number(a.done)) || (b.score - a.score) * (a.done ? 1 : 0) || (a.secs - b.secs) || (b.progress - a.progress));
+            tvBoard(document.getElementById('tv-trivia-board'), rows, T, 'Open the Dad-to-Be Trivia in your game window to get on the board.');
+        }
+
+        // =====================================================================
         //  STARTUP
         // =====================================================================
         initConnections();
         initTrivia();
-        if (IS_HOST) hostBoot(); else renderHome();
+        emojiRestore();
+        if (IS_TV) tvBoot(); else if (IS_HOST) hostBoot(); else { renderHome(); checkFreshStart(); }
     </script>
 </body>
 </html>
