@@ -281,6 +281,32 @@
         .pf-reaction img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(44, 42, 40, 0.2); flex-shrink: 0; }
         .pf-reaction p { margin: 0; font-family: 'DM Serif Display', serif; font-size: 1.15rem; line-height: 1.25; }
 
+        /* --- FINISHING GAMES --- */
+        .game-done-note { text-align: center; font-weight: 600; color: var(--color-baby); margin: 1rem 0 0 0; }
+        .emoji-row.locked { opacity: 0.55; }
+        .solved-row.missed { background-color: #a9a290; }
+
+        /* --- LEADERBOARD + HOST PROGRESS --- */
+        .lb-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        .lb-table th { text-align: left; font-size: 0.8rem; color: #888; font-weight: 600; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.12); }
+        .lb-table td { padding: 8px 4px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .lb-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .lb-table td.total { font-weight: 700; }
+        .lb-table tr.top td { font-weight: 700; color: var(--color-price); }
+        .tv-lb { margin-top: 2em; }
+        .tv-lb .lb-table { font-size: 1.45em; }
+        .tv-lb .lb-table th { font-size: 0.7em; }
+        .tv-lb .lb-table td { padding: 0.4em 0.3em; }
+        .prog-row { padding: 0.75rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .prog-row:last-child { border-bottom: none; }
+        .prog-head { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .prog-row.all .prog-head span { color: var(--color-baby); font-weight: 700; }
+        .prog-detail { font-size: 0.85rem; color: #666; margin-top: 0.3rem; }
+        .tv-final-total { font-family: 'DM Serif Display', serif; font-size: 6em; color: var(--color-crime); line-height: 1; display: block; }
+        .tv-final-h { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 2em; margin: 0.8em 0 0.2em 0; }
+        .tv-final-layout .tv-final-list { margin-top: 0.4em; }
+        .tv-final-layout .tv-final-list .tv-rank { font-size: 1.3em; }
+
         /* --- CURRENCIES --- */
         .pf-currency { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin: -0.5rem 0 1.25rem 0; font-size: 0.85rem; color: #666; }
         .pf-currency span { margin-right: 4px; }
@@ -483,6 +509,10 @@
                 <div class="movie-title">A Quiet Place</div>
             </div>
         </div>
+        <div class="controls">
+            <button class="action-btn" id="emoji-done-btn" onclick="emojiSubmit()">I'm done</button>
+        </div>
+        <p class="game-done-note" id="emoji-done-note" style="display:none;"></p>
     </main>
 
     <!-- GAME: TRIVIA -->
@@ -556,7 +586,8 @@
             <h2 class="price-item-name">That's every haunted price</h2>
             <p class="stat-line">Your score</p>
             <span class="stat-big"><span id="pf-total">0</span> / 100</span>
-            <p class="pf-small">Watch the host's screen for the final standings.</p>
+            <p class="stat-line" id="pf-grand-total" style="margin-top:1rem;"></p>
+            <p class="pf-small">Watch the shared screen for the final standings.</p>
         </div>
     </main>
 
@@ -589,8 +620,19 @@
             <p class="pf-error" id="host-error"></p>
 
             <div class="results-panel">
-                <p class="results-title">Leaderboard</p>
+                <p class="results-title">Price is Fright standings</p>
                 <div id="host-leaderboard"></div>
+            </div>
+
+            <div class="results-panel">
+                <p class="results-title">Who's done</p>
+                <div id="host-progress"></div>
+            </div>
+
+            <div class="results-panel">
+                <p class="results-title">Overall leaderboard</p>
+                <p class="pf-small" style="text-align:center; margin:0 0 0.5rem 0;">Each game is worth up to 100 points. To show it to everyone, press Leaderboard under "On the shared screen."</p>
+                <div id="host-overall"></div>
             </div>
 
             <details class="host-setup">
@@ -684,6 +726,16 @@
             <div class="tv-board" id="tv-connections-board"></div>
         </section>
 
+        <section id="tv-leaderboard" class="tv-screen">
+            <div class="tv-game-head">
+                <div>
+                    <h1 class="tv-title-sm">Leaderboard</h1>
+                    <p class="tv-lede">Every game is worth up to 100 points.</p>
+                </div>
+            </div>
+            <div class="tv-lb" id="tv-lb"></div>
+        </section>
+
         <section id="tv-trivia" class="tv-screen">
             <div class="tv-game-head">
                 <div>
@@ -717,6 +769,10 @@
             <button class="action-btn" id="btn-deselect">Deselect</button>
             <button class="action-btn" id="btn-submit" disabled>Submit</button>
         </div>
+        <div class="controls" style="margin-top:1rem;">
+            <button class="action-btn" id="conn-done-btn" onclick="connSubmit()">I'm done</button>
+        </div>
+        <p class="game-done-note" id="conn-done-note" style="display:none;"></p>
     </main>
 
     <script>
@@ -775,12 +831,12 @@
 
         // --- GAME: TRIVIA LOGIC ---
         const triviaData = [
-            { question: "What was his go-to childhood act of rebellion?", answers: ["Egging the principal's car", "Setting fire to porta-potties", "Sneaking out to play basketball", "Stealing golf carts"], correct: 1 },
             { question: "Why were his hands freezing while walking Winny in Pittsburgh?", answers: ["He lost a bet and had to walk bare-handed", "He accidentally bought child-sized mittens", "He used iced coffees as hand warmers", "He chose fashionable leather gloves over puffy ones"], correct: 3 },
             { question: "He's currently into gin martinis, but what was his previous go-to drink?", answers: ["Tequila Soda", "Craft IPA", "Espresso Martini", "Whiskey Sour"], correct: 0 },
             { question: "Which instrument did he play in a praise and worship band?", answers: ["Acoustic Guitar", "Keyboards", "Drums", "Bass"], correct: 2 },
             { question: "Where did he live right at the start of the 2020 lockdowns?", answers: ["Texas", "Hawaii", "Los Angeles", "Pittsburgh"], correct: 2 },
-            { question: "How long has he been navigating the corporate waters at Thomson Reuters?", answers: ["5 years", "7 years", "9 years", "12 years"], correct: 2 }
+            { question: "How long has he been navigating the corporate waters at Thomson Reuters?", answers: ["5 years", "7 years", "9 years", "12 years"], correct: 2 },
+            { question: "What was his go-to childhood act of rebellion?", answers: ["Egging the principal's car", "Setting fire to porta-potties", "Sneaking out to play basketball", "Stealing golf carts"], correct: 1 }
         ];
 
         let currentQuestion = 0;
@@ -989,6 +1045,32 @@
         function emojiRestore() {
             const p = emojiSaved();
             document.querySelectorAll('.emoji-row').forEach(r => { if (p.solved.includes(r.dataset.answer)) r.classList.add('revealed'); });
+            emojiApplyLock(p);
+        }
+        // Once finished (all solved, or "I'm done"), answers are locked in.
+        function emojiApplyLock(p) {
+            const done = !!p.finished_at;
+            document.querySelectorAll('.emoji-row:not(.revealed)').forEach(r => {
+                r.querySelectorAll('input, button').forEach(el => el.disabled = done);
+                r.classList.toggle('locked', done);
+            });
+            document.getElementById('emoji-done-btn').style.display = done ? 'none' : 'inline-block';
+            const note = document.getElementById('emoji-done-note');
+            note.style.display = done ? 'block' : 'none';
+            if (done) note.textContent = p.solved.length >= EMOJI_TOTAL
+                ? `All ${EMOJI_TOTAL} solved. You're done!`
+                : `Submitted with ${p.solved.length} of ${EMOJI_TOTAL} solved. Nice work!`;
+        }
+        function emojiSubmit() {
+            const p = emojiSaved();
+            if (p.finished_at) return;
+            const left = EMOJI_TOTAL - p.solved.length;
+            if (left > 0 && !confirm(`Submit with ${p.solved.length} of ${EMOJI_TOTAL} solved? You won't be able to change your answers after this.`)) return;
+            if (!p.started_at) p.started_at = nowISO();
+            p.finished_at = nowISO();
+            saveJSON(EMOJI_KEY, p);
+            emojiSync(p);
+            emojiApplyLock(p);
         }
         function emojiMarkStarted() {
             const p = emojiSaved();
@@ -999,11 +1081,13 @@
         }
         function emojiRecordSolve(answer) {
             const p = emojiSaved();
+            if (p.finished_at) return;
             if (!p.started_at) p.started_at = nowISO();
             if (!p.solved.includes(answer)) p.solved.push(answer);
             if (p.solved.length >= EMOJI_TOTAL && !p.finished_at) p.finished_at = nowISO();
             saveJSON(EMOJI_KEY, p);
             emojiSync(p);
+            emojiApplyLock(p);
         }
 
         // If the host cleared the players table (e.g. after a test run), forget this
@@ -1015,6 +1099,8 @@
             try { localStorage.removeItem(EMOJI_KEY); localStorage.removeItem(TRIVIA_KEY); localStorage.removeItem(CONN_KEY); } catch (e) {}
             initConnections();
             document.querySelectorAll('.emoji-row.revealed').forEach(r => { r.classList.remove('revealed'); r.querySelector('.guess-input').value = ''; });
+            emojiApplyLock(emojiSaved());
+            connApplyLock(connSaved());
             initTrivia();
             playerSynced = false;
         }
@@ -1041,6 +1127,7 @@
             if (p.solved.length >= CONN_TOTAL) p.finished_at = nowISO();
             saveJSON(CONN_KEY, p);
             connSync(p);
+            if (p.finished_at) setTimeout(() => connApplyLock(p), 500);
         }
         function connRecordMistake() {
             const p = connSaved();
@@ -1050,6 +1137,40 @@
             saveJSON(CONN_KEY, p);
             connSync(p);
         }
+        function connSubmit() {
+            const p = connSaved();
+            if (p.finished_at) return;
+            if (p.solved.length < CONN_TOTAL && !confirm(`Submit with ${p.solved.length} of ${CONN_TOTAL} groups found? The rest will be revealed.`)) return;
+            if (!p.started_at) p.started_at = nowISO();
+            p.finished_at = nowISO();
+            saveJSON(CONN_KEY, p);
+            connSync(p);
+            connApplyLock(p);
+        }
+        // When finished, lock the board and show any groups they didn't find.
+        function connApplyLock(p) {
+            const done = !!p.finished_at;
+            document.querySelector('#view-connections .controls').style.display = done ? 'none' : 'flex';
+            document.getElementById('conn-done-btn').parentElement.style.display = done ? 'none' : 'flex';
+            const note = document.getElementById('conn-done-note');
+            note.style.display = done ? 'block' : 'none';
+            if (!done) return;
+            Object.entries(solutionData).forEach(([name, cat]) => {
+                if (p.solved.includes(name) || solvedContainer.querySelector(`[data-missed="${name}"]`)) return;
+                activeWords = activeWords.filter(w => !cat.words.includes(w));
+                const row = document.createElement('div');
+                row.className = 'solved-row missed';
+                row.dataset.missed = name;
+                row.innerHTML = `<div class="solved-category">${name}</div><div class="solved-words">${cat.words.join(', ')}</div>`;
+                solvedContainer.appendChild(row);
+            });
+            selectedWords = [];
+            renderGrid();
+            note.textContent = p.solved.length >= CONN_TOTAL
+                ? `All ${CONN_TOTAL} groups found with ${p.mistakes} mistake${p.mistakes === 1 ? '' : 's'}. You're done!`
+                : `Submitted with ${p.solved.length} of ${CONN_TOTAL} groups found. The grey ones are the groups you missed.`;
+        }
+
         function connRestore() {
             const p = connSaved();
             p.solved.forEach(name => {
@@ -1063,6 +1184,7 @@
                 solvedContainer.appendChild(row);
             });
             renderGrid();
+            connApplyLock(p);
         }
 
         // Trivia
@@ -1196,6 +1318,17 @@
                     gsap.fromTo(m, { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'bounce.out' });
                 }
             }
+        }
+
+        // Sum of every revealed price, plus what the room's average guesses added up to.
+        function priceTotals(guesses, reveals) {
+            let total = 0, roomTotal = 0, anyGuesses = false;
+            (reveals || []).forEach(r => {
+                total += Number(r.actual_price);
+                const gs = (guesses || []).filter(g => g.item_id === r.item_id);
+                if (gs.length) { anyGuesses = true; roomTotal += gs.reduce((s, g) => s + Number(g.guess_value), 0) / gs.length; }
+            });
+            return { total, roomTotal: anyGuesses ? roomTotal : null, count: (reveals || []).length };
         }
 
         function closestGuessers(guesses, actual) {
@@ -1447,12 +1580,14 @@
             let total = 0;
             (mine.data || []).forEach(g => { if (actuals[g.item_id] !== undefined) total += pfPoints(Number(g.guess_value), actuals[g.item_id]); });
             document.getElementById('pf-total').textContent = fmtPts(total);
+            const grand = (reveals.data || []).reduce((s, r) => s + Number(r.actual_price), 0);
+            document.getElementById('pf-grand-total').innerHTML = grand ? `Everything we priced tonight added up to <strong>${money(grand, pf.currency)}</strong>.` : '';
         }
 
         // =====================================================================
         //  THE PRICE IS FRIGHT: host view  (yoursite.github.io/?host)
         // =====================================================================
-        const host = { live: null, tvScreen: null, serverPrices: {}, pass: null, state: null, guesses: [], reveals: [], timer: null, started: false, controlsKey: null, animated: null };
+        const host = { players: [], progress: [], live: null, tvScreen: null, serverPrices: {}, pass: null, state: null, guesses: [], reveals: [], timer: null, started: false, controlsKey: null, animated: null };
         const HOST_PASS_KEY = 'pf_host_pass';
         const HOST_PRICES_KEY = 'pf_host_prices';
         const HOST_SECTIONS = ['host-offline', 'host-gate', 'host-panel'];
@@ -1517,6 +1652,7 @@
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'price_reveals' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'players' }, () => hostQueue())
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'tv_state' }, () => hostQueue())
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'game_progress' }, () => hostQueue())
                 .subscribe(status => {
                     host.live = status === 'SUBSCRIBED';
                     hostRenderLive();
@@ -1531,12 +1667,16 @@
         function hostQueue() { clearTimeout(host.timer); host.timer = setTimeout(hostRefresh, 300); }
 
         async function hostRefresh() {
-            const [st, gs, rv, tvs] = await Promise.all([
+            const [st, gs, rv, tvs, pl, gp] = await Promise.all([
                 sb.from('price_state').select('*').eq('id', 1).single(),
                 sb.from('guesses').select('*, players(name)'),
                 sb.from('price_reveals').select('item_id, actual_price'),
-                sb.from('tv_state').select('screen').eq('id', 1).single()
+                sb.from('tv_state').select('screen').eq('id', 1).single(),
+                sb.from('players').select('id, name, created_at'),
+                sb.from('game_progress').select('*, players(name)')
             ]);
+            host.players = (pl.data || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            host.progress = gp.data || [];
             if (tvs.data) { host.tvScreen = tvs.data.screen; hostRenderTvControl(tvs.data.screen); }
             if (st.error) { console.error(st.error); document.getElementById('host-error').textContent = "Couldn't reach Supabase. Check the setup."; return; }
             host.state = st.data;
@@ -1569,7 +1709,7 @@
                 let html = `
                     <div class="host-item-head">
                         <div class="host-thumb">${item.img ? `<img src="${escapeHtml(item.img)}" alt="">` : '👻'}</div>
-                        <div><h2>${escapeHtml(item.name)}</h2><p>${itemGuesses.length} guess${itemGuesses.length === 1 ? '' : 'es'} in</p></div>
+                        <div><h2>${escapeHtml(item.name)}</h2><p>${host.players.length ? `${itemGuesses.length} of ${host.players.length} players guessed` : `${itemGuesses.length} guess${itemGuesses.length === 1 ? '' : 'es'} in`}</p></div>
                     </div>
                     <div class="dot-plot" id="host-plot"><div class="dot-plot-track"></div></div>
                     <div class="dot-plot-labels"><span>${fmt(item.min)}</span><span>${fmt(item.max)}</span></div>`;
@@ -1593,6 +1733,9 @@
 
             hostRenderControls();
             hostRenderLeaderboard();
+            hostRenderProgress();
+            document.getElementById('host-overall').innerHTML = leaderboardTable(
+                overallStandings(host.players, host.guesses, host.reveals, host.progress), 50, 'Scores appear here once games are played.');
         }
 
         function hostRenderControls() {
@@ -1621,6 +1764,30 @@
             } else {
                 ctl.innerHTML = `<p class="stat-line" style="margin:0;">All items revealed. Final standings are below.</p>`;
             }
+        }
+
+        function hostRenderProgress() {
+            const el = document.getElementById('host-progress');
+            const players = host.players;
+            if (!players.length) { el.innerHTML = `<p class="empty-note">No players yet.</p>`; return; }
+            const names = list => list.map(p => escapeHtml(p.name)).join(', ');
+            const games = [['emoji', 'Fatherhood is Scary'], ['trivia', 'Dad-to-Be Trivia'], ['connections', 'Connections (bonus)']];
+            el.innerHTML = games.map(([id, label]) => {
+                const rows = {};
+                host.progress.filter(r => r.game === id).forEach(r => rows[r.player_id] = r);
+                const done = players.filter(p => rows[p.id] && rows[p.id].finished_at);
+                const playing = players.filter(p => rows[p.id] && !rows[p.id].finished_at);
+                const notStarted = players.filter(p => !rows[p.id]);
+                const all = done.length === players.length;
+                let detail = '';
+                if (!all) {
+                    if (playing.length) detail += `<div class="prog-detail">Still playing: ${names(playing)}</div>`;
+                    if (notStarted.length) detail += `<div class="prog-detail">Haven't started: ${names(notStarted)}</div>`;
+                }
+                return `<div class="prog-row ${all ? 'all' : ''}">
+                    <div class="prog-head"><strong>${label}</strong><span>${all ? `Everyone's done (${done.length} of ${players.length})` : `${done.length} of ${players.length} done`}</span></div>
+                    ${detail}</div>`;
+            }).join('');
         }
 
         function hostRenderLeaderboard() {
@@ -1725,6 +1892,47 @@
             });
             return { rows: Object.values(byPlayer).sort((a, b) => b.pts - a.pts), revealed: Object.keys(actuals).length };
         }
+        // Overall leaderboard: each game is worth up to 100 points.
+        //   Price is Fright: already out of 100.  Emoji movies: movies solved / 7.
+        //   Trivia: correct / 6.  Connections (bonus): 25 per group, minus 5 per mistake.
+        const LB_GAMES = [
+            { id: 'price',       label: 'Price is Fright' },
+            { id: 'emoji',       label: 'Emoji movies' },
+            { id: 'trivia',      label: 'Trivia' },
+            { id: 'connections', label: 'Connections' }
+        ];
+        function overallStandings(players, guesses, reveals, progress) {
+            const rows = {};
+            const ensure = (id, name) => rows[id] || (rows[id] = { name: name || 'Guest', price: 0, emoji: 0, trivia: 0, connections: 0 });
+            (players || []).forEach(p => ensure(p.id, p.name));
+            const actuals = {};
+            (reveals || []).forEach(r => actuals[r.item_id] = Number(r.actual_price));
+            (guesses || []).forEach(g => { if (actuals[g.item_id] !== undefined) ensure(g.player_id, g.name).price += pfPoints(g.guess_value, actuals[g.item_id]); });
+            (progress || []).forEach(r => {
+                const row = ensure(r.player_id, r.players && r.players.name);
+                if (r.game === 'emoji') row.emoji = ((r.solved || 0) / EMOJI_TOTAL) * 100;
+                if (r.game === 'trivia') row.trivia = ((r.score || 0) / triviaData.length) * 100;
+                if (r.game === 'connections') row.connections = Math.max(0, (r.solved || 0) * 25 - (r.mistakes || 0) * 5);
+            });
+            const played = {
+                price: Object.keys(actuals).length > 0,
+                emoji: (progress || []).some(r => r.game === 'emoji'),
+                trivia: (progress || []).some(r => r.game === 'trivia'),
+                connections: (progress || []).some(r => r.game === 'connections')
+            };
+            const games = LB_GAMES.filter(g => played[g.id]);
+            const list = Object.values(rows).map(r => ({ ...r, total: games.reduce((s, g) => s + r[g.id], 0) }))
+                .sort((a, b) => b.total - a.total);
+            return { rows: list, games };
+        }
+        function leaderboardTable(result, max, emptyText) {
+            if (!result.rows.length || !result.games.length) return `<p class="empty-note">${emptyText}</p>`;
+            const shown = result.rows.slice(0, max);
+            return `<table class="lb-table"><thead><tr><th>#</th><th>Name</th>${result.games.map(g => `<th class="num">${g.label}</th>`).join('')}<th class="num">Total</th></tr></thead><tbody>` +
+                shown.map((r, i) => `<tr class="${i === 0 ? 'top' : ''}"><td>${i + 1}</td><td>${escapeHtml(r.name)}</td>${result.games.map(g => `<td class="num">${Math.round(r[g.id])}</td>`).join('')}<td class="num total">${Math.round(r.total)}</td></tr>`).join('') +
+                `</tbody></table>` + (result.rows.length > max ? `<p class="empty-note">and ${result.rows.length - max} more</p>` : '');
+        }
+
         function durationText(start, end) {
             if (!start || !end) return '';
             const s = Math.max(0, Math.round((new Date(end) - new Date(start)) / 1000));
@@ -1742,7 +1950,8 @@
             { id: 'price',   label: 'Price is Fright' },
             { id: 'emoji',   label: 'Emoji movies' },
             { id: 'trivia',  label: 'Trivia' },
-            { id: 'connections', label: 'Connections' }
+            { id: 'connections', label: 'Connections' },
+            { id: 'leaderboard', label: 'Leaderboard' }
         ];
         function joinUrl() { return location.origin + location.pathname; }
 
@@ -1811,7 +2020,7 @@
                 sb.from('guesses').select('*, players(name)'),
                 sb.from('price_reveals').select('item_id, actual_price'),
                 sb.from('players').select('id, name, created_at'),
-                sb.from('game_progress').select('player_id, game, solved, total, score, mistakes, started_at, finished_at, updated_at, players(name)')
+                sb.from('game_progress').select('*, players(name)')
             ]);
             const problems = [ts, ps, gs, rv, pl, gp].filter(r => r.error).map(r => r.error);
             tvBanner(problems);
@@ -1841,6 +2050,7 @@
             else if (d.screen === 'emoji') { tvHideReaction(); tvShow('tv-emoji'); tvRenderEmoji(d); }
             else if (d.screen === 'trivia') { tvHideReaction(); tvShow('tv-trivia'); tvRenderTrivia(d); }
             else if (d.screen === 'connections') { tvHideReaction(); tvShow('tv-connections'); tvRenderConnections(d); }
+            else if (d.screen === 'leaderboard') { tvHideReaction(); tvShow('tv-leaderboard'); document.getElementById('tv-lb').innerHTML = leaderboardTable(overallStandings(d.players, d.guesses, d.reveals, d.progress), 10, 'Scores appear here once games are played.'); }
             else { tvHideReaction(); tvShow('tv-welcome'); tvRenderWelcome(d); }
         }
 
@@ -1861,9 +2071,14 @@
                 live.style.display = 'none';
                 idle.style.display = 'flex';
                 if (s.phase === 'finished') {
+                    const t = priceTotals(d.guesses, d.reveals);
                     idle.innerHTML = `<div class="tv-final-layout"><div>
-                        <h1 class="tv-title">Final standings</h1><p class="tv-lede">The Price is Fright</p>
-                        <div class="tv-final-list">${standings.rows.slice(0, 8).map((r, i) =>
+                        <p class="tv-kicker">The Price is Fright: all ${t.count} items added up</p>
+                        <span class="tv-final-total">${fmt(t.total)}</span>
+                        <div class="fx-row">${allCurrencies(t.total)}</div>
+                        ${t.roomTotal !== null ? `<p class="tv-lede">The room's guesses added up to ${fmt(Math.round(t.roomTotal))}.</p>` : ''}
+                        <h2 class="tv-final-h">Final standings</h2>
+                        <div class="tv-final-list">${standings.rows.slice(0, 5).map((r, i) =>
                             `<div class="tv-rank"><span>${i + 1}. ${escapeHtml(r.name)}</span><span>${fmtPts(r.pts)}</span></div>`).join('') || '<p class="tv-empty">No scores yet.</p>'}</div>
                         </div>
                         <figure class="polaroid tv-final-photo"><img src="${PHOTOS.ultrasound}" alt=""><figcaption>Coming soon</figcaption></figure></div>`;
@@ -2025,7 +2240,7 @@
         function tvRenderEmoji(d) {
             const rows = gameRows(d.progress, 'emoji').map(r => ({
                 name: r.name, progress: r.solved || 0, done: !!r.finished_at, finished_at: r.finished_at, updated_at: r.updated_at,
-                stat: r.finished_at ? `Done in ${durationText(r.started_at, r.finished_at)}` : `${r.solved || 0}/${EMOJI_TOTAL}`
+                stat: r.finished_at ? ((r.solved || 0) >= EMOJI_TOTAL ? `Done in ${durationText(r.started_at, r.finished_at)}` : `${r.solved || 0}/${EMOJI_TOTAL}, done`) : `${r.solved || 0}/${EMOJI_TOTAL}`
             })).sort((a, b) =>
                 (b.progress - a.progress) ||
                 ((a.finished_at ? new Date(a.finished_at) : Infinity) - (b.finished_at ? new Date(b.finished_at) : Infinity)) ||
@@ -2040,7 +2255,7 @@
                 return {
                     name: r.name, progress: solved, done: !!r.finished_at, mistakes: m,
                     secs: r.finished_at ? (new Date(r.finished_at) - new Date(r.started_at)) : Infinity,
-                    stat: r.finished_at ? `Done, ${plural(m)}` : `${solved}/${CONN_TOTAL}, ${plural(m)}`
+                    stat: r.finished_at ? (solved >= CONN_TOTAL ? `Done, ${plural(m)}` : `${solved}/${CONN_TOTAL}, done`) : `${solved}/${CONN_TOTAL}, ${plural(m)}`
                 };
             }).sort((a, b) => (b.progress - a.progress) || (a.mistakes - b.mistakes) || (a.secs - b.secs));
             tvBoard(document.getElementById('tv-connections-board'), rows, CONN_TOTAL, 'Open Connections in your game window to get on the board.');
