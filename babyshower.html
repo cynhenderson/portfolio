@@ -281,6 +281,13 @@
         .pf-reaction img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(44, 42, 40, 0.2); flex-shrink: 0; }
         .pf-reaction p { margin: 0; font-family: 'DM Serif Display', serif; font-size: 1.15rem; line-height: 1.25; }
 
+        /* --- NOTE FORM LINK --- */
+        .note-card { display: flex; flex-direction: column; gap: 0.4rem; width: 100%; box-sizing: border-box; margin-top: 2rem; padding: 1.5rem; border-radius: 12px; background: var(--tile-default); color: var(--text-dark); text-decoration: none; border: 2px solid transparent; transition: border-color 0.2s ease, transform 0.2s ease; }
+        .note-card:hover, .note-card:focus-visible { border-color: var(--color-price); transform: translateY(-2px); }
+        .note-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; }
+        .note-text { font-size: 0.95rem; line-height: 1.5; color: #555; }
+        .note-cta { font-weight: 700; color: var(--color-price); margin-top: 0.25rem; }
+
         /* --- FINISHING GAMES --- */
         .game-done-note { text-align: center; font-weight: 600; color: var(--color-baby); margin: 1rem 0 0 0; }
         .emoji-row.locked { opacity: 0.55; }
@@ -445,6 +452,11 @@
                 <button class="menu-btn" onclick="navigateTo('view-trivia')">03. The Dad-to-Be Trivia</button>
                 <button class="menu-btn" onclick="navigateTo('view-connections')">04. Connections<span class="bonus-tag">Bonus round, if we have time</span></button>
             </div>
+            <a class="note-card" href="https://forms.cloud.microsoft/r/58kswxikPh" target="_blank" rel="noopener">
+                <span class="note-title">Leave a note for Steven and Maddi</span>
+                <span class="note-text">Share advice, encouragement, and your favorite book recommendations. We'll fill this out together at the end of the shower.</span>
+                <span class="note-cta">Open the form ↗</span>
+            </a>
         </div>
     </main>
     <!-- GAME: EMOJI PUZZLER -->
