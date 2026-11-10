@@ -1722,22 +1722,36 @@
             else hostShow('host-gate');
         }
 
-        async function hostCheck(pass) {
-            const { data, error } = await sb.rpc('host_check', { pass });
-            if (error) { console.error(error); return false; }
-            return data === true;
+        // Returns true/false for the passcode, or an error object if Supabase couldn't be reached.
+        async function hostCheckDetailed(pass) {
+            try {
+                const { data, error } = await sb.rpc('host_check', { pass });
+                if (error) { console.error(error); return { ok: false, error }; }
+                return { ok: data === true, error: null };
+            } catch (e) {
+                console.error(e);
+                return { ok: false, error: e };
+            }
         }
+        async function hostCheck(pass) { return (await hostCheckDetailed(pass)).ok; }
 
         async function hostLogin() {
-            const pass = document.getElementById('host-pass-input').value;
+            const pass = document.getElementById('host-pass-input').value.trim();
             const err = document.getElementById('host-gate-error');
-            err.textContent = '';
-            if (await hostCheck(pass)) {
+            err.textContent = 'Checking...';
+            const result = await hostCheckDetailed(pass);
+            if (result.ok) {
+                err.textContent = '';
                 host.pass = pass;
                 try { sessionStorage.setItem(HOST_PASS_KEY, pass); } catch (e) {}
                 hostStart();
+            } else if (result.error) {
+                const msg = String(result.error.message || result.error);
+                err.textContent = /function|schema cache/i.test(msg)
+                    ? "The database isn't set up yet. Run supabase-setup.sql in the Supabase SQL Editor, then try again."
+                    : "Couldn't reach the game database, so the passcode wasn't checked. If your Supabase project is paused, restore it from the Supabase dashboard, wait a minute, and try again.";
             } else {
-                err.textContent = "That passcode doesn't match.";
+                err.textContent = "That passcode doesn't match. Check for typos: it's case-sensitive.";
             }
         }
         document.getElementById('host-pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') hostLogin(); });
